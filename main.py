@@ -85,7 +85,7 @@ class CutQC:
         self.source_folders = source_folders
         
         subprocess.run(['rm','./cutqc/build'])
-        build_command = 'gcc ./cutqc/build.c -L /opt/intel/mkl/lib/intel64/ -I /opt/intel/mkl/include/ -lmkl_intel_ilp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl -DMKL_ILP64 -m64 -o ./cutqc/build'
+        build_command = 'gcc ./cutqc/build.c -L /opt/intel/oneapi/mkl/latest/lib/intel64 -I /opt/intel/oneapi/mkl/2021.2.0/include -I /opt/intel/mkl/include/ -lmkl_intel_ilp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl -DMKL_ILP64 -m64 -o ./cutqc/build'
         subprocess.run(build_command.split(' '))
 
         circ_dict, all_subcircuit_entries_sampled = self._gather_subcircuits(eval_mode=eval_mode)
