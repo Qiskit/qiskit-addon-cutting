@@ -9,7 +9,7 @@ from qiskit_helper_functions.schedule import Scheduler
 
 from cutqc.helper_fun import check_valid, get_dirname
 from cutqc.cutter import find_cuts, cut_circuit
-from cutqc.evaluator import generate_subcircuit_instances, simulate_subcircuit
+from cutqc.evaluator import generate_subcircuit_instances, simulate_subcircuit, measure_prob
 from cutqc.sampling import dummy_sample, get_subcircuit_instances_sampled, get_subcircuit_entries_sampled
 from cutqc.post_process import generate_summation_terms
 from cutqc.verify import verify
@@ -89,17 +89,15 @@ class CutQC:
         subprocess.run(build_command.split(' '))
 
         circ_dict, all_subcircuit_entries_sampled = self._gather_subcircuits(eval_mode=eval_mode)
-        subcircuit_results = self._run_subcircuits(circ_dict=circ_dict,eval_mode=eval_mode)
+        subcircuit_results = self._run_subcircuits(circ_dict=circ_dict,eval_mode=eval_mode,ibmq=ibmq)
         self._attribute_shots(subcircuit_results=subcircuit_results,eval_mode=eval_mode,all_subcircuit_entries_sampled=all_subcircuit_entries_sampled)
         dest_folders = self._build(eval_mode=eval_mode,mem_limit=mem_limit,num_nodes=num_nodes,num_threads=num_threads)
         return dest_folders
 
     def verify(self, source_folders, dest_folders):
-        if self.verbose:
-            print('*'*20,'Verify','*'*20,flush=True)
+        print('*'*20,'Verify','*'*20,flush=True)
         row_format = '{:<20} {:<10} {:<30}'
-        if self.verbose:
-            print(row_format.format('Circuit Name','QPU','Error'),flush=True)
+        print(row_format.format('Circuit Name','QPU','Error'),flush=True)
         for source_folder, dest_folder in zip(source_folders,dest_folders):
             cut_solution = read_dict(filename='%s/cut_solution.pckl'%source_folder)
             circuit = cut_solution['circuit']
@@ -115,8 +113,7 @@ class CutQC:
             eval_mode = build_output['eval_mode']
             
             squared_error = verify(full_circuit=circuit,unordered=reconstructed_prob,complete_path_map=complete_path_map,subcircuits=subcircuits,smart_order=smart_order)
-            if self.verbose:
-                print(row_format.format(circuit_name,eval_mode,'%.1e'%squared_error),flush=True)
+            print(row_format.format(circuit_name,eval_mode,'%.1e'%squared_error),flush=True)
     
     def _generate_subcircuits(self,source_folder,cut_solution):
         '''
@@ -225,13 +222,16 @@ class CutQC:
             pickle.dump(summation_terms_sampled, open('%s/summation_terms_sampled.pckl'%(eval_folder),'wb'))
         return circ_dict, all_subcircuit_entries_sampled
     
-    def _run_subcircuits(self,circ_dict,eval_mode):
+    def _run_subcircuits(self,circ_dict,eval_mode,ibmq):
         '''
         Run all the subcircuits
         '''
         if self.verbose:
             print('--> Running Subcircuits',flush=True)
             print('%d total'%len(circ_dict),flush=True)
+        # print('circ_dict:')
+        # for key in circ_dict:
+        #     print(key,circ_dict[key])
         if eval_mode=='sv' or eval_mode=='qasm' or eval_mode=='runtime':
             subcircuit_results = {}
             for key in list(circ_dict.keys()):
@@ -240,8 +240,33 @@ class CutQC:
                     subcircuit_results[circuit_name].update(subcircuit_result)
                 else:
                     subcircuit_results[circuit_name] = subcircuit_result
+        elif 'ibmq' in eval_mode:
+            subcircuit_results = {}
+            scheduler = Scheduler(circ_dict=circ_dict,verbose=True)
+            # scheduler.add_ibmq(token=ibmq['token'],hub=ibmq['hub'],group=ibmq['group'],project=ibmq['project'])
+            # scheduler.submit_ibmq_jobs(device_names=[eval_mode],transpilation=True,real_device=False)
+            # scheduler.retrieve_jobs(force_prob=True,save_memory=False,save_directory=None)
+            # NOTE: use noiseless simulation for demonstration
+            scheduler.run_simulation_jobs(device_name='noiseless')
+            for key in scheduler.circ_dict:
+                subcircuit_info=scheduler.circ_dict[key]
+                circuit_name, subcircuit_idx, parent_subcircuit_instance_idx = key
+                init = subcircuit_info['init']
+                meas = subcircuit_info['meas']
+                counts = subcircuit_info['noiseless|sim']
+                for m in meas:
+                    measured_prob = measure_prob(unmeasured_prob=counts,meas=m)
+                    if circuit_name in subcircuit_results:
+                        subcircuit_results[circuit_name][(subcircuit_idx,init,m)] = measured_prob
+                    else:
+                        subcircuit_results[circuit_name] = {(subcircuit_idx,init,m): measured_prob}
         else:
             raise NotImplementedError
+        # print('results returned:')
+        # for circuit_name in subcircuit_results:
+        #     print('circuit_name =',circuit_name)
+        #     for key in subcircuit_results[circuit_name]:
+        #         print(key,'probability output =',subcircuit_results[circuit_name][key])
         return subcircuit_results
     
     def _attribute_shots(self,subcircuit_results,eval_mode,all_subcircuit_entries_sampled):

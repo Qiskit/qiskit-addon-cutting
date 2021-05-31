@@ -418,6 +418,7 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
     cut_solution = {}
     min_postprocessing_cost = float('inf')
     
+    best_mip_model = None
     for num_subcircuit in num_subcircuits:
         if num_subcircuit*max_subcircuit_qubit-(num_subcircuit-1)<num_qubits \
             or num_subcircuit>num_qubits \
@@ -450,24 +451,10 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
             counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
 
             reconstruction_cost = cost_estimate(counter=counter)
-            if verbose:
-                print('-'*20)
-                print_cutter_result(num_subcircuit=num_subcircuit,
-                num_cuts=len(mip_model.cut_edges),
-                subcircuits=subcircuits,
-                counter=counter, reconstruction_cost=reconstruction_cost)
-
-                print('Model objective value = %.2e'%(mip_model.objective))
-                print('MIP runtime:', mip_model.runtime)
-
-                if (mip_model.optimal):
-                    print('OPTIMAL, MIP gap =',mip_model.mip_gap)
-                else:
-                    print('NOT OPTIMAL, MIP gap =',mip_model.mip_gap)
-                print('-'*20)
 
             if reconstruction_cost < min_postprocessing_cost:
                 min_postprocessing_cost = reconstruction_cost
+                best_mip_model = mip_model
                 cut_solution = {
                 'circuit':circuit,
                 'max_subcircuit_qubit':max_subcircuit_qubit,
@@ -475,6 +462,21 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
                 'complete_path_map':complete_path_map,
                 'positions':positions,
                 'counter':counter}
+    if verbose and len(cut_solution)>0:
+        print('-'*20)
+        print_cutter_result(num_subcircuit=len(cut_solution['subcircuits']),
+        num_cuts=len(best_mip_model.cut_edges),
+        subcircuits=cut_solution['subcircuits'],
+        counter=cut_solution['counter'], reconstruction_cost=min_postprocessing_cost)
+
+        print('Model objective value = %.2e'%(best_mip_model.objective))
+        print('MIP runtime:', best_mip_model.runtime)
+
+        if (best_mip_model.optimal):
+            print('OPTIMAL, MIP gap =',best_mip_model.mip_gap)
+        else:
+            print('NOT OPTIMAL, MIP gap =',best_mip_model.mip_gap)
+        print('-'*20)
     return cut_solution
 
 def cut_circuit(circuit, subcircuit_vertices, verbose):
