@@ -385,7 +385,7 @@ def cost_estimate(counter):
         accumulated_kron_len *= 2**effective
         reconstruction_cost += accumulated_kron_len
     reconstruction_cost *= 4**num_cuts
-    return reconstruction_cost
+    return reconstruction_cost, num_cuts
 
 def get_pairs(complete_path_map):
     O_rho_pairs = []
@@ -450,7 +450,8 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
             O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
             counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
 
-            reconstruction_cost = cost_estimate(counter=counter)
+            reconstruction_cost, num_cuts = cost_estimate(counter=counter)
+            assert num_cuts==len(positions)
 
             if reconstruction_cost < min_postprocessing_cost:
                 min_postprocessing_cost = reconstruction_cost
@@ -460,7 +461,7 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
                 'max_subcircuit_qubit':max_subcircuit_qubit,
                 'subcircuits':subcircuits,
                 'complete_path_map':complete_path_map,
-                'positions':positions,
+                'num_cuts':num_cuts,
                 'counter':counter}
     if verbose and len(cut_solution)>0:
         print('-'*20)
@@ -495,7 +496,7 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
     subcircuits, complete_path_map = subcircuits_parser(subcircuit_gates=subcircuits, circuit=circuit)
     O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
     counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
-    reconstruction_cost = cost_estimate(counter=counter)
+    reconstruction_cost, num_cuts = cost_estimate(counter=counter)
     max_subcircuit_qubit = max([subcircuit.width() for subcircuit in subcircuits])
 
     if verbose:
@@ -511,6 +512,7 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
         'max_subcircuit_qubit':max_subcircuit_qubit,
         'subcircuits':subcircuits,
         'complete_path_map':complete_path_map,
+        'num_cuts':num_cuts,
         'counter':counter}
     return cut_solution
 

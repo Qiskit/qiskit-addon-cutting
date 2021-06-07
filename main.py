@@ -234,7 +234,7 @@ class CutQC:
         #     print(key,circ_dict[key])
         if eval_mode=='sv' or eval_mode=='qasm' or eval_mode=='runtime':
             subcircuit_results = {}
-            for key in list(circ_dict.keys()):
+            for key in circ_dict:
                 circuit_name, subcircuit_result = simulate_subcircuit(key=key,subcircuit_info=circ_dict[key],eval_mode=eval_mode)
                 if circuit_name in subcircuit_results:
                     subcircuit_results[circuit_name].update(subcircuit_result)
@@ -334,7 +334,6 @@ class CutQC:
             if self.verbose:
                 [print(row_format.format(circuit_name,x['summation_term_idx'],str(x['summation_term'])[:30])) for x in summation_terms_sampled[:10]]
                 print('... Total %d summation terms sampled\n'%len(summation_terms_sampled))
-            cut_solution = read_dict(filename='%s/cut_solution.pckl'%source_folder)
             full_circuit = cut_solution['circuit']
             subcircuits = cut_solution['subcircuits']
             complete_path_map = cut_solution['complete_path_map']
@@ -351,12 +350,13 @@ class CutQC:
             TODO: handle the new summation_terms_sampled format
             1. Get rid of repeated summation term computations
             '''
+            _build_begin = time.time()
             num_samples = 1
             child_processes = []
             for rank in range(num_threads):
                 rank_summation_terms = find_process_jobs(jobs=summation_terms_sampled,rank=rank,num_workers=num_threads)
                 build_command = './cutqc/build %d %s %s %d %d %d %d %d'%(
-                    rank,eval_folder,dest_folder,int(2**full_circuit.num_qubits),len(cut_solution['positions']),len(rank_summation_terms),len(subcircuits),num_samples)
+                    rank,eval_folder,dest_folder,int(2**full_circuit.num_qubits),cut_solution['num_cuts'],len(rank_summation_terms),len(subcircuits),num_samples)
                 build_command_file = open('%s/build_command_%d.txt'%(dest_folder,rank),'w')
                 for rank_summation_term in rank_summation_terms:
                     build_command_file.write('%e '%rank_summation_term['sampling_prob'])
@@ -370,6 +370,7 @@ class CutQC:
             for rank in range(num_threads):
                 cp = child_processes[rank]
                 cp.wait()
+            _build_time = time.time()-_build_begin
             
             time.sleep(1)
             elapsed = []
@@ -395,7 +396,7 @@ class CutQC:
                     reconstructed_prob = rank_reconstructed_prob
             elapsed = np.array(elapsed)
             if self.verbose:
-                print('%s _build took %.3e seconds'%(circuit_name,np.mean(elapsed)),flush=True)
+                print('%s _build took %.3e seconds'%(circuit_name,_build_time),flush=True)
                 print('Sampled %d/%d summation terms'%(len(summation_terms_sampled),len(summation_terms)))
             pickle.dump(
                 {'reconstructed_prob':reconstructed_prob,
