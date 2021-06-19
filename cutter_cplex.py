@@ -201,15 +201,15 @@ class MIP_Model(object):
         except (DOcplexException, AttributeError, Exception) as e:
             print('Caught: ' + e.message)
         
-        try:
-            solnpool = self.model.populate_solution_pool()
-        except Exception as ex:
-            print("Exception raised during populate: {0}".format(str(ex)))
-            return
-        if not solnpool:
-            print("Model fails to solve, no pool generated")
+        # try:
+        #     solnpool = self.model.populate_solution_pool()
+        # except Exception as ex:
+        #     print("Exception raised during populate: {0}".format(str(ex)))
+        #     return
+        # if not solnpool:
+        #     print("Model fails to solve, no pool generated")
 
-        mysolcount = solnpool.size()
+        mysolcount = 1
         if mysolcount > 0:
             my_solve_details = self.model.solve_details
             self.objective = None
