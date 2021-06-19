@@ -195,7 +195,7 @@ class MIP_Model(object):
             # self.model.Params.cutoff = min_postprocessing_cost
             # self.model.optimize()
             self.model.set_time_limit(300)
-            self.model.mip.tolerances.uppercutoff(min_postprocessing_cost)
+            self.model.parameters.mip.tolerances.uppercutoff(min_postprocessing_cost)
             self.model.solve()
             
         except (DOcplexException, AttributeError, Exception) as e:
