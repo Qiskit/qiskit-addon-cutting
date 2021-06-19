@@ -41,7 +41,7 @@ class MIP_Model(object):
             subcircuit_y = []
             for j in range(self.n_vertices):
                 # j_in_i = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
-                varName = "bin_sc_" +str(i)+ "vx_"+str(j)
+                varName = "bin_sc_" +str(i)+ "_vx_"+str(j)
                 loc_var = self.model.binary_var(name=varName)
                 subcircuit_y.append(loc_var)
             self.vertex_var.append(subcircuit_y)
@@ -52,7 +52,7 @@ class MIP_Model(object):
             subcircuit_x = []
             for j in range(self.n_edges):
                 # v = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
-                varName = "bin_sc_" +str(i)+ "edg_"+str(j)
+                varName = "bin_sc_" +str(i)+ "_edg_"+str(j)
                 loc_var = self.model.binary_var(name=varName)
                 subcircuit_x.append(loc_var)
             self.edge_var.append(subcircuit_x)
