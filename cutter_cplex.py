@@ -217,7 +217,7 @@ class MIP_Model(object):
             # self.optimal = (self.model.Status == gp.GRB.OPTIMAL)
             self.optimal = (self.model.get_solve_status() == "optimal")
             # self.runtime = self.model.Runtime
-            self.runtime = my_solve_details.time()
+            self.runtime = my_solve_details.time
             # self.node_count = self.model.nodecount
             self.node_count = my_solve_details.nb_nodes_processed()
             # self.mip_gap = self.model.mipgap
