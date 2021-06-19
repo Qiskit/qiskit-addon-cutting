@@ -219,9 +219,9 @@ class MIP_Model(object):
             # self.runtime = self.model.Runtime
             self.runtime = my_solve_details.time
             # self.node_count = self.model.nodecount
-            self.node_count = my_solve_details.nb_nodes_processed()
+            self.node_count = my_solve_details.nb_nodes_processed
             # self.mip_gap = self.model.mipgap
-            self.mip_gap = my_solve_details.mip_relative_gap()
+            self.mip_gap = my_solve_details.mip_relative_gap
             # self.objective = self.model.ObjVal
             self.objective = self.model.objective_value
 
