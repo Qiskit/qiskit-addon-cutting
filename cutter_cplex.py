@@ -41,7 +41,7 @@ class MIP_Model(object):
             subcircuit_y = []
             for j in range(self.n_vertices):
                 # j_in_i = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
-                varName = "bin_sc_" +str(i)+ "_vx_"+str(j)
+                varName = 'bin_sc_' +str(i)+ '_vx_'+str(j)
                 loc_var = self.model.binary_var(name=varName)
                 subcircuit_y.append(loc_var)
             self.vertex_var.append(subcircuit_y)
@@ -52,14 +52,14 @@ class MIP_Model(object):
             subcircuit_x = []
             for j in range(self.n_edges):
                 # v = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
-                varName = "bin_sc_" +str(i)+ "_edg_"+str(j)
+                varName = 'bin_sc_' +str(i)+ '_edg_'+str(j)
                 loc_var = self.model.binary_var(name=varName)
                 subcircuit_x.append(loc_var)
             self.edge_var.append(subcircuit_x)
         
         # constraint: each vertex in exactly one subcircuit
         for v in range(self.n_vertices):
-            ctName = "cons_vertex_"+str(v)
+            ctName = 'cons_vertex_'+str(v)
             self.model.add_constraint(self.model.sum(self.vertex_var[i][v] for i in range(num_subcircuit)) == 1, ctname=ctName)
             # self.model.addConstr(gp.quicksum([self.vertex_var[i][v] for i in range(num_subcircuit)]), gp.GRB.EQUAL, 1)
         
@@ -70,31 +70,31 @@ class MIP_Model(object):
                 u, v = self.edges[e]
                 u_vertex_var = self.vertex_var[i][u]
                 v_vertex_var = self.vertex_var[i][v]
-                ctName = "cons_edge_"+str(e)
+                ctName = 'cons_edge_'+str(e)
                 # self.model.addConstr(self.edge_var[i][e] <= u_vertex_var+v_vertex_var)
-                self.model.add_constraint(self.edge_var[i][e] -u_vertex_var-v_vertex_var <= 0, ctname=ctName+"_1")
+                self.model.add_constraint(self.edge_var[i][e] -u_vertex_var-v_vertex_var <= 0, ctname=ctName+'_1')
                 # self.model.addConstr(self.edge_var[i][e] >= u_vertex_var-v_vertex_var)
-                self.model.add_constraint(self.edge_var[i][e] - u_vertex_var+v_vertex_var >= 0, ctname=ctName+"_2")
+                self.model.add_constraint(self.edge_var[i][e] - u_vertex_var+v_vertex_var >= 0, ctname=ctName+'_2')
                 # self.model.addConstr(self.edge_var[i][e] >= v_vertex_var-u_vertex_var)
-                self.model.add_constraint(self.edge_var[i][e] - v_vertex_var+u_vertex_var >= 0, ctname=ctName+"_3")
+                self.model.add_constraint(self.edge_var[i][e] - v_vertex_var+u_vertex_var >= 0, ctname=ctName+'_3')
                 # self.model.addConstr(self.edge_var[i][e] <= 2-u_vertex_var-v_vertex_var)
-                self.model.add_constraint(self.edge_var[i][e]+u_vertex_var+v_vertex_var <= 2, ctname=ctName+"_4")
+                self.model.add_constraint(self.edge_var[i][e]+u_vertex_var+v_vertex_var <= 2, ctname=ctName+'_4')
 
         # Better (but not best) symmetry-breaking constraints
         #   Force small-numbered vertices into small-numbered subcircuits:
-        #     v0: in subcircuit 0
-        #     v1: in c0 or c1
-        #     v2: in c0 or c1 or c2
+        #     v0: in subcircuit_0
+        #     v1: in subcircuit_0 or subcircuit_1
+        #     v2: in subcircuit_0 or subcircuit_1 or subcircuit_2
         #     ....
         for vertex in range(num_subcircuit):
-            ctName = "cons_symm_"+str(vertex)
-            self.model.add_constraint(self.model.sum(self.vertex_var[subcircuit][vertex] for subcircuit in range(vertex+1,num_subcircuit)) == 0, ctname=ctName)
+            ctName = 'cons_symm_'+str(vertex)
+            self.model.add_constraint(self.model.sum(self.vertex_var[subcircuit][vertex] for subcircuit in range(vertex+1)) == 1, ctname=ctName)
             # self.model.addConstr(gp.quicksum([self.vertex_var[subcircuit][vertex] for subcircuit in range(vertex+1,num_subcircuit)]) == 0)
         
         # NOTE: add 0.1 for numerical stability
         # self.num_cuts = self.model.addVar(lb=0, ub=self.max_cuts+0.1, vtype=gp.GRB.INTEGER, name='num_cuts')
         self.num_cuts = self.model.integer_var(lb=0, ub=self.max_cuts+0.1,name='int_num_cuts')
-        ctName = "cons_num_cuts"
+        ctName = 'cons_num_cuts'
         self.model.add_constraint(2*self.num_cuts - self.model.sum(self.edge_var[subcircuit][i] for i in range(self.n_edges) for subcircuit in range(num_subcircuit)) == 0, ctname=ctName)
         # self.model.addConstr(self.num_cuts == 
         # gp.quicksum(
@@ -103,30 +103,44 @@ class MIP_Model(object):
         
         num_effective_qubits = []
         for subcircuit in range(num_subcircuit):
-            varName = "int_subcircuit_input_"+str(subcircuit)
+            varName = 'int_subcircuit_input_'+str(subcircuit)
             subcircuit_original_qubit = self.model.integer_var(lb=0, ub=self.max_subcircuit_qubit,name=varName)
             # subcircuit_original_qubit = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_input_%d'%subcircuit)
             
-            ctName = "cons_subcircuit_input_"+str(subcircuit)
-            self.model.add_constraint(subcircuit_original_qubit - self.model.sum(self.vertex_weight[id_vertices[i]]*self.vertex_var[subcircuit][i] for i in range(self.n_vertices)) == 0, ctname=ctName)
+            ctName = 'cons_subcircuit_input_'+str(subcircuit)
+            self.model.add_constraint(subcircuit_original_qubit - self.model.sum(self.vertex_weight[id_vertices[i]] * self.vertex_var[subcircuit][i] for i in range(self.n_vertices)) == 0, ctname=ctName)
             # self.model.addConstr(subcircuit_original_qubit ==
             # gp.quicksum([self.vertex_weight[id_vertices[i]]*self.vertex_var[subcircuit][i]
             # for i in range(self.n_vertices)]))
             
-            varName = "int_subcircuit_rho_qubits_" + str(subcircuit)
+            varName = 'int_subcircuit_rho_qubits_' + str(subcircuit)
             subcircuit_rho_qubits = self.model.integer_var(lb=0, ub=self.max_subcircuit_qubit,name=varName)
             # subcircuit_rho_qubits = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_rho_qubits_%d'%subcircuit)
-            ctName = "cons_subcircuit_rho_qubits_"+str(subcircuit)
-            self.model.add_constraint(subcircuit_rho_qubits - self.model.sum(self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][1]] for i in range(self.n_edges)) == 0, ctname=ctName)
+            edge_var_downstream_vertex_var_products = []
+            for i in range(self.n_edges):
+                varName = 'bin_edge_var_downstream_vertex_var_product_%d_%d'%(subcircuit,i)
+                edge_var_downstream_vertex_var_product = self.model.binary_var(name=varName)
+                edge_var_downstream_vertex_var_products.append(edge_var_downstream_vertex_var_product)
+                ctName = 'cons_edge_var_downstream_vertex_var_%d_%d'%(subcircuit,i)
+                self.model.add_constraint(edge_var_downstream_vertex_var_product == self.edge_var[subcircuit][i] & self.vertex_var[subcircuit][self.edges[i][1]])
+            ctName = 'cons_subcircuit_rho_qubits_'+str(subcircuit)
+            self.model.add_constraint(subcircuit_rho_qubits - self.model.sum(edge_var_downstream_vertex_var_products) == 0, ctname=ctName)
             # self.model.addConstr(subcircuit_rho_qubits ==
             # gp.quicksum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][1]]
             # for i in range(self.n_edges)]))
             
-            varName = "int_subcircuit_O_qubits_"+str(subcircuit)
+            varName = 'int_subcircuit_O_qubits_'+str(subcircuit)
             subcircuit_O_qubits=self.model.integer_var(lb=0, ub=self.max_subcircuit_qubit,name=varName)
             # subcircuit_O_qubits = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_O_qubits_%d'%subcircuit)
-            ctName = "cons_subcircuit_0_qubits_"+str(subcircuit)
-            self.model.add_constraint(subcircuit_O_qubits - self.model.sum(self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][0]] for i in range(self.n_edges)) == 0, ctname=ctName)
+            edge_var_upstream_vertex_var_products = []
+            for i in range(self.n_edges):
+                varName = 'bin_edge_var_upstream_vertex_var_product_%d_%d'%(subcircuit,i)
+                edge_var_upstream_vertex_var_product = self.model.binary_var(name=varName)
+                edge_var_upstream_vertex_var_products.append(edge_var_upstream_vertex_var_product)
+                ctName = 'cons_edge_var_upstream_vertex_var_%d_%d'%(subcircuit,i)
+                self.model.add_constraint(edge_var_upstream_vertex_var_product == self.edge_var[subcircuit][i] & self.vertex_var[subcircuit][self.edges[i][0]])
+            ctName = 'cons_subcircuit_0_qubits_'+str(subcircuit)
+            self.model.add_constraint(subcircuit_O_qubits - self.model.sum(edge_var_upstream_vertex_var_products) == 0, ctname=ctName)
             # self.model.addConstr(subcircuit_O_qubits ==
             # gp.quicksum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][0]]
             # for i in range(self.n_edges)]))

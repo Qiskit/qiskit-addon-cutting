@@ -102,20 +102,28 @@ class MIP_Model(object):
             subcircuit_d = self.model.addVar(lb=0.1, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_d_%d'%subcircuit)
             self.model.addConstr(subcircuit_d == subcircuit_original_qubit + subcircuit_rho_qubits)
 
-            # subcircuit_size = self.model.addVar(lb=0.1, ub=int(self.n_vertices/2), vtype=GRB.INTEGER, name='subcircuit_size_%d'%subcircuit)
-            # self.model.addConstr(subcircuit_size == quicksum([self.vertex_var[subcircuit][v] for v in range(self.n_vertices)]))
+            # subcircuit_size = self.model.addVar(lb=0.1, ub=int(self.n_vertices/2), vtype=gp.GRB.CONTINUOUS, name='subcircuit_size_%d'%subcircuit)
+            # self.model.addConstr(subcircuit_size == gp.quicksum([self.vertex_var[subcircuit][v] for v in range(self.n_vertices)]))
 
             num_effective_qubits.append(subcircuit_d-subcircuit_O_qubits)
             
-            if subcircuit>0:
-                lb = 0
-                ub = self.num_qubits+2*20
-                ptx, ptf = self.pwl_exp(lb=lb,ub=ub,base=2,integer_only=True)
-                build_cost_exponent = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.INTEGER, name='build_cost_exponent_%d'%subcircuit)
-                self.model.addConstr(build_cost_exponent == gp.quicksum(num_effective_qubits)+2*self.num_cuts)
+            # if subcircuit>0:
+            #     lb = 0
+            #     ub = self.num_qubits+2*20
+            #     ptx, ptf = self.pwl_exp(lb=lb,ub=ub,base=2,integer_only=True)
+            #     build_cost_exponent = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.INTEGER, name='build_cost_exponent_%d'%subcircuit)
+            #     self.model.addConstr(build_cost_exponent == gp.quicksum(num_effective_qubits)+2*self.num_cuts)
             #     self.model.setPWLObj(build_cost_exponent, ptx, ptf)
+            
+            # Number of subcircuits = 4^rho*3^O = e^{ln(4)*rho + ln(3)*O}
+            lb = 0
+            ub = np.log(4)*self.max_cuts*2
+            ptx, ptf = self.pwl_exp(lb=lb,ub=ub,base=math.e,integer_only=False)
+            num_subcircuit_variations_exponent = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.CONTINUOUS, name='num_subcircuits_exponent_%d'%subcircuit)
+            self.model.addConstr(num_subcircuit_variations_exponent == np.log(4)*subcircuit_rho_qubits+np.log(3)*subcircuit_O_qubits)
+            self.model.setPWLObj(num_subcircuit_variations_exponent, ptx, ptf)
 
-        self.model.setObjective(self.num_cuts,gp.GRB.MINIMIZE)
+        # self.model.setObjective(self.num_cuts,gp.GRB.MINIMIZE)
         self.model.update()
     
     def pwl_exp(self, lb, ub, base, integer_only):
