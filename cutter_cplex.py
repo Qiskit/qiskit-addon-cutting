@@ -202,7 +202,7 @@ class MIP_Model(object):
         # print('solving for %d subcircuits'%self.num_subcircuit)
         # print('model has %d variables, %d linear constraints,%d quadratic constraints, %d general constraints'
         # % (self.model.NumVars,self.model.NumConstrs, self.model.NumQConstrs, self.model.NumGenConstrs))
-        print('Exporting as a LP file to let you check the model that will be solved : ', min_postprocessing_cost)
+        print('Exporting as a LP file to let you check the model that will be solved : ', min_postprocessing_cost, str(type(min_postprocessing_cost)))
         self.model.export_as_lp(path = "./docplex_cutter.lp")
         try:
             # self.model.Params.TimeLimit = 300
