@@ -112,8 +112,11 @@ class CutQC:
             reconstructed_prob = build_output['reconstructed_prob']
             eval_mode = build_output['eval_mode']
             
-            squared_error = verify(full_circuit=circuit,unordered=reconstructed_prob,complete_path_map=complete_path_map,subcircuits=subcircuits,smart_order=smart_order)
-            print(row_format.format(circuit_name,eval_mode,'%.1e'%squared_error),flush=True)
+            # squared_error = verify(full_circuit=circuit,unordered=reconstructed_prob,complete_path_map=complete_path_map,subcircuits=subcircuits,smart_order=smart_order)
+            # print(row_format.format(circuit_name,eval_mode,'%.1e'%squared_error),flush=True)
+            reconstructed_output, mse, mape = verify(full_circuit=circuit,unordered=reconstructed_prob,complete_path_map=complete_path_map,subcircuits=subcircuits,smart_order=smart_order)
+            print(row_format.format(circuit_name,eval_mode,'MSE = %.3e, MAPE = %.3e'%(mse,mape)),flush=True)
+            np.save(file='%s/reconstructed_probability.npy'%dest_folder,arr=reconstructed_output)
     
     def _generate_subcircuits(self,source_folder,cut_solution):
         '''
