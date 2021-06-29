@@ -210,7 +210,8 @@ class MIP_Model(object):
             # self.model.optimize()
             self.model.set_time_limit(300)
             self.model.parameters.mip.tolerances.uppercutoff(min_postprocessing_cost)
-            self.model.solve()
+            self.model.solve(verbose=True)
+            print("MY OBJECTIVE : ", self.model.objective_value )
             
         except (DOcplexException, AttributeError, Exception) as e:
             print('Caught: ' + e.message)
