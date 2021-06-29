@@ -209,7 +209,8 @@ class MIP_Model(object):
             # self.model.Params.cutoff = min_postprocessing_cost
             # self.model.optimize()
             self.model.set_time_limit(300)
-            self.model.parameters.mip.tolerances.uppercutoff(min_postprocessing_cost)
+            if (min_postprocessing_cost != float('inf')):
+                self.model.parameters.mip.tolerances.uppercutoff(min_postprocessing_cost)
             self.model.solve(log_output=True)
             print("MY OBJECTIVE : ", self.model.objective_value )
             
@@ -238,7 +239,7 @@ class MIP_Model(object):
             # self.mip_gap = self.model.mipgap
             self.mip_gap = my_solve_details.mip_relative_gap
             # self.objective = self.model.ObjVal
-            #self.objective = self.model.objective_value
+            self.objective = self.model.objective_value
 
             for i in range(self.num_subcircuit):
                 subcircuit = []
