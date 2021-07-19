@@ -249,7 +249,6 @@ class MIP_Model(object):
             self.cut_edges = cut_edges
             return True
         else:
-            # print('Infeasible')
             return False
 
 def read_circ(circuit):
