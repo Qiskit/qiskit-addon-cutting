@@ -6,7 +6,8 @@ import math
 from qiskit import QuantumCircuit, QuantumRegister
 
 class MIP_Model(object):
-    def __init__(self, n_vertices, edges, vertex_ids, id_vertices, num_subcircuit, max_subcircuit_qubit, num_qubits, max_cuts):
+    def __init__(self, n_vertices, edges, vertex_ids, id_vertices, num_subcircuit,
+    max_subcircuit_width, max_subcircuit_cuts, max_subcircuit_size, num_qubits, max_cuts, quantum_cost_weight):
         self.check_graph(n_vertices, edges)
         self.n_vertices = n_vertices
         self.edges = edges
@@ -14,13 +15,17 @@ class MIP_Model(object):
         self.vertex_ids = vertex_ids
         self.id_vertices = id_vertices
         self.num_subcircuit = num_subcircuit
-        self.max_subcircuit_qubit = max_subcircuit_qubit
+        self.max_subcircuit_width = max_subcircuit_width
+        self.max_subcircuit_cuts = max_subcircuit_cuts
+        self.max_subcircuit_size = max_subcircuit_size
         self.num_qubits = num_qubits
         self.max_cuts = max_cuts
+        self.quantum_cost_weight = quantum_cost_weight
+        assert self.quantum_cost_weight>=0 and self.quantum_cost_weight<=1
 
-        self.model = gp.Model(name='cut_searching')
-        self.model.params.OutputFlag = 0
-
+        '''
+        Count the number of input qubits directly connected to each node
+        '''
         self.vertex_weight = {}
         for node in self.vertex_ids:
             qargs = node.split(' ')
@@ -30,31 +35,78 @@ class MIP_Model(object):
                     num_in_qubits += 1
             self.vertex_weight[node] = num_in_qubits
 
-        # Indicate if a vertex is in some subcircuit
+        self.model = gp.Model(name='cut_searching')
+        self.model.params.OutputFlag = 0
+        self._add_variables()
+        self._add_constraints()
+    
+    def _add_variables(self):
+        '''
+        Indicate if a vertex is in some subcircuit
+        '''
         self.vertex_var = []
-        for i in range(num_subcircuit):
+        for i in range(self.num_subcircuit):
             subcircuit_y = []
             for j in range(self.n_vertices):
                 j_in_i = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
                 subcircuit_y.append(j_in_i)
             self.vertex_var.append(subcircuit_y)
 
-        # Indicate if an edge has one and only one vertex in some subcircuit
+        '''
+        Indicate if an edge has one and only one vertex in some subcircuit
+        '''
         self.edge_var = []
-        for i in range(num_subcircuit):
+        for i in range(self.num_subcircuit):
             subcircuit_x = []
             for j in range(self.n_edges):
                 v = self.model.addVar(lb=0.0, ub=1.0, vtype=gp.GRB.BINARY)
                 subcircuit_x.append(v)
             self.edge_var.append(subcircuit_x)
         
-        # constraint: each vertex in exactly one subcircuit
+        '''
+        Total number of cuts
+        add 0.1 for numerical stability
+        '''
+        self.num_cuts = self.model.addVar(lb=0, ub=self.max_cuts+0.1, vtype=gp.GRB.INTEGER, name='num_cuts')
+
+        self.subcircuit_counter = {}
+        for subcircuit in range(self.num_subcircuit):
+            self.subcircuit_counter[subcircuit] = {}
+
+            self.subcircuit_counter[subcircuit]['original_input'] = self.model.addVar(lb=0, ub=self.max_subcircuit_width, vtype=gp.GRB.INTEGER, name='original_input_%d'%subcircuit)
+            self.subcircuit_counter[subcircuit]['rho'] = self.model.addVar(lb=0, ub=self.max_subcircuit_width, vtype=gp.GRB.INTEGER, name='rho_%d'%subcircuit)
+            self.subcircuit_counter[subcircuit]['O'] = self.model.addVar(lb=0, ub=self.max_subcircuit_width, vtype=gp.GRB.INTEGER, name='O_%d'%subcircuit)
+            self.subcircuit_counter[subcircuit]['d'] = self.model.addVar(lb=0.1, ub=self.max_subcircuit_width, vtype=gp.GRB.INTEGER, name='d_%d'%subcircuit)
+            if self.max_subcircuit_size is not None:
+                self.subcircuit_counter[subcircuit]['size'] = self.model.addVar(lb=0.1, ub=self.max_subcircuit_size, vtype=gp.GRB.INTEGER, name='size_%d'%subcircuit)
+            if self.max_subcircuit_cuts is not None:
+                self.subcircuit_counter[subcircuit]['num_cuts'] = self.model.addVar(lb=0.1, ub=self.max_subcircuit_cuts, vtype=gp.GRB.INTEGER, name='num_cuts_%d'%subcircuit)
+
+            '''
+            Number of subcircuits = 4^rho*3^O = e^{ln(4)*rho + ln(3)*O}
+            '''
+            lb = 0
+            ub = np.log(4)*self.max_cuts*2
+            self.subcircuit_counter[subcircuit]['num_instances_exponent'] = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.CONTINUOUS, name='num_instances_exponent_%d'%subcircuit)
+
+            if subcircuit>0:
+                lb = 0
+                ub = self.num_qubits+2*self.max_cuts+1
+                self.subcircuit_counter[subcircuit]['build_cost_exponent'] = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.INTEGER, name='build_cost_exponent_%d'%subcircuit)
+        self.model.update()
+    
+    def _add_constraints(self):
+        '''
+        each vertex in exactly one subcircuit
+        '''
         for v in range(self.n_vertices):
-            self.model.addConstr(gp.quicksum([self.vertex_var[i][v] for i in range(num_subcircuit)]), gp.GRB.EQUAL, 1)
+            self.model.addConstr(gp.quicksum([self.vertex_var[i][v] for i in range(self.num_subcircuit)]), gp.GRB.EQUAL, 1)
         
-        # constraint: edge_var=1 indicates one and only one vertex of an edge is in subcircuit
-        # edge_var[subcircuit][edge] = vertex_var[subcircuit][u] XOR vertex_var[subcircuit][v]
-        for i in range(num_subcircuit):
+        '''
+        edge_var=1 indicates one and only one vertex of an edge is in subcircuit
+        edge_var[subcircuit][edge] = vertex_var[subcircuit][u] XOR vertex_var[subcircuit][v]
+        '''
+        for i in range(self.num_subcircuit):
             for e in range(self.n_edges):
                 u, v = self.edges[e]
                 u_vertex_var = self.vertex_var[i][u]
@@ -64,77 +116,86 @@ class MIP_Model(object):
                 self.model.addConstr(self.edge_var[i][e] >= v_vertex_var-u_vertex_var)
                 self.model.addConstr(self.edge_var[i][e] <= 2-u_vertex_var-v_vertex_var)
 
-        # Better (but not best) symmetry-breaking constraints
-        #   Force small-numbered vertices into small-numbered subcircuits:
-        #     v0: in subcircuit 0
-        #     v1: in c0 or c1
-        #     v2: in c0 or c1 or c2
-        #     ....
-        for vertex in range(num_subcircuit):
-            self.model.addConstr(gp.quicksum([self.vertex_var[subcircuit][vertex] for subcircuit in range(vertex+1,num_subcircuit)]) == 0)
+        '''
+        Symmetry-breaking constraints
+        Force small-numbered vertices into small-numbered subcircuits:
+            v0: in subcircuit 0
+            v1: in subcircuit_0 or subcircuit_1
+            v2: in subcircuit_0 or subcircuit_1 or subcircuit_2
+            ...
+        '''
+        for vertex in range(self.num_subcircuit):
+            self.model.addConstr(gp.quicksum([self.vertex_var[subcircuit][vertex] for subcircuit in range(vertex+1)]) == 1)
         
-        # NOTE: add 0.1 for numerical stability
-        self.num_cuts = self.model.addVar(lb=0, ub=self.max_cuts+0.1, vtype=gp.GRB.INTEGER, name='num_cuts')
+        '''
+        Compute number of cuts
+        '''
         self.model.addConstr(self.num_cuts == 
         gp.quicksum(
-            [self.edge_var[subcircuit][i] for i in range(self.n_edges) for subcircuit in range(num_subcircuit)]
+            [self.edge_var[subcircuit][i] for i in range(self.n_edges) for subcircuit in range(self.num_subcircuit)]
             )/2)
         
         num_effective_qubits = []
-        for subcircuit in range(num_subcircuit):
-            subcircuit_original_qubit = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_input_%d'%subcircuit)
-            self.model.addConstr(subcircuit_original_qubit ==
-            gp.quicksum([self.vertex_weight[id_vertices[i]]*self.vertex_var[subcircuit][i]
+        for subcircuit in range(self.num_subcircuit):
+            '''
+            Compute number of different types of qubit in a subcircuit
+            '''
+            self.model.addConstr(self.subcircuit_counter[subcircuit]['original_input'] ==
+            gp.quicksum([self.vertex_weight[self.id_vertices[i]]*self.vertex_var[subcircuit][i]
             for i in range(self.n_vertices)]))
             
-            subcircuit_rho_qubits = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_rho_qubits_%d'%subcircuit)
-            self.model.addConstr(subcircuit_rho_qubits ==
+            self.model.addConstr(self.subcircuit_counter[subcircuit]['rho'] ==
             gp.quicksum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][1]]
             for i in range(self.n_edges)]))
 
-            subcircuit_O_qubits = self.model.addVar(lb=0, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_O_qubits_%d'%subcircuit)
-            self.model.addConstr(subcircuit_O_qubits ==
+            self.model.addConstr(self.subcircuit_counter[subcircuit]['O'] ==
             gp.quicksum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][0]]
             for i in range(self.n_edges)]))
 
-            # self.model.addConstr(subcircuit_rho_qubits + subcircuit_O_qubits <= 5)
+            self.model.addConstr(self.subcircuit_counter[subcircuit]['d'] == 
+            self.subcircuit_counter[subcircuit]['original_input'] + self.subcircuit_counter[subcircuit]['rho'])
 
-            subcircuit_d = self.model.addVar(lb=0.1, ub=self.max_subcircuit_qubit, vtype=gp.GRB.INTEGER, name='subcircuit_d_%d'%subcircuit)
-            self.model.addConstr(subcircuit_d == subcircuit_original_qubit + subcircuit_rho_qubits)
+            if self.max_subcircuit_cuts is not None:
+                self.model.addConstr(self.subcircuit_counter[subcircuit]['num_cuts'] == 
+                self.subcircuit_counter[subcircuit]['rho'] + self.subcircuit_counter[subcircuit]['O'])
 
-            # subcircuit_size = self.model.addVar(lb=0.1, ub=int(self.n_vertices/2), vtype=gp.GRB.CONTINUOUS, name='subcircuit_size_%d'%subcircuit)
-            # self.model.addConstr(subcircuit_size == gp.quicksum([self.vertex_var[subcircuit][v] for v in range(self.n_vertices)]))
+            if self.max_subcircuit_size is not None:
+                self.model.addConstr(self.subcircuit_counter[subcircuit]['size'] == 
+                gp.quicksum([self.vertex_var[subcircuit][v] for v in range(self.n_vertices)]))
 
-            num_effective_qubits.append(subcircuit_d-subcircuit_O_qubits)
+            num_effective_qubits.append(self.subcircuit_counter[subcircuit]['d'] - 
+            self.subcircuit_counter[subcircuit]['O'])
             
-            # if subcircuit>0:
-            #     lb = 0
-            #     ub = self.num_qubits+2*20
-            #     ptx, ptf = self.pwl_exp(lb=lb,ub=ub,base=2,integer_only=True)
-            #     build_cost_exponent = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.INTEGER, name='build_cost_exponent_%d'%subcircuit)
-            #     self.model.addConstr(build_cost_exponent == gp.quicksum(num_effective_qubits)+2*self.num_cuts)
-            #     self.model.setPWLObj(build_cost_exponent, ptx, ptf)
+            '''
+            Compute the classical postprocessing cost
+            '''
+            if subcircuit>0:
+                ptx, ptf = self.pwl_exp(lb=int(self.subcircuit_counter[subcircuit]['build_cost_exponent'].lb),
+                ub=int(self.subcircuit_counter[subcircuit]['build_cost_exponent'].ub),
+                base=2,coefficient=1-self.quantum_cost_weight,integer_only=True)
+                self.model.addConstr(self.subcircuit_counter[subcircuit]['build_cost_exponent'] == 
+                gp.quicksum(num_effective_qubits)+2*self.num_cuts)
+                self.model.setPWLObj(self.subcircuit_counter[subcircuit]['build_cost_exponent'], ptx, ptf)
             
-            # Number of subcircuits = 4^rho*3^O = e^{ln(4)*rho + ln(3)*O}
-            lb = 0
-            ub = np.log(4)*self.max_cuts*2
-            ptx, ptf = self.pwl_exp(lb=lb,ub=ub,base=math.e,integer_only=False)
-            num_subcircuit_variations_exponent = self.model.addVar(lb=lb, ub=ub, vtype=gp.GRB.CONTINUOUS, name='num_subcircuits_exponent_%d'%subcircuit)
-            self.model.addConstr(num_subcircuit_variations_exponent == np.log(4)*subcircuit_rho_qubits+np.log(3)*subcircuit_O_qubits)
-            self.model.setPWLObj(num_subcircuit_variations_exponent, ptx, ptf)
+            self.model.addConstr(self.subcircuit_counter[subcircuit]['num_instances_exponent'] == 
+            np.log(4)*self.subcircuit_counter[subcircuit]['rho'] + np.log(3)*self.subcircuit_counter[subcircuit]['O'])
+            ptx, ptf = self.pwl_exp(lb=self.subcircuit_counter[subcircuit]['num_instances_exponent'].lb,
+            ub=self.subcircuit_counter[subcircuit]['num_instances_exponent'].ub,
+            base=math.e,coefficient=self.quantum_cost_weight,integer_only=False)
+            self.model.setPWLObj(self.subcircuit_counter[subcircuit]['num_instances_exponent'], ptx, ptf)
 
         # self.model.setObjective(self.num_cuts,gp.GRB.MINIMIZE)
         self.model.update()
     
-    def pwl_exp(self, lb, ub, base, integer_only):
-        # Piecewise linear approximation of base**x
+    def pwl_exp(self, lb, ub, base, coefficient, integer_only):
+        # Piecewise linear approximation of coefficient*base**x
         ptx = []
         ptf = []
 
         x_range = range(lb,ub+1) if integer_only else np.linspace(lb,ub,200)
         # print('x_range : {}, integer_only : {}'.format(x_range,integer_only))
         for x in x_range:
-            y = base**x
+            y = coefficient*base**x
             ptx.append(x)
             ptf.append(y)
         return ptx, ptf
@@ -149,13 +210,13 @@ class MIP_Model(object):
             assert(u < v)
             assert(u < n_vertices)
     
-    def solve(self,min_postprocessing_cost):
+    def solve(self,model_cutoff):
         # print('solving for %d subcircuits'%self.num_subcircuit)
         # print('model has %d variables, %d linear constraints,%d quadratic constraints, %d general constraints'
         # % (self.model.NumVars,self.model.NumConstrs, self.model.NumQConstrs, self.model.NumGenConstrs))
         try:
             self.model.Params.TimeLimit = 300
-            self.model.Params.cutoff = min_postprocessing_cost
+            self.model.Params.cutoff = model_cutoff
             self.model.optimize()
         except (gp.GurobiError, AttributeError, Exception) as e:
             print('Caught: ' + e.message)
@@ -386,14 +447,18 @@ def cost_estimate(counter):
     num_cuts = sum([counter[subcircuit_idx]['rho'] for subcircuit_idx in counter])
     subcircuit_indices = list(counter.keys())
     num_effective_qubits = [counter[subcircuit_idx]['effective'] for subcircuit_idx in subcircuit_indices]
-    num_effective_qubits, smart_order = zip(*sorted(zip(num_effective_qubits, subcircuit_indices)))
-    reconstruction_cost = 0
+    num_effective_qubits, _ = zip(*sorted(zip(num_effective_qubits, subcircuit_indices)))
+    classical_cost = 0
     accumulated_kron_len = 2**num_effective_qubits[0]
     for effective in num_effective_qubits[1:]:
         accumulated_kron_len *= 2**effective
-        reconstruction_cost += accumulated_kron_len
-    reconstruction_cost *= 4**num_cuts
-    return reconstruction_cost, num_cuts
+        classical_cost += accumulated_kron_len
+    classical_cost *= 4**num_cuts
+
+    num_subcircuit_instances = 0
+    for subcircuit_idx in counter:
+        num_subcircuit_instances += 4**counter[subcircuit_idx]['rho'] * 3**counter[subcircuit_idx]['O']
+    return num_subcircuit_instances, classical_cost
 
 def get_pairs(complete_path_map):
     O_rho_pairs = []
@@ -419,37 +484,41 @@ def get_counter(subcircuits, O_rho_pairs):
         counter[rho_qubit['subcircuit_idx']]['rho'] += 1
     return counter
 
-def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose):
+def find_cuts(circuit,
+max_subcircuit_width,
+max_cuts, num_subcircuits, max_subcircuit_cuts, max_subcircuit_size, quantum_cost_weight,
+verbose):
     stripped_circ = circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = read_circ(circuit=stripped_circ)
     num_qubits = circuit.num_qubits
     cut_solution = {}
-    min_postprocessing_cost = float('inf')
+    min_cost = float('inf')
     
     best_mip_model = None
     for num_subcircuit in num_subcircuits:
-        if num_subcircuit*max_subcircuit_qubit-(num_subcircuit-1)<num_qubits \
+        if num_subcircuit*max_subcircuit_width-(num_subcircuit-1)<num_qubits \
             or num_subcircuit>num_qubits \
             or max_cuts+1<num_subcircuit:
             if verbose:
-                print('%d-qubit circuit, %d subcircuits, max size %d, max cuts %d: IMPOSSIBLE'%(
-                    num_qubits,num_subcircuit,max_subcircuit_qubit,max_cuts))
+                print('%d subcircuits : IMPOSSIBLE'%(num_subcircuit))
             continue
         kwargs = dict(n_vertices=n_vertices,
                     edges=edges,
                     vertex_ids=vertex_ids,
                     id_vertices=id_vertices,
                     num_subcircuit=num_subcircuit,
-                    max_subcircuit_qubit=max_subcircuit_qubit,
+                    max_subcircuit_width=max_subcircuit_width,
+                    max_subcircuit_cuts=max_subcircuit_cuts,
+                    max_subcircuit_size=max_subcircuit_size,
                     num_qubits=num_qubits,
-                    max_cuts=max_cuts)
+                    max_cuts=max_cuts,
+                    quantum_cost_weight=quantum_cost_weight)
 
         mip_model = MIP_Model(**kwargs)
-        feasible = mip_model.solve(min_postprocessing_cost)
+        feasible = mip_model.solve(model_cutoff=min_cost)
         if not feasible:
             if verbose:
-                print('%d-qubit circuit, %d subcircuits, max size %d, max cuts %d: NO SOLUTIONS'%(
-                    num_qubits,num_subcircuit,max_subcircuit_qubit,max_cuts))
+                print('%d subcircuits : NO SOLUTIONS'%(num_subcircuit))
             continue
         else:
             min_objective = mip_model.objective
@@ -458,34 +527,38 @@ def find_cuts(circuit, max_subcircuit_qubit, max_cuts, num_subcircuits, verbose)
             O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
             counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
 
-            reconstruction_cost, num_cuts = cost_estimate(counter=counter)
-            assert num_cuts==len(positions)
+            quantum_cost, classical_cost = cost_estimate(counter=counter)
+            cost = (1-quantum_cost_weight)*classical_cost + quantum_cost_weight*quantum_cost
 
-            if reconstruction_cost < min_postprocessing_cost:
-                min_postprocessing_cost = reconstruction_cost
+            if cost < min_cost:
+                min_cost = cost
                 best_mip_model = mip_model
                 cut_solution = {
-                'circuit':circuit,
-                'max_subcircuit_qubit':max_subcircuit_qubit,
+                'max_subcircuit_width':max_subcircuit_width,
                 'subcircuits':subcircuits,
                 'complete_path_map':complete_path_map,
-                'num_cuts':num_cuts,
-                'counter':counter}
+                'num_cuts':len(positions),
+                'counter':counter,
+                'classical_cost':classical_cost,
+                'quantum_cost':quantum_cost}
     if verbose and len(cut_solution)>0:
         print('-'*20)
         print_cutter_result(num_subcircuit=len(cut_solution['subcircuits']),
-        num_cuts=len(best_mip_model.cut_edges),
+        num_cuts=cut_solution['num_cuts'],
         subcircuits=cut_solution['subcircuits'],
-        counter=cut_solution['counter'], reconstruction_cost=min_postprocessing_cost)
+        counter=cut_solution['counter'],
+        classical_cost=cut_solution['classical_cost'],
+        quantum_cost=cut_solution['quantum_cost'],
+        quantum_cost_weight=quantum_cost_weight)
 
-        print('Model objective value = %.2e'%(best_mip_model.objective))
-        print('MIP runtime:', best_mip_model.runtime)
+        print('Model objective value = %.2e'%(best_mip_model.objective),flush=True)
+        print('MIP runtime:', best_mip_model.runtime,flush=True)
 
         if (best_mip_model.optimal):
-            print('OPTIMAL, MIP gap =',best_mip_model.mip_gap)
+            print('OPTIMAL, MIP gap =',best_mip_model.mip_gap,flush=True)
         else:
-            print('NOT OPTIMAL, MIP gap =',best_mip_model.mip_gap)
-        print('-'*20)
+            print('NOT OPTIMAL, MIP gap =',best_mip_model.mip_gap,flush=True)
+        print('-'*20,flush=True)
     return cut_solution
 
 def cut_circuit(circuit, subcircuit_vertices, verbose):
@@ -504,27 +577,31 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
     subcircuits, complete_path_map = subcircuits_parser(subcircuit_gates=subcircuits, circuit=circuit)
     O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
     counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
-    reconstruction_cost, num_cuts = cost_estimate(counter=counter)
-    max_subcircuit_qubit = max([subcircuit.width() for subcircuit in subcircuits])
+    quantum_cost, classical_cost = cost_estimate(counter=counter)
+    max_subcircuit_width = max([subcircuit.width() for subcircuit in subcircuits])
+
+    cut_solution = {
+        'max_subcircuit_width':max_subcircuit_width,
+        'subcircuits':subcircuits,
+        'complete_path_map':complete_path_map,
+        'num_cuts':len(O_rho_pairs),
+        'counter':counter,
+        'classical_cost':classical_cost,
+        'quantum_cost':quantum_cost}
 
     if verbose:
         print('-'*20)
-        print_cutter_result(num_subcircuit=len(subcircuit_vertices),
-        num_cuts=len(O_rho_pairs),
-        subcircuits=subcircuits,
-        counter=counter, reconstruction_cost=reconstruction_cost)
+        print_cutter_result(num_subcircuit=len(cut_solution['subcircuits']),
+        num_cuts=cut_solution['num_cuts'],
+        subcircuits=cut_solution['subcircuits'],
+        counter=cut_solution['counter'],
+        classical_cost=cut_solution['classical_cost'],
+        quantum_cost=cut_solution['quantum_cost'],
+        quantum_cost_weight=0.5)
         print('-'*20)
-
-    cut_solution = {
-        'circuit':circuit,
-        'max_subcircuit_qubit':max_subcircuit_qubit,
-        'subcircuits':subcircuits,
-        'complete_path_map':complete_path_map,
-        'num_cuts':num_cuts,
-        'counter':counter}
     return cut_solution
 
-def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, reconstruction_cost):
+def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, classical_cost, quantum_cost, quantum_cost_weight):
     print('Cutter result:')
     print('%d subcircuits, %d cuts'%(num_subcircuit,num_cuts))
 
@@ -538,4 +615,6 @@ def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, reconstr
         counter[subcircuit_idx]['depth'],
         counter[subcircuit_idx]['size']))
         print(subcircuits[subcircuit_idx])
-    print('Estimated postprocessing cost = %.3e'%reconstruction_cost,flush=True)
+    print('Classical cost = %.3e. Quantum cost = %.3e. quantum_cost_weight = %.3f'%(classical_cost,quantum_cost,quantum_cost_weight))
+    cost = (1-quantum_cost_weight)*classical_cost + quantum_cost_weight*quantum_cost
+    print('Estimated cost = %.3e'%cost,flush=True)

@@ -6,66 +6,29 @@ from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 
 from qiskit_helper_functions.non_ibmq_functions import read_dict, find_process_jobs, evaluate_circ
 
-def generate_subcircuit_instances(subcircuits,complete_path_map):
+def run_subcircuit_instances(subcircuits,subcircuit_instances,eval_mode,num_shots_fn):
     '''
-    Generate subcircuit instances with different init, meas
-    subcircuit_instances[subcircuit_idx][subcircuit_instance_idx] = circuit, init, meas, shots
-    subcircuit_instances_idx[subcircuit_idx][init,meas] = subcircuit_instance_idx
+    subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
     '''
-    subcircuit_instances = {}
-    subcircuit_instances_idx = {}
-    for subcircuit_idx, subcircuit in enumerate(subcircuits):
-        O_qubits, rho_qubits = find_subcircuit_O_rho_qubits(complete_path_map=complete_path_map,subcircuit_idx=subcircuit_idx)
-        combinations = find_init_meas_combinations(O_qubits=O_qubits, rho_qubits=rho_qubits, qubits=subcircuit.qubits)
-        subcircuit_instances[subcircuit_idx], subcircuit_instances_idx[subcircuit_idx] = get_one_subcircuit_instances(subcircuit=subcircuit, combinations=combinations)
-    return subcircuit_instances, subcircuit_instances_idx
-
-def find_subcircuit_O_rho_qubits(complete_path_map,subcircuit_idx):
-    '''
-    Find the O and Rho qubits of a subcircuit
-    '''
-    O_qubits = []
-    rho_qubits = []
-    for input_qubit in complete_path_map:
-        path = complete_path_map[input_qubit]
-        if len(path)>1:
-            for q in path[:-1]:
-                if q['subcircuit_idx'] == subcircuit_idx:
-                    O_qubits.append(q)
-            for q in path[1:]:
-                if q['subcircuit_idx'] == subcircuit_idx:
-                    rho_qubits.append(q)
-    return O_qubits, rho_qubits
-
-def find_init_meas_combinations(O_qubits, rho_qubits, qubits):
-    '''
-    Find combinations of init, meas
-    for a particular circuit
-    '''
-    measurement_basis = ['I','X','Y']
-    init_states = ['zero','one','plus','plusI']
-    # print('\u03C1 qubits :',rho_qubits)
-    all_inits = itertools.product(init_states,repeat=len(rho_qubits))
-    complete_inits = []
-    for init in all_inits:
-        complete_init = ['zero' for i in range(len(qubits))]
-        for i in range(len(init)):
-            complete_init[qubits.index(rho_qubits[i]['subcircuit_qubit'])] = init[i]
-        complete_inits.append(complete_init)
-    # print('initializations:',complete_inits)
-
-    # print('O qubits:',O_qubits)
-    all_meas = itertools.product(measurement_basis,repeat=len(O_qubits))
-    complete_meas = []
-    for meas in all_meas:
-        complete_m = ['comp' for i in range(len(qubits))]
-        for i in range(len(meas)):
-            complete_m[qubits.index(O_qubits[i]['subcircuit_qubit'])] = meas[i]
-        complete_meas.append(complete_m)
-    # print('measurement basis:',complete_meas)
-
-    combinations = list(itertools.product(complete_inits,complete_meas))
-    return combinations
+    subcircuit_instance_probs = {}
+    for subcircuit_idx in subcircuit_instances:
+        subcircuit_instance_probs[subcircuit_idx] = {}
+        num_shots = num_shots_fn(subcircuits[subcircuit_idx])
+        for init_meas in subcircuit_instances[subcircuit_idx]:
+            subcircuit_instance_idx = subcircuit_instances[subcircuit_idx][init_meas]
+            if subcircuit_instance_idx not in subcircuit_instance_probs[subcircuit_idx]:
+                # print('Subcircuit %d instance %d'%(subcircuit_idx,subcircuit_instance_idx))
+                subcircuit_instance = modify_subcircuit_instance(
+                    subcircuit=subcircuits[subcircuit_idx],
+                    init=init_meas[0],meas=init_meas[1])
+                subcircuit_inst_prob = simulate_subcircuit(subcircuit=subcircuit_instance,eval_mode=eval_mode,num_shots=num_shots)
+                mutated_meas = mutate_measurement_basis(meas=init_meas[1])
+                for meas in mutated_meas:
+                    measured_prob = measure_prob(unmeasured_prob=subcircuit_inst_prob,meas=meas)
+                    mutated_subcircuit_instance_idx = subcircuit_instances[subcircuit_idx][(init_meas[0],meas)]
+                    subcircuit_instance_probs[subcircuit_idx][mutated_subcircuit_instance_idx] = measured_prob
+                    # print('Measured instance %d'%mutated_subcircuit_instance_idx)
+    return subcircuit_instance_probs
 
 def mutate_measurement_basis(meas):
     '''
@@ -83,98 +46,60 @@ def mutate_measurement_basis(meas):
         mutated_meas = list(itertools.product(*mutated_meas))
         return mutated_meas
 
-def get_one_subcircuit_instances(subcircuit, combinations):
+def modify_subcircuit_instance(subcircuit, init, meas):
     '''
     Modify the different init, meas for a given subcircuit
     Returns:
-    subcircuit_instances[subcircuit_instance_idx] = circuit, init, meas, shots
-    subcircuit_instances_idx[init,meas] = subcircuit_instance_idx
+    Modified subcircuit_instance
+    List of mutated measurements
     '''
-    subcircuit_instances = {}
-    subcircuit_instances_idx = {}
-    for combination_ctr, combination in enumerate(combinations):
-        # print('combination %d/%d :'%(combination_ctr+1,len(combinations)),combination)
-        subcircuit_dag = circuit_to_dag(subcircuit)
-        inits, meas = combination
-        for i,x in enumerate(inits):
-            q = subcircuit.qubits[i]
-            if x == 'zero':
-                continue
-            elif x == 'one':
-                subcircuit_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
-            elif x == 'plus':
-                subcircuit_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
-            elif x == 'minus':
-                subcircuit_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
-                subcircuit_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
-            elif x == 'plusI':
-                subcircuit_dag.apply_operation_front(op=SGate(),qargs=[q],cargs=[])
-                subcircuit_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
-            elif x == 'minusI':
-                subcircuit_dag.apply_operation_front(op=SGate(),qargs=[q],cargs=[])
-                subcircuit_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
-                subcircuit_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
-            else:
-                raise Exception('Illegal initialization : ',x)
-        for i,x in enumerate(meas):
-            q = subcircuit.qubits[i]
-            if x == 'I' or x == 'comp':
-                continue
-            elif x == 'X':
-                subcircuit_dag.apply_operation_back(op=HGate(),qargs=[q],cargs=[])
-            elif x == 'Y':
-                subcircuit_dag.apply_operation_back(op=SdgGate(),qargs=[q],cargs=[])
-                subcircuit_dag.apply_operation_back(op=HGate(),qargs=[q],cargs=[])
-            else:
-                raise Exception('Illegal measurement basis:',x)
-        subcircuit_inst = dag_to_circuit(subcircuit_dag)
-        num_shots = max(8192,int(2**subcircuit_inst.num_qubits))
-        num_shots = min(8192*10,num_shots)
-        mutated_meas = mutate_measurement_basis(meas)
-        for idx, meas in enumerate(mutated_meas):
-            subcircuit_instance_idx = len(subcircuit_instances)
-            if idx==0:
-                parent_subcircuit_instance_idx = subcircuit_instance_idx
-                shots = num_shots
-            else:
-                shots = 0
-            subcircuit_instances[subcircuit_instance_idx] = {'circuit':subcircuit_inst, 'init':tuple(inits), 'meas':tuple(meas),'shots':shots,'parent':parent_subcircuit_instance_idx}
-            subcircuit_instances_idx[(tuple(inits),tuple(meas))] = subcircuit_instance_idx
-    return subcircuit_instances, subcircuit_instances_idx
+    subcircuit_dag = circuit_to_dag(subcircuit)
+    subcircuit_instance_dag = copy.deepcopy(subcircuit_dag)
+    for i,x in enumerate(init):
+        q = subcircuit.qubits[i]
+        if x == 'zero':
+            continue
+        elif x == 'one':
+            subcircuit_instance_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
+        elif x == 'plus':
+            subcircuit_instance_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
+        elif x == 'minus':
+            subcircuit_instance_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
+            subcircuit_instance_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
+        elif x == 'plusI':
+            subcircuit_instance_dag.apply_operation_front(op=SGate(),qargs=[q],cargs=[])
+            subcircuit_instance_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
+        elif x == 'minusI':
+            subcircuit_instance_dag.apply_operation_front(op=SGate(),qargs=[q],cargs=[])
+            subcircuit_instance_dag.apply_operation_front(op=HGate(),qargs=[q],cargs=[])
+            subcircuit_instance_dag.apply_operation_front(op=XGate(),qargs=[q],cargs=[])
+        else:
+            raise Exception('Illegal initialization :',x)
+    for i,x in enumerate(meas):
+        q = subcircuit.qubits[i]
+        if x == 'I' or x == 'comp':
+            continue
+        elif x == 'X':
+            subcircuit_instance_dag.apply_operation_back(op=HGate(),qargs=[q],cargs=[])
+        elif x == 'Y':
+            subcircuit_instance_dag.apply_operation_back(op=SdgGate(),qargs=[q],cargs=[])
+            subcircuit_instance_dag.apply_operation_back(op=HGate(),qargs=[q],cargs=[])
+        else:
+            raise Exception('Illegal measurement basis:',x)
+    subcircuit_instance_circuit = dag_to_circuit(subcircuit_instance_dag)
+    return subcircuit_instance_circuit
 
-def simulate_subcircuit(key,subcircuit_info,eval_mode):
+def simulate_subcircuit(subcircuit,eval_mode,num_shots):
     '''
     Simulate a subcircuit
-    Returns measured_prob (list)
-    (int state, probability weightage)
     '''
-    tol = 1e-12
-    circuit_name, subcircuit_idx, parent_subcircuit_instance_idx = key
-    subcircuit = subcircuit_info['circuit']
-    shots = subcircuit_info['shots']
-    init = subcircuit_info['init']
-    meas = subcircuit_info['meas']
-    subcircuit_results = {}
-
-    assert shots>0
-    if eval_mode=='runtime':
-        num_effective_qubits = meas[0].count('comp')
-        uniform_p = 1/2**num_effective_qubits
-        for m in meas:
-            measured_prob = uniform_p
-            subcircuit_results[(subcircuit_idx,init,m)] = measured_prob
+    if eval_mode=='sv':
+        subcircuit_inst_prob = evaluate_circ(circuit=subcircuit,backend='statevector_simulator')
+    elif eval_mode=='qasm':
+        subcircuit_inst_prob = evaluate_circ(circuit=subcircuit,backend='noiseless_qasm_simulator',options={'num_shots':num_shots})
     else:
-        if eval_mode=='sv':
-            subcircuit_inst_prob = evaluate_circ(circuit=subcircuit,backend='statevector_simulator')
-        elif eval_mode=='qasm':
-            subcircuit_inst_prob = evaluate_circ(circuit=subcircuit,backend='noiseless_qasm_simulator',options={'num_shots':shots})
-        else:
-            raise NotImplementedError
-        for m in meas:
-            measured_prob = measure_prob(unmeasured_prob=subcircuit_inst_prob,meas=m)
-            measured_prob[abs(measured_prob) < tol] = 0.0
-            subcircuit_results[(subcircuit_idx,init,m)] = measured_prob
-    return circuit_name, subcircuit_results
+        raise NotImplementedError
+    return subcircuit_inst_prob
 
 def measure_prob(unmeasured_prob,meas):
     if meas.count('comp')==len(meas):
