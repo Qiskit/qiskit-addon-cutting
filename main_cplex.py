@@ -39,8 +39,6 @@ class CutQC:
         num_subcircuits: list of subcircuits to try, CutQC returns the best solution found among the trials
         max_subcircuit_cuts: max number of cuts for a subcircuit
         max_subcircuit_size: max number of gates in a subcircuit
-        quantum_cost_weight: quantum_cost_weight : MIP overall cost objective is given by
-        quantum_cost_weight * num_subcircuit_instances + (1-quantum_cost_weight) * classical_postprocessing_cost
 
         Else supply the subcircuit_vertices manually
         Note that supplying subcircuit_vertices overrides all other arguments

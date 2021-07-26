@@ -9,7 +9,7 @@ from qiskit import QuantumCircuit, QuantumRegister
 
 class MIP_Model(object):
     def __init__(self, n_vertices, edges, vertex_ids, id_vertices, num_subcircuit,
-    max_subcircuit_width, max_subcircuit_cuts, max_subcircuit_size, num_qubits, max_cuts, quantum_cost_weight):
+    max_subcircuit_width, max_subcircuit_cuts, max_subcircuit_size, num_qubits, max_cuts):
         self.check_graph(n_vertices, edges)
         self.n_vertices = n_vertices
         self.edges = edges
@@ -22,8 +22,6 @@ class MIP_Model(object):
         self.max_subcircuit_size = max_subcircuit_size
         self.num_qubits = num_qubits
         self.max_cuts = max_cuts
-        self.quantum_cost_weight = quantum_cost_weight
-        assert self.quantum_cost_weight>=0 and self.quantum_cost_weight<=1
 
         '''
         Count the number of input qubits directly connected to each node
@@ -85,13 +83,14 @@ class MIP_Model(object):
                 self.subcircuit_counter[subcircuit]['size'] = self.model.integer_var(lb=0.1, ub=self.max_subcircuit_size, name='size_%d'%subcircuit)
             if self.max_subcircuit_cuts is not None:
                 self.subcircuit_counter[subcircuit]['num_cuts'] = self.model.integer_var(lb=0.1, ub=self.max_subcircuit_cuts, name='num_cuts_%d'%subcircuit)
-
-            '''
-            Number of subcircuits = 4^rho*3^O = e^{ln(4)*rho + ln(3)*O}
-            '''
-            lb = 0
-            ub = np.log(4)*self.max_cuts*2
-            self.subcircuit_counter[subcircuit]['num_instances_exponent'] = self.model.continuous_var(lb=lb, ub=ub, name='num_instances_exponent_%d'%subcircuit)
+            
+            self.subcircuit_counter[subcircuit]['rho_qubit_product'] = []
+            self.subcircuit_counter[subcircuit]['O_qubit_product'] = []
+            for i in range(self.n_edges):
+                edge_var_downstream_vertex_var_product = self.model.binary_var(name='bin_edge_var_downstream_vertex_var_product_%d_%d'%(subcircuit,i))
+                self.subcircuit_counter[subcircuit]['rho_qubit_product'].append(edge_var_downstream_vertex_var_product)
+                edge_var_upstream_vertex_var_product = self.model.binary_var(name='bin_edge_var_upstream_vertex_var_product_%d_%d'%(subcircuit,i))
+                self.subcircuit_counter[subcircuit]['O_qubit_product'].append(edge_var_upstream_vertex_var_product)
 
             if subcircuit>0:
                 lb = 0
@@ -150,15 +149,20 @@ class MIP_Model(object):
             self.model.sum(self.vertex_weight[self.id_vertices[i]] * self.vertex_var[subcircuit][i] 
             for i in range(self.n_vertices)) == 0,
             ctname='cons_subcircuit_input_%d'%subcircuit)
+
+            for i in range(self.n_edges):
+                self.model.add_constraint(self.subcircuit_counter[subcircuit]['rho_qubit_product'][i] == self.edge_var[subcircuit][i] & self.vertex_var[subcircuit][self.edges[i][1]],
+                ctname='cons_edge_var_downstream_vertex_var_%d_%d'%(subcircuit,i))
             
             self.model.add_constraint(self.subcircuit_counter[subcircuit]['rho'] -
-            self.model.sum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][1]]
-            for i in range(self.n_edges)]) == 0,
+            self.model.sum(self.subcircuit_counter[subcircuit]['rho_qubit_product']) == 0,
             ctname='cons_subcircuit_rho_qubits_%d'%subcircuit)
 
+            for i in range(self.n_edges):
+                self.model.add_constraint(self.subcircuit_counter[subcircuit]['O_qubit_product'][i] == self.edge_var[subcircuit][i] & self.vertex_var[subcircuit][self.edges[i][0]],
+                ctname = 'cons_edge_var_upstream_vertex_var_%d_%d'%(subcircuit,i))
             self.model.add_constraint(self.subcircuit_counter[subcircuit]['O'] -
-            self.model.sum([self.edge_var[subcircuit][i] * self.vertex_var[subcircuit][self.edges[i][0]]
-            for i in range(self.n_edges)]) == 0,
+            self.model.sum(self.subcircuit_counter[subcircuit]['O_qubit_product']) == 0,
             ctname='cons_subcircuit_O_qubits_%d'%subcircuit)
 
             self.model.add_constraint(self.subcircuit_counter[subcircuit]['d'] - 
@@ -184,21 +188,12 @@ class MIP_Model(object):
             if subcircuit>0:
                 ptx, ptf = self.pwl_exp(lb=int(self.subcircuit_counter[subcircuit]['build_cost_exponent'].lb),
                 ub=int(self.subcircuit_counter[subcircuit]['build_cost_exponent'].ub),
-                base=2,coefficient=1-self.quantum_cost_weight,integer_only=True)
+                base=2,coefficient=1,integer_only=True)
                 self.model.add_constraint(self.subcircuit_counter[subcircuit]['build_cost_exponent'] - 
                 self.model.sum(num_effective_qubits) - 2*self.num_cuts == 0,
                 ctname='cons_build_cost_exponent_%d'%subcircuit)
                 # TODO: add PWL objective in CPLEX
                 # self.model.setPWLObj(self.subcircuit_counter[subcircuit]['build_cost_exponent'], ptx, ptf)
-            
-            self.model.add_constraint(self.subcircuit_counter[subcircuit]['num_instances_exponent'] -
-            np.log(4)*self.subcircuit_counter[subcircuit]['rho'] - np.log(3)*self.subcircuit_counter[subcircuit]['O']==0,
-            ctname='cons_num_instances_exponent_%d'%subcircuit)
-            ptx, ptf = self.pwl_exp(lb=self.subcircuit_counter[subcircuit]['num_instances_exponent'].lb,
-            ub=self.subcircuit_counter[subcircuit]['num_instances_exponent'].ub,
-            base=math.e,coefficient=self.quantum_cost_weight,integer_only=False)
-            # TODO: add PWL objective in CPLEX
-            # self.model.setPWLObj(self.subcircuit_counter[subcircuit]['num_instances_exponent'], ptx, ptf)
 
         # self.model.setObjective(self.num_cuts,gp.GRB.MINIMIZE)
         self.model.set_objective('min',self.num_cuts)
@@ -474,11 +469,7 @@ def cost_estimate(counter):
         accumulated_kron_len *= 2**effective
         classical_cost += accumulated_kron_len
     classical_cost *= 4**num_cuts
-
-    num_subcircuit_instances = 0
-    for subcircuit_idx in counter:
-        num_subcircuit_instances += 4**counter[subcircuit_idx]['rho'] * 3**counter[subcircuit_idx]['O']
-    return num_subcircuit_instances, classical_cost
+    return classical_cost
 
 def get_pairs(complete_path_map):
     O_rho_pairs = []
@@ -506,7 +497,7 @@ def get_counter(subcircuits, O_rho_pairs):
 
 def find_cuts(circuit,
 max_subcircuit_width,
-max_cuts, num_subcircuits, max_subcircuit_cuts, max_subcircuit_size, quantum_cost_weight,
+max_cuts, num_subcircuits, max_subcircuit_cuts, max_subcircuit_size,
 verbose):
     stripped_circ = circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = read_circ(circuit=stripped_circ)
@@ -531,8 +522,7 @@ verbose):
                     max_subcircuit_cuts=max_subcircuit_cuts,
                     max_subcircuit_size=max_subcircuit_size,
                     num_qubits=num_qubits,
-                    max_cuts=max_cuts,
-                    quantum_cost_weight=quantum_cost_weight)
+                    max_cuts=max_cuts)
 
         mip_model = MIP_Model(**kwargs)
         feasible = mip_model.solve(min_postprocessing_cost=min_cost)
@@ -547,8 +537,8 @@ verbose):
             O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
             counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
 
-            quantum_cost, classical_cost = cost_estimate(counter=counter)
-            cost = (1-quantum_cost_weight)*classical_cost + quantum_cost_weight*quantum_cost
+            classical_cost = cost_estimate(counter=counter)
+            cost = classical_cost
 
             if cost < min_cost:
                 min_cost = cost
@@ -559,17 +549,14 @@ verbose):
                 'complete_path_map':complete_path_map,
                 'num_cuts':len(positions),
                 'counter':counter,
-                'classical_cost':classical_cost,
-                'quantum_cost':quantum_cost}
+                'classical_cost':classical_cost}
     if verbose and len(cut_solution)>0:
         print('-'*20)
         print_cutter_result(num_subcircuit=len(cut_solution['subcircuits']),
         num_cuts=cut_solution['num_cuts'],
         subcircuits=cut_solution['subcircuits'],
         counter=cut_solution['counter'],
-        classical_cost=cut_solution['classical_cost'],
-        quantum_cost=cut_solution['quantum_cost'],
-        quantum_cost_weight=quantum_cost_weight)
+        classical_cost=cut_solution['classical_cost'])
 
         print('Model objective value = %.2e'%(best_mip_model.objective),flush=True)
         print('MIP runtime:', best_mip_model.runtime,flush=True)
@@ -597,7 +584,7 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
     subcircuits, complete_path_map = subcircuits_parser(subcircuit_gates=subcircuits, circuit=circuit)
     O_rho_pairs = get_pairs(complete_path_map=complete_path_map)
     counter = get_counter(subcircuits=subcircuits, O_rho_pairs=O_rho_pairs)
-    quantum_cost, classical_cost = cost_estimate(counter=counter)
+    classical_cost = cost_estimate(counter=counter)
     max_subcircuit_width = max([subcircuit.width() for subcircuit in subcircuits])
 
     cut_solution = {
@@ -606,8 +593,7 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
         'complete_path_map':complete_path_map,
         'num_cuts':len(O_rho_pairs),
         'counter':counter,
-        'classical_cost':classical_cost,
-        'quantum_cost':quantum_cost}
+        'classical_cost':classical_cost}
 
     if verbose:
         print('-'*20)
@@ -615,13 +601,11 @@ def cut_circuit(circuit, subcircuit_vertices, verbose):
         num_cuts=cut_solution['num_cuts'],
         subcircuits=cut_solution['subcircuits'],
         counter=cut_solution['counter'],
-        classical_cost=cut_solution['classical_cost'],
-        quantum_cost=cut_solution['quantum_cost'],
-        quantum_cost_weight=0.5)
+        classical_cost=cut_solution['classical_cost'])
         print('-'*20)
     return cut_solution
 
-def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, classical_cost, quantum_cost, quantum_cost_weight):
+def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, classical_cost):
     print('Cutter result:')
     print('%d subcircuits, %d cuts'%(num_subcircuit,num_cuts))
 
@@ -635,6 +619,4 @@ def print_cutter_result(num_subcircuit, num_cuts, subcircuits, counter, classica
         counter[subcircuit_idx]['depth'],
         counter[subcircuit_idx]['size']))
         print(subcircuits[subcircuit_idx])
-    print('Classical cost = %.3e. Quantum cost = %.3e. quantum_cost_weight = %.3f'%(classical_cost,quantum_cost,quantum_cost_weight))
-    cost = (1-quantum_cost_weight)*classical_cost + quantum_cost_weight*quantum_cost
-    print('Estimated cost = %.3e'%cost,flush=True)
+    print('Estimated cost = %.3e'%classical_cost,flush=True)
