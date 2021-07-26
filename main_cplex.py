@@ -157,16 +157,17 @@ class CutQC:
                 print('... Total %d summation terms\n'%len(task['summation_terms']),flush=True)
 
             build_begin = time()
-            reconstructed_prob, smart_order = build(
+            reconstructed_prob, smart_order, overhead = build(
                 summation_terms=task['summation_terms'],
                 subcircuit_entry_probs=task['subcircuit_entry_probs'],
                 num_cuts=task['num_cuts'],
-                counter=task['counter'],
-                verbose=self.verbose)
+                num_threads=num_threads)
+
             build_time = time()-build_begin
             task['unordered_prob'] = reconstructed_prob
             task['build_time'] = build_time
             task['smart_order'] = smart_order
 
             if self.verbose:
+                print('overhead =',overhead)
                 print('%s build took %.3e seconds'%(task['name'],build_time),flush=True)

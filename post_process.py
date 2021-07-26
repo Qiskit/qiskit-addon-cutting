@@ -1,7 +1,9 @@
 from time import time
-import itertools, copy
+import itertools
 import numpy as np
-from qiskit_helper_functions.non_ibmq_functions import read_dict
+import multiprocessing as mp
+
+from qiskit_helper_functions.non_ibmq_functions import find_process_jobs
 
 def get_cut_qubit_pairs(complete_path_map):
 	'''
@@ -188,8 +190,8 @@ def get_naive_overhead(subcircuit_order,num_cuts,counter):
 
 def naive_compute(subcircuit_order, summation_terms, subcircuit_entry_probs):
 	reconstructed_prob = None
-	for idx in range(len(summation_terms)):
-		summation_term = summation_terms[idx]
+	overhead = {'additions':0,'multiplications':0}
+	for summation_term in summation_terms:
 		summation_term_prob = None
 		for subcircuit_idx in subcircuit_order:
 			subcircuit_entry_idx = summation_term[subcircuit_idx]
@@ -198,22 +200,35 @@ def naive_compute(subcircuit_order, summation_terms, subcircuit_entry_probs):
 				summation_term_prob = subcircuit_entry_prob
 			else:
 				summation_term_prob = np.kron(summation_term_prob,subcircuit_entry_prob)
+				overhead['multiplications'] += len(summation_term_prob)
 		if reconstructed_prob is None:
 			reconstructed_prob = summation_term_prob
 		else:
 			reconstructed_prob += summation_term_prob
-	return reconstructed_prob
+			overhead['additions'] += len(reconstructed_prob)
+	return reconstructed_prob, overhead
 
-def build(summation_terms, subcircuit_entry_probs, num_cuts, counter, verbose):
-	min_overhead = float('inf')
-	for subcircuit_order in itertools.permutations(range(len(subcircuit_entry_probs))):
-		overhead = get_naive_overhead(subcircuit_order=subcircuit_order,num_cuts=num_cuts,counter=counter)
-		if overhead['additions']+overhead['multiplications']<min_overhead:
-			smart_order = subcircuit_order
-			min_overhead = overhead['additions']+overhead['multiplications']
-			if verbose:
-				print('subcircuit_order {}. overhead = {}.'.format(subcircuit_order,overhead))
-	
-	reconstructed_prob = naive_compute(subcircuit_order, summation_terms, subcircuit_entry_probs)
+def build(summation_terms, subcircuit_entry_probs, num_cuts, num_threads):
+	smart_order = sorted(list(subcircuit_entry_probs.keys()),key=lambda subcircuit_idx:len(subcircuit_entry_probs[subcircuit_idx][0]))
+	args = []
+	for i in range(num_threads*5):
+		segment_summation_terms = find_process_jobs(jobs=summation_terms,rank=i,num_workers=num_threads*5)
+		if len(segment_summation_terms)==0:
+			break
+		arg = (smart_order,segment_summation_terms,subcircuit_entry_probs)
+		args.append(arg)
+	pool = mp.Pool(num_threads)
+	results = pool.starmap(naive_compute,args)
+	pool.close()
+	overhead = {'additions':0,'multiplications':0}
+	reconstructed_prob = None
+	for result in results:
+		thread_reconstructed_prob, thread_overhead = result
+		if reconstructed_prob is None:
+			reconstructed_prob = thread_reconstructed_prob
+		else:
+			reconstructed_prob += thread_reconstructed_prob
+		overhead['additions'] += thread_overhead['additions']
+		overhead['multiplications'] += thread_overhead['multiplications']
 	reconstructed_prob /= 2**num_cuts
-	return reconstructed_prob, smart_order
+	return reconstructed_prob, smart_order, overhead
