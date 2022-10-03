@@ -1,6 +1,6 @@
 # This code is part of Qiskit.
 #
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2021, 2022
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,6 +10,6 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from .wire_cutting_evaluation import run_subcircuit_instances
-from .wire_cutting_post_processing import generate_summation_terms, build
-from .wire_cutting_verification import verify
+from .tpb_grouped_weighted_pauli_operator import TPBGroupedWeightedPauliOperator
+from .weighted_pauli_operator import WeightedPauliOperator
+from .op_converter import to_tpb_grouped_weighted_pauli_operator

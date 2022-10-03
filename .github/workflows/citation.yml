@@ -1,0 +1,68 @@
+name: Citation preview
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['CITATION.bib', '.github/workflows/citation.yml']
+  pull_request:
+    branches: [ main ]
+    paths: ['CITATION.bib', '.github/workflows/citation.yml']
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check for non-ASCII characters
+        run: |
+          # Fail immediately if there are any non-ASCII characters in
+          # the BibTeX source.  We prefer "escaped codes" rather than
+          # UTF-8 characters in order to ensure the bibliography will
+          # display correctly even in documents that do not contain
+          # \usepackage[utf8]{inputenc}.
+          if [ -f "CITATION.bib" ]; then
+          python3 -c 'open("CITATION.bib", encoding="ascii").read()'
+          fi
+      - name: Install LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-publishers
+          fi
+      - name: Run LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          arr=(${GITHUB_REPOSITORY//\// })
+          REPO=${arr[1]}
+          export PROTOTYPE=${REPO#"prototype-"}
+          cat <<- EOF > preview.tex
+          \documentclass[preprint,aps,physrev,notitlepage]{revtex4-2}
+          \usepackage{hyperref}
+          \begin{document}
+          \title{\texttt{$PROTOTYPE} BibTeX test}
+          \maketitle
+          \noindent
+          \texttt{$PROTOTYPE}
+          \cite{$PROTOTYPE}
+          \bibliography{CITATION}
+          \end{document}
+          EOF
+          pdflatex preview
+          fi
+      - name: Run BibTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          bibtex preview
+          fi
+      - name: Re-run LaTeX
+        run: |
+          if [ -f "CITATION.bib" ]; then
+          pdflatex preview
+          pdflatex preview
+          fi
+      - name: Upload PDF
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: preview.pdf
+          path: preview.pdf
