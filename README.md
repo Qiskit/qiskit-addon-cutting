@@ -22,7 +22,7 @@
 <!-- ABOUT -->
 
 ### About
-Circuit Knitting is the process of decomposing a large circuit into smaller circuits, executing those smaller circuits on a quantum processor, then recomposing those results to simulate the results of the large circuit. The Circuit Knitting Toolbox (CKT) is a collection of Circuit Knitting tools such as Entanglement Forging, Circuit Cutting, and Classical Embedding. 
+Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor, then recomposing their results into an estimation of the outcome of the original circuit. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
 
 Each tool in the CKT will partition a user's problem into quantum and classical components to optimize efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It will assign the execution of "quantum code" to QPUs or QPU simulators and "classical code" to various heterogeneous classical resources such as CPUs, GPUs, and TPUs made available via hybrid cloud, on-prem, data centers, etc. 
 
@@ -93,9 +93,9 @@ The home directory includes a subdirectory named `persistent-volume`.  All work 
 
 <!-- REFERENCES -->
 ### References
-[1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi, Antonio Mezzacapo, Charles Hadfield, Sarah Sheldon, *Doubling the size of quantum simulators by entanglement forging*, https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.010309
+[1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi, Antonio Mezzacapo, Charles Hadfield, Sarah Sheldon, *Doubling the size of quantum simulators by entanglement forging*. PRX Quantum 3, 010309 (2022). https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.010309
 
-[2] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, *CutQC: Using Small Quantum Computers for Large Quantum Circuit Evaluations*, https://arxiv.org/abs/2012.02333
+[2] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, *CutQC: Using Small Quantum Computers for Large Quantum Circuit Evaluations*, Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021). https://doi.org/10.1145/3445814.3446758
 
 ----------------------------------------------------------------------------------------------------
 
