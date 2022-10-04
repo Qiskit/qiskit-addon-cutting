@@ -42,7 +42,7 @@ The toolbox will allow users to run parallelized and hybrid (quantum + classical
 
 There are two options: installing locally or using within a Docker container.  If you are using Linux, everything should work natively, so we recommend the first option.  If you are using macOS with a version of Python earlier than 3.10 and an Intel chip (i.e., not the new M1 or M2 chips), everything should work natively as well.  All other Mac users, as well as all Windows users, will have to use the toolbox within Docker (the second option) for everything to work as designed.
 
-### Option 1: Local installation
+#### Option 1: Local installation
 
 * **OPTIONAL** [Install Git Large File Storage](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) if you wish to obtain the input files necessary to run the [demo notebook](docs/entanglement_forging/demos/entanglement_forging_quantum_serverless_demo.ipynb).
 
