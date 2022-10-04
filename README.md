@@ -87,6 +87,8 @@ notebook_1  |      or http://127.0.0.1:8888/lab?token=00ed70b5342f79f0a970ee9821
 
 Locate the _last_ URL in your terminal (the one that includes `127.0.0.1`), and navigate to that URL in a web browser to access the Jupyter notebook interface.
 
+The home directory includes a subdirectory named `persistent-volume`.  All work you'd like to save should be placed in this directory, as it is the only one that will be saved across different container runs.
+
 ----------------------------------------------------------------------------------------------------
 
 <!-- REFERENCES -->
