@@ -18,7 +18,6 @@ def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
     sampler: Sampler,
-    num_shots: int = 1024,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability

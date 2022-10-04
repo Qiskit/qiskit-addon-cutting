@@ -24,7 +24,40 @@ class WireCutter:
     def sampler(self) -> Sampler:
         return self._sampler
 
-    def cut_automatic(
+    def decompose(
+        self,
+        method: str,
+        subcircuit_vertices: Optional[Sequence[Sequence[int]]] = None,
+        max_subcircuit_width: Optional[int] = None,
+        max_subcircuit_cuts: Optional[int] = None,
+        max_subcircuit_size: Optional[int] = None,
+        max_cuts: Optional[int] = None,
+        num_subcircuits: Optional[Sequence[int]] = None,
+    ) -> Dict[str, Any]:
+        if method == "automatic":
+            if max_subcircuit_width is None:
+                raise ValueError(
+                    "The max_subcircuit_width argument must be set if using automatic cut finding."
+                )
+            return self._cut_automatic(
+                max_subcircuit_width,
+                max_subcircuit_cuts=max_subcircuit_cuts,
+                max_subcircuit_size=max_subcircuit_size,
+                max_cuts=max_cuts,
+                num_subcircuits=num_subcircuits,
+            )
+        elif method == "manual":
+            if subcircuit_vertices is None:
+                raise ValueError(
+                    "The subcircuit_vertices argument must be set if manually specifying cuts."
+                )
+            return self._cut_manual(subcircuit_vertices)
+        else:
+            ValueError(
+                'The method argument for the decompose method should be either "automatic" or "manual".'
+            )
+
+    def _cut_automatic(
         self,
         max_subcircuit_width: int,
         max_subcircuit_cuts: Optional[int] = None,
@@ -54,7 +87,7 @@ class WireCutter:
 
         return cuts
 
-    def cut_manual(
+    def _cut_manual(
         self, subcircuit_vertices: Sequence[Sequence[int]]
     ) -> Dict[str, Any]:
         """
