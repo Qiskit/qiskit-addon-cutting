@@ -62,6 +62,11 @@ def get_cholesky_op(
     Returns:
         - cholesky_operator: The converted operator
     """
+    # This will suppress a warning about an upcoming change in Qiskit Nature
+    from qiskit_nature.settings import settings
+
+    settings.dict_aux_operators = True
+
     cholesky_int = OneBodyElectronicIntegrals(
         basis=ElectronicBasis.SO, matrices=l_op[:, :, g]
     )
