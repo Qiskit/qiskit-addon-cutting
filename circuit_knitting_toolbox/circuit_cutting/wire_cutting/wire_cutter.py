@@ -3,6 +3,8 @@ from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
 from qiskit import QuantumCircuit
 from nptyping import NDArray
 
+from qiskit_ibm_runtime import Sampler
+
 from .wire_cutting import find_wire_cuts, cut_circuit_wire
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -10,8 +12,17 @@ from .wire_cutting_verification import verify, generate_reconstructed_output
 
 
 class WireCutter:
-    def __init__(self, circuit: Optional[QuantumCircuit] = None):
-        self.circuit = circuit
+    def __init__(self, circuit: QuantumCircuit, sampler: Sampler):
+        self._circuit = circuit
+        self._sampler = sampler
+
+    @property
+    def circuit(self) -> QuantumCircuit:
+        return self._circuit
+
+    @property
+    def sampler(self) -> Sampler:
+        return self._sampler
 
     def cut_automatic(
         self,
@@ -31,10 +42,6 @@ class WireCutter:
         max_subcircuit_size: max number of gates in a subcircuit
         num_subcircuits: list of subcircuits to try
         """
-        if self.circuit is None:
-            raise ValueError(
-                "A circuit must be passed to the cutter prior to calling a cut method."
-            )
         cuts = find_wire_cuts(
             circuit=self.circuit,
             max_subcircuit_width=max_subcircuit_width,
@@ -55,6 +62,10 @@ class WireCutter:
 
         Args:
         """
+        if self.circuit is None:
+            raise ValueError(
+                "A circuit must be passed to the cutter prior to calling a cut method."
+            )
         cuts = cut_circuit_wire(
             circuit=self.circuit,
             subcircuit_vertices=subcircuit_vertices,
@@ -63,22 +74,14 @@ class WireCutter:
 
         return cuts
 
-    @staticmethod
-    def evaluate(
-        cuts: Dict[str, Any],
-        mode: str,
-        num_shots_fn: Callable,
-    ) -> Dict[int, Dict[int, NDArray]]:
+    def evaluate(self, cuts: Dict[str, Any]) -> Dict[int, Dict[int, NDArray]]:
         """
         cuts: results from cutting routine
-        mode = qasm: simulate shots
-        mode = sv: statevector simulation
-        num_shots_fn: a function that gives the number of shots to take for a given circuit
         """
         _, _, subcircuit_instances = _generate_metadata(cuts)
 
         subcircuit_instance_probs = _run_subcircuits(
-            cuts, subcircuit_instances, mode, num_shots_fn
+            cuts, subcircuit_instances, self.sampler
         )
 
         return subcircuit_instance_probs
@@ -116,7 +119,7 @@ class WireCutter:
             self.circuit,
             ordered_probability,
         )
-        return ordered_probability, metrics
+        return metrics
 
 
 def _generate_metadata(
@@ -141,8 +144,7 @@ def _generate_metadata(
 def _run_subcircuits(
     cuts: Dict[str, Any],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    mode: str,
-    num_shots_fn: Callable,
+    sampler: Sampler,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Run all the subcircuit instances
@@ -151,8 +153,7 @@ def _run_subcircuits(
     subcircuit_instance_probs = run_subcircuit_instances(
         subcircuits=cuts["subcircuits"],
         subcircuit_instances=subcircuit_instances,
-        mode=mode,
-        num_shots_fn=num_shots_fn,
+        sampler=sampler,
     )
 
     return subcircuit_instance_probs

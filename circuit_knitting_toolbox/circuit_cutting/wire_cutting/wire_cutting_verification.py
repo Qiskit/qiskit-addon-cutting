@@ -1,6 +1,4 @@
-import pickle
-import argparse
-import glob
+import psutil, copy
 from typing import Sequence, Dict, Union, Tuple, List
 
 import numpy as np
@@ -8,10 +6,8 @@ from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
+from qiskit_aer import Aer
 
-from circuit_knitting_toolbox.circuit_cutting.wire_cutting.wire_cutting_evaluation import (
-    evaluate_circuit,
-)
 from circuit_knitting_toolbox.utils.conversion import quasi_to_real
 from circuit_knitting_toolbox.utils.metrics import (
     chi2_distance,
@@ -26,9 +22,7 @@ def verify(
     full_circuit: QuantumCircuit,
     reconstructed_output: NDArray,
 ) -> Dict[str, Dict[str, float]]:
-    ground_truth = evaluate_circuit(
-        circuit=full_circuit, backend="statevector_simulator"
-    )
+    ground_truth = _evaluate_circuit(circuit=full_circuit)
     metrics = {}
     for quasi_conversion_mode in ["nearest", "naive"]:
         real_probability = quasi_to_real(
@@ -96,3 +90,15 @@ def generate_reconstructed_output(
         reconstructed_output[ordered_state] = unordered_p
 
     return np.array(reconstructed_output)
+
+
+def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
+    circuit = copy.deepcopy(circuit)
+    max_memory_mb = psutil.virtual_memory().total >> 20
+    max_memory_mb = int(max_memory_mb / 4 * 3)
+    simulator = Aer.get_backend("statevector_simulator")
+    result = simulator.run(circuit).result()
+    statevector = result.get_statevector(circuit)
+    prob_vector = Statevector(statevector).probabilities()
+
+    return prob_vector
