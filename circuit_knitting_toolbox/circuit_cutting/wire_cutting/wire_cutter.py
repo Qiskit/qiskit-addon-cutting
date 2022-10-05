@@ -1,9 +1,16 @@
 from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
 
-from qiskit import QuantumCircuit
+import ray
 from nptyping import NDArray
+from qiskit import QuantumCircuit
+from qiskit_ibm_runtime import (
+    Sampler,
+    Options,
+    RuntimeOptions,
+    QiskitRuntimeService,
+    Session,
+)
 
-from qiskit_ibm_runtime import Sampler
 
 from .wire_cutting import find_wire_cuts, cut_circuit_wire
 from .wire_cutting_evaluation import run_subcircuit_instances
@@ -12,17 +19,46 @@ from .wire_cutting_verification import verify, generate_reconstructed_output
 
 
 class WireCutter:
-    def __init__(self, circuit: QuantumCircuit, sampler: Sampler):
+    def __init__(
+        self,
+        circuit: QuantumCircuit,
+        service_args: Dict[str, Any],
+        options: Optional[Options] = None,
+        runtime_options: Optional[RuntimeOptions] = None,
+    ):
+        # Set class fields
         self._circuit = circuit
-        self._sampler = sampler
+        self._service_args = service_args
+        self._options = options
+        self._runtime_options = runtime_options
 
     @property
     def circuit(self) -> QuantumCircuit:
         return self._circuit
 
     @property
-    def sampler(self) -> Sampler:
-        return self._sampler
+    def service_args(self) -> Dict[str, Any]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, service_args: Dict[str, Any]) -> None:
+        self._service_args = service_args
+
+    @property
+    def options(self) -> Optional[Options]:
+        return self._options
+
+    @options.setter
+    def options(self, options: Optional[Options]) -> None:
+        self._options = options
+
+    @property
+    def runtime_options(self) -> Optional[RuntimeOptions]:
+        return self._runtime_options
+
+    @runtime_options.setter
+    def runtime_options(self, runtime_options: Optional[RuntimeOptions]) -> None:
+        self._runtime_options = runtime_options
 
     def decompose(
         self,
@@ -113,13 +149,12 @@ class WireCutter:
         """
         cuts: results from cutting routine
         """
-        _, _, subcircuit_instances = _generate_metadata(cuts)
-
-        subcircuit_instance_probs = _run_subcircuits(
-            cuts, subcircuit_instances, self.sampler
+        probability_futures = _evaluate.remote(
+            cuts, self.service_args, self.options, self.runtime_options
         )
+        subcircuit_instance_probabilities = ray.get(probability_futures)
 
-        return subcircuit_instance_probs
+        return subcircuit_instance_probabilities
 
     def recompose(
         self,
@@ -260,3 +295,31 @@ def _build(
     smart_order = smart_order
 
     return unordered_prob, smart_order
+
+
+@ray.remote
+def _evaluate(
+    cuts: Dict[str, Any],
+    service_args: Dict[str, Any],
+    options: Optional[Options] = None,
+    runtime_options: Optional[RuntimeOptions] = None,
+) -> Dict[int, Dict[int, NDArray]]:
+    """
+    cuts: results from cutting routine
+    """
+    # Set the backend. Default to runtime qasm simulator
+    if (runtime_options is None) or (runtime_options.backend is None):
+        backend_name = "ibmq_qasm_simulator"
+    else:
+        backend_name = runtime_options.backend
+
+    # Set up our service, session, and sampler primitive
+    service = QiskitRuntimeService(**service_args)
+    session = Session(service=service, backend=backend_name)
+    sampler = Sampler(session=session, options=options)
+
+    _, _, subcircuit_instances = _generate_metadata(cuts)
+
+    subcircuit_instance_probs = _run_subcircuits(cuts, subcircuit_instances, sampler)
+
+    return subcircuit_instance_probs
