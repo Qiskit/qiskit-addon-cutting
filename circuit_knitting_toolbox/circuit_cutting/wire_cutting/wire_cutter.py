@@ -11,7 +11,6 @@ from qiskit_ibm_runtime import (
     Session,
 )
 
-
 from .wire_cutting import find_wire_cuts, cut_circuit_wire
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -76,73 +75,26 @@ class WireCutter:
                 raise ValueError(
                     "The max_subcircuit_width argument must be set if using automatic cut finding."
                 )
-            cuts = self._cut_automatic(
+            cuts_futures = _cut_automatic.remote(
+                self.circuit,
                 max_subcircuit_width,
                 max_subcircuit_cuts=max_subcircuit_cuts,
                 max_subcircuit_size=max_subcircuit_size,
                 max_cuts=max_cuts,
                 num_subcircuits=num_subcircuits,
             )
+            cuts = ray.get(cuts_futures)
         elif method == "manual":
             if subcircuit_vertices is None:
                 raise ValueError(
                     "The subcircuit_vertices argument must be set if manually specifying cuts."
                 )
-            cuts = self._cut_manual(subcircuit_vertices)
+            cuts_futures = _cut_manual.remote(self.circuit, subcircuit_vertices)
+            cuts = ray.get(cuts_futures)
         else:
             ValueError(
                 'The method argument for the decompose method should be either "automatic" or "manual".'
             )
-        return cuts
-
-    def _cut_automatic(
-        self,
-        max_subcircuit_width: int,
-        max_subcircuit_cuts: Optional[int] = None,
-        max_subcircuit_size: Optional[int] = None,
-        max_cuts: Optional[int] = None,
-        num_subcircuits: Optional[Sequence[int]] = None,
-    ) -> Dict[str, Any]:
-        """
-        Automatically find an optimized cut scheme based on input.
-
-        Args:
-        max_subcircuit_width: max number of qubits in each subcircuit
-        max_cuts: max total number of cuts allowed
-        max_subcircuit_cuts: max number of cuts for a subcircuit
-        max_subcircuit_size: max number of gates in a subcircuit
-        num_subcircuits: list of subcircuits to try
-        """
-        cuts = find_wire_cuts(
-            circuit=self.circuit,
-            max_subcircuit_width=max_subcircuit_width,
-            max_cuts=max_cuts,
-            num_subcircuits=num_subcircuits,
-            max_subcircuit_cuts=max_subcircuit_cuts,
-            max_subcircuit_size=max_subcircuit_size,
-            verbose=True,
-        )
-
-        return cuts
-
-    def _cut_manual(
-        self, subcircuit_vertices: Sequence[Sequence[int]]
-    ) -> Dict[str, Any]:
-        """
-        Cut the given circuits at the wires specified
-
-        Args:
-        """
-        if self.circuit is None:
-            raise ValueError(
-                "A circuit must be passed to the cutter prior to calling a cut method."
-            )
-        cuts = cut_circuit_wire(
-            circuit=self.circuit,
-            subcircuit_vertices=subcircuit_vertices,
-            verbose=True,
-        )
-
         return cuts
 
     def evaluate(self, cuts: Dict[str, Any]) -> Dict[int, Dict[int, NDArray]]:
@@ -158,28 +110,19 @@ class WireCutter:
 
     def recompose(
         self,
-        subcircuit_instance_probs: Dict[int, Dict[int, NDArray]],
+        subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
         cuts: Dict[str, Any],
         num_threads: int = 1,
     ) -> NDArray:
-        summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
-
-        subcircuit_entry_probs = _attribute_shots(
-            subcircuit_entries, subcircuit_instance_probs
+        ordered_probability_futures = _recompose.remote(
+            circuit=self.circuit,
+            subcircuit_instance_probabilities=subcircuit_instance_probabilities,
+            cuts=cuts,
+            num_threads=num_threads,
         )
-        unordered_probability, smart_order = _build(
-            cuts, summation_terms, subcircuit_entry_probs, num_threads
-        )
+        ordered_probabilities = ray.get(ordered_probability_futures)
 
-        ordered_probability = generate_reconstructed_output(
-            self.circuit,
-            cuts["subcircuits"],
-            unordered_probability,
-            smart_order,
-            cuts["complete_path_map"],
-        )
-
-        return ordered_probability
+        return ordered_probabilities
 
     def verify(
         self,
@@ -323,3 +266,80 @@ def _evaluate(
     subcircuit_instance_probs = _run_subcircuits(cuts, subcircuit_instances, sampler)
 
     return subcircuit_instance_probs
+
+
+@ray.remote
+def _recompose(
+    circuit: QuantumCircuit,
+    subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
+    cuts: Dict[str, Any],
+    num_threads: int = 1,
+) -> NDArray:
+    summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
+
+    subcircuit_entry_probabilities = _attribute_shots(
+        subcircuit_entries, subcircuit_instance_probabilities
+    )
+    unordered_probability, smart_order = _build(
+        cuts, summation_terms, subcircuit_entry_probabilities, num_threads
+    )
+
+    ordered_probability = generate_reconstructed_output(
+        circuit,
+        cuts["subcircuits"],
+        unordered_probability,
+        smart_order,
+        cuts["complete_path_map"],
+    )
+
+    return ordered_probability
+
+
+@ray.remote
+def _cut_automatic(
+    circuit: QuantumCircuit,
+    max_subcircuit_width: int,
+    max_subcircuit_cuts: Optional[int] = None,
+    max_subcircuit_size: Optional[int] = None,
+    max_cuts: Optional[int] = None,
+    num_subcircuits: Optional[Sequence[int]] = None,
+) -> Dict[str, Any]:
+    """
+    Automatically find an optimized cut scheme based on input.
+
+    Args:
+    max_subcircuit_width: max number of qubits in each subcircuit
+    max_cuts: max total number of cuts allowed
+    max_subcircuit_cuts: max number of cuts for a subcircuit
+    max_subcircuit_size: max number of gates in a subcircuit
+    num_subcircuits: list of subcircuits to try
+    """
+    cuts = find_wire_cuts(
+        circuit=circuit,
+        max_subcircuit_width=max_subcircuit_width,
+        max_cuts=max_cuts,
+        num_subcircuits=num_subcircuits,
+        max_subcircuit_cuts=max_subcircuit_cuts,
+        max_subcircuit_size=max_subcircuit_size,
+        verbose=True,
+    )
+
+    return cuts
+
+
+@ray.remote
+def _cut_manual(
+    circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]]
+) -> Dict[str, Any]:
+    """
+    Cut the given circuits at the wires specified
+
+    Args:
+    """
+    cuts = cut_circuit_wire(
+        circuit=self.circuit,
+        subcircuit_vertices=subcircuit_vertices,
+        verbose=True,
+    )
+
+    return cuts
