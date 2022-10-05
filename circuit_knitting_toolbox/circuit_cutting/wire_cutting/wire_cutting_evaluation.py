@@ -151,7 +151,7 @@ def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> Sequence[flo
     probabilities = quasi_dists.nearest_probability_distribution()
     probabilities_out = np.zeros(2**subcircuit.num_qubits, dtype=float)
 
-    for state in quasi_dists:
+    for state in probabilities:
         probabilities_out[state] = probabilities[state]
 
     return probabilities_out
