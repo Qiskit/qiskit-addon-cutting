@@ -34,12 +34,13 @@ class WireCutter:
         max_cuts: Optional[int] = None,
         num_subcircuits: Optional[Sequence[int]] = None,
     ) -> Dict[str, Any]:
+        cuts = {}
         if method == "automatic":
             if max_subcircuit_width is None:
                 raise ValueError(
                     "The max_subcircuit_width argument must be set if using automatic cut finding."
                 )
-            return self._cut_automatic(
+            cuts = self._cut_automatic(
                 max_subcircuit_width,
                 max_subcircuit_cuts=max_subcircuit_cuts,
                 max_subcircuit_size=max_subcircuit_size,
@@ -51,11 +52,12 @@ class WireCutter:
                 raise ValueError(
                     "The subcircuit_vertices argument must be set if manually specifying cuts."
                 )
-            return self._cut_manual(subcircuit_vertices)
+            cuts = self._cut_manual(subcircuit_vertices)
         else:
             ValueError(
                 'The method argument for the decompose method should be either "automatic" or "manual".'
             )
+        return cuts
 
     def _cut_automatic(
         self,

@@ -140,7 +140,7 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
-def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> Sequence[float]:
+def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> NDArray:
     """
     Simulate a subcircuit
     """
@@ -157,7 +157,7 @@ def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> Sequence[flo
     return probabilities_out
 
 
-def measure_prob(unmeasured_prob: Sequence[float], meas: Tuple[Any, ...]) -> NDArray:
+def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)
     else:

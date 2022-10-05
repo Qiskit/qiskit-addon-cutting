@@ -47,7 +47,7 @@ def verify(
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
     subcircuits: Sequence[QuantumCircuit],
-    unordered: Sequence[float],
+    unordered: NDArray,
     smart_order: Sequence[int],
     complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]],
 ) -> NDArray:
