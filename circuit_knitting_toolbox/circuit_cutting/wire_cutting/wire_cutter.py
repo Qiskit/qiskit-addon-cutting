@@ -337,7 +337,7 @@ def _cut_manual(
     Args:
     """
     cuts = cut_circuit_wire(
-        circuit=self.circuit,
+        circuit=circuit,
         subcircuit_vertices=subcircuit_vertices,
         verbose=True,
     )
