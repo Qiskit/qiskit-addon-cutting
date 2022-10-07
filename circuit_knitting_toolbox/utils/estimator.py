@@ -66,7 +66,9 @@ class Estimator(BaseEstimator):
         self._is_closed = False
 
         # Set up a per-instance cache for memoization (tuples are hashable)
-        self._build_statevector = lru_cache(maxsize=None)(self._build_statevector)
+        self._build_statevector = lru_cache(maxsize=None)(
+            self._build_statevector_uncached
+        )
 
     ################################################################################
     ## INTERFACE
@@ -130,7 +132,7 @@ class Estimator(BaseEstimator):
         parameter_mapping = dict(zip(parameters, parameter_values))
         return circuit.bind_parameters(parameter_mapping)
 
-    def _build_statevector(
+    def _build_statevector_uncached(
         self, circuit_index: int, parameter_values: tuple[float]
     ) -> Statevector:
         circuit = self._bind_circuit_parameters(circuit_index, parameter_values)
