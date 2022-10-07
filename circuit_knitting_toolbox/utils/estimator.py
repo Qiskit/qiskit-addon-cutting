@@ -18,8 +18,6 @@ from __future__ import annotations
 from collections.abc import Iterable, Sequence
 from functools import lru_cache
 
-cache = lru_cache(maxsize=None)
-
 import numpy as np
 from qiskit.circuit import Instruction, Parameter, QuantumCircuit
 from qiskit.exceptions import QiskitError
@@ -66,6 +64,11 @@ class Estimator(BaseEstimator):
             parameters=parameters,
         )
         self._is_closed = False
+
+        # Set up a per-instance cache for memoization (tuples are hashable)
+        self._build_statevector = lru_cache(maxsize=None)(
+            self._build_statevector_uncached
+        )
 
     ################################################################################
     ## INTERFACE
@@ -129,8 +132,7 @@ class Estimator(BaseEstimator):
         parameter_mapping = dict(zip(parameters, parameter_values))
         return circuit.bind_parameters(parameter_mapping)
 
-    @cache  # Enables memoization (tuples are hashable)
-    def _build_statevector(
+    def _build_statevector_uncached(
         self, circuit_index: int, parameter_values: tuple[float]
     ) -> Statevector:
         circuit = self._bind_circuit_parameters(circuit_index, parameter_values)
