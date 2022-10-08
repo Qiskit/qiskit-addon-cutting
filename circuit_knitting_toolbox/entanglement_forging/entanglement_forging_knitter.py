@@ -13,9 +13,8 @@
 
 import copy
 import warnings
-from typing import Set, Iterable, List, Optional, Sequence, Tuple, Union, Any, Dict
+from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
 import time
-from dataclasses import dataclass
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
@@ -23,20 +22,17 @@ import ray
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
-from qiskit.opflow import OperatorBase, PauliSumOp
-from qiskit.primitives import SamplerResult
+from qiskit.primitives import Sampler as TestSampler, SamplerResult
 from qiskit.providers.ibmq.job import (
     IBMQJobFailureError,
     IBMQJobApiError,
     IBMQJobInvalidStateError,
 )
 from qiskit_nature import QiskitNatureError
-from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_ibm_runtime.sampler import SamplerResultDecoder
+from qiskit_ibm_runtime import QiskitRuntimeService, Session, Options, Sampler
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
-from ..utils import Estimator
 from ..utils.grouping import (
     TPBGroupedWeightedPauliOperator,
     WeightedPauliOperator,
@@ -86,7 +82,6 @@ class EntanglementForgingKnitter:
         """
         self._backend_names = backend_names
         self._service = service.active_account() if service is not None else service
-        self._session_id: Optional[List[Optional[str]]] = None
 
         # Save the parameterized ansatz and bitstrings
         self._ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
@@ -253,9 +248,6 @@ class EntanglementForgingKnitter:
         else:
             num_partitions = 1
 
-        if self._session_id is None:
-            self._session_id = [None] * num_partitions
-
         tensor_ansatze = tensor_ansatze_u + tensor_ansatze_v
         superposition_ansatze = superposition_ansatze_u + superposition_ansatze_v
 
@@ -264,16 +256,20 @@ class EntanglementForgingKnitter:
             superposition_ansatze, num_partitions
         )
 
+        # Get the RuntimeService as a hashable dictionary
+        service_args = None
+        if self._service:
+            service_args = self._service.active_account()
+
         partitioned_expval_futures = [
             _estimate_expvals.remote(  # type: ignore
                 tensor_ansatze=tensor_ansatze_partition,
                 tensor_paulis=forged_operator.tensor_paulis,
                 superposition_ansatze=superposition_ansatze_partition,
                 superposition_paulis=forged_operator.superposition_paulis,
-                service=self._service,
+                service_args=service_args,
                 backend_names=self._backend_names,
                 backend_index=partition_index,
-                session_id=self._session_id[partition_index],
             )
             for partition_index, (
                 tensor_ansatze_partition,
@@ -289,7 +285,6 @@ class EntanglementForgingKnitter:
             (
                 partition_tensor_expvals,
                 partition_superposition_expvals,
-                self._session_id[i],
             ) = ray.get(partition_expval_futures)
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
@@ -569,11 +564,10 @@ def _estimate_expvals(
     tensor_paulis: List[Pauli],
     superposition_ansatze: List[QuantumCircuit],
     superposition_paulis: List[Pauli],
-    service: Optional[Dict[str, Any]] = None,
+    service_args: Optional[Dict[str, Any]] = None,
     backend_names: Optional[List[str]] = None,
     backend_index: int = 0,
-    session_id: Optional[str] = None,
-) -> Tuple[List[NDArray], List[NDArray], Optional[str]]:
+) -> Tuple[List[NDArray], List[NDArray]]:
     """Run quantum circuits to generate the expectation values.
 
     Function to estimate the exepctation value of some observables on the
@@ -592,19 +586,17 @@ def _estimate_expvals(
         - superposition_paulis (List[Pauli]): the pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt
             coefficients
-        - service (Dict[str, Any]): The service account used to spawn Qiskit primitives
+        - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives
         - backend_names (List[str]): The list of backends to use to evaluate the grouped experiments
         - backend_index (int): The index of the backend to be used
-        - session_id (str): The session id to use when calling primitive programs
 
     Returns:
         - (Tuple[List[NDArray], List[NDArray]]): the expectation values for the
             tensor circuits and superposition circuits
     """
-    service = QiskitRuntimeService(**service) if service is not None else None
+    service = QiskitRuntimeService(**service_args) if service_args is not None else None
 
-    if backend_names and not service:
-        raise ValueError("A service must be specified to use specific backends.")
+    remote_run = False
 
     # Get names of Paulis in each basis
     tensor_pauli_names = [pauli.to_label() for pauli in tensor_paulis]
@@ -631,116 +623,63 @@ def _estimate_expvals(
         superposition_ansatze, grouping_superposition_op
     )
 
-    # If a service was passed, expectation values will be calculated using grouping
+    all_circuits = tensor_circuits_to_execute + superposition_circuits_to_execute
+
+    # If a service was passed, set up the Runtime Sampler
+    num_shots = None
     if service:
+        remote_run = True
+        num_shots = 1024
         if backend_names is None:
             raise ValueError(
                 "A service was passed but no backend names were specified."
             )
-        all_circuits = tensor_circuits_to_execute + superposition_circuits_to_execute
-        num_shots = 1024
-        inputs = {
-            "circuits": all_circuits,
-            "circuit_indices": list(range(len(all_circuits))),
-            "shots": num_shots,
-            "transpilation_options": {"optimization_level": 3},
-            "resilience_settings": {"level": 1},
-        }
-        options = {"backend": backend_names[backend_index]}
-
-        start_session = False
-        if session_id is None:
-            start_session = True
-
-        results, job_id = _execute_with_retry(
-            service=service,
-            inputs=inputs,
-            options=options,
-            session_id=session_id,
-            start_session=start_session,
+        session = Session(service=service, backend=backend_names[backend_index])
+        options = Options(
+            resilience_level=1, optimization_level=3, execution={"shots": num_shots}
         )
+        sampler = Sampler(circuits=all_circuits, options=options)
 
-        if session_id is None:
-            session_id = job_id
-
-        # Split the results back out into tensor and superposition results
-        tensor_result = {}
-        tensor_result["quasi_dists"] = [
-            results.quasi_dists[i] for i, _ in enumerate(tensor_circuits_to_execute)
-        ]
-        tensor_result["metadata"] = [
-            {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
-            for circ in tensor_circuits_to_execute
-        ]
-
-        superposition_result = {}
-        num_tensor_circuits = len(tensor_circuits_to_execute)
-        superposition_result["quasi_dists"] = [
-            results.quasi_dists[i + num_tensor_circuits]
-            for i, _ in enumerate(superposition_circuits_to_execute)
-        ]
-        superposition_result["metadata"] = [
-            {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
-            for circ in superposition_circuits_to_execute
-        ]
-
-        # Calculate the inferred expectation values, given the results from the grouped experiments
-        tensor_name_prefixes = [circ.name for circ in tensor_ansatze]
-        tensor_expvals = _get_expectation_values_from_counts(
-            tensor_result, tensor_name_prefixes, grouping_tensor_op
-        )
-        tensor_expval_list = list(tensor_expvals)
-        superposition_name_prefixes = [circ.name for circ in superposition_ansatze]
-        superposition_expvals = _get_expectation_values_from_counts(
-            superposition_result, superposition_name_prefixes, grouping_superposition_op
-        )
-        superposition_expval_list = list(superposition_expvals)
-
-    # If no service was passed, use local Estimator for expval calculation
+    # Otherwise use the Qiskit sampler to get the true probabilities
     else:
-        with Estimator(
-            circuits=(tensor_ansatze + superposition_ansatze),
-            observables=(tensor_paulis + superposition_paulis),
-        ) as estimator:
-            # Get the indices for the tensor experiments
-            ansatz_indices_t: List[int] = []
-            observable_indices_t: List[int] = []
-            for i, _ in enumerate(tensor_ansatze):
-                ansatz_indices_t += [i] * len(tensor_paulis)
-                observable_indices_t += range(len(tensor_paulis))
+        if backend_names:
+            raise ValueError("A service must be specified to use specific backends.")
+        sampler = TestSampler(circuits=all_circuits)
 
-            # Get the indices and scalars for the superposition experiments
-            ansatz_indices_s: List[int] = []
-            observable_indices_s: List[int] = []
-            for i, ansatz in enumerate(superposition_ansatze):
-                # superposition_ansatze[i] = U|𝜙^𝑝_𝑏𝑛𝑏𝑚⟩
-                ansatz_indices_s += [len(tensor_ansatze) + i] * len(
-                    superposition_paulis
-                )
-                observable_indices_s += range(
-                    len(tensor_paulis), len(tensor_paulis) + len(superposition_paulis)
-                )
+    results = _execute_with_retry(sampler=sampler, circuits=all_circuits)
 
-            # Get all expectation values in one call to the estimator
-            ansatz_indices = ansatz_indices_t + ansatz_indices_s
-            observable_indices = observable_indices_t + observable_indices_s
+    # Split the results back out into tensor and superposition results
+    tensor_result = {}
+    tensor_result["quasi_dists"] = [
+        results.quasi_dists[i] for i, _ in enumerate(tensor_circuits_to_execute)
+    ]
+    tensor_result["metadata"] = [
+        {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
+        for circ in tensor_circuits_to_execute
+    ]
 
-            # estimator_results = [⟨bi|U^t•P0•U|bi⟩,⟨bi|U^t•P1•U|bi⟩, ....]
-            estimator_results = estimator(ansatz_indices, observable_indices).values
+    superposition_result = {}
+    num_tensor_circuits = len(tensor_circuits_to_execute)
+    superposition_result["quasi_dists"] = [
+        results.quasi_dists[i + num_tensor_circuits]
+        for i, _ in enumerate(superposition_circuits_to_execute)
+    ]
+    superposition_result["metadata"] = [
+        {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
+        for circ in superposition_circuits_to_execute
+    ]
 
-            # Post-process the results to get our expectation values in the right format
-            num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
-            estimator_results_t = estimator_results[:num_tensor_expvals]
-            estimator_results_s = estimator_results[num_tensor_expvals:]
-            # tensor_expvals[𝑛][𝑎] = ⟨b𝑛|U^t•P0•U|b𝑛⟩
-            tensor_expval_list = list(
-                estimator_results_t.reshape((len(tensor_ansatze), len(tensor_paulis)))
-            )
-            superposition_expval_list = list(
-                estimator_results_s.reshape(
-                    (len(superposition_ansatze), len(superposition_paulis))
-                )
-            )
+    # Calculate the inferred expectation values, given the results from the grouped experiments
+    tensor_name_prefixes = [circ.name for circ in tensor_ansatze]
+    tensor_expvals = _get_expectation_values_from_counts(
+        tensor_result, tensor_name_prefixes, grouping_tensor_op
+    )
+    tensor_expval_list = list(tensor_expvals)
+    superposition_name_prefixes = [circ.name for circ in superposition_ansatze]
+    superposition_expvals = _get_expectation_values_from_counts(
+        superposition_result, superposition_name_prefixes, grouping_superposition_op
+    )
+    superposition_expval_list = list(superposition_expvals)
 
     # Scale the superposition terms
     for i, ansatz in enumerate(superposition_ansatze):
@@ -752,7 +691,7 @@ def _estimate_expvals(
         else:
             superposition_expval_list[i] *= 0.5
 
-    return tensor_expval_list, superposition_expval_list, session_id
+    return tensor_expval_list, superposition_expval_list
 
 
 def _get_expectation_values_from_counts(
@@ -971,36 +910,25 @@ def _covariance(
 
 
 def _execute_with_retry(
-    service: QiskitRuntimeService,
-    inputs: Dict[str, Any],
-    options: Dict[str, Any],
-    session_id: Optional[str],
-    start_session: bool,
-) -> Tuple[SamplerResult, str]:
+    sampler: Sampler,
+    circuits: Sequence[QuantumCircuit],
+) -> SamplerResult:
     """Execute an IBMQ job and automatically re-initiates the job if it fails.
 
     Args:
         - service: The Qiskit runtime service used to call the Sampler program
         - inputs: Inputs to the Sampler program
-        - options: Backend options
-        - session_id: The session ID to use when invoking the Sampler program
         - start_session: Whether to start a new session with this job
     Returns:
-        - Tuple[SamplerResult, str]: Results from the sampler and the resulting job ID
+        - SamplerResult: Results from the sampler and the resulting job ID
     """
     result = None
     trials = 0
     ran_job_ok = False
     while not ran_job_ok:
         try:
-            job = service.run(
-                program_id="sampler",
-                inputs=inputs,
-                options=options,
-                result_decoder=SamplerResultDecoder,
-                session_id=session_id,
-                start_session=start_session,
-            )
+            job = sampler.run(circuits=circuits)
+
             result = job.result()
             ran_job_ok = True
         except (IBMQJobFailureError, IBMQJobApiError, IBMQJobInvalidStateError) as err:
@@ -1015,4 +943,4 @@ def _execute_with_retry(
                 raise RuntimeError(
                     "Timed out trying to run job successfully (100 attempts)"
                 )
-    return result, job.job_id
+    return result
