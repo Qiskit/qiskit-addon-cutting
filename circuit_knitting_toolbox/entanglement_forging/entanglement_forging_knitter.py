@@ -29,7 +29,14 @@ from qiskit.providers.ibmq.job import (
     IBMQJobInvalidStateError,
 )
 from qiskit_nature import QiskitNatureError
-from qiskit_ibm_runtime import QiskitRuntimeService, Session, Options, Estimator
+from qiskit_ibm_runtime import (
+    QiskitRuntimeService,
+    Session,
+    Options,
+    Estimator,
+    RuntimeOptions,
+)
+from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -75,7 +82,11 @@ class EntanglementForgingKnitter:
         Returns:
             - None
         """
-        self._backend_names = backend_names
+        # Call backend_names setter to update the session_ids hidden class field
+        self._session_ids: Optional[List[Union[str, None]]] = None
+        self.backend_names = backend_names
+
+        # The service hidden class field is a json representing the QiskitRuntimeService object
         self._service = service.active_account() if service is not None else service
 
         # Save the parameterized ansatz and bitstrings
@@ -149,6 +160,8 @@ class EntanglementForgingKnitter:
             - None
         """
         self._backend_names = backend_names
+        if backend_names:
+            self._session_ids = [None] * len(backend_names)
 
     @property
     def service(self) -> Optional[QiskitRuntimeService]:
@@ -254,7 +267,13 @@ class EntanglementForgingKnitter:
         # Get the RuntimeService as a hashable dictionary
         service_args = None
         if self._service:
-            service_args = self._service.active_account()
+            service_args = self._service
+
+        session_ids: Optional[List[Union[str, None]]] = None
+        if self._session_ids is None:
+            session_ids = [None] * num_partitions
+        else:
+            session_ids = self._session_ids
 
         partitioned_expval_futures = [
             _estimate_expvals.remote(  # type: ignore
@@ -265,6 +284,7 @@ class EntanglementForgingKnitter:
                 service_args=service_args,
                 backend_names=self._backend_names,
                 backend_index=partition_index,
+                session_id=session_ids[partition_index],
             )
             for partition_index, (
                 tensor_ansatze_partition,
@@ -280,9 +300,17 @@ class EntanglementForgingKnitter:
             (
                 partition_tensor_expvals,
                 partition_superposition_expvals,
+                job_id,
             ) = ray.get(partition_expval_futures)
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
+            # Start a session for each thread if this is the first run
+            if job_id and (session_ids[i] is None):
+                if self._session_ids is None:
+                    raise ValueError(
+                        "Something unexpected happened. The session_ids field must be set when a job_id is present."
+                    )
+                self._session_ids[i] = job_id
 
         # Compute the Schmidt matrix
         h_schmidt = self._compute_h_schmidt(
@@ -562,7 +590,8 @@ def _estimate_expvals(
     service_args: Optional[Dict[str, Any]] = None,
     backend_names: Optional[List[str]] = None,
     backend_index: int = 0,
-) -> Tuple[List[NDArray], List[NDArray]]:
+    session_id: Optional[str] = None,
+) -> Tuple[List[NDArray], List[NDArray], Optional[str]]:
     """Run quantum circuits to generate the expectation values.
 
     Function to estimate the exepctation value of some observables on the
@@ -584,52 +613,93 @@ def _estimate_expvals(
         - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives
         - backend_names (List[str]): The list of backends to use to evaluate the grouped experiments
         - backend_index (int): The index of the backend to be used
+        - session_id (str): The session id to use when calling primitive programs
 
     Returns:
-        - (Tuple[List[NDArray], List[NDArray]]): the expectation values for the
+        - (Tuple[List[NDArray], List[NDArray], Optional[str]]): the expectation values for the
             tensor circuits and superposition circuits
     """
     all_circuits = tensor_ansatze + superposition_ansatze
     all_observables = tensor_paulis + superposition_paulis
-    if service_args is None:
+
+    ansatz_t: List[QuantumCircuit] = []
+    ansatz_t_idx: List[int] = []
+    observables_t: List[Pauli] = []
+    observables_t_idx: List[int] = []
+    for i, circuit in enumerate(tensor_ansatze):
+        ansatz_t += [circuit] * len(tensor_paulis)
+        ansatz_t_idx += [i] * len(tensor_paulis)
+        observables_t += tensor_paulis
+        observables_t_idx += range(len(tensor_paulis))
+
+    ansatz_s: List[QuantumCircuit] = []
+    ansatz_s_idx: List[int] = []
+    observables_s: List[Pauli] = []
+    observables_s_idx: List[int] = []
+    for i, circuit in enumerate(superposition_ansatze):
+        ansatz_s += [circuit] * len(superposition_paulis)
+        ansatz_s_idx += [i] * len(superposition_paulis)
+        observables_s += superposition_paulis
+        observables_s_idx += range(len(superposition_paulis))
+
+    all_ansatze_for_estimator = ansatz_t + ansatz_s
+    all_ansatze_for_estimator_idx = ansatz_t_idx + ansatz_s_idx
+    all_observables_for_estimator = observables_t + observables_s
+    all_observables_for_estimator_idx = observables_t_idx + observables_s_idx
+
+    # ID for this job. If it is the first job for the knitter, it will become the session ID
+    job_id: Optional[str] = None
+    if service_args is not None:
+        # Set the backend. Default to runtime qasm simulator
+        if backend_names is None:
+            raise ValueError(
+                "If passing a QiskitRuntimeService, a list of backend names must be specified."
+            )
+        service = QiskitRuntimeService(**service_args)
+
+        backend_options = {"shots": 1024}
+        transpilation_settings = {"optimization_level": 3}
+        resilience_settings = {"level": 1}
+        inputs = {
+            "circuits": all_circuits,
+            "observables": all_observables,
+            "circuit_indices": all_ansatze_for_estimator_idx,
+            "observable_indices": all_observables_for_estimator_idx,
+            "run_options": backend_options,
+            "transpilation_settings": transpilation_settings,
+            "resilience_settings": resilience_settings,
+        }
+
+        # Start a session if this is the first invocation of the knitter
+        start_session = False
+        if session_id is None:
+            start_session = True
+
+        runtime_options = {"backend": backend_names[backend_index]}
+        job = service.run(
+            program_id="estimator",
+            inputs=inputs,
+            options=runtime_options,
+            result_decoder=EstimatorResultDecoder,
+            session_id=session_id,
+            start_session=start_session,
+        )
+        results = job.result().values
+        job_id = job.job_id
+
+    else:
         estimator = TestEstimator(
             circuits=all_circuits,
             observables=all_observables,
         )
-    else:
-        # Set the backend. Default to runtime qasm simulator
-        if backend_names is None:
-            raise ValueError("If passing a QiskitRuntimeService, a list of backend names must be specified.")
-        service = QiskitRuntimeService(**service_args)
-        session = Session(service=service, backend=backend_names[backend_index])
-        estimator = Estimator(
-            circuits=all_circuits,
-            observables=all_observables,
-            session=session,
+        results = (
+            estimator.run(
+                circuits=all_ansatze_for_estimator,
+                observables=all_observables_for_estimator,
+            )
+            .result()
+            .values
         )
-
-    ansatz_t: List[QuantumCircuit] = []
-    observables_t: List[Pauli] = []
-    for i, circuit in enumerate(tensor_ansatze):
-        ansatz_t += [circuit] * len(tensor_paulis)
-        observables_t += tensor_paulis
-
-    ansatz_s: List[QuantumCircuit] = []
-    observables_s: List[Pauli] = []
-    for i, circuit in enumerate(superposition_ansatze):
-        ansatz_s += [circuit] * len(superposition_paulis)
-        observables_s += superposition_paulis
-
-    all_ansatze_for_estimator = ansatz_t + ansatz_s
-    all_observables_for_estimator = observables_t + observables_s
-    results = (
-        estimator.run(
-            circuits=all_ansatze_for_estimator,
-            observables=all_observables_for_estimator,
-        )
-        .result()
-        .values
-    )
 
     # Post-process the results to get our expectation values in the right format
     num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
@@ -655,4 +725,4 @@ def _estimate_expvals(
         else:
             superposition_expval_list[i] *= 0.5
 
-    return tensor_expval_list, superposition_expval_list
+    return tensor_expval_list, superposition_expval_list, job_id
