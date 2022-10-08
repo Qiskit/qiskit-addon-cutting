@@ -1,4 +1,4 @@
-from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
+/rom typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
 
 import ray
 from nptyping import NDArray
@@ -116,23 +116,23 @@ class WireCutter:
         cuts: Dict[str, Any],
         num_threads: int = 1,
     ) -> NDArray:
-        ordered_probability_futures = _recompose.remote(
+        reconstructed_probability_futures = _recompose.remote(
             circuit=self.circuit,
             subcircuit_instance_probabilities=subcircuit_instance_probabilities,
             cuts=cuts,
             num_threads=num_threads,
         )
-        ordered_probabilities = ray.get(ordered_probability_futures)
+        reconstructed_probabilities = ray.get(reconstructed_probability_futures)
 
-        return ordered_probabilities
+        return reconstructed_probabilities
 
     def verify(
         self,
-        ordered_probability: NDArray,
+        reconstructed_probability: NDArray,
     ) -> Dict[str, Dict[str, float]]:
         metrics = verify(
             self.circuit,
-            ordered_probability,
+            reconstructed_probability,
         )
         return metrics
 
@@ -290,7 +290,7 @@ def _recompose(
         cuts, summation_terms, subcircuit_entry_probabilities, num_threads
     )
 
-    ordered_probability = generate_reconstructed_output(
+    reconstructed_probability = generate_reconstructed_output(
         circuit,
         cuts["subcircuits"],
         unordered_probability,
@@ -298,7 +298,7 @@ def _recompose(
         cuts["complete_path_map"],
     )
 
-    return ordered_probability
+    return reconstructed_probability
 
 
 @ray.remote
