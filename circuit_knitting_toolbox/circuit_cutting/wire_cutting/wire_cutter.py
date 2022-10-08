@@ -2,6 +2,7 @@ from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
 
 from nptyping import NDArray
 from qiskit import QuantumCircuit
+from qiskit.primitives import Sampler as TestSampler
 from qiskit_ibm_runtime import (
     Sampler,
     Options,
@@ -21,7 +22,7 @@ class WireCutter:
     def __init__(
         self,
         circuit: QuantumCircuit,
-        service_args: Dict[str, Any],
+        service_args: Optional[Dict[str, Any]] = None,
         options: Optional[Options] = None,
         runtime_options: Optional[RuntimeOptions] = None,
     ):
@@ -36,11 +37,11 @@ class WireCutter:
         return self._circuit
 
     @property
-    def service_args(self) -> Dict[str, Any]:
+    def service_args(self) -> Optional[Dict[str, Any]]:
         return self._service_args
 
     @service_args.setter
-    def service_args(self, service_args: Dict[str, Any]) -> None:
+    def service_args(self, service_args: Optional[Dict[str, Any]]) -> None:
         self._service_args = service_args
 
     @property
@@ -243,23 +244,27 @@ def _build(
 @run_qiskit_remote()
 def _evaluate(
     cuts: Dict[str, Any],
-    service_args: Dict[str, Any],
+    service_args: Optional[Dict[str, Any]] = None,
     options: Optional[Options] = None,
     runtime_options: Optional[RuntimeOptions] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     cuts: results from cutting routine
     """
-    # Set the backend. Default to runtime qasm simulator
-    if (runtime_options is None) or (runtime_options.backend_name is None):
-        backend_name = "ibmq_qasm_simulator"
+    # If no service args were passed, run Qiskit sampler for actual probabilities
+    if service_args is None:
+        sampler = TestSampler()
     else:
-        backend_name = runtime_options.backend_name
+        # Set the backend. Default to runtime qasm simulator
+        if (runtime_options is None) or (runtime_options.backend_name is None):
+            backend_name = "ibmq_qasm_simulator"
+        else:
+            backend_name = runtime_options.backend_name
 
-    # Set up our service, session, and sampler primitive
-    service = QiskitRuntimeService(**service_args)
-    session = Session(service=service, backend=backend_name)
-    sampler = Sampler(session=session, options=options)
+        # Set up our service, session, and sampler primitive
+        service = QiskitRuntimeService(**service_args)
+        session = Session(service=service, backend=backend_name)
+        sampler = Sampler(session=session, options=options)
 
     _, _, subcircuit_instances = _generate_metadata(cuts)
 
