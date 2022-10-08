@@ -11,7 +11,7 @@ requires-python = ">=3.7"
 dependencies = [
     "pyscf>=2.0.1",
     "qiskit-aer>=0.11.0",
-    "qiskit-terra>=0.21.1",
+    "qiskit-terra>=0.22.0rc1",
     "qiskit-nature>=0.4.2",
     "qiskit-ibm-runtime>=0.7.0rc1",
     "qiskit-ibmq-provider>=0.19.2",
