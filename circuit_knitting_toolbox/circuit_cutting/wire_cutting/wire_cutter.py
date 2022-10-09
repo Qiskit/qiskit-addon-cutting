@@ -1,112 +1,140 @@
 from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
 
-from qiskit import QuantumCircuit
+import ray
 from nptyping import NDArray
+
+from qiskit import QuantumCircuit
+from qiskit.primitives import Sampler as TestSampler
+from qiskit_ibm_runtime import (
+    Sampler,
+    Options,
+    RuntimeOptions,
+    QiskitRuntimeService,
+    Session,
+)
 
 from .wire_cutting import find_wire_cuts, cut_circuit_wire
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
-from .wire_cutting_verification import verify
+from .wire_cutting_verification import verify, generate_reconstructed_output
 
 
 class WireCutter:
-    def __init__(self, circuit: Optional[QuantumCircuit] = None):
-        self.circuit = circuit
-
-    def cut_automatic(
+    def __init__(
         self,
-        max_subcircuit_width: int,
+        circuit: QuantumCircuit,
+        service_args: Optional[Dict[str, Any]] = None,
+        options: Optional[Options] = None,
+        runtime_options: Optional[RuntimeOptions] = None,
+    ):
+        # Set class fields
+        self._circuit = circuit
+        self._service_args = service_args
+        self._options = options
+        self._runtime_options = runtime_options
+
+    @property
+    def circuit(self) -> QuantumCircuit:
+        return self._circuit
+
+    @property
+    def service_args(self) -> Optional[Dict[str, Any]]:
+        return self._service_args
+
+    @service_args.setter
+    def service_args(self, service_args: Optional[Dict[str, Any]]) -> None:
+        self._service_args = service_args
+
+    @property
+    def options(self) -> Optional[Options]:
+        return self._options
+
+    @options.setter
+    def options(self, options: Optional[Options]) -> None:
+        self._options = options
+
+    @property
+    def runtime_options(self) -> Optional[RuntimeOptions]:
+        return self._runtime_options
+
+    @runtime_options.setter
+    def runtime_options(self, runtime_options: Optional[RuntimeOptions]) -> None:
+        self._runtime_options = runtime_options
+
+    def decompose(
+        self,
+        method: str,
+        subcircuit_vertices: Optional[Sequence[Sequence[int]]] = None,
+        max_subcircuit_width: Optional[int] = None,
         max_subcircuit_cuts: Optional[int] = None,
         max_subcircuit_size: Optional[int] = None,
         max_cuts: Optional[int] = None,
         num_subcircuits: Optional[Sequence[int]] = None,
     ) -> Dict[str, Any]:
-        """
-        Automatically find an optimized cut scheme based on input.
-
-        Args:
-        max_subcircuit_width: max number of qubits in each subcircuit
-        max_cuts: max total number of cuts allowed
-        max_subcircuit_cuts: max number of cuts for a subcircuit
-        max_subcircuit_size: max number of gates in a subcircuit
-        num_subcircuits: list of subcircuits to try
-        """
-        if self.circuit is None:
-            raise ValueError(
-                "A circuit must be passed to the cutter prior to calling a cut method."
+        cuts = {}
+        if method == "automatic":
+            if max_subcircuit_width is None:
+                raise ValueError(
+                    "The max_subcircuit_width argument must be set if using automatic cut finding."
+                )
+            cuts_futures = _cut_automatic.remote(
+                self.circuit,
+                max_subcircuit_width,
+                max_subcircuit_cuts=max_subcircuit_cuts,
+                max_subcircuit_size=max_subcircuit_size,
+                max_cuts=max_cuts,
+                num_subcircuits=num_subcircuits,
             )
-        cuts = find_wire_cuts(
-            circuit=self.circuit,
-            max_subcircuit_width=max_subcircuit_width,
-            max_cuts=max_cuts,
-            num_subcircuits=num_subcircuits,
-            max_subcircuit_cuts=max_subcircuit_cuts,
-            max_subcircuit_size=max_subcircuit_size,
-            verbose=True,
-        )
-
+            cuts = ray.get(cuts_futures)
+        elif method == "manual":
+            if subcircuit_vertices is None:
+                raise ValueError(
+                    "The subcircuit_vertices argument must be set if manually specifying cuts."
+                )
+            cuts_futures = _cut_manual.remote(self.circuit, subcircuit_vertices)
+            cuts = ray.get(cuts_futures)
+        else:
+            ValueError(
+                'The method argument for the decompose method should be either "automatic" or "manual".'
+            )
         return cuts
 
-    def cut_manual(
-        self, subcircuit_vertices: Sequence[Sequence[int]]
-    ) -> Dict[str, Any]:
-        """
-        Cut the given circuits at the wires specified
-
-        Args:
-        """
-        cuts = cut_circuit_wire(
-            circuit=self.circuit,
-            subcircuit_vertices=subcircuit_vertices,
-            verbose=True,
-        )
-
-        return cuts
-
-    @staticmethod
-    def evaluate(
-        cuts: Dict[str, Any],
-        mode: str,
-        num_shots_fn: Callable,
-        mem_limit: int,
-        num_threads: int,
-    ) -> Tuple[NDArray, List[int]]:
+    def evaluate(self, cuts: Dict[str, Any]) -> Dict[int, Dict[int, NDArray]]:
         """
         cuts: results from cutting routine
-        mode = qasm: simulate shots
-        mode = sv: statevector simulation
-        num_shots_fn: a function that gives the number of shots to take for a given circuit
         """
-        (
-            summation_terms,
-            subcircuit_entries,
-            subcircuit_instances,
-        ) = _generate_metadata(cuts)
-        subcircuit_instance_probs = _run_subcircuits(
-            cuts, subcircuit_instances, mode, num_shots_fn
+        probability_futures = _evaluate.remote(
+            cuts, self.service_args, self.options, self.runtime_options
         )
-        subcircuit_entry_probs = _attribute_shots(
-            subcircuit_entries, subcircuit_instance_probs
+        subcircuit_instance_probabilities = ray.get(probability_futures)
+
+        return subcircuit_instance_probabilities
+
+    def recompose(
+        self,
+        subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
+        cuts: Dict[str, Any],
+        num_threads: int = 1,
+    ) -> NDArray:
+        reconstructed_probability_futures = _recompose.remote(
+            circuit=self.circuit,
+            subcircuit_instance_probabilities=subcircuit_instance_probabilities,
+            cuts=cuts,
+            num_threads=num_threads,
         )
-        unordered_probability, smart_order = _build(
-            cuts, summation_terms, subcircuit_entry_probs, mem_limit, num_threads
-        )
-        return unordered_probability, smart_order
+        reconstructed_probabilities = ray.get(reconstructed_probability_futures)
+
+        return reconstructed_probabilities
 
     def verify(
         self,
-        cuts: Dict[str, Any],
-        unordered_probability: Sequence[float],
-        smart_order: Sequence[int],
-    ) -> Tuple[NDArray, Dict[str, Dict[str, float]]]:
-        ordered_probability, metrics = verify(
-            full_circuit=self.circuit,
-            unordered=unordered_probability,
-            complete_path_map=cuts["complete_path_map"],
-            subcircuits=cuts["subcircuits"],
-            smart_order=smart_order,
+        reconstructed_probability: NDArray,
+    ) -> Dict[str, Dict[str, float]]:
+        metrics = verify(
+            self.circuit,
+            reconstructed_probability,
         )
-        return ordered_probability, metrics
+        return metrics
 
 
 def _generate_metadata(
@@ -131,8 +159,7 @@ def _generate_metadata(
 def _run_subcircuits(
     cuts: Dict[str, Any],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    mode: str,
-    num_shots_fn: Callable,
+    sampler: Sampler,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Run all the subcircuit instances
@@ -141,8 +168,7 @@ def _run_subcircuits(
     subcircuit_instance_probs = run_subcircuit_instances(
         subcircuits=cuts["subcircuits"],
         subcircuit_instances=subcircuit_instances,
-        mode=mode,
-        num_shots_fn=num_shots_fn,
+        sampler=sampler,
     )
 
     return subcircuit_instance_probs
@@ -201,7 +227,6 @@ def _build(
     cuts: Dict[str, Any],
     summation_terms: Sequence[Dict[int, int]],
     subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
-    mem_limit: int,
     num_threads: int,
 ) -> Tuple[NDArray, List[int]]:
     reconstructed_prob, smart_order, overhead = build(
@@ -215,3 +240,112 @@ def _build(
     smart_order = smart_order
 
     return unordered_prob, smart_order
+
+
+@ray.remote
+def _evaluate(
+    cuts: Dict[str, Any],
+    service_args: Optional[Dict[str, Any]] = None,
+    options: Optional[Options] = None,
+    runtime_options: Optional[RuntimeOptions] = None,
+) -> Dict[int, Dict[int, NDArray]]:
+    """
+    cuts: results from cutting routine
+    """
+    # If no service args were passed, run Qiskit sampler for actual probabilities
+    if service_args is None:
+        sampler = TestSampler()
+    else:
+        # Set the backend. Default to runtime qasm simulator
+        if (runtime_options is None) or (runtime_options.backend_name is None):
+            backend_name = "ibmq_qasm_simulator"
+        else:
+            backend_name = runtime_options.backend_name
+
+        # Set up our service, session, and sampler primitive
+        service = QiskitRuntimeService(**service_args)
+        session = Session(service=service, backend=backend_name)
+        sampler = Sampler(session=session, options=options)
+
+    _, _, subcircuit_instances = _generate_metadata(cuts)
+
+    subcircuit_instance_probs = _run_subcircuits(cuts, subcircuit_instances, sampler)
+
+    return subcircuit_instance_probs
+
+
+@ray.remote
+def _recompose(
+    circuit: QuantumCircuit,
+    subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
+    cuts: Dict[str, Any],
+    num_threads: int = 1,
+) -> NDArray:
+    summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
+
+    subcircuit_entry_probabilities = _attribute_shots(
+        subcircuit_entries, subcircuit_instance_probabilities
+    )
+    unordered_probability, smart_order = _build(
+        cuts, summation_terms, subcircuit_entry_probabilities, num_threads
+    )
+
+    reconstructed_probability = generate_reconstructed_output(
+        circuit,
+        cuts["subcircuits"],
+        unordered_probability,
+        smart_order,
+        cuts["complete_path_map"],
+    )
+
+    return reconstructed_probability
+
+
+@ray.remote
+def _cut_automatic(
+    circuit: QuantumCircuit,
+    max_subcircuit_width: int,
+    max_subcircuit_cuts: Optional[int] = None,
+    max_subcircuit_size: Optional[int] = None,
+    max_cuts: Optional[int] = None,
+    num_subcircuits: Optional[Sequence[int]] = None,
+) -> Dict[str, Any]:
+    """
+    Automatically find an optimized cut scheme based on input.
+
+    Args:
+    max_subcircuit_width: max number of qubits in each subcircuit
+    max_cuts: max total number of cuts allowed
+    max_subcircuit_cuts: max number of cuts for a subcircuit
+    max_subcircuit_size: max number of gates in a subcircuit
+    num_subcircuits: list of subcircuits to try
+    """
+    cuts = find_wire_cuts(
+        circuit=circuit,
+        max_subcircuit_width=max_subcircuit_width,
+        max_cuts=max_cuts,
+        num_subcircuits=num_subcircuits,
+        max_subcircuit_cuts=max_subcircuit_cuts,
+        max_subcircuit_size=max_subcircuit_size,
+        verbose=True,
+    )
+
+    return cuts
+
+
+@ray.remote
+def _cut_manual(
+    circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]]
+) -> Dict[str, Any]:
+    """
+    Cut the given circuits at the wires specified
+
+    Args:
+    """
+    cuts = cut_circuit_wire(
+        circuit=circuit,
+        subcircuit_vertices=subcircuit_vertices,
+        verbose=True,
+    )
+
+    return cuts

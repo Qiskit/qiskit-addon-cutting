@@ -41,29 +41,36 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.circuit = qc
 
-    @staticmethod
-    def num_shots_fn(circuit):
-        return 1024
-
-    def test_circuit_cutting(self):
+    def test_circuit_cutting_automatic(self):
         qc = self.circuit
         cutter = WireCutter(qc)
-        cuts = cutter.cut_automatic(
+        cuts = cutter.decompose(
+            method="automatic",
             max_subcircuit_width=3,
             max_subcircuit_cuts=10,
             max_subcircuit_size=12,
             max_cuts=10,
             num_subcircuits=[2],
         )
-        unordered_probabilities, smart_order = cutter.evaluate(
-            cuts,
-            mode="sv",
-            num_shots_fn=self.num_shots_fn,
-            mem_limit=24,
-            num_threads=4,
+        subcircuit_instance_probabilities = cutter.evaluate(cuts)
+        reconstructed_probabilities = cutter.recompose(
+            subcircuit_instance_probabilities, cuts
         )
-        ordered_probabilities, metrics = cutter.verify(
-            cuts, unordered_probabilities, smart_order
+
+        metrics = cutter.verify(reconstructed_probabilities)
+
+        self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
+
+    def test_circuit_cutting_manual(self):
+        qc = self.circuit
+        cutter = WireCutter(qc)
+
+        cuts = cutter.decompose(method="manual", subcircuit_vertices=[[0, 1], [2, 3]])
+        subcircuit_instance_probabilities = cutter.evaluate(cuts)
+        reconstructed_probabilities = cutter.recompose(
+            subcircuit_instance_probabilities, cuts
         )
+
+        metrics = cutter.verify(reconstructed_probabilities)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])

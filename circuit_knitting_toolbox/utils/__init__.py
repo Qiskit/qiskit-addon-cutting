@@ -10,6 +10,5 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from .estimator import Estimator
 from .integral_driver import IntegralDriver
 from .orbital_reduction import reduce_bitstrings

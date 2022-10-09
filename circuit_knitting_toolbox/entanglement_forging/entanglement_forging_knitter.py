@@ -13,9 +13,8 @@
 
 import copy
 import warnings
-from typing import Set, Iterable, List, Optional, Sequence, Tuple, Union, Any, Dict
+from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
 import time
-from dataclasses import dataclass
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
@@ -23,25 +22,24 @@ import ray
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
-from qiskit.opflow import OperatorBase, PauliSumOp
-from qiskit.primitives import SamplerResult
+from qiskit.primitives import Estimator as TestEstimator, EstimatorResult
 from qiskit.providers.ibmq.job import (
     IBMQJobFailureError,
     IBMQJobApiError,
     IBMQJobInvalidStateError,
 )
 from qiskit_nature import QiskitNatureError
-from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_ibm_runtime.sampler import SamplerResultDecoder
+from qiskit_ibm_runtime import (
+    QiskitRuntimeService,
+    Session,
+    Options,
+    Estimator,
+    RuntimeOptions,
+)
+from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
-from ..utils import Estimator
-from ..utils.grouping import (
-    TPBGroupedWeightedPauliOperator,
-    WeightedPauliOperator,
-    to_tpb_grouped_weighted_pauli_operator,
-)
 
 
 class EntanglementForgingKnitter:
@@ -84,9 +82,12 @@ class EntanglementForgingKnitter:
         Returns:
             - None
         """
-        self._backend_names = backend_names
+        # Call backend_names setter to update the session_ids hidden class field
+        self._session_ids: Optional[List[Union[str, None]]] = None
+        self.backend_names = backend_names
+
+        # The service hidden class field is a json representing the QiskitRuntimeService object
         self._service = service.active_account() if service is not None else service
-        self._session_id: Optional[List[Optional[str]]] = None
 
         # Save the parameterized ansatz and bitstrings
         self._ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
@@ -159,6 +160,8 @@ class EntanglementForgingKnitter:
             - None
         """
         self._backend_names = backend_names
+        if backend_names:
+            self._session_ids = [None] * len(backend_names)
 
     @property
     def service(self) -> Optional[QiskitRuntimeService]:
@@ -253,9 +256,6 @@ class EntanglementForgingKnitter:
         else:
             num_partitions = 1
 
-        if self._session_id is None:
-            self._session_id = [None] * num_partitions
-
         tensor_ansatze = tensor_ansatze_u + tensor_ansatze_v
         superposition_ansatze = superposition_ansatze_u + superposition_ansatze_v
 
@@ -264,16 +264,27 @@ class EntanglementForgingKnitter:
             superposition_ansatze, num_partitions
         )
 
+        # Get the RuntimeService as a hashable dictionary
+        service_args = None
+        if self._service:
+            service_args = self._service
+
+        session_ids: Optional[List[Union[str, None]]] = None
+        if self._session_ids is None:
+            session_ids = [None] * num_partitions
+        else:
+            session_ids = self._session_ids
+
         partitioned_expval_futures = [
             _estimate_expvals.remote(  # type: ignore
                 tensor_ansatze=tensor_ansatze_partition,
                 tensor_paulis=forged_operator.tensor_paulis,
                 superposition_ansatze=superposition_ansatze_partition,
                 superposition_paulis=forged_operator.superposition_paulis,
-                service=self._service,
+                service_args=service_args,
                 backend_names=self._backend_names,
                 backend_index=partition_index,
-                session_id=self._session_id[partition_index],
+                session_id=session_ids[partition_index],
             )
             for partition_index, (
                 tensor_ansatze_partition,
@@ -289,10 +300,17 @@ class EntanglementForgingKnitter:
             (
                 partition_tensor_expvals,
                 partition_superposition_expvals,
-                self._session_id[i],
+                job_id,
             ) = ray.get(partition_expval_futures)
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
+            # Start a session for each thread if this is the first run
+            if job_id and (session_ids[i] is None):
+                if self._session_ids is None:
+                    raise ValueError(
+                        "Something unexpected happened. The session_ids field must be set when a job_id is present."
+                    )
+                self._session_ids[i] = job_id
 
         # Compute the Schmidt matrix
         h_schmidt = self._compute_h_schmidt(
@@ -569,7 +587,7 @@ def _estimate_expvals(
     tensor_paulis: List[Pauli],
     superposition_ansatze: List[QuantumCircuit],
     superposition_paulis: List[Pauli],
-    service: Optional[Dict[str, Any]] = None,
+    service_args: Optional[Dict[str, Any]] = None,
     backend_names: Optional[List[str]] = None,
     backend_index: int = 0,
     session_id: Optional[str] = None,
@@ -592,155 +610,110 @@ def _estimate_expvals(
         - superposition_paulis (List[Pauli]): the pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt
             coefficients
-        - service (Dict[str, Any]): The service account used to spawn Qiskit primitives
+        - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives
         - backend_names (List[str]): The list of backends to use to evaluate the grouped experiments
         - backend_index (int): The index of the backend to be used
         - session_id (str): The session id to use when calling primitive programs
 
     Returns:
-        - (Tuple[List[NDArray], List[NDArray]]): the expectation values for the
+        - (Tuple[List[NDArray], List[NDArray], Optional[str]]): the expectation values for the
             tensor circuits and superposition circuits
     """
-    service = QiskitRuntimeService(**service) if service is not None else None
+    all_circuits = tensor_ansatze + superposition_ansatze
+    all_observables = tensor_paulis + superposition_paulis
 
-    if backend_names and not service:
-        raise ValueError("A service must be specified to use specific backends.")
+    ansatz_t: List[QuantumCircuit] = []
+    ansatz_t_idx: List[int] = []
+    observables_t: List[Pauli] = []
+    observables_t_idx: List[int] = []
+    for i, circuit in enumerate(tensor_ansatze):
+        ansatz_t += [circuit] * len(tensor_paulis)
+        ansatz_t_idx += [i] * len(tensor_paulis)
+        observables_t += tensor_paulis
+        observables_t_idx += range(len(tensor_paulis))
 
-    # Get names of Paulis in each basis
-    tensor_pauli_names = [pauli.to_label() for pauli in tensor_paulis]
-    superposition_pauli_names = [pauli.to_label() for pauli in superposition_paulis]
+    ansatz_s: List[QuantumCircuit] = []
+    ansatz_s_idx: List[int] = []
+    observables_s: List[Pauli] = []
+    observables_s_idx: List[int] = []
+    for i, circuit in enumerate(superposition_ansatze):
+        ansatz_s += [circuit] * len(superposition_paulis)
+        ansatz_s_idx += [i] * len(superposition_paulis)
+        observables_s += superposition_paulis
+        observables_s_idx += range(len(superposition_paulis))
 
-    # Create the grouped operators
-    grouping_tensor_op = to_tpb_grouped_weighted_pauli_operator(
-        WeightedPauliOperator(
-            paulis=[[1, Pauli(pname)] for pname in tensor_pauli_names]
-        ),
-        TPBGroupedWeightedPauliOperator.sorted_grouping,
-    )
-    grouping_superposition_op = to_tpb_grouped_weighted_pauli_operator(
-        WeightedPauliOperator(
-            paulis=[[1, Pauli(pname)] for pname in superposition_pauli_names]
-        ),
-        TPBGroupedWeightedPauliOperator.sorted_grouping,
-    )
+    all_ansatze_for_estimator = ansatz_t + ansatz_s
+    all_ansatze_for_estimator_idx = ansatz_t_idx + ansatz_s_idx
+    all_observables_for_estimator = observables_t + observables_s
+    all_observables_for_estimator_idx = observables_t_idx + observables_s_idx
 
-    tensor_circuits_to_execute = _prepare_circuits_to_execute(
-        tensor_ansatze, grouping_tensor_op
-    )
-    superposition_circuits_to_execute = _prepare_circuits_to_execute(
-        superposition_ansatze, grouping_superposition_op
-    )
-
-    # If a service was passed, expectation values will be calculated using grouping
-    if service:
+    # ID for this job. If it is the first job for the knitter, it will become the session ID
+    job_id: Optional[str] = None
+    if service_args is not None:
+        # Set the backend. Default to runtime qasm simulator
         if backend_names is None:
             raise ValueError(
-                "A service was passed but no backend names were specified."
+                "If passing a QiskitRuntimeService, a list of backend names must be specified."
             )
-        all_circuits = tensor_circuits_to_execute + superposition_circuits_to_execute
-        num_shots = 1024
+        service = QiskitRuntimeService(**service_args)
+
+        backend_options = {"shots": 1024}
+        transpilation_settings = {"optimization_level": 3}
+        resilience_settings = {"level": 1}
         inputs = {
             "circuits": all_circuits,
-            "circuit_indices": list(range(len(all_circuits))),
-            "shots": num_shots,
-            "transpilation_options": {"optimization_level": 3},
-            "resilience_settings": {"level": 1},
+            "observables": all_observables,
+            "circuit_indices": all_ansatze_for_estimator_idx,
+            "observable_indices": all_observables_for_estimator_idx,
+            "run_options": backend_options,
+            "transpilation_settings": transpilation_settings,
+            "resilience_settings": resilience_settings,
         }
-        options = {"backend": backend_names[backend_index]}
 
+        # Start a session if this is the first invocation of the knitter
         start_session = False
         if session_id is None:
             start_session = True
 
-        results, job_id = _execute_with_retry(
-            service=service,
+        runtime_options = {"backend": backend_names[backend_index]}
+        job = service.run(
+            program_id="estimator",
             inputs=inputs,
-            options=options,
+            options=runtime_options,
+            result_decoder=EstimatorResultDecoder,
             session_id=session_id,
             start_session=start_session,
         )
+        results = job.result().values
+        job_id = job.job_id
 
-        if session_id is None:
-            session_id = job_id
-
-        # Split the results back out into tensor and superposition results
-        tensor_result = {}
-        tensor_result["quasi_dists"] = [
-            results.quasi_dists[i] for i, _ in enumerate(tensor_circuits_to_execute)
-        ]
-        tensor_result["metadata"] = [
-            {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
-            for circ in tensor_circuits_to_execute
-        ]
-
-        superposition_result = {}
-        num_tensor_circuits = len(tensor_circuits_to_execute)
-        superposition_result["quasi_dists"] = [
-            results.quasi_dists[i + num_tensor_circuits]
-            for i, _ in enumerate(superposition_circuits_to_execute)
-        ]
-        superposition_result["metadata"] = [
-            {"name": circ.name, "n_qubits": circ.num_qubits, "shots": num_shots}
-            for circ in superposition_circuits_to_execute
-        ]
-
-        # Calculate the inferred expectation values, given the results from the grouped experiments
-        tensor_name_prefixes = [circ.name for circ in tensor_ansatze]
-        tensor_expvals = _get_expectation_values_from_counts(
-            tensor_result, tensor_name_prefixes, grouping_tensor_op
-        )
-        tensor_expval_list = list(tensor_expvals)
-        superposition_name_prefixes = [circ.name for circ in superposition_ansatze]
-        superposition_expvals = _get_expectation_values_from_counts(
-            superposition_result, superposition_name_prefixes, grouping_superposition_op
-        )
-        superposition_expval_list = list(superposition_expvals)
-
-    # If no service was passed, use local Estimator for expval calculation
     else:
-        with Estimator(
-            circuits=(tensor_ansatze + superposition_ansatze),
-            observables=(tensor_paulis + superposition_paulis),
-        ) as estimator:
-            # Get the indices for the tensor experiments
-            ansatz_indices_t: List[int] = []
-            observable_indices_t: List[int] = []
-            for i, _ in enumerate(tensor_ansatze):
-                ansatz_indices_t += [i] * len(tensor_paulis)
-                observable_indices_t += range(len(tensor_paulis))
-
-            # Get the indices and scalars for the superposition experiments
-            ansatz_indices_s: List[int] = []
-            observable_indices_s: List[int] = []
-            for i, ansatz in enumerate(superposition_ansatze):
-                # superposition_ansatze[i] = U|𝜙^𝑝_𝑏𝑛𝑏𝑚⟩
-                ansatz_indices_s += [len(tensor_ansatze) + i] * len(
-                    superposition_paulis
-                )
-                observable_indices_s += range(
-                    len(tensor_paulis), len(tensor_paulis) + len(superposition_paulis)
-                )
-
-            # Get all expectation values in one call to the estimator
-            ansatz_indices = ansatz_indices_t + ansatz_indices_s
-            observable_indices = observable_indices_t + observable_indices_s
-
-            # estimator_results = [⟨bi|U^t•P0•U|bi⟩,⟨bi|U^t•P1•U|bi⟩, ....]
-            estimator_results = estimator(ansatz_indices, observable_indices).values
-
-            # Post-process the results to get our expectation values in the right format
-            num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
-            estimator_results_t = estimator_results[:num_tensor_expvals]
-            estimator_results_s = estimator_results[num_tensor_expvals:]
-            # tensor_expvals[𝑛][𝑎] = ⟨b𝑛|U^t•P0•U|b𝑛⟩
-            tensor_expval_list = list(
-                estimator_results_t.reshape((len(tensor_ansatze), len(tensor_paulis)))
+        estimator = TestEstimator(
+            circuits=all_circuits,
+            observables=all_observables,
+        )
+        results = (
+            estimator.run(
+                circuits=all_ansatze_for_estimator,
+                observables=all_observables_for_estimator,
             )
-            superposition_expval_list = list(
-                estimator_results_s.reshape(
-                    (len(superposition_ansatze), len(superposition_paulis))
-                )
-            )
+            .result()
+            .values
+        )
+
+    # Post-process the results to get our expectation values in the right format
+    num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
+    estimator_results_t = results[:num_tensor_expvals]
+    estimator_results_s = results[num_tensor_expvals:]
+
+    tensor_expval_list = list(
+        estimator_results_t.reshape((len(tensor_ansatze), len(tensor_paulis)))
+    )
+    superposition_expval_list = list(
+        estimator_results_s.reshape(
+            (len(superposition_ansatze), len(superposition_paulis))
+        )
+    )
 
     # Scale the superposition terms
     for i, ansatz in enumerate(superposition_ansatze):
@@ -752,267 +725,4 @@ def _estimate_expvals(
         else:
             superposition_expval_list[i] *= 0.5
 
-    return tensor_expval_list, superposition_expval_list, session_id
-
-
-def _get_expectation_values_from_counts(
-    counts: Dict[str, List[Dict[str, Any]]],
-    stateprep_strings: List[str],
-    grouping_operator: WeightedPauliOperator,
-) -> NDArray[Shape["*, *"], Float]:
-    """Calculate expectation values of Pauli strings evaluated for various wavefunctions.
-
-    Args:
-        - counts: Dictionary containing the shot counts and metadata
-        - stateprep_strings: List of ansatz circuit names, which are keys into the counts dict
-        - grouping_operator: The grouping operator used to compress the Pauli basis
-            Schmidt coefficient
-
-    Returns:
-        - Tuple[ndarray, ndarray]: the expectation values for the
-            tensor circuits and superposition circuits.
-            Shape is (num_ansatze, num_paulis)
-    """
-    pauli_vals = np.zeros(
-        (
-            len(stateprep_strings),
-            len(grouping_operator._paulis),
-        )
-    )
-    pauli_names_temp = [p[1].to_label() for p in grouping_operator.paulis]
-    for prep_idx, prep_string in enumerate(stateprep_strings):
-        suffix = prep_string[2]
-        if suffix not in ["u", "v"]:
-            raise ValueError(f"Invalid stateprep circuit name: {prep_string}")
-        bitstring_pair = [0, 0]
-        tensor_circuit = True
-        num_bs_terms = prep_string.count("bs")
-        if (num_bs_terms > 2) or (num_bs_terms == 0):
-            raise ValueError(f"Invalid stateprep circuit name: {prep_string}")
-        elif num_bs_terms == 2:
-            tensor_circuit = False
-
-        pauli_vals_temp, _ = _eval_each_pauli_with_counts(
-            grouping_pauli_operator=grouping_operator,
-            counts=counts,
-            circuit_name_prefix=prep_string + "_",
-        )
-
-        pauli_vals_alphabetical = [
-            x[1] for x in sorted(list(zip(pauli_names_temp, pauli_vals_temp)))
-        ]
-        if not np.all(np.isreal(pauli_vals_alphabetical)):
-            warnings.warn(
-                "Computed Pauli expectation value has nonzero "
-                "imaginary part which will be discarded."
-            )
-        pauli_vals[prep_idx, :] = np.real(pauli_vals_alphabetical)
-
-    return pauli_vals
-
-
-def _eval_each_pauli_with_counts(
-    grouping_pauli_operator: WeightedPauliOperator,
-    counts: Dict[str, List[Dict[str, Any]]],
-    circuit_name_prefix: str = "",
-) -> Tuple[NDArray, NDArray]:
-    """Return inferred expectation values for all Paulis within a group.
-
-    Args:
-        - grouping_operator: The grouping operator used to compress the Pauli basis
-            Schmidt coefficient
-        - counts: Dictionary containing the shot counts and metadata
-        - circuit_name_prefix: Name of ansatz, used to index into counts dict
-
-    Returns:
-        - Tuple[ndarray, ndarray]: the inferred means and covariances for all
-        Paulis within the group.
-    """
-    if grouping_pauli_operator.is_empty():
-        raise QiskitNatureError("Operator is empty, check the operator.")
-    num_paulis = len(grouping_pauli_operator._paulis)
-    means = np.zeros(num_paulis)
-    cov = np.zeros((num_paulis, num_paulis))
-
-    # Make a counts dict
-    counts_dict = {}
-    num_qubits = counts["metadata"][0]["n_qubits"]
-    for i, dist in enumerate(counts["quasi_dists"]):
-        tmp_counts = {}
-        for bitstring in dist.keys():
-            # bitstring = str(bin(int(value, 16)))[2:].zfill(num_qubits)
-            tmp_counts[bitstring] = round(
-                dist[bitstring] * counts["metadata"][0]["shots"]
-            )
-        counts_dict[counts["metadata"][i]["name"]] = tmp_counts
-
-    for basis, p_indices in grouping_pauli_operator._basis:
-        circ_counts = counts_dict[circuit_name_prefix + basis.to_label()]
-        paulis = [grouping_pauli_operator._paulis[idx] for idx in p_indices]
-        paulis = [p[1] for p in paulis]  # Discarding the weights
-        means_this_basis, cov_this_basis = _compute_pauli_means_and_cov_for_one_basis(
-            paulis, circ_counts
-        )
-        for p_idx, p_mean in zip(p_indices, means_this_basis):
-            means[p_idx] = p_mean
-        cov[np.ix_(p_indices, p_indices)] = cov_this_basis
-    return means, cov
-
-
-def _prepare_circuits_to_execute(
-    ansatze: List[QuantumCircuit],
-    grouping_operator: WeightedPauliOperator,
-) -> List[QuantumCircuit]:
-    """Return all unique circuits that must be run to evaluate the ansatze on the operator.
-
-    Args:
-        - ansatze: List of ansatze for which we need to calculate expectation values
-        - grouping_operator: The grouping operator used to compress the Pauli basis
-            Schmidt coefficient
-
-    Returns:
-        - List[QuantumCircuit]: A list of unique QuantumCircuits which must be evaluated
-    """
-    circuits_to_execute = []
-    # Generate the requisite circuits:
-    for prep_circ in [qc.copy() for qc in ansatze]:
-        name_prefix = prep_circ.name + "_"
-        circuits_this_stateprep = grouping_operator.construct_evaluation_circuit(
-            wave_function=prep_circ,
-            statevector_mode=False,
-            use_simulator_snapshot_mode=False,
-            circuit_name_prefix=name_prefix,
-        )
-        circuits_to_execute += circuits_this_stateprep
-    return circuits_to_execute
-
-
-def _compute_pauli_means_and_cov_for_one_basis(
-    paulis: List[Pauli], counts: Dict[str, int]
-) -> Tuple[NDArray, NDArray]:
-    """Compute means and covariances for one Pauli basis.
-
-    Args:
-        - paulis: List of Paulis on which to infer means and covariances
-        - counts: Dictionary containing the shot counts and metadata
-
-    Returns:
-        - Tuple[ndarray, ndarray]: Inferred means and coariances for Paulis in the group
-    """
-    means = np.array([_measure_pauli_z(counts, pauli) for pauli in paulis])
-    cov = np.array(
-        [
-            [
-                _covariance(counts, pauli_1, pauli_2, avg_1, avg_2)
-                for pauli_2, avg_2 in zip(paulis, means)
-            ]
-            for pauli_1, avg_1 in zip(paulis, means)
-        ]
-    )
-    return means, cov
-
-
-def _measure_pauli_z(data: Dict[str, int], pauli: Pauli) -> float:
-    """Measure expectation values for post-rotated Paulis in group.
-
-    Args:
-        - data: Dictionary containing the shot counts and metadata
-        - pauli: a Pauli object
-
-    Returns:
-        - float: Expected value of paulis given data
-    """
-    observable = 0.0
-    num_shots = sum(data.values())
-    p_z_or_x = np.logical_or(pauli.z, pauli.x)
-    for key, value in data.items():
-        bitstr = np.asarray(list(key))[::-1].astype(int).astype(bool)
-        # pylint: disable=no-member
-        sign = -1.0 if np.logical_xor.reduce(np.logical_and(bitstr, p_z_or_x)) else 1.0
-        observable += sign * value
-    observable /= num_shots
-    return observable
-
-
-def _covariance(
-    data: Dict[str, int], pauli_1: Pauli, pauli_2: Pauli, avg_1: float, avg_2: float
-) -> float:
-    """Compute the covariance matrix element between two post-rotated Paulis.
-
-    Args:
-        data: Dictionary containing the shot counts and metadata
-        pauli_1: A Pauli class member
-        pauli_2: A Pauli class member
-        avg_1: Expectation value of pauli_1 on `data`
-        avg_2: Expectation value of pauli_2 on `data`
-    Returns:
-        float: The element of the covariance matrix between two Paulis
-    """
-    cov = 0.0
-    num_shots = sum(data.values())
-
-    if num_shots == 1:
-        return cov
-
-    p1_z_or_x = np.logical_or(pauli_1.z, pauli_1.x)
-    p2_z_or_x = np.logical_or(pauli_2.z, pauli_2.x)
-    for key, value in data.items():
-        bitstr = np.asarray(list(key))[::-1].astype(int).astype(bool)
-        # pylint: disable=no-member
-        sign_1 = (
-            -1.0 if np.logical_xor.reduce(np.logical_and(bitstr, p1_z_or_x)) else 1.0
-        )
-        sign_2 = (
-            -1.0 if np.logical_xor.reduce(np.logical_and(bitstr, p2_z_or_x)) else 1.0
-        )
-        cov += (sign_1 - avg_1) * (sign_2 - avg_2) * value
-    cov /= num_shots - 1
-    return cov
-
-
-def _execute_with_retry(
-    service: QiskitRuntimeService,
-    inputs: Dict[str, Any],
-    options: Dict[str, Any],
-    session_id: Optional[str],
-    start_session: bool,
-) -> Tuple[SamplerResult, str]:
-    """Execute an IBMQ job and automatically re-initiates the job if it fails.
-
-    Args:
-        - service: The Qiskit runtime service used to call the Sampler program
-        - inputs: Inputs to the Sampler program
-        - options: Backend options
-        - session_id: The session ID to use when invoking the Sampler program
-        - start_session: Whether to start a new session with this job
-    Returns:
-        - Tuple[SamplerResult, str]: Results from the sampler and the resulting job ID
-    """
-    result = None
-    trials = 0
-    ran_job_ok = False
-    while not ran_job_ok:
-        try:
-            job = service.run(
-                program_id="sampler",
-                inputs=inputs,
-                options=options,
-                result_decoder=SamplerResultDecoder,
-                session_id=session_id,
-                start_session=start_session,
-            )
-            result = job.result()
-            ran_job_ok = True
-        except (IBMQJobFailureError, IBMQJobApiError, IBMQJobInvalidStateError) as err:
-            print("Error running job, will retry in 5 mins.")
-            print("Error:", err)
-            # Wait 5 mins and try again. Hopefully this handles network outages etc,
-            # and also if user cancels a (stuck) job through IQX.
-            # Add more error types to the exception as new ones crop up (as appropriate).
-            time.sleep(300)
-            trials += 1
-            if trials > 100:
-                raise RuntimeError(
-                    "Timed out trying to run job successfully (100 attempts)"
-                )
-    return result, job.job_id
+    return tensor_expval_list, superposition_expval_list, job_id

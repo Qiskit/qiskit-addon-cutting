@@ -342,18 +342,22 @@ def _get_fermionic_ops_with_cholesky(
         num_gammas, l_op = 0, np.zeros(shape=(size, size, 0))
 
     if len(occupied_orbitals_to_reduce) > 0:
-        orbitals_not_to_reduce = np.array(
+        orbitals_not_to_reduce_array = np.array(
             sorted(set(range(len(h1))) - set(occupied_orbitals_to_reduce))
         )
 
         h1_frozenpart = h1[
             np.ix_(occupied_orbitals_to_reduce, occupied_orbitals_to_reduce)
         ]
-        h1_activepart = h1[np.ix_(orbitals_not_to_reduce, orbitals_not_to_reduce)]
+        h1_activepart = h1[
+            np.ix_(orbitals_not_to_reduce_array, orbitals_not_to_reduce_array)
+        ]
         l_frozenpart = l_op[
             np.ix_(occupied_orbitals_to_reduce, occupied_orbitals_to_reduce)
         ]
-        l_activepart = l_op[np.ix_(orbitals_not_to_reduce, orbitals_not_to_reduce)]
+        l_activepart = l_op[
+            np.ix_(orbitals_not_to_reduce_array, orbitals_not_to_reduce_array)
+        ]
 
         freeze_shift = (
             2 * np.einsum("pp", h1_frozenpart)
@@ -366,8 +370,8 @@ def _get_fermionic_ops_with_cholesky(
             + 2 * np.einsum("ppg,qsg->qs", l_frozenpart, l_activepart)
             - np.einsum(
                 "psg,qpg->qs",
-                l_op[np.ix_(occupied_orbitals_to_reduce, orbitals_not_to_reduce)],
-                l_op[np.ix_(orbitals_not_to_reduce, occupied_orbitals_to_reduce)],
+                l_op[np.ix_(occupied_orbitals_to_reduce, orbitals_not_to_reduce_array)],
+                l_op[np.ix_(orbitals_not_to_reduce_array, occupied_orbitals_to_reduce)],
             )
         )
         l_op = l_activepart

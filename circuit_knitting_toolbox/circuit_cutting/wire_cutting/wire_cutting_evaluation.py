@@ -9,6 +9,7 @@ from qiskit_aer import Aer
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.quantum_info import Statevector
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
+from qiskit_ibm_runtime import Sampler
 
 from circuit_knitting_toolbox.utils.conversion import dict_to_array
 
@@ -16,8 +17,7 @@ from circuit_knitting_toolbox.utils.conversion import dict_to_array
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    mode: str,
-    num_shots_fn: Callable,
+    sampler: Sampler,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
@@ -25,7 +25,6 @@ def run_subcircuit_instances(
     subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
     for subcircuit_idx in subcircuit_instances:
         subcircuit_instance_probs[subcircuit_idx] = {}
-        num_shots = num_shots_fn(subcircuits[subcircuit_idx])
         for init_meas in subcircuit_instances[subcircuit_idx]:
             subcircuit_instance_idx = subcircuit_instances[subcircuit_idx][init_meas]
             if subcircuit_instance_idx not in subcircuit_instance_probs[subcircuit_idx]:
@@ -35,11 +34,7 @@ def run_subcircuit_instances(
                     init=init_meas[0],
                     meas=tuple(init_meas[1]),
                 )
-                subcircuit_inst_prob = simulate_subcircuit(
-                    subcircuit=subcircuit_instance,
-                    mode=mode,
-                    num_shots=num_shots,
-                )
+                subcircuit_inst_prob = run_subcircuit(subcircuit_instance, sampler)
                 mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
                 for meas in mutated_meas:
                     measured_prob = measure_prob(
@@ -145,29 +140,24 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
-def simulate_subcircuit(
-    subcircuit: QuantumCircuit, mode: str, num_shots: int
-) -> Sequence[float]:
+def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> NDArray:
     """
     Simulate a subcircuit
     """
-    if mode == "sv":
-        subcircuit_inst_prob = evaluate_circuit(
-            circuit=subcircuit, backend="statevector_simulator"
-        )
-    elif mode == "qasm":
-        subcircuit_inst_prob = evaluate_circuit(
-            circuit=subcircuit,
-            backend="noiseless_qasm_simulator",
-            shots=num_shots,
-        )
-    else:
-        raise NotImplementedError
+    if subcircuit.num_clbits == 0:
+        subcircuit.measure_all()
+    quasi_dists = sampler.run(circuits=[subcircuit]).result().quasi_dists[0]
 
-    return subcircuit_inst_prob
+    probabilities = quasi_dists.nearest_probability_distribution()
+    probabilities_out = np.zeros(2**subcircuit.num_qubits, dtype=float)
+
+    for state in probabilities:
+        probabilities_out[state] = probabilities[state]
+
+    return probabilities_out
 
 
-def measure_prob(unmeasured_prob: Sequence[float], meas: Tuple[Any, ...]) -> NDArray:
+def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)
     else:
@@ -200,36 +190,3 @@ def measure_state(full_state: int, meas: Tuple[Any, ...]) -> Tuple[int, int]:
     # print('bin_full_state = %s --> %d * %s (%d)'%(bin_full_state,sigma,bin_effective_state,effective_state))
 
     return sigma, effective_state
-
-
-def evaluate_circuit(
-    circuit: QuantumCircuit, backend: str, shots: Optional[int] = None
-) -> Sequence[float]:
-    circuit = copy.deepcopy(circuit)
-    max_memory_mb = psutil.virtual_memory().total >> 20
-    max_memory_mb = int(max_memory_mb / 4 * 3)
-    if backend == "statevector_simulator":
-        simulator = Aer.get_backend("statevector_simulator")
-        result = simulator.run(circuit).result()
-        statevector = result.get_statevector(circuit)
-        prob_vector = Statevector(statevector).probabilities()
-        return prob_vector
-
-    elif backend == "noiseless_qasm_simulator":
-        num_shots = shots or max(1024, 2**circuit.num_qubits)
-        simulator = Aer.get_backend("aer_simulator", max_memory_mb=max_memory_mb)
-        if circuit.num_clbits == 0:
-            circuit.measure_all()
-        result = simulator.run(circuit, shots=num_shots, memory=False).result()
-
-        noiseless_counts = result.get_counts(circuit)
-        assert sum(noiseless_counts.values()) == num_shots
-        noiseless_counts = dict_to_array(
-            distribution_dict=noiseless_counts, force_prob=True
-        )
-        return noiseless_counts
-
-    else:
-        raise ValueError(
-            f"Bad value for backend passed to evaluate_circuit function: {backend}"
-        )
