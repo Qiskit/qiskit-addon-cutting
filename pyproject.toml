@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
+requires = [ "flit_core >=3.2,<4",]
 build-backend = "flit_core.buildapi"
 
 [project]
@@ -7,31 +7,8 @@ name = "circuit_knitting_toolbox"
 version = "0.0.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 requires-python = ">=3.7"
-
-dependencies = [
-    "pyscf>=2.0.1",
-    "qiskit-aer>=0.11.0",
-    "qiskit-terra>=0.22.0rc1",
-    "qiskit-nature>=0.4.2",
-    "qiskit-ibm-runtime>=0.7.0rc1",
-    "qiskit-ibmq-provider>=0.19.2",
-    "nptyping>=2.1.1",
-    "ray>=1.13.0",
-    "docplex>=2.23.222",
-    "cplex>=22.1.0.0",
-]
+dependencies = [ "pyscf>=2.0.1", "qiskit-aer>=0.11.0", "qiskit-terra>=0.22.0rc1", "qiskit-nature @ git+https://github.com/Qiskit/qiskit-nature.git", "qiskit-ibm-runtime>=0.7.0rc2", "qiskit-ibmq-provider>=0.19.2", "nptyping>=2.1.1", "ray>=1.13.0", "docplex>=2.23.222", "cplex>=22.1.0.0",]
 
 [project.optional-dependencies]
-dev = [
-    "black[jupyter]==22.3.0",
-    "mypy==0.961",
-    "pytest>=6.2.5",
-    "pytest-randomly>=1.2.0",
-    "nbmake"
-]
-notebook-dependencies = [
-    "matplotlib",
-    "ipywidgets",
-    "pylatexenc",
-    "quantum-serverless @ git+ssh://git@github.com:Qiskit-Extensions/quantum-serverless.git#subdirectory=client",
-]
+dev = [ "black[jupyter]==22.3.0", "mypy==0.961", "pytest>=6.2.5", "pytest-randomly>=1.2.0", "nbmake",]
+notebook-dependencies = [ "matplotlib", "ipywidgets", "pylatexenc", "quantum-serverless @ git+ssh://git@github.com:Qiskit-Extensions/quantum-serverless.git#subdirectory=client",]
