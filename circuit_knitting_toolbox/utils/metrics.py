@@ -174,7 +174,7 @@ def MAPE(target, obs):  # noqa: D301
 
 
 def cross_entropy(target, obs):  # noqa: D301
-    """
+    r"""
     Compue the cross entropy between two distributions.
 
     The cross entropy is a measure of the difference between two probability
