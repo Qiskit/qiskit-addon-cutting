@@ -21,7 +21,7 @@ import numpy as np
 
 @dataclass
 class EntanglementForgingOperator:  # noqa: D301
-    """Operator class for Entanglement Forging.
+    r"""Operator class for Entanglement Forging.
 
     A class that contains the 2N qubit Pauli operator $\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b}
     \hat{S}_{a, b)$

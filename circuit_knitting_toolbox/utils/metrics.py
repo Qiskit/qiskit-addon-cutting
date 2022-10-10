@@ -16,7 +16,7 @@ import numpy as np
 
 
 def chi2_distance(target, obs):  # noqa: D301
-    """
+    r"""
     Measure the Chi-square distance.
 
     The Chi-Square distance is a measure of statistically correlation between
@@ -64,7 +64,7 @@ def chi2_distance(target, obs):  # noqa: D301
 
 
 def MSE(target, obs):  # noqa: D301
-    """
+    r"""
     Compute the Mean Squared Error (MSE).
 
     The MSE is a common metric in fields such as deep learning and is used to
@@ -115,8 +115,8 @@ def MSE(target, obs):  # noqa: D301
 
 
 def MAPE(target, obs):  # noqa: D301
-    """
-    Compue the Mean Absolute Percentage Error (MAPE).
+    r"""
+    Compute the Mean Absolute Percentage Error (MAPE).
 
     The MAPE is a scaled metric in the range [0, 100] defining the percentage
     difference between two vectors via:
