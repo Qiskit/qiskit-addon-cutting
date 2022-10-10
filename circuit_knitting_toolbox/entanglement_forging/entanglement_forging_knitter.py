@@ -197,7 +197,7 @@ class EntanglementForgingKnitter:
     ) -> Tuple[
         float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]
     ]:  # noqa: D301, D202
-        """Calculate the energy.
+        r"""Calculate the energy.
 
         Computes ⟨H⟩ - the energy value and the Schmidt matrix, $h_{n, m}$, given
         some ansatz parameter values.
@@ -414,7 +414,7 @@ def _construct_stateprep_circuits(
     bitstrings: List[Bitstring],
     subsystem_id: Optional[str] = None,
 ) -> Tuple[List[QuantumCircuit], List[QuantumCircuit]]:  # noqa: D301
-    """Prepare all circuits.
+    r"""Prepare all circuits.
 
     Function to make the state preparation circuits. This constructs a set
     of circuits $ | b_n \rangle $ and $ | \phi^{p}_{n, m} \rangle $.
