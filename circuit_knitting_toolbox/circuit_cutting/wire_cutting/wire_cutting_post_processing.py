@@ -303,6 +303,7 @@ def build(
             break
         arg = (smart_order, segment_summation_terms, subcircuit_entry_probs)
         args.append(arg)
+    # Why "spawn"?  See https://pythonspeed.com/articles/python-multiprocessing/
     with mp.get_context("spawn").Pool(num_threads) as pool:
         results = pool.starmap(naive_compute, args)
     overhead = {"additions": 0, "multiplications": 0}
