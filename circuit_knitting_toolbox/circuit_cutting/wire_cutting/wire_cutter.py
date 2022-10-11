@@ -1,4 +1,4 @@
-from typing import Sequence, Optional, Dict, Callable, Any, Tuple, cast, List
+from typing import Sequence, Optional, Dict, Any, Tuple, cast, List, Union
 
 from nptyping import NDArray
 
@@ -25,14 +25,12 @@ class WireCutter:
         circuit: QuantumCircuit,
         service_args: Optional[Dict[str, Any]] = None,
         options: Optional[Options] = None,
-        runtime_options: Optional[RuntimeOptions] = None,
         backend_names: Optional[Sequence[str]] = None,
     ):
         # Set class fields
         self._circuit = circuit
         self._service_args = service_args
         self._options = options
-        self._runtime_options = runtime_options
         self._backend_names = backend_names
 
     @property
@@ -54,14 +52,6 @@ class WireCutter:
     @options.setter
     def options(self, options: Optional[Options]) -> None:
         self._options = options
-
-    @property
-    def runtime_options(self) -> Optional[RuntimeOptions]:
-        return self._runtime_options
-
-    @runtime_options.setter
-    def runtime_options(self, runtime_options: Optional[RuntimeOptions]) -> None:
-        self._runtime_options = runtime_options
 
     @property
     def backend_names(self) -> Optional[Sequence[str]]:
@@ -116,7 +106,11 @@ class WireCutter:
         _, _, subcircuit_instances = _generate_metadata(cuts)
 
         subcircuit_instance_probabilities = _run_subcircuits(
-            cuts, subcircuit_instances, self._service_args, self._backend_names
+            cuts,
+            subcircuit_instances,
+            self._service_args,
+            self._backend_names,
+            self._options,
         )
 
         return subcircuit_instance_probabilities
@@ -172,6 +166,7 @@ def _run_subcircuits(
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
     service_args: Optional[Dict[str, Any]],
     backend_names: Optional[Sequence[str]],
+    options: Optional[Union[Dict, Options]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Run all the subcircuit instances
@@ -182,6 +177,7 @@ def _run_subcircuits(
         subcircuit_instances=subcircuit_instances,
         service_args=service_args,
         backend_names=backend_names,
+        options=options,
     )
 
     return subcircuit_instance_probs
@@ -253,17 +249,6 @@ def _build(
     smart_order = smart_order
 
     return unordered_prob, smart_order
-
-
-def _evaluate(
-    cuts: Dict[str, Any],
-    service_args: Optional[Dict[str, Any]] = None,
-    options: Optional[Options] = None,
-    runtime_options: Optional[RuntimeOptions] = None,
-) -> Dict[int, Dict[int, NDArray]]:
-    """
-    cuts: results from cutting routine
-    """
 
 
 @run_qiskit_remote()
