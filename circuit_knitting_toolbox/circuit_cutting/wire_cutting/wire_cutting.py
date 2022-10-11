@@ -1,3 +1,4 @@
+"""File containing the tools to find and manage the cuts."""
 import math
 import typing
 from typing import Sequence, Dict, Tuple, Union, Any, Optional, List, cast
@@ -15,6 +16,36 @@ from qiskit.converters import circuit_to_dag, dag_to_circuit
 
 
 class MIP_Model(object):
+    """
+    Class to contain the model that manages the cut MIP.
+    
+    This class represents circuit cutting as a Mixed Integer Programming (MIP) problem
+    that can then be solved (provably) optimally using a MIP solver. This is integrated
+    with CPLEX, a fast commercial solver sold by IBM. There are free and open source MIP
+    solvers, but they come with substantial slowdowns (often many orders of magnitude).
+    By representing the original circuit as a Directed Acyclic Graph (DAG), this class
+    can find the optimal wire cuts in the circuit.
+
+    Attributes:
+        - n_vertices (int): the number of vertices in the circuit DAG
+        - edges (list): the list of edges of the circuit DAG
+        - n_edges (int): the number of edges
+        - vertex_ids (dict): dictionary mapping vertices (i.e. two qubit gates) to the vertex
+            id (i.e. a number)
+        - id_vertices (dict): the inverse dictionary of vertex_ids, which has keys of vertex ids
+            and values of the vertices
+        - num_subcircuit (int): the number of subcircuits
+        - max_subcircuit_width (int): maximum number of qubits per subcircuit
+        - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
+        - max_subcircuit_size (int): maximum number of qubits in th each subcircuit
+        - num_qubits (int): the number of qubits in the circuit
+        - max_cuts (int): the maximum total number of cuts
+        - subcircuit_counter (dict): a tracker for the information regarding subcircuits
+        - vertex_weight (dict): keep track of the number of input qubits directly connected
+            to each node
+        - model (docplex model): the model interface for CPLEX
+    """
+
     def __init__(
         self,
         n_vertices: int,
@@ -28,6 +59,27 @@ class MIP_Model(object):
         num_qubits: int,
         max_cuts: int,
     ):
+        """
+        Initialize member variables.
+
+        Args:
+            - n_vertices (int): the number of vertices in the circuit DAG
+            - edges (list): the list of edges of the circuit DAG
+            - n_edges (int): the number of edges
+            - vertex_ids (dict): dictionary mapping vertices (i.e. two qubit gates) to the vertex
+                id (i.e. a number)
+            - id_vertices (dict): the inverse dictionary of vertex_ids, which has keys of vertex ids
+                and values of the vertices
+            - num_subcircuit (int): the number of subcircuits
+            - max_subcircuit_width (int): maximum number of qubits per subcircuit
+            - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
+            - max_subcircuit_size (int): maximum number of qubits in th each subcircuit
+            - num_qubits (int): the number of qubits in the circuit
+            - max_cuts (int): the maximum total number of cuts
+
+        Returns:
+            - None
+        """
         self.check_graph(n_vertices, edges)
         self.n_vertices = n_vertices
         self.edges = edges
@@ -61,6 +113,15 @@ class MIP_Model(object):
         self._add_constraints()
 
     def _add_variables(self) -> None:
+        """
+        Add the necessary variables to the CPLEX model.
+
+        Args:
+            - self
+
+        Returns:
+            - None
+        """
         """
         Indicate if a vertex is in some subcircuit
         """
@@ -151,6 +212,14 @@ class MIP_Model(object):
                 )
 
     def _add_constraints(self) -> None:
+        """
+        Add all contraints and objectives to MIP model.
+        
+        Args:
+            - self
+        Returns:
+            - None
+        """
         """
         each vertex in exactly one subcircuit
         """
@@ -345,6 +414,20 @@ class MIP_Model(object):
     def pwl_exp(
         self, lb: int, ub: int, base: int, coefficient: int, integer_only: bool
     ) -> Tuple[List[int], List[int]]:
+        """
+        Approximate a nonlinear exponential function via a piecewise linear function.
+
+        Args:
+            - lb (int): lower bound
+            - ub (int): upper bound
+            - base (int): the base of the input exponential
+            - coefficient (int): the coefficient of the original exponential
+            - integer_only (bool): whether the input x's are only integers
+        
+        Returns:
+            - (list): the x's of the piecewise approximation
+            - (list): the f(x)'s of the piecewise approximation
+        """
         # Piecewise linear approximation of coefficient*base**x
         ptx = []
         ptf = []
@@ -358,6 +441,22 @@ class MIP_Model(object):
         return ptx, ptf
 
     def check_graph(self, n_vertices: int, edges: Sequence[Tuple[int]]) -> None:
+        """
+        Ensure circuit DAG is viable.
+        
+        This means that there are no oversied edges, that all edges are from viable nodes,
+        and that the graph is otherwise a valid graph.
+
+        Args:
+            - n_vertices (int): the number of vertices
+            - edges (list): the edge list
+
+        Returns:
+            - None
+
+        Raises:
+            - ValueError: if the graph is invalid
+        """
         # 1. edges must include all vertices
         # 2. all u,v must be ordered and smaller than n_vertices
         vertices = set([i for (i, _) in edges])  # type: ignore
@@ -376,6 +475,16 @@ class MIP_Model(object):
                 )
 
     def solve(self, min_postprocessing_cost: float) -> bool:
+        """
+        Solve the MIP model.
+
+        Args:
+            - min_post_processing_cost (float): the predicted minimum post-processing cost, 
+                often is inf
+
+        Returns:
+            - (bool): whether or not the model found a solution
+        """
         # print('solving for %d subcircuits'%self.num_subcircuit)
         # print('model has %d variables, %d linear constraints,%d quadratic constraints, %d general constraints'
         # % (self.model.NumVars,self.model.NumConstrs, self.model.NumQConstrs, self.model.NumGenConstrs))
@@ -440,6 +549,19 @@ class MIP_Model(object):
 def read_circuit(
     circuit: QuantumCircuit,
 ) -> Tuple[int, List[Tuple[int, int]], Dict[str, int], Dict[int, str]]:
+    """
+    Read the input circuit to a graph based representation for the MIP model.
+
+    Args:
+        - circuit (QuantumCircuit): a stripped circuit to be converted into a
+            DAG like representation
+    
+    Returns:
+        - (int): number of vertices
+        - (list): edge list
+        - (dict): the dictionary mapping vertices to vertex numbers
+        - (dict): the dictionary mapping vertex numbers to vertex information
+    """
     dag = circuit_to_dag(circuit)
     edges = []
     node_name_ids = {}
@@ -484,6 +606,17 @@ def read_circuit(
 def cuts_parser(
     cuts: Sequence[Tuple[str]], circ: QuantumCircuit
 ) -> List[Tuple[Qubit, int]]:
+    """
+    Convert cuts to wires.
+
+    Args:
+        - cuts (list): the cuts found by the model (or provided by the user)
+        - circ (QuantumCircuit): the quantum circuit the cuts are from
+
+    Returns:
+        - (list): the list containing the wires that were cut and the gates
+            that are affected by these cuts
+    """
     dag = circuit_to_dag(circ)
     positions = []
     for position in cuts:
@@ -544,6 +677,17 @@ def cuts_parser(
 def subcircuits_parser(
     subcircuit_gates: List[List[str]], circuit: QuantumCircuit
 ) -> Tuple[Sequence[QuantumCircuit], Dict[Qubit, List[Dict[str, Union[int, Qubit]]]]]:
+    """
+    Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.
+    
+    Args:
+        - subcircuit_gates (list): the gates in the subcircuits
+        - circuit (QuantumCircuit): the original circuit
+
+    Returns:
+        - (list): the subcircuits
+        - (dict): the paths in the quantum circuit DAGs
+    """
     """
     Assign the single qubit gates to the closest two-qubit gates
     """
@@ -671,6 +815,21 @@ def generate_subcircuits(
     subcircuit_sizes: Sequence[int],
     dag: DAGCircuit,
 ) -> Sequence[QuantumCircuit]:
+    """
+    Generate the subcircuits from given nodes and paths.
+
+    Called in the subcircuit_parser function to convert the found paths and nodes
+    into actual quantum circuit objects.
+    
+    Args:
+        - subcircuit_op_nodes (dict): the nodes of each of the subcircuits
+        - complete_path_map (dict): the complete path through the subcircuits
+        - subcircuit_sizes (list): the number of qubits in each of the subcircuits
+        - dag (DAGCircuit): the dag representation of the input quantum circuit
+
+    Returns:
+        - (list): the subcircuits
+    """
     qubit_pointers = {x: 0 for x in complete_path_map}
     subcircuits = [QuantumCircuit(x, name="q") for x in subcircuit_sizes]
     for op_node in dag.topological_op_nodes():
@@ -705,6 +864,15 @@ def generate_subcircuits(
 
 
 def circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
+    """
+    Remove all single qubit and barrier type gates.
+
+    Args:
+        - circuit (QuantumCircuit): the circuit to strip
+    
+    Returns:
+        - (QuantumCircuit): the stripped circuit
+    """
     # Remove all single qubit gates and barriers in the circuit
     dag = circuit_to_dag(circuit)
     stripped_dag = DAGCircuit()
@@ -716,6 +884,16 @@ def circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
 
 
 def cost_estimate(counter: Dict[int, Dict[str, int]]) -> float:
+    """
+    Estimate the cost of processing the subcircuits.
+    
+    Args:
+        - counter (dict): dictionary containing information for each of the
+            subcircuits
+
+    Returns:
+        - (float): the estimated cost for classical processing
+    """
     num_cuts = sum([counter[subcircuit_idx]["rho"] for subcircuit_idx in counter])
     subcircuit_indices = list(counter.keys())
     num_effective_qubits_list = [
@@ -736,6 +914,18 @@ def cost_estimate(counter: Dict[int, Dict[str, int]]) -> float:
 def get_pairs(
     complete_path_map: Dict[Qubit, List[Dict[str, Union[int, Qubit]]]]
 ) -> List[Tuple[Dict[str, Union[int, Qubit]], Dict[str, Union[int, Qubit]]]]:
+    """
+    Get all pairs through each path.
+    
+    Iterates through the path for each of the qubits and keeps track of the
+    each pair of neigbors. 
+    
+    Args:
+        - complete_path_map (dict): the dictionary containing all path information
+    
+    Returns:
+        - (list): all pairs for each of the qubit paths
+    """
     O_rho_pairs = []
     for input_qubit in complete_path_map:
         path = complete_path_map[input_qubit]
@@ -753,6 +943,17 @@ def get_counter(
         Tuple[Dict[str, Union[int, Qubit]], Dict[str, Union[int, Qubit]]]
     ],
 ) -> Dict[int, Dict[str, int]]:
+    """
+    Create information regarding each of the subcircuit parameters (qubits, width, etc.).
+
+    Args:
+        - subcircuits (list): the list of subcircuits
+        - O_rho_pairs (list): the pairs for each qubit path as generated in the get_pairs
+            function
+    
+    Returns:
+        - (dict): the resulting dictionary with all parameter information
+    """
     counter = {}
     for subcircuit_idx, subcircuit in enumerate(subcircuits):
         counter[subcircuit_idx] = {
@@ -785,6 +986,25 @@ def find_wire_cuts(
     max_subcircuit_size: Optional[int],
     verbose: bool,
 ) -> Dict[str, Any]:
+    """
+    Find optimal cuts for the wires.
+
+    Will print if the model cannot find a solution at all, and will print whether
+    the found solution is optimal or not.
+
+    Args:
+        - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
+        - max_subcircuit_width (int): max number of qubits in each subcircuit
+        - max_cuts (int, optional): max total number of cuts allowed
+        - num_subcircuits (list, optional): list of number of subcircuits to try
+        - max_subcircuit_cuts (int, optional): max number of cuts for a subcircuit
+        - max_subcircuit_size (int, optional): the maximum number of two qubit gates in each
+            subcircuit
+        - verbose (bool): whether to print information about the cut finding or not
+
+    Returns:
+        - (dict): the solution found for the cuts
+    """
     stripped_circ = circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = read_circuit(circuit=stripped_circ)
     num_qubits = circuit.num_qubits
@@ -875,6 +1095,19 @@ def find_wire_cuts(
 def cut_circuit_wire(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]], verbose: bool
 ) -> Dict[str, Any]:
+    """
+    Perform the provided cuts.
+
+    Used when cut locations are chosen manually.
+
+    Args:
+        - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
+        - subcircuit_vertices (list): the list of vertices to apply the cuts to
+        - verbose (bool): whether to print the details of cutting or not
+
+    Returns:
+        - (dict): the solution calculated from the provided cuts
+    """
     stripped_circ = circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = read_circuit(circuit=stripped_circ)
 
@@ -929,6 +1162,20 @@ def print_cutter_result(
     counter: Dict[int, Dict[str, int]],
     classical_cost: float,
 ) -> None:
+    """
+    Pretty print the results.
+
+    Args:
+        - num_subciruit (int): the number of subcircuits
+        - num_cuts (int): the number of cuts
+        - subcircuits (list): the list of subcircuits
+        - counter (dict): the dictionary containing all meta information regarding 
+            each of the subcircuits
+        - classical_cost (float): the estimated processing cost
+
+    Returns:
+        - None
+    """
     for subcircuit_idx in range(num_subcircuit):
         print("subcircuit %d" % subcircuit_idx)
         print(
