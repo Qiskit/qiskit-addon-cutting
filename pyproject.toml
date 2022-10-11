@@ -17,7 +17,7 @@ dependencies = [
     "qiskit-ibmq-provider>=0.19.2",
     "nptyping>=2.1.1",
     "ray>=1.13.0",
-    "quantum-serverless @ git+ssh://git@github.com:Qiskit-Extensions/quantum-serverless.git#subdirectory=client",
+    "quantum-serverless @ git+ssh://git@github.com/Qiskit-Extensions/quantum-serverless.git#subdirectory=client",
     "docplex>=2.23.222",
     "cplex>=22.1.0.0",
 ]
