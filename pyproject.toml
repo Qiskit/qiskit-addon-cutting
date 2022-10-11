@@ -24,8 +24,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "black[jupyter]==22.3.0",
-    "mypy==0.961",
+    "black[jupyter]==22.10.0",
+    "mypy==0.982",
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
     "nbmake"
