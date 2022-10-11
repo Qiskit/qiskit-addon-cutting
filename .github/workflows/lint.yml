@@ -25,4 +25,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install tox
       - name: Run styles check
-        run: tox -elint,mypy
+        shell: bash
+        run: |
+          eval $(ssh-agent -s)
+          ssh-add - <<< '${{ secrets.PRIVATE_SSH_KEY }}'
+          tox -elint,mypy
