@@ -23,13 +23,13 @@ class WireCutter:
     def __init__(
         self,
         circuit: QuantumCircuit,
-        service_args: Optional[Dict[str, Any]] = None,
+        service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
         options: Optional[Options] = None,
         backend_names: Optional[Sequence[str]] = None,
     ):
         # Set class fields
         self._circuit = circuit
-        self._service_args = service_args
+        self.service = service
         self._options = options
         self._backend_names = backend_names
 
@@ -38,12 +38,12 @@ class WireCutter:
         return self._circuit
 
     @property
-    def service_args(self) -> Optional[Dict[str, Any]]:
-        return self._service_args
+    def service(self) -> Optional[QiskitRuntimeService]:
+        return QiskitRuntimeService(**self._service)
 
-    @service_args.setter
-    def service_args(self, service_args: Optional[Dict[str, Any]]) -> None:
-        self._service_args = service_args
+    @service.setter
+    def service(self, service: Optional[QiskitRuntimeService]) -> None:
+        self._service = service.active_account() if service is not None else service
 
     @property
     def options(self) -> Optional[Options]:
@@ -108,7 +108,7 @@ class WireCutter:
         subcircuit_instance_probabilities = _run_subcircuits(
             cuts,
             subcircuit_instances,
-            self._service_args,
+            self._service,
             self._backend_names,
             self._options,
         )

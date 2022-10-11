@@ -182,7 +182,6 @@ def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
         return np.array(unmeasured_prob)
     else:
         measured_prob = np.zeros(int(2 ** meas.count("comp")))
-        # print('Measuring in',meas)
         for full_state, p in enumerate(unmeasured_prob):
             sigma, effective_state = measure_state(full_state=full_state, meas=meas)
             # TODO: Add states merging here. Change effective_state to merged_bin
@@ -207,7 +206,6 @@ def measure_state(full_state: int, meas: Tuple[Any, ...]) -> Tuple[int, int]:
         if meas_basis == "comp":
             bin_effective_state += meas_bit
     effective_state = int(bin_effective_state, 2) if bin_effective_state != "" else 0
-    # print('bin_full_state = %s --> %d * %s (%d)'%(bin_full_state,sigma,bin_effective_state,effective_state))
 
     return sigma, effective_state
 
