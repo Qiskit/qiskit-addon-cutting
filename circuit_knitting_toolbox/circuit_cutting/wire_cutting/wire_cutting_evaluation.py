@@ -1,15 +1,15 @@
-import itertools, copy, random, psutil
-from time import time
-from typing import Callable, Dict, Tuple, Sequence, Optional, List, Iterable, Any, cast
+import itertools, copy
+from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
 
 import numpy as np
 from nptyping import NDArray
+
 from qiskit import QuantumCircuit
-from qiskit_aer import Aer
 from qiskit.converters import circuit_to_dag, dag_to_circuit
-from qiskit.quantum_info import Statevector
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
-from qiskit_ibm_runtime import Sampler
+from qiskit.primitives import Sampler as TestSampler
+from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
+from quantum_serverless import run_qiskit_remote, get
 
 from circuit_knitting_toolbox.utils.conversion import dict_to_array
 
@@ -17,36 +17,38 @@ from circuit_knitting_toolbox.utils.conversion import dict_to_array
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    sampler: Sampler,
+    service_args: Optional[Dict[str, Any]] = None,
+    backend_names: Optional[Sequence[str]] = None,
+    options: Optional[Union[Dict, Options]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
     """
+    if service_args:
+        if backend_names:
+            backend_names_repeated: List[Union[str, None]] = [
+                backend_names[i % len(backend_names)] for i, _ in enumerate(subcircuits)
+            ]
+        else:
+            backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
+
+    else:
+        backend_names_repeated = [None] * len(subcircuits)
+
     subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
-    for subcircuit_idx in subcircuit_instances:
-        subcircuit_instance_probs[subcircuit_idx] = {}
-        for init_meas in subcircuit_instances[subcircuit_idx]:
-            subcircuit_instance_idx = subcircuit_instances[subcircuit_idx][init_meas]
-            if subcircuit_instance_idx not in subcircuit_instance_probs[subcircuit_idx]:
-                # print('Subcircuit %d instance %d'%(subcircuit_idx,subcircuit_instance_idx))
-                subcircuit_instance = modify_subcircuit_instance(
-                    subcircuit=subcircuits[subcircuit_idx],
-                    init=init_meas[0],
-                    meas=tuple(init_meas[1]),
-                )
-                subcircuit_inst_prob = run_subcircuit(subcircuit_instance, sampler)
-                mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
-                for meas in mutated_meas:
-                    measured_prob = measure_prob(
-                        unmeasured_prob=subcircuit_inst_prob, meas=meas
-                    )
-                    mutated_subcircuit_instance_idx = subcircuit_instances[
-                        subcircuit_idx
-                    ][(init_meas[0], meas)]
-                    subcircuit_instance_probs[subcircuit_idx][
-                        mutated_subcircuit_instance_idx
-                    ] = measured_prob
-                    # print('Measured instance %d'%mutated_subcircuit_instance_idx)
+    subcircuit_instance_probs_futures = [
+        _run_subcircuit_batch(
+            subcircuit_instances[subcircuit_idx],
+            subcircuit,
+            service_args=service_args,
+            backend_name=backend_names_repeated[subcircuit_idx],
+            options=options,
+        )
+        for subcircuit_idx, subcircuit in enumerate(subcircuits)
+    ]
+
+    for i, partition_batch_futures in enumerate(subcircuit_instance_probs_futures):
+        subcircuit_instance_probs[i] = get(partition_batch_futures)
 
     return subcircuit_instance_probs
 
@@ -140,21 +142,39 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
-def run_subcircuit(subcircuit: QuantumCircuit, sampler: Sampler) -> NDArray:
+def run_subcircuits(
+    subcircuits: Sequence[QuantumCircuit],
+    service_args: Optional[Dict[str, Any]] = None,
+    backend_name: Optional[str] = None,
+    options: Optional[Union[Dict, Options]] = None,
+) -> List[NDArray]:
     """
     Simulate a subcircuit
     """
-    if subcircuit.num_clbits == 0:
-        subcircuit.measure_all()
-    quasi_dists = sampler.run(circuits=[subcircuit]).result().quasi_dists[0]
+    for subcircuit in subcircuits:
+        if subcircuit.num_clbits == 0:
+            subcircuit.measure_all()
 
-    probabilities = quasi_dists.nearest_probability_distribution()
-    probabilities_out = np.zeros(2**subcircuit.num_qubits, dtype=float)
+    service = QiskitRuntimeService(**service_args) if service_args is not None else None
+    job_id = None
+    if service is not None:
+        session = Session(service=service, backend=backend_name)
+        sampler = Sampler(session=session, options=options)
+    else:
+        sampler = TestSampler()
 
-    for state in probabilities:
-        probabilities_out[state] = probabilities[state]
+    quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
 
-    return probabilities_out
+    all_probabilities_out = []
+    for i, qd in enumerate(quasi_dists):
+        probabilities = qd.nearest_probability_distribution()
+        probabilities_out = np.zeros(2 ** subcircuits[i].num_qubits, dtype=float)
+
+        for state in probabilities:
+            probabilities_out[state] = probabilities[state]
+        all_probabilities_out.append(probabilities_out)
+
+    return all_probabilities_out
 
 
 def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
@@ -162,7 +182,6 @@ def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
         return np.array(unmeasured_prob)
     else:
         measured_prob = np.zeros(int(2 ** meas.count("comp")))
-        # print('Measuring in',meas)
         for full_state, p in enumerate(unmeasured_prob):
             sigma, effective_state = measure_state(full_state=full_state, meas=meas)
             # TODO: Add states merging here. Change effective_state to merged_bin
@@ -187,6 +206,70 @@ def measure_state(full_state: int, meas: Tuple[Any, ...]) -> Tuple[int, int]:
         if meas_basis == "comp":
             bin_effective_state += meas_bit
     effective_state = int(bin_effective_state, 2) if bin_effective_state != "" else 0
-    # print('bin_full_state = %s --> %d * %s (%d)'%(bin_full_state,sigma,bin_effective_state,effective_state))
 
     return sigma, effective_state
+
+
+@run_qiskit_remote()
+def _run_subcircuit_batch(
+    subcircuit_instance: Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int],
+    subcircuit: QuantumCircuit,
+    service_args: Optional[Dict[str, Any]] = None,
+    backend_name: Optional[str] = None,
+    options: Optional[Union[Dict, Options]] = None,
+):
+    subcircuit_instance_probs = {}
+    circuits_to_run = []
+
+    # For each circuit associated with a given subcircuit
+    for init_meas in subcircuit_instance:
+        subcircuit_instance_idx = subcircuit_instance[init_meas]
+
+        # Collect all of the circuits we need to evaluate, ensuring we don't have duplicates
+        if subcircuit_instance_idx not in subcircuit_instance_probs:
+            modified_subcircuit_instance = modify_subcircuit_instance(
+                subcircuit=subcircuit,
+                init=init_meas[0],
+                meas=tuple(init_meas[1]),
+            )
+            circuits_to_run.append(modified_subcircuit_instance)
+            mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
+            for meas in mutated_meas:
+                mutated_subcircuit_instance_idx = subcircuit_instance[
+                    (init_meas[0], meas)
+                ]
+                # Set a placeholder in the probability dict to prevent duplicate circuits to the Sampler
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = np.array(
+                    [0.0]
+                )
+
+    # Run all of our circuits in one batch
+    subcircuit_inst_probs = run_subcircuits(
+        circuits_to_run,
+        service_args=service_args,
+        backend_name=backend_name,
+        options=options,
+    )
+
+    # Calculate the measured probabilities
+    unique_subcircuit_check = {}
+    i = 0
+    for init_meas in subcircuit_instance:
+        subcircuit_instance_idx = subcircuit_instance[init_meas]
+        if subcircuit_instance_idx not in unique_subcircuit_check:
+            subcircuit_inst_prob = subcircuit_inst_probs[i]
+            i = i + 1
+            mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
+            for meas in mutated_meas:
+                measured_prob = measure_prob(
+                    unmeasured_prob=subcircuit_inst_prob, meas=meas
+                )
+                mutated_subcircuit_instance_idx = subcircuit_instance[
+                    (init_meas[0], meas)
+                ]
+                subcircuit_instance_probs[
+                    mutated_subcircuit_instance_idx
+                ] = measured_prob
+                unique_subcircuit_check[mutated_subcircuit_instance_idx] = True
+
+    return subcircuit_instance_probs
