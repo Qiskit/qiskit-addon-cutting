@@ -10,9 +10,8 @@ from qiskit_aer import Aer
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.quantum_info import Statevector
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
-from qiskit.primitives import Sampler
-from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_ibm_runtime.sampler import SamplerResultDecoder
+from qiskit.primitives import Sampler as TestSampler
+from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 from quantum_serverless import run_qiskit_remote, get
 
 from circuit_knitting_toolbox.utils.conversion import dict_to_array
@@ -168,19 +167,13 @@ def run_subcircuits(
             "transpilation_options": {"optimization_level": 3},
             "resilience_settings": {"level": 2},
         }
-        options = {"backend": backend_name}
-
-        job = service.run(
-            program_id="sampler",
-            inputs=inputs,
-            options=options,
-            result_decoder=SamplerResultDecoder,
-        )
-        job_id = job.job_id
-        quasi_dists = job.result().quasi_dists
+        options = Options(resilience_level=1, optimization_level=3, execution={"shots": 8192})
+        session = Session(service=service, backend=backend_name)
+        sampler = Sampler(session=session, options=options)
     else:
-        sampler = Sampler()
-        quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
+        sampler = TestSampler()
+
+    quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
 
     all_probabilities_out = []
     for i, qd in enumerate(quasi_dists):
