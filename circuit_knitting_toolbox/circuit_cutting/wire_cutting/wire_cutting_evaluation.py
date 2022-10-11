@@ -33,7 +33,7 @@ def run_subcircuit_instances(
                 backend_names[i % len(backend_names)] for i, _ in enumerate(subcircuits)
             ]
         else:
-            ValueError("A service was passed but the backend_names argument is None.")
+            backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
 
     else:
         backend_names_repeated = [None] * len(subcircuits)
@@ -144,56 +144,54 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
-def run_subcircuit(
-    subcircuit: QuantumCircuit,
+def run_subcircuits(
+    subcircuits: Sequence[QuantumCircuit],
     service_args: Optional[Dict[str, Any]] = None,
     backend_name: Optional[str] = None,
-    session_id: Optional[str] = None,
-) -> NDArray:
+) -> List[NDArray]:
     """
     Simulate a subcircuit
     """
-    if subcircuit.num_clbits == 0:
-        subcircuit.measure_all()
+    for subcircuit in subcircuits:
+        if subcircuit.num_clbits == 0:
+            subcircuit.measure_all()
 
     service = QiskitRuntimeService(**service_args) if service_args is not None else None
     job_id = None
     if service is not None:
         shots = 4096
+        circuit_indices = list(range(len(subcircuits)))
         inputs = {
-            "circuits": [subcircuit],
-            "circuit_indices": [0],
+            "circuits": subcircuits,
+            "circuit_indices": circuit_indices,
             "shots": shots,
             "transpilation_options": {"optimization_level": 3},
             "resilience_settings": {"level": 2},
         }
         options = {"backend": backend_name}
 
-        start_session = False
-        if session_id is None and backend_name is not "ibmq_qasm_simulator":
-            start_session = True
-
         job = service.run(
             program_id="sampler",
             inputs=inputs,
             options=options,
             result_decoder=SamplerResultDecoder,
-            session_id=session_id,
-            start_session=start_session,
         )
         job_id = job.job_id
-        quasi_dists = job.result().quasi_dists[0]
+        quasi_dists = job.result().quasi_dists
     else:
         sampler = Sampler()
-        quasi_dists = sampler.run(circuits=[subcircuit]).result().quasi_dists[0]
+        quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
 
-    probabilities = quasi_dists.nearest_probability_distribution()
-    probabilities_out = np.zeros(2**subcircuit.num_qubits, dtype=float)
+    all_probabilities_out = []
+    for i, qd in enumerate(quasi_dists):
+        probabilities = qd.nearest_probability_distribution()
+        probabilities_out = np.zeros(2 ** subcircuits[i].num_qubits, dtype=float)
 
-    for state in probabilities:
-        probabilities_out[state] = probabilities[state]
+        for state in probabilities:
+            probabilities_out[state] = probabilities[state]
+        all_probabilities_out.append(probabilities_out)
 
-    return probabilities_out, job_id
+    return all_probabilities_out
 
 
 def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
@@ -239,7 +237,7 @@ def _run_subcircuit_batch(
     backend_name: Optional[str] = None,
 ):
     subcircuit_instance_probs = {}
-    session_id = None
+    circuits_to_run = []
     for init_meas in subcircuit_instance:
         subcircuit_instance_idx = subcircuit_instance[init_meas]
         if subcircuit_instance_idx not in subcircuit_instance_probs:
@@ -248,21 +246,31 @@ def _run_subcircuit_batch(
                 init=init_meas[0],
                 meas=tuple(init_meas[1]),
             )
-            subcircuit_inst_prob, job_id = run_subcircuit(
-                modified_subcircuit_instance, service_args, backend_name, session_id
-            )
-            if session_id is None:
-                session_id = job_id
+            circuits_to_run.append(modified_subcircuit_instance)
+            mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
+            for meas in mutated_meas:
+                mutated_subcircuit_instance_idx = subcircuit_instance[
+                    (init_meas[0], meas)
+                ]
+                # Set a placeholder in the probability dict to prevent duplicate circuits to the Sampler
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = 0.0
+
+    subcircuit_inst_probs = run_subcircuits(circuits_to_run, service_args, backend_name)
+
+    unique_subcircuit_check = {}
+    i = 0
+    for init_meas in subcircuit_instance:
+        subcircuit_instance_idx = subcircuit_instance[init_meas]
+        if subcircuit_instance_idx not in unique_subcircuit_check:
+            subcircuit_inst_prob = subcircuit_inst_probs[i]
+            i = i + 1
             mutated_meas = mutate_measurement_basis(meas=tuple(init_meas[1]))
             for meas in mutated_meas:
                 measured_prob = measure_prob(
                     unmeasured_prob=subcircuit_inst_prob, meas=meas
                 )
-                mutated_subcircuit_instance_idx = subcircuit_instance[
-                    (init_meas[0], meas)
-                ]
-                subcircuit_instance_probs[
-                    mutated_subcircuit_instance_idx
-                ] = measured_prob
+                mutated_subcircuit_instance_idx = subcircuit_instance[(init_meas[0], meas)]
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = measured_prob
+                unique_subcircuit_check[mutated_subcircuit_instance_idx] = True
 
     return subcircuit_instance_probs
