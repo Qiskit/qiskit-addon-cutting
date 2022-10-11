@@ -241,7 +241,9 @@ def _run_subcircuit_batch(
                     (init_meas[0], meas)
                 ]
                 # Set a placeholder in the probability dict to prevent duplicate circuits to the Sampler
-                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = np.array([0.0])
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = np.array(
+                    [0.0]
+                )
 
     # Run all of our circuits in one batch
     subcircuit_inst_probs = run_subcircuits(
