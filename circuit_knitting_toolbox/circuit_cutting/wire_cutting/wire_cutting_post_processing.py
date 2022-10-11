@@ -303,9 +303,8 @@ def build(
             break
         arg = (smart_order, segment_summation_terms, subcircuit_entry_probs)
         args.append(arg)
-    pool = mp.Pool(num_threads)
-    results = pool.starmap(naive_compute, args)
-    pool.close()
+    with mp.get_context("spawn").Pool(num_threads) as pool:
+        results = pool.starmap(naive_compute, args)
     overhead = {"additions": 0, "multiplications": 0}
     reconstructed_prob = None
     for result in results:
