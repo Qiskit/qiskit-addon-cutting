@@ -37,7 +37,7 @@ class MIP_Model(object):
         - num_subcircuit (int): the number of subcircuits
         - max_subcircuit_width (int): maximum number of qubits per subcircuit
         - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
-        - max_subcircuit_size (int): maximum number of qubits in th each subcircuit
+        - max_subcircuit_size (int): maximum number of gates in a subcircuit
         - num_qubits (int): the number of qubits in the circuit
         - max_cuts (int): the maximum total number of cuts
         - subcircuit_counter (dict): a tracker for the information regarding subcircuits
@@ -73,7 +73,7 @@ class MIP_Model(object):
             - num_subcircuit (int): the number of subcircuits
             - max_subcircuit_width (int): maximum number of qubits per subcircuit
             - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
-            - max_subcircuit_size (int): maximum number of qubits in th each subcircuit
+            - max_subcircuit_size (int): maximum number of gates in a subcircuit
             - num_qubits (int): the number of qubits in the circuit
             - max_cuts (int): the maximum total number of cuts
 
