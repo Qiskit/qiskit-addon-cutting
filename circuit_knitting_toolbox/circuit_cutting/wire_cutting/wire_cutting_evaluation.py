@@ -25,8 +25,8 @@ def run_subcircuit_instances(
     """
     Execute all provided subcircuits.
 
-    Using the provided mode, this executes all the subcircuits to generate the resultant
-    probability vectors.
+    Using the backend(s) provided, this executes all the subcircuits to generate the
+    resultant probability vectors.
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
 
     Args:
@@ -34,7 +34,7 @@ def run_subcircuit_instances(
         - subcircuit_instances (Dict): dictionary containing information about each of the
             subcircuit instances
         - service_args (Dict): the arguments for the runtime service
-        - backend_name (str): the method by which the subcircuits should be run
+        - backend_names (Sequence[str]): the backend(s) used to execute the subcircuits
         - options (Options): options for the runtime execution of subcircuits
 
     Returns:
@@ -183,16 +183,16 @@ def run_subcircuits(
     options: Optional[Union[Dict, Options]] = None,
 ) -> List[NDArray]:
     """
-    Simulate a subcircuit.
+    Execute the subcircuit(s).
 
     Args:
-        - subcircuit (QuantumCircuit): the subcircuit to be simulated
+        - subcircuit (QuantumCircuit): the subcircuits to be executed
         - service_args (Dict): the arguments for the runtime service
-        - backend_name (str): the method by which the subcircuits should be run
-        - options (Options): options for the runtime execution of subcircuitsuit
+        - backend_name (str): the backend used to execute the subcircuits
+        - options (Options): options for the runtime execution of subcircuits
 
     Returns:
-        - (NDArray): the simulated probability distribution
+        - (NDArray): the probability distributions
     """
     for subcircuit in subcircuits:
         if subcircuit.num_clbits == 0:
@@ -229,7 +229,7 @@ def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
         - meas (tuple): the measurement bases
 
     Returns:
-        - (NDArray): the updated measuremed probability distribution
+        - (NDArray): the updated measured probability distribution
     """
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)
@@ -279,15 +279,15 @@ def _run_subcircuit_batch(
     options: Optional[Union[Dict, Options]] = None,
 ):
     """
-    Evaluate a circuit using qiskit runtime and quantum serverless.
+    Execute a circuit using qiskit runtime and quantum serverless.
 
     Args:
         - subcircuit_instances (Dict): dictionary containing information about each of the
             subcircuit instances
         - subcircuit (QuantumCircuit): the subcircuit to execute
         - service_args (Dict): the arguments for the runtime service
-        - backend_name (str): the method by which the subcircuits should be run
-        - options (Options): options for the runtime execution of subcircuits
+        - backend_name (str): the backends used to execute the subcircuit
+        - options (Options): options for the runtime execution of subcircuit
 
     Returns:
         - (dict): the measurement probabilities for the subcircuit batch, as calculated from the
