@@ -51,7 +51,7 @@ class WireCutter:
             - service (QiskitRuntimeService): the runtime service used for
                 executing the subcircuits
             - options (Options): options for executing in the session
-            - backend_names (list): the backends to execute the subcircuits 
+            - backend_names (list): the backends to execute the subcircuits
                 on
 
         Returns:
@@ -64,31 +64,33 @@ class WireCutter:
         self._backend_names = backend_names
 
     @property
-    def circuit(self) -> QuantumCircuit: # noqa: D102
+    def circuit(self) -> QuantumCircuit:  # noqa: D102
         return self._circuit
 
     @property
-    def service(self) -> Optional[QiskitRuntimeService]: # noqa: D102
+    def service(self) -> Optional[QiskitRuntimeService]:  # noqa: D102
         return QiskitRuntimeService(**self._service)
 
     @service.setter
-    def service(self, service: Optional[QiskitRuntimeService]) -> None: # noqa: D102
+    def service(self, service: Optional[QiskitRuntimeService]) -> None:  # noqa: D102
         self._service = service.active_account() if service is not None else service
 
     @property
-    def options(self) -> Optional[Options]: # noqa: D102
+    def options(self) -> Optional[Options]:  # noqa: D102
         return self._options
 
     @options.setter
-    def options(self, options: Optional[Options]) -> None: # noqa: D102
+    def options(self, options: Optional[Options]) -> None:  # noqa: D102
         self._options = options
 
     @property
-    def backend_names(self) -> Optional[Sequence[str]]: # noqa: D102
+    def backend_names(self) -> Optional[Sequence[str]]:  # noqa: D102
         return self._backend_names
 
     @backend_names.setter
-    def backend_names(self, backend_names: Optional[Sequence[str]]) -> None: # noqa: D102
+    def backend_names(
+        self, backend_names: Optional[Sequence[str]]
+    ) -> None:  # noqa: D102
         self._backend_names = backend_names
 
     def decompose(
@@ -105,9 +107,9 @@ class WireCutter:
         Decompose the circuit into a collection of subcircuits.
 
         Args:
-            - method (str): whether to have the cuts be 'automatic'ally found, in a 
+            - method (str): whether to have the cuts be 'automatic'ally found, in a
                 provably optimal way, or whether to 'manual'ly provide the cuts
-            - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in 
+            - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in
                 the subcircuits. Note that these are not the indices of the qubits, but
                 the nodes in the circuit DAG
             - max_subcircuit_width (int): max number of qubits in each subcircuit
@@ -157,7 +159,7 @@ class WireCutter:
 
         Args:
             - cuts (Dict): the results of cutting
-        
+
         Returns:
             - (Dict): the dictionary containing the results from running
                 each of the subcircuits
@@ -184,14 +186,14 @@ class WireCutter:
         Reconstruct the full probabilities from the subcircuit executions.
 
         Args:
-            - subcircuit_instance_probabilities (dict): the probability vectors from each 
+            - subcircuit_instance_probabilities (dict): the probability vectors from each
                 of the subcircuit instances, as output by the _run_subcircuits function
             - cuts (dict): the cuts as found or provided
             - num_threads (int): number of threads to use to parallelize this operation
 
         Returns:
             - (NDArray): the reconstructed probability vector
-        
+
         """
         reconstructed_probability_futures = _recompose(
             circuit=self.circuit,
@@ -237,7 +239,7 @@ def _generate_metadata(
 ]:
     """
     Generate metadata used to execute subcircuits and reconstruct probabilities of original circuit.
-    
+
     Args:
         - cuts (Dict[str, Any]): results from the cutting step
 
@@ -363,7 +365,7 @@ def _build(
 ) -> Tuple[NDArray, List[int]]:
     """
     Complete the final postprocessing to reconstruct probabilities of the original circuit.
-    
+
     Args:
         - cuts (Dict[str, Any]): results from the cutting step
         - summation_terms (Sequence[Dict[int, int]]): the metadata containing 4^(num cuts) terms
@@ -403,7 +405,7 @@ def _recompose(
 
     Args:
         - circuit (QuantumCircuit): the original full circuit
-        - subcircuit_instance_probabilities (dict): the probability vectors from each 
+        - subcircuit_instance_probabilities (dict): the probability vectors from each
             of the subcircuit instances, as output by the _run_subcircuits function
         - num_threads (int): the number of threads to use to parallelize the recomposing
 
@@ -453,9 +455,9 @@ def _cut_automatic(
     Returns:
         - (Dict[str, Any]): A dictionary containing information on the cuts,
             including the subcircuits themselves (key: 'subcircuits')
-    
+
     Rasies:
-        - ValueError: if the circuit is not provided (during the initialization 
+        - ValueError: if the circuit is not provided (during the initialization
             of the class)
         - DOcplexException: if the MIP solver is unable to find the optimal solution
     """
@@ -481,7 +483,7 @@ def _cut_manual(
 
     Args:
         - circuit (QuantumCircuit): the circuit to cut
-        - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in 
+        - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in
             the subcircuits. Note that these are not the indices of the qubits, but
             the nodes in the circuit DAG.
 
