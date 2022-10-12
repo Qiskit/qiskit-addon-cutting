@@ -9,13 +9,21 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
+"""Code for converting types of distributions."""
 import numpy as np
 
 
 def quasi_to_real(quasiprobability, mode):
     """
-    Convert a quasi probability to a valid probability distribution
+    Convert a quasi probability to a valid probability distribution.
+    
+    Args:
+        - quasiprobability (NDArray): the array of quasiprobabilities
+        - mode (str): how to compute the new distribution, either 'nearest'
+            or 'naive'
+        
+    Returns:
+        - (NDArray) the converted probability distribution
     """
     if mode == "nearest":
         return nearest_probability_distribution(quasiprobability=quasiprobability)
@@ -26,16 +34,20 @@ def quasi_to_real(quasiprobability, mode):
 
 
 def nearest_probability_distribution(quasiprobability):
-    """Takes a quasiprobability distribution and maps
+    """
+    Convert quasiprobability dist to the nearest probability dist.
+    
+    Takes a quasiprobability distribution and maps
     it to the closest probability distribution as defined by
     the L2-norm.
-    Parameters:
-        return_distance (bool): Return the L2 distance between distributions.
+    
+    Method from Smolin et al., Phys. Rev. Lett. 108, 070502 (2012).
+    
+    Args:
+        - quasiprobability (NDArray): the input quasiprobabilities
+        
     Returns:
-        ProbDistribution: Nearest probability distribution.
-        float: Euclidean (L2) distance of distributions.
-    Notes:
-        Method from Smolin et al., Phys. Rev. Lett. 108, 070502 (2012).
+        - (NDArray): the converted probability distribution
     """
     sorted_probs, states = zip(
         *sorted(zip(quasiprobability, range(len(quasiprobability))))
@@ -58,9 +70,17 @@ def nearest_probability_distribution(quasiprobability):
 
 def naive_probability_distribution(quasiprobability):
     """
+    Convert quasiprobability dist to probability dist by zero-ing out negative values.
+
     Takes a quasiprobability distribution and does the following two steps:
     1. Update all negative probabilities to 0
     2. Normalize
+    
+    Args:
+        - quasiprobability (NDArray): the input quasiprobabilities
+        
+    Returns:
+        - (NDArray): the converted probability distribution
     """
     new_probs = np.where(quasiprobability < 0, 0, quasiprobability)
     new_probs /= np.sum(new_probs)
@@ -68,6 +88,17 @@ def naive_probability_distribution(quasiprobability):
 
 
 def dict_to_array(distribution_dict, force_prob):
+    """
+    Convert dictionary of shot results to array of distribution.
+    
+    Args:
+        - distribution_dict (dict): the dictionary containing the shot information
+            from circuit execution
+        - force_prob (bool): whether to force the distribution to be normalized
+    
+    Returns:
+        - (NDarray): the resulting probability information
+    """
     state = list(distribution_dict.keys())[0]
     num_qubits = len(state)
     num_shots = sum(distribution_dict.values())
