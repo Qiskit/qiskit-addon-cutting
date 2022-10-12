@@ -9,5 +9,5 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-
+"""Code to initialize the WireCutter import."""
 from .wire_cutting.wire_cutter import WireCutter
