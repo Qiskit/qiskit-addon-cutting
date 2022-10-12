@@ -46,7 +46,7 @@ class IntegralDriver(ElectronicStructureDriver):
         num_beta: int,
         nuclear_repulsion_energy: float,
     ):
-        """Entanglement forging driver
+        """Entanglement forging driver.
 
         Args:
             hcore: hcore integral
@@ -66,7 +66,7 @@ class IntegralDriver(ElectronicStructureDriver):
         self._nuclear_repulsion_energy = nuclear_repulsion_energy
 
     def run(self) -> ElectronicStructureDriverResult:
-        """Returns ElectronicStructureDriverResult constructed from input data."""
+        """Return ElectronicStructureDriverResult constructed from input data."""
         # Create ParticleNumber property. Multiply by 2 since the number
         # of spin orbitals is 2x the number of MOs
         particle_number = ParticleNumber(
