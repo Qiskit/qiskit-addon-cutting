@@ -116,9 +116,6 @@ class MIP_Model(object):
         """
         Add the necessary variables to the CPLEX model.
 
-        Args:
-            - self
-
         Returns:
             - None
         """
@@ -215,8 +212,6 @@ class MIP_Model(object):
         """
         Add all contraints and objectives to MIP model.
 
-        Args:
-            - self
         Returns:
             - None
         """
