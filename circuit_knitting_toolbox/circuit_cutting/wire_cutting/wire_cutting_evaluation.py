@@ -25,7 +25,7 @@ def run_subcircuit_instances(
     """
     Execute all provided subcircuits.
 
-    Using the provided mode, this executes all the subcircuits to generate the resultant 
+    Using the provided mode, this executes all the subcircuits to generate the resultant
     probability vectors.
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
 
@@ -36,7 +36,7 @@ def run_subcircuit_instances(
         - service_args (Dict): the arguments for the runtime service
         - backend_name (str): the method by which the subcircuits should be run
         - options (Options): options for the runtime execution of subcircuits
-    
+
     Returns:
         - (Dict): the probability vectors from each of the subcircuit instances
     """
@@ -73,7 +73,7 @@ def mutate_measurement_basis(meas: Tuple[str, ...]) -> List[Tuple[Any, ...]]:
     """
     Change of basis for all identity measurements.
 
-    For every identity measurement, it is split into an I and Z measurement. 
+    For every identity measurement, it is split into an I and Z measurement.
     I and Z measurement basis correspond to the same logical circuit.
 
     Args:
@@ -108,7 +108,7 @@ def modify_subcircuit_instance(
         - meas (tuple): the current measement bases
 
     Returns:
-        - (QuantumCircuit): the updated circuit, modified so the initialziation 
+        - (QuantumCircuit): the updated circuit, modified so the initialziation
             and measurement operators are all in the standard computational basis
 
     Raises:
@@ -189,7 +189,7 @@ def run_subcircuits(
         - subcircuit (QuantumCircuit): the subcircuit to be simulated
         - service_args (Dict): the arguments for the runtime service
         - backend_name (str): the method by which the subcircuits should be run
-        - options (Options): options for the runtime execution of subcircuitsuit 
+        - options (Options): options for the runtime execution of subcircuitsuit
 
     Returns:
         - (NDArray): the simulated probability distribution
