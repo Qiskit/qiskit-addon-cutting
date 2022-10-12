@@ -27,16 +27,16 @@ def verify(
     Compare the reconstructed probabilities to the ground truth.
 
     Executes the original circuit, then measures the distributional differences between this exact
-    result (ground truth) and the reconstructed result from the subcircuits. 
+    result (ground truth) and the reconstructed result from the subcircuits.
     Provides a variety of metrics to evaluate the differences in the distributions.
-    
+
     Args:
         - full_circuit (QuantumCircuit): the original quantum circuit that was cut
         - reconstructed_output (NDArray): the reconstructed probability distribution from the
             execution of the subcircuits
 
     Returns:
-        - (dict): a dictionary containing a variety of distributional difference metrics for the 
+        - (dict): a dictionary containing a variety of distributional difference metrics for the
             ground truth and reconstructed distributions
     """
     ground_truth = _evaluate_circuit(circuit=full_circuit)
@@ -78,7 +78,7 @@ def generate_reconstructed_output(
         - smart_order (list): the correct ordering of the subcircuits
         - complete_path_map (dict): the path map of the cuts, as defined from the
             cutting function
-    
+
     Returns:
         - (NDArray): the reordered and reconstructed probability distribution over the
             full circuit
