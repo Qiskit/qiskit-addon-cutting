@@ -24,8 +24,10 @@ class WireCutter:
     """Class to hold the main cutting functions.
 
     This is the main class of user interaction for Wire Cutting. This class
-    manages all the key user functions such as creating, evaluating, and
-    verifying the cuts.
+    manages all the key user functions such as decomposing (cutting) the
+    circuit, evaluating the subcircuits, recomposing results to reconstruct
+    the full output, and verifying that output against the ground truth
+    distribution.
 
     Attributes:
         - _circuit (QuantumCircuit): original quantum circuit to be
@@ -107,8 +109,8 @@ class WireCutter:
         Decompose the circuit into a collection of subcircuits.
 
         Args:
-            - method (str): whether to have the cuts be 'automatic'ally found, in a
-                provably optimal way, or whether to 'manual'ly provide the cuts
+            - method (str): whether to have the cuts be 'automatically' found, in a
+                provably optimal way, or whether to 'manually' specify the cuts
             - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in
                 the subcircuits. Note that these are not the indices of the qubits, but
                 the nodes in the circuit DAG
@@ -183,7 +185,7 @@ class WireCutter:
         num_threads: int = 1,
     ) -> NDArray:
         """
-        Reconstruct the full probabilities from the subcircuit executions.
+        Reconstruct the full probabilities from the subcircuit evaluations.
 
         Args:
             - subcircuit_instance_probabilities (dict): the probability vectors from each
@@ -212,11 +214,11 @@ class WireCutter:
         """
         Compare the reconstructed probabilites to the ground truth.
 
-        Note: this function requires the statevector exeuction of the original circuit,
+        Note: this function requires the statevector execution of the original circuit,
         making it infeasible for most circuits >25 qubits.
 
         Args:
-            - reconstructed_probability (NDArray): the econstructed probabilities
+            - reconstructed_probability (NDArray): the reconstructed probabilities
                 of the original circuit, obtained from the evaluate method
 
         Returns:
@@ -277,7 +279,7 @@ def _run_subcircuits(
         - subcircuit_instances (Dict): the dictionary containing the index information for each
             of the subcircuit instances
         - service_args (Dict): the arguments for the runtime service
-        - backend_name (str): the method by which the subcircuits should be run
+        - backend_names (Sequence[str]): the backend(s) used to run the subcircuits
         - options (Options): options for the runtime execution of subcircuits
 
     Returns:
@@ -369,7 +371,7 @@ def _build(
     Args:
         - cuts (Dict[str, Any]): results from the cutting step
         - summation_terms (Sequence[Dict[int, int]]): the metadata containing 4^(num cuts) terms
-            which represent the final distribution when summed and combined with the subcircuit probabilities
+            that represent the final distribution when summed and combined with the subcircuit probabilities
         - subcircuit_entry_probs (Dict[int, Dict[int, NDArray]]): the probabilities for each
             of the subcircuits as calculated from their backend executions
         - mem_limit (int): memory limit for postprocessing
@@ -401,7 +403,7 @@ def _recompose(
     num_threads: int = 1,
 ) -> NDArray:
     """
-    Reassemble the probability vector using quantum serverless.
+    Reconstruct the full probabilities from the subcircuit evaluations.
 
     Args:
         - circuit (QuantumCircuit): the original full circuit
