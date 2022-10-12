@@ -27,6 +27,7 @@ dev = [
     "black[jupyter]==22.10.0",
     "mypy==0.982",
     "pytest>=6.2.5",
+    "pydocstyle",
     "pytest-randomly>=1.2.0",
     "nbmake"
 ]
