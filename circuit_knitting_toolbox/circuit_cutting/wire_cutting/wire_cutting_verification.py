@@ -123,7 +123,8 @@ def generate_reconstructed_output(
 
 def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     """
-    Simulate the given circuit to get the final probability vector.
+    Evaluate the given circuit with a statevector simulator to get the
+    exact probability vector.
 
     Args:
         - circuit (QuantumCircuit): the circuit to simulate
