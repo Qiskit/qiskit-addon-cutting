@@ -181,7 +181,7 @@ def convert_to_physical_init(init: List[str]) -> Tuple[int, Tuple[str, ...]]:
     Convert the initial measurements to the physical representations.
 
     Args:
-        - init (list): the initial measurements, e.g. ["zero", "2plus2"]
+        - init (list): the initial measurements, e.g. ["zero", "2plus"]
 
     Returns:
         - (int): the coefficient of the physical measurements
