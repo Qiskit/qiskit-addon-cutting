@@ -18,7 +18,7 @@ from qiskit.converters import circuit_to_dag, dag_to_circuit
 class MIP_Model(object):
     """
     Class to contain the model that manages the cut MIP.
-    
+
     This class represents circuit cutting as a Mixed Integer Programming (MIP) problem
     that can then be solved (provably) optimally using a MIP solver. This is integrated
     with CPLEX, a fast commercial solver sold by IBM. There are free and open source MIP
@@ -214,7 +214,7 @@ class MIP_Model(object):
     def _add_constraints(self) -> None:
         """
         Add all contraints and objectives to MIP model.
-        
+
         Args:
             - self
         Returns:
@@ -423,7 +423,7 @@ class MIP_Model(object):
             - base (int): the base of the input exponential
             - coefficient (int): the coefficient of the original exponential
             - integer_only (bool): whether the input x's are only integers
-        
+
         Returns:
             - (list): the x's of the piecewise approximation
             - (list): the f(x)'s of the piecewise approximation
@@ -443,7 +443,7 @@ class MIP_Model(object):
     def check_graph(self, n_vertices: int, edges: Sequence[Tuple[int]]) -> None:
         """
         Ensure circuit DAG is viable.
-        
+
         This means that there are no oversized edges, that all edges are from viable nodes,
         and that the graph is otherwise a valid graph.
 
@@ -479,7 +479,7 @@ class MIP_Model(object):
         Solve the MIP model.
 
         Args:
-            - min_post_processing_cost (float): the predicted minimum post-processing cost, 
+            - min_post_processing_cost (float): the predicted minimum post-processing cost,
                 often is inf
 
         Returns:
@@ -555,7 +555,7 @@ def read_circuit(
     Args:
         - circuit (QuantumCircuit): a stripped circuit to be converted into a
             DAG like representation
-    
+
     Returns:
         - (int): number of vertices
         - (list): edge list
@@ -679,7 +679,7 @@ def subcircuits_parser(
 ) -> Tuple[Sequence[QuantumCircuit], Dict[Qubit, List[Dict[str, Union[int, Qubit]]]]]:
     """
     Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.
-    
+
     Args:
         - subcircuit_gates (list): the gates in the subcircuits
         - circuit (QuantumCircuit): the original circuit
@@ -820,7 +820,7 @@ def generate_subcircuits(
 
     Called in the subcircuit_parser function to convert the found paths and nodes
     into actual quantum circuit objects.
-    
+
     Args:
         - subcircuit_op_nodes (dict): the nodes of each of the subcircuits
         - complete_path_map (dict): the complete path through the subcircuits
@@ -869,7 +869,7 @@ def circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
 
     Args:
         - circuit (QuantumCircuit): the circuit to strip
-    
+
     Returns:
         - (QuantumCircuit): the stripped circuit
     """
@@ -886,7 +886,7 @@ def circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
 def cost_estimate(counter: Dict[int, Dict[str, int]]) -> float:
     """
     Estimate the cost of processing the subcircuits.
-    
+
     Args:
         - counter (dict): dictionary containing information for each of the
             subcircuits
@@ -916,13 +916,13 @@ def get_pairs(
 ) -> List[Tuple[Dict[str, Union[int, Qubit]], Dict[str, Union[int, Qubit]]]]:
     """
     Get all pairs through each path.
-    
+
     Iterates through the path for each of the qubits and keeps track of the
-    each pair of neigbors. 
-    
+    each pair of neigbors.
+
     Args:
         - complete_path_map (dict): the dictionary containing all path information
-    
+
     Returns:
         - (list): all pairs for each of the qubit paths
     """
@@ -950,7 +950,7 @@ def get_counter(
         - subcircuits (list): the list of subcircuits
         - O_rho_pairs (list): the pairs for each qubit path as generated in the get_pairs
             function
-    
+
     Returns:
         - (dict): the resulting dictionary with all parameter information
     """
@@ -1169,7 +1169,7 @@ def print_cutter_result(
         - num_subciruit (int): the number of subcircuits
         - num_cuts (int): the number of cuts
         - subcircuits (list): the list of subcircuits
-        - counter (dict): the dictionary containing all meta information regarding 
+        - counter (dict): the dictionary containing all meta information regarding
             each of the subcircuits
         - classical_cost (float): the estimated processing cost
 
