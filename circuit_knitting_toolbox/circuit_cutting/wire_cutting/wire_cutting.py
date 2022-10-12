@@ -444,7 +444,7 @@ class MIP_Model(object):
         """
         Ensure circuit DAG is viable.
         
-        This means that there are no oversied edges, that all edges are from viable nodes,
+        This means that there are no oversized edges, that all edges are from viable nodes,
         and that the graph is otherwise a valid graph.
 
         Args:
