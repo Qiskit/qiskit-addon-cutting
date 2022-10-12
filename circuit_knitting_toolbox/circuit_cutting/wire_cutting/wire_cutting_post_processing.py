@@ -330,7 +330,7 @@ def naive_compute(
     subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
 ) -> Tuple[Optional[NDArray], Dict[str, int]]:
     """
-    Reconstruct the full distribution from the subcircuits.
+    Reconstruct the full probability distribution from the subcircuits.
 
     This function is called within the build function, meant to be used
     in a multipooling manner.
@@ -377,7 +377,7 @@ def build(
     num_threads: int,
 ) -> Tuple[NDArray, List[int], Dict[str, int]]:
     """
-    Build the full probability distribution from the subcircuit distributions.
+    Reconstruct the full probability distribution from the subcircuits.
 
     Args:
         - summation_terms (list): the summation terms used to generate the full
