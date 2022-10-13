@@ -62,7 +62,7 @@ $ jupyter notebook
 
 #### Option 2: Use within Docker
 
-We have provided a [`Dockerfile`](Dockerfile), which can be used to build a Docker image, as well as a [`docker-compose.yml`](docker-compose.yml) file, which allows one to use the Docker image with just a few simple commands.
+We have provided a [`Dockerfile`](Dockerfile), which can be used to build a Docker image, as well as a [`docker-compose.yml`](docker-compose.yml) file, which allows one to use the Docker image with just a few simple commands.  If you have Docker installed but not [Docker Compose](https://pypi.org/project/docker-compose/), the latter can be installed by first running `pip install docker-compose`.
 
 ```sh
 $ git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
