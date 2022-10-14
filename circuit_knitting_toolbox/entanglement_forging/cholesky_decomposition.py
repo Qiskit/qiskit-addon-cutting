@@ -84,18 +84,19 @@ def cholesky_decomposition(
     orbitals_to_reduce: Optional[Sequence[int]] = None,
 ) -> Tuple[ListOp, float]:
     """
-    Construct the decomposed Hamiltonian from an input `ElectronicStructureProblem`.
+    Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
-        - problem (ElectronicStructureProblem): An `ElectronicStructureProblem` from which the decomposed Hamiltonian will be
+        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
         - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
-        - cholesky_operator (ListOp): A list of operators representing the decomposed Hamiltonian.
-            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
-        - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
-            calculating properties of the decomposed operator (i.e. ground state energy).
+        - Tuple containing
+            - cholesky_operator (ListOp): A list of operators representing the decomposed Hamiltonian.
+              shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
+            - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
+              calculating properties of the decomposed operator (i.e. ground state energy).
     """
     # Store the ElectronicStructureProblem
     problem.second_q_ops()

@@ -383,7 +383,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
         ] = None,
     ) -> Tuple[PauliSumOp, Optional[ListOrDictType[PauliSumOp]]]:
-        """Construct decomposed qubit operators from an `ElectronicStructureProblem`.
+        """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
           - problem (BaseProblem): A class encoding a problem to be solved.
