@@ -6,6 +6,10 @@ on:
     branches:
       - main
       - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
 
 jobs:
   build_and_deploy_docs:
