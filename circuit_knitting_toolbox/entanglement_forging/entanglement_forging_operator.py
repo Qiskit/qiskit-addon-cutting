@@ -32,8 +32,8 @@ class EntanglementForgingOperator:  # noqa: D301
             Schmidt coefficients
         - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
             Schmidt coefficients
-        - w_ij: The weight matrix associated with the tensor paulis
-        - w_ab: The weight matrix associated with the superposition paulis
+        - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
+        - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
     """
 
     def __init__(
@@ -51,8 +51,8 @@ class EntanglementForgingOperator:  # noqa: D301
                 Schmidt coefficients
             - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
                 Schmidt coefficients
-            - w_ij: The weight matrix associated with the tensor paulis
-            - w_ab: The weight matrix associated with the superposition paulis
+            - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
+            - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
 
         Returns:
             - None
