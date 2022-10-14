@@ -43,7 +43,7 @@ class EntanglementForgingOperator:  # noqa: D301
         w_ij: NDArray[Shape["*, *"], Float],
         w_ab: NDArray[Shape["*, *"], Float],
     ):
-        """
+        r"""
         Assign the necessary member variables.
 
         Args:
