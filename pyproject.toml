@@ -9,7 +9,7 @@ description = "A software prototype for a circuit knitting toolbox which connect
 requires-python = ">=3.7"
 
 dependencies = [
-    "pyscf>=2.0.1",
+    "pyscf>=2.0.1; sys_platform != 'win32' and (python_version < '3.10' or sys_platform != 'darwin')",
     "qiskit-aer>=0.11.0",
     "qiskit-terra>=0.22.0",
     "qiskit-nature>=0.4.4",
@@ -19,7 +19,7 @@ dependencies = [
     "ray>=2.0.0",
     "quantum-serverless @ git+ssh://git@github.com/Qiskit-Extensions/quantum-serverless.git#subdirectory=client",
     "docplex>=2.23.222",
-    "cplex>=22.1.0.0",
+    "cplex>=22.1.0.0; platform_machine != 'arm64'",
 ]
 
 [project.optional-dependencies]
