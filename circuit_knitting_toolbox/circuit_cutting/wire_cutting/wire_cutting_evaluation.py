@@ -1,3 +1,4 @@
+"""Contains functions for executing subcircuits."""
 import itertools, copy
 from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
 
@@ -22,7 +23,22 @@ def run_subcircuit_instances(
     options: Optional[Union[Dict, Options]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
+    Execute all provided subcircuits.
+
+    Using the backend(s) provided, this executes all the subcircuits to generate the
+    resultant probability vectors.
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
+
+    Args:
+        - subcircuits (Sequence[QuantumCircuit]): the list of subcircuits to execute
+        - subcircuit_instances (Dict): dictionary containing information about each of the
+            subcircuit instances
+        - service_args (Dict): the arguments for the runtime service
+        - backend_names (Sequence[str]): the backend(s) used to execute the subcircuits
+        - options (Options): options for the runtime execution of subcircuits
+
+    Returns:
+        - (Dict): the probability vectors from each of the subcircuit instances
     """
     if service_args:
         if backend_names:
@@ -55,7 +71,16 @@ def run_subcircuit_instances(
 
 def mutate_measurement_basis(meas: Tuple[str, ...]) -> List[Tuple[Any, ...]]:
     """
-    I and Z measurement basis correspond to the same logical circuit
+    Change of basis for all identity measurements.
+
+    For every identity measurement, it is split into an I and Z measurement.
+    I and Z measurement basis correspond to the same logical circuit.
+
+    Args:
+        - meas (tuple): the current measurement bases
+
+    Returns:
+        - (tuple): the update measurement bases
     """
     if all(x != "I" for x in meas):
         return [meas]
@@ -75,10 +100,19 @@ def modify_subcircuit_instance(
     subcircuit: QuantumCircuit, init: Tuple[str, ...], meas: Tuple[str, ...]
 ) -> QuantumCircuit:
     """
-    Modify the different init, meas for a given subcircuit
+    Modify the initialization and measurement bases for a given subcircuit.
+
+    Args:
+        - subcircuit (QuantumCircuit): the subcircuit to be modified
+        - init (tuple): the current initializations
+        - meas (tuple): the current measement bases
+
     Returns:
-    Modified subcircuit_instance
-    List of mutated measurements
+        - (QuantumCircuit): the updated circuit, modified so the initialziation
+            and measurement operators are all in the standard computational basis
+
+    Raises:
+        - Exeption: if one of the init's or meas's are not an acceptable string
     """
     subcircuit_dag = circuit_to_dag(subcircuit)
     subcircuit_instance_dag = copy.deepcopy(subcircuit_dag)
@@ -149,7 +183,16 @@ def run_subcircuits(
     options: Optional[Union[Dict, Options]] = None,
 ) -> List[NDArray]:
     """
-    Simulate a subcircuit
+    Execute the subcircuit(s).
+
+    Args:
+        - subcircuit (QuantumCircuit): the subcircuits to be executed
+        - service_args (Dict): the arguments for the runtime service
+        - backend_name (str): the backend used to execute the subcircuits
+        - options (Options): options for the runtime execution of subcircuits
+
+    Returns:
+        - (NDArray): the probability distributions
     """
     for subcircuit in subcircuits:
         if subcircuit.num_clbits == 0:
@@ -178,6 +221,16 @@ def run_subcircuits(
 
 
 def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
+    """
+    Compute the effective probability distribution from the subcircuit distribution.
+
+    Args:
+        - unmeasured_prob (Sequence[float]): the outputs of the subcircuit execution
+        - meas (tuple): the measurement bases
+
+    Returns:
+        - (NDArray): the updated measured probability distribution
+    """
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)
     else:
@@ -192,10 +245,17 @@ def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
 
 def measure_state(full_state: int, meas: Tuple[Any, ...]) -> Tuple[int, int]:
     """
-    Compute the corresponding effective_state for the given full_state
-    Measured in basis `meas`
-    Returns sigma (int), effective_state (int)
-    where sigma = +-1
+    Compute the corresponding effective_state for the given full_state.
+
+    Measured in basis `meas`. Returns sigma (int), effective_state (int) where sigma = +-1
+
+    Args:
+        - full_state (int): the current state (in decimal form)
+        - meas (tuple): the measurement bases
+
+    Returns:
+        - (tuple): sigma (defined by the parity of non computational basis 1 measurements) and
+            the effective state (defined by the measurements in the computational basis)
     """
     bin_full_state = bin(full_state)[2:].zfill(len(meas))
     sigma = 1
@@ -218,6 +278,21 @@ def _run_subcircuit_batch(
     backend_name: Optional[str] = None,
     options: Optional[Union[Dict, Options]] = None,
 ):
+    """
+    Execute a circuit using qiskit runtime and quantum serverless.
+
+    Args:
+        - subcircuit_instances (Dict): dictionary containing information about each of the
+            subcircuit instances
+        - subcircuit (QuantumCircuit): the subcircuit to execute
+        - service_args (Dict): the arguments for the runtime service
+        - backend_name (str): the backends used to execute the subcircuit
+        - options (Options): options for the runtime execution of subcircuit
+
+    Returns:
+        - (dict): the measurement probabilities for the subcircuit batch, as calculated from the
+            runtime execution
+    """
     subcircuit_instance_probs = {}
     circuits_to_run = []
 
