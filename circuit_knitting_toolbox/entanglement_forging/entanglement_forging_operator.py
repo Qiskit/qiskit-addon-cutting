@@ -23,18 +23,17 @@ import numpy as np
 class EntanglementForgingOperator:  # noqa: D301
     r"""Operator class for Entanglement Forging.
 
-    A class that contains the 2N qubit Pauli operator $\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b}
-    \hat{S}_{a, b)$
-    and associated weights. These operators are knitted by the EntanglementForgingKnitter to provide esimates of the
-    energy for the EntanglementForgingVQE.
+    A class that contains the :math:`2N` qubit Pauli operator :math:`\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b} \hat{S}_{a, b}`
+    and associated weights. These operators are knitted by the :class:`EntanglementForgingKnitter` to provide esimates of the
+    energy for the :class:`EntanglementForgingVQE`.
 
     Attributes:
         - tensor_paulis (Sequence[PauliOp]): The operators acting on the subsystems that have the same
             Schmidt coefficients
         - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
             Schmidt coefficients
-        - w_ij (NDArray[Shape["*, *"], Float]): The weight matrix associated with the tensor paulis
-        - w_ab (NDArray[Shape["*, *"], Float]): The weight matrix associated with the superposition paulis
+        - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
+        - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
     """
 
     def __init__(
@@ -44,7 +43,7 @@ class EntanglementForgingOperator:  # noqa: D301
         w_ij: NDArray[Shape["*, *"], Float],
         w_ab: NDArray[Shape["*, *"], Float],
     ):
-        """
+        r"""
         Assign the necessary member variables.
 
         Args:
@@ -52,8 +51,8 @@ class EntanglementForgingOperator:  # noqa: D301
                 Schmidt coefficients
             - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
                 Schmidt coefficients
-            - w_ij (NDArray[Shape["*, *"], Float]): The weight matrix associated with the tensor paulis
-            - w_ab (NDArray[Shape["*, *"], Float]): The weight matrix associated with the superposition paulis
+            - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
+            - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
 
         Returns:
             - None

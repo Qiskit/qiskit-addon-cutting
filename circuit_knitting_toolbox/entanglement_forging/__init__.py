@@ -28,7 +28,7 @@ Entanglement Forging Classes
    EntanglementForgingGroundStateSolver
 
 Decomposition Functions
-==========
+=======================
 
 .. autosummary::
    :toctree: ../stubs/
