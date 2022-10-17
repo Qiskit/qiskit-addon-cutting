@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Tests for EntanglementForgingVQE module."""
+
 import ray
 import unittest
 import numpy as np
