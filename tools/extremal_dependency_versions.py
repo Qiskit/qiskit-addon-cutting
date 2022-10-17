@@ -20,12 +20,6 @@ import fire
 def mapfunc_dev(dep):
     """Load the development version(s) of certain Qiskit-related packages"""
     # https://peps.python.org/pep-0440/#direct-references
-
-    # Temporarily use a Qiskit Terra version from pypi so we don't have to
-    # compile it
-    if "qiskit-terra" in dep:
-        return "qiskit-terra>=0.22.0rc1"
-
     return re.sub(
         r"^(qiskit-(?:terra|nature)).*$",
         r"\1 @ git+https://github.com/Qiskit/\1.git",
