@@ -11,8 +11,8 @@
 # that they have been altered from the originals.
 
 """Tests for EntanglementForgingKnitter module."""
+
 import os
-import ray
 import unittest
 import numpy as np
 from qiskit.circuit import Parameter, QuantumCircuit
@@ -35,8 +35,6 @@ from circuit_knitting_toolbox.utils import IntegralDriver
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
     def setUp(self):
-        ray.init(ignore_reinit_error=True)
-
         self.energy_shift_h2 = 0.7199689944489797
 
         self.energy_shift_h2o = -61.37433060587931
@@ -64,9 +62,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), "test_data", "CN_two_body.npy"),
         )
         self.energy_shift_cn = -67.18561556466743
-
-    def tearDown(self):
-        ray.shutdown()
 
     def create_mock_ansatz_circuit(self, num_qubits: int) -> QuantumCircuit:
         n_theta = 1

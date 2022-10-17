@@ -1,4 +1,3 @@
-"""Helper functions for reducing orbitals."""
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2022.
@@ -10,6 +9,8 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
+
+"""Helper functions for reducing orbitals."""
 
 import numpy as np
 

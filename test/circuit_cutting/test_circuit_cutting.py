@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Tests for circuit_cutting package."""
+
 import unittest
 
 import numpy as np

@@ -1,4 +1,3 @@
-"""File containing the knitter class and associated functions."""
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2022.
@@ -10,6 +9,8 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
+
+"""File containing the knitter class and associated functions."""
 
 import copy
 import warnings

@@ -1,4 +1,3 @@
-"""Functions for comparing array distances."""
 # This code is part of Qiskit.
 #
 # (C) Copyright IBM 2022.
@@ -10,6 +9,9 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
+
+"""Functions for comparing array distances."""
+
 import copy
 
 import numpy as np
