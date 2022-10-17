@@ -18,7 +18,6 @@ import time
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
-import ray
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
@@ -37,6 +36,7 @@ from qiskit_ibm_runtime import (
     RuntimeOptions,
 )
 from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
+from quantum_serverless import get, run_qiskit_remote
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -276,7 +276,7 @@ class EntanglementForgingKnitter:
             session_ids = self._session_ids
 
         partitioned_expval_futures = [
-            _estimate_expvals.remote(  # type: ignore
+            _estimate_expvals(  # type: ignore
                 tensor_ansatze=tensor_ansatze_partition,
                 tensor_paulis=forged_operator.tensor_paulis,
                 superposition_ansatze=superposition_ansatze_partition,
@@ -301,7 +301,7 @@ class EntanglementForgingKnitter:
                 partition_tensor_expvals,
                 partition_superposition_expvals,
                 job_id,
-            ) = ray.get(partition_expval_futures)
+            ) = get(partition_expval_futures)
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
             # Start a session for each thread if this is the first run
@@ -581,7 +581,7 @@ def _partition(a, n):
     return (a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n))
 
 
-@ray.remote
+@run_qiskit_remote()
 def _estimate_expvals(
     tensor_ansatze: List[QuantumCircuit],
     tensor_paulis: List[Pauli],
