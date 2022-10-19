@@ -145,7 +145,9 @@ def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     """
     max_memory_mb = psutil.virtual_memory().total >> 20
     max_memory_mb = int(max_memory_mb / 4 * 3)
-    simulator = Aer.get_backend("aer_simulator_statevector", max_memory_mb=max_memory_mb)
+    simulator = Aer.get_backend(
+        "aer_simulator_statevector", max_memory_mb=max_memory_mb
+    )
     circuit = copy.deepcopy(circuit)
     circuit.save_state()
     result = simulator.run(circuit).result()
