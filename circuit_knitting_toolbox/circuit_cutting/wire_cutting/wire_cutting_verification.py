@@ -70,7 +70,7 @@ def verify(
             "Cross Entropy": ce,
             "HOP": hop,
         }
-    return metrics
+    return metrics, ground_truth
 
 
 def generate_reconstructed_output(

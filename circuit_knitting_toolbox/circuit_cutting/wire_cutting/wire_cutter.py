@@ -227,11 +227,11 @@ class WireCutter:
             - (Dict): a dictionary containing a variety of metrics comparing the
                 reconstructed probabilities to the ground truth.
         """
-        metrics = verify(
+        metrics, real_probabilities = verify(
             self.circuit,
             reconstructed_probability,
         )
-        return metrics
+        return metrics, real_probabilities
 
 
 @run_qiskit_remote()
