@@ -138,33 +138,25 @@ class WireCutter:
 
         Raises:
             - ValueError: if the input method does not match the other provided arguments
+            - ValueError: if the circuit class field is not set prior to decomposition
         """
-        cuts = {}
-        if method == "automatic":
-            if max_subcircuit_width is None:
-                raise ValueError(
-                    "The max_subcircuit_width argument must be set if using automatic cut finding."
-                )
-            cuts_futures = _cut_automatic(
-                self.circuit,
-                max_subcircuit_width,
-                max_subcircuit_cuts=max_subcircuit_cuts,
-                max_subcircuit_size=max_subcircuit_size,
-                max_cuts=max_cuts,
-                num_subcircuits=num_subcircuits,
+        if self.circuit is None:
+            raise ValueError(
+                "A circuit must be passed to WireCutter before decompose() is called."
             )
-            cuts = get(cuts_futures)
-        elif method == "manual":
-            if subcircuit_vertices is None:
-                raise ValueError(
-                    "The subcircuit_vertices argument must be set if manually specifying cuts."
-                )
-            cuts_futures = _cut_manual(self.circuit, subcircuit_vertices)
-            cuts = get(cuts_futures)
-        else:
-            ValueError(
-                'The method argument for the decompose method should be either "automatic" or "manual".'
-            )
+
+        cuts_futures = cut_circuit_wires(
+            self.circuit,
+            method,
+            subcircuit_vertices=subcircuit_vertices,
+            max_subcircuit_width=max_subcircuit_width,
+            max_cuts=max_cuts,
+            num_subcircuits=num_subcircuits,
+            max_subcircuit_cuts=max_subcircuit_cuts,
+            max_subcircuit_size=max_subcircuit_size,
+        )
+        cuts = get(cuts_futures)
+
         return cuts
 
     def evaluate(self, cuts: Dict[str, Any]) -> Dict[int, Dict[int, NDArray]]:
@@ -178,19 +170,17 @@ class WireCutter:
             - (Dict): the dictionary containing the results from running
                 each of the subcircuits
         """
-        _, _, subcircuit_instances = _generate_metadata(cuts)
-
-        subcircuit_instance_probabilities = _run_subcircuits(
+        subcircuit_probability_futures = evaluate_subcircuits(
             cuts,
-            subcircuit_instances,
             self._service,
             self._backend_names,
             self._options,
         )
+        subcircuit_instance_probabilities = get(subcircuit_probability_futures)
 
         return subcircuit_instance_probabilities
 
-    def recompose(
+    def reconstruct(
         self,
         subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
         cuts: Dict[str, Any],
@@ -209,7 +199,7 @@ class WireCutter:
             - (NDArray): the reconstructed probability vector
 
         """
-        reconstructed_probability_futures = _recompose(
+        reconstructed_probability_futures = reconstruct_full_distribution(
             circuit=self.circuit,
             subcircuit_instance_probabilities=subcircuit_instance_probabilities,
             cuts=cuts,
@@ -242,6 +232,138 @@ class WireCutter:
             reconstructed_probability,
         )
         return metrics
+
+
+@run_qiskit_remote()
+def cut_circuit_wires(
+    circuit: QuantumCircuit,
+    method: str,
+    subcircuit_vertices: Optional[Sequence[Sequence[int]]] = None,
+    max_subcircuit_width: Optional[int] = None,
+    max_subcircuit_cuts: Optional[int] = None,
+    max_subcircuit_size: Optional[int] = None,
+    max_cuts: Optional[int] = None,
+    num_subcircuits: Optional[Sequence[int]] = None,
+) -> Dict[str, Any]:
+    """
+    Decompose the circuit into a collection of subcircuits.
+
+    Args:
+        - method (str): whether to have the cuts be 'automatically' found, in a
+            provably optimal way, or whether to 'manually' specify the cuts
+        - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in
+            the subcircuits. Note that these are not the indices of the qubits, but
+            the nodes in the circuit DAG
+        - max_subcircuit_width (int): max number of qubits in each subcircuit
+        - max_cuts (int): max total number of cuts allowed
+        - num_subcircuits (Sequence[int]): list of number of subcircuits to try
+        - max_subcircuit_cuts (int, optional): max number of cuts for a subcircuit
+        - max_subcircuit_size (int, optional): max number of gates in a subcircuit
+
+    Returns:
+        - (Dict[str, Any]): A dictionary containing information on the cuts,
+            including the subcircuits themselves (key: 'subcircuits')
+
+    Raises:
+        - ValueError: if the input method does not match the other provided arguments
+    """
+    cuts = {}
+    if method == "automatic":
+        if max_subcircuit_width is None:
+            raise ValueError(
+                "The max_subcircuit_width argument must be set if using automatic cut finding."
+            )
+        cuts = _cut_automatic(
+            circuit,
+            max_subcircuit_width,
+            max_subcircuit_cuts=max_subcircuit_cuts,
+            max_subcircuit_size=max_subcircuit_size,
+            max_cuts=max_cuts,
+            num_subcircuits=num_subcircuits,
+        )
+    elif method == "manual":
+        if subcircuit_vertices is None:
+            raise ValueError(
+                "The subcircuit_vertices argument must be set if manually specifying cuts."
+            )
+        cuts = _cut_manual(circuit, subcircuit_vertices)
+    else:
+        ValueError(
+            'The method argument for the decompose method should be either "automatic" or "manual".'
+        )
+    return cuts
+
+
+@run_qiskit_remote()
+def evaluate_subcircuits(
+    cuts: Dict[str, Any],
+    service_args: Optional[Dict[str, Any]] = None,
+    backend_names: Optional[Sequence[str]] = None,
+    options: Optional[Options] = None,
+) -> Dict[int, Dict[int, NDArray]]:
+    """
+    Evaluate the subcircuits.
+
+        service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
+        options: Optional[Options] = None,
+        backend_names: Optional[Sequence[str]] = None,
+    Args:
+        - cuts (Dict): the results of cutting
+
+    Returns:
+        - (Dict): the dictionary containing the results from running
+            each of the subcircuits
+    """
+    _, _, subcircuit_instances = _generate_metadata(cuts)
+
+    subcircuit_instance_probabilities = _run_subcircuits(
+        cuts,
+        subcircuit_instances,
+        service_args=service_args,
+        backend_names=backend_names,
+        options=options,
+    )
+
+    return subcircuit_instance_probabilities
+
+
+@run_qiskit_remote()
+def reconstruct_full_distribution(
+    circuit: QuantumCircuit,
+    subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
+    cuts: Dict[str, Any],
+    num_threads: int = 1,
+) -> NDArray:
+    """
+    Reconstruct the full probabilities from the subcircuit evaluations.
+
+    Args:
+        - circuit (QuantumCircuit): the original full circuit
+        - subcircuit_instance_probabilities (dict): the probability vectors from each
+            of the subcircuit instances, as output by the _run_subcircuits function
+        - num_threads (int): the number of threads to use to parallelize the recomposing
+
+    Returns:
+        - (NDArray): the reconstructed probability vector
+    """
+    summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
+
+    subcircuit_entry_probabilities = _attribute_shots(
+        subcircuit_entries, subcircuit_instance_probabilities
+    )
+    unordered_probability, smart_order = _build(
+        cuts, summation_terms, subcircuit_entry_probabilities, num_threads
+    )
+
+    reconstructed_probability = generate_reconstructed_output(
+        circuit,
+        cuts["subcircuits"],
+        unordered_probability,
+        smart_order,
+        cuts["complete_path_map"],
+    )
+
+    return reconstructed_probability
 
 
 def _generate_metadata(
@@ -277,8 +399,8 @@ def _generate_metadata(
 def _run_subcircuits(
     cuts: Dict[str, Any],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    service_args: Optional[Dict[str, Any]],
-    backend_names: Optional[Sequence[str]],
+    service_args: Optional[Dict[str, Any]] = None,
+    backend_names: Optional[Sequence[str]] = None,
     options: Optional[Union[Dict, Options]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
@@ -407,46 +529,6 @@ def _build(
     return unordered_prob, smart_order
 
 
-@run_qiskit_remote()
-def _recompose(
-    circuit: QuantumCircuit,
-    subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
-    cuts: Dict[str, Any],
-    num_threads: int = 1,
-) -> NDArray:
-    """
-    Reconstruct the full probabilities from the subcircuit evaluations.
-
-    Args:
-        - circuit (QuantumCircuit): the original full circuit
-        - subcircuit_instance_probabilities (dict): the probability vectors from each
-            of the subcircuit instances, as output by the _run_subcircuits function
-        - num_threads (int): the number of threads to use to parallelize the recomposing
-
-    Returns:
-        - (NDArray): the reconstructed probability vector
-    """
-    summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
-
-    subcircuit_entry_probabilities = _attribute_shots(
-        subcircuit_entries, subcircuit_instance_probabilities
-    )
-    unordered_probability, smart_order = _build(
-        cuts, summation_terms, subcircuit_entry_probabilities, num_threads
-    )
-
-    reconstructed_probability = generate_reconstructed_output(
-        circuit,
-        cuts["subcircuits"],
-        unordered_probability,
-        smart_order,
-        cuts["complete_path_map"],
-    )
-
-    return reconstructed_probability
-
-
-@run_qiskit_remote()
 def _cut_automatic(
     circuit: QuantumCircuit,
     max_subcircuit_width: int,
@@ -488,7 +570,6 @@ def _cut_automatic(
     return cuts
 
 
-@run_qiskit_remote()
 def _cut_manual(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]]
 ) -> Dict[str, Any]:

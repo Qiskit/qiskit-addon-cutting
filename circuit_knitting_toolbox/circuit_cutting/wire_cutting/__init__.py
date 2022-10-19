@@ -14,3 +14,8 @@
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import verify
+from .wire_cutter import (
+    cut_circuit_wires,
+    evaluate_subcircuits,
+    reconstruct_full_distribution,
+)
