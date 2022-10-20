@@ -57,7 +57,7 @@ class TestCircuitCutting(unittest.TestCase):
             subcircuit_instance_probabilities, cuts
         )
 
-        metrics = cutter.verify(reconstructed_probabilities)
+        metrics, _ = cutter.verify(reconstructed_probabilities)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
@@ -71,6 +71,6 @@ class TestCircuitCutting(unittest.TestCase):
             subcircuit_instance_probabilities, cuts
         )
 
-        metrics = cutter.verify(reconstructed_probabilities)
+        metrics, _ = cutter.verify(reconstructed_probabilities)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
