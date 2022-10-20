@@ -12,7 +12,7 @@
 """File containing the entanglement forging operator."""
 
 from dataclasses import dataclass
-from typing import Optional, Sequence, Union
+from typing import Sequence
 
 from nptyping import Float, NDArray, Shape
 from qiskit.quantum_info import Pauli

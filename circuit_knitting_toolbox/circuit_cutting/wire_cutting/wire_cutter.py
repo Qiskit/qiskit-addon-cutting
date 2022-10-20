@@ -16,13 +16,9 @@ from typing import Sequence, Optional, Dict, Any, Tuple, cast, List, Union
 from nptyping import NDArray
 
 from qiskit import QuantumCircuit
-from qiskit.primitives import Sampler as TestSampler
 from qiskit_ibm_runtime import (
-    Sampler,
     Options,
-    RuntimeOptions,
     QiskitRuntimeService,
-    Session,
 )
 from quantum_serverless import run_qiskit_remote, get
 

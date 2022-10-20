@@ -10,7 +10,6 @@
 # that they have been altered from the originals.
 
 """File containing the tools to find and manage the cuts."""
-import math
 import typing
 from typing import Sequence, Dict, Tuple, Union, Any, Optional, List, cast
 
@@ -1047,7 +1046,6 @@ def find_wire_cuts(
                 print("%d subcircuits : NO SOLUTIONS" % (num_subcircuit))
             continue
         else:
-            min_objective = mip_model.objective
             positions = cuts_parser(mip_model.cut_edges, circuit)
             subcircuits, complete_path_map = subcircuits_parser(
                 subcircuit_gates=mip_model.subcircuits, circuit=circuit

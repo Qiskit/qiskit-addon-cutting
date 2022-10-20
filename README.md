@@ -2,7 +2,7 @@
 <div align="left">
 
   ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-informational)
-  [![Python](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9-informational)](https://www.python.org/)
+  [![Python](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-informational)](https://www.python.org/)
   [![Qiskit](https://img.shields.io/badge/Qiskit-%E2%89%A5%200.39.0-6133BD)](https://github.com/Qiskit/qiskit)
   [![Qiskit Nature](https://img.shields.io/badge/Qiskit%20Nature-%E2%89%A5%200.4.4-6133BD)](https://github.com/Qiskit/qiskit-nature)
 <br />
@@ -40,7 +40,7 @@ The toolbox will allow users to run parallelized and hybrid (quantum + classical
 
 ### Installation
 
-There are two options: installing locally or using within a Docker container.  If you are using Linux, everything should work natively, so we recommend the first option.  If you are using macOS with a version of Python earlier than 3.10 and an Intel chip (i.e., not the new M1 or M2 chips), everything should work natively as well.  All other Mac users, as well as all Windows users, will have to use the toolbox within Docker (the second option) for everything to work as designed.
+There are two options: installing locally or using within a Docker container.  If you are using macOS or Linux with an Intel chip (i.e., not the new M1 or M2 chips), everything should work natively, so we recommend the first option.  All users on ARM chips, as well as all Windows users, will have to use the toolbox within Docker (the second option) for everything to work as designed.
 
 #### Option 1: Local installation
 

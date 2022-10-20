@@ -11,29 +11,16 @@
 
 """File containing the knitter class and associated functions."""
 
-import copy
-import warnings
 from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
-import time
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
-from qiskit.primitives import Estimator as TestEstimator, EstimatorResult
-from qiskit.providers.ibmq.job import (
-    IBMQJobFailureError,
-    IBMQJobApiError,
-    IBMQJobInvalidStateError,
-)
-from qiskit_nature import QiskitNatureError
+from qiskit.primitives import Estimator as TestEstimator
 from qiskit_ibm_runtime import (
     QiskitRuntimeService,
-    Session,
-    Options,
-    Estimator,
-    RuntimeOptions,
 )
 from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
 from quantum_serverless import get, run_qiskit_remote
@@ -500,10 +487,8 @@ def _construct_stateprep_circuits(
                 i = diffs[0]
                 if bs1[i]:
                     x = bs2
-                    y = bs1
                 else:
                     x = bs1
-                    y = bs2
 
                 # Find the first position the bitstrings differ and place a
                 # hadamard in that position
