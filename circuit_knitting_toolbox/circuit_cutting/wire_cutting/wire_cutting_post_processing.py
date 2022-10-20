@@ -10,7 +10,6 @@
 # that they have been altered from the originals.
 
 """File containing all cutting post processing functionality."""
-from time import time
 import itertools
 import multiprocessing as mp
 from typing import Dict, Sequence, Union, Tuple, List, Optional, Any

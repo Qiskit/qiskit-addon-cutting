@@ -13,7 +13,6 @@
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
-from qiskit_nature.drivers import Molecule
 from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.properties.second_quantization.electronic import (
     ElectronicEnergy,
@@ -25,7 +24,6 @@ from qiskit_nature.properties.second_quantization.electronic.bases import (
     ElectronicBasisTransform,
 )
 from qiskit_nature.properties.second_quantization.electronic.integrals import (
-    ElectronicIntegrals,
     OneBodyElectronicIntegrals,
     TwoBodyElectronicIntegrals,
 )

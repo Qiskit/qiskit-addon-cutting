@@ -210,7 +210,6 @@ def run_subcircuits(
             subcircuit.measure_all()
 
     service = QiskitRuntimeService(**service_args) if service_args is not None else None
-    job_id = None
     if service is not None:
         session = Session(service=service, backend=backend_name)
         sampler = Sampler(session=session, options=options)

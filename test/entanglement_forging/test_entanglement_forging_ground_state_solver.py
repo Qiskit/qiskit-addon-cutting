@@ -22,7 +22,6 @@ from qiskit_nature.problems.second_quantization import ElectronicStructureProble
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
-    EntanglementForgingKnitter,
     EntanglementForgingGroundStateSolver,
 )
 

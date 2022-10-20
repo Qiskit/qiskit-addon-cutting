@@ -325,7 +325,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
-        eval_time = time() - start_time
+        time() - start_time
 
         optimal_evaluation = self._history.optimal_evaluation
         if optimal_evaluation is None:
@@ -414,12 +414,10 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     @property
     def qubit_converter(self):
         """Not implemented."""
-        pass
 
     @property
     def solver(self):
         """Not implemented."""
-        pass
 
     def evaluate_operators(
         self,
