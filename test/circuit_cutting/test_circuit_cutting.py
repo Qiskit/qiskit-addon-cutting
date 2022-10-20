@@ -53,7 +53,7 @@ class TestCircuitCutting(unittest.TestCase):
             num_subcircuits=[2],
         )
         subcircuit_instance_probabilities = cutter.evaluate(cuts)
-        reconstructed_probabilities = cutter.recompose(
+        reconstructed_probabilities = cutter.reconstruct(
             subcircuit_instance_probabilities, cuts
         )
 
@@ -67,7 +67,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         cuts = cutter.decompose(method="manual", subcircuit_vertices=[[0, 1], [2, 3]])
         subcircuit_instance_probabilities = cutter.evaluate(cuts)
-        reconstructed_probabilities = cutter.recompose(
+        reconstructed_probabilities = cutter.reconstruct(
             subcircuit_instance_probabilities, cuts
         )
 
