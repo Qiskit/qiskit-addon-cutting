@@ -9,7 +9,7 @@ description = "A software prototype for a circuit knitting toolbox which connect
 requires-python = ">=3.7"
 
 dependencies = [
-    "pyscf>=2.0.1; sys_platform != 'win32' and (python_version < '3.10' or sys_platform != 'darwin')",
+    "pyscf>=2.0.1; sys_platform != 'win32'",
     "qiskit-aer>=0.11.0",
     "qiskit-terra>=0.22.0",
     "qiskit-nature>=0.4.4",
