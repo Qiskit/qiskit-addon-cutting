@@ -212,7 +212,7 @@ class WireCutter:
     def verify(
         self,
         reconstructed_probability: NDArray,
-    ) -> Dict[str, Dict[str, float]]:
+    ) -> Tuple[Dict[str, Dict[str, float]], Sequence[float]]:
         """
         Compare the reconstructed probabilites to the ground truth.
 
@@ -226,6 +226,7 @@ class WireCutter:
         Returns:
             - (Dict): a dictionary containing a variety of metrics comparing the
                 reconstructed probabilities to the ground truth.
+            - (Sequence[float]): the true probability distribution of the full circuit
         """
         metrics, real_probabilities = verify(
             self.circuit,
