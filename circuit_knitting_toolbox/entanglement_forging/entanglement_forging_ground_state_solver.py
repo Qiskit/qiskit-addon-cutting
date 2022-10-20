@@ -169,6 +169,16 @@ class EntanglementForgingResult(EigenstateResult):
         """Set the energy shift."""
         self._energy_shift = value
 
+    @property
+    def elapsed_time(self) -> float:
+        """Return the elapsed time."""
+        return self._elapsed_time
+
+    @elapsed_time.setter
+    def elapsed_time(self, value: float):
+        """Set the elapsed time."""
+        self._elapsed_time = value
+
 
 class EntanglementForgingGroundStateSolver(GroundStateSolver):
     """A class which estimates the ground state energy of a molecule."""
@@ -325,7 +335,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
-        time() - start_time
+        elapsed_time = time() - start_time
 
         optimal_evaluation = self._history.optimal_evaluation
         if optimal_evaluation is None:
@@ -344,6 +354,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         result.groundstate = self._history.optimal_evaluation.eigenstate
         result.energy_shift = self._energy_shift
         result.history = self._history.evaluations
+        result.elapsed_time = elapsed_time
 
         return result
 
