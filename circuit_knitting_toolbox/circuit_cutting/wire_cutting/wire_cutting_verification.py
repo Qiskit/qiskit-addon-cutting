@@ -12,7 +12,7 @@
 """File that contains the function to verify the results of the cut circuits."""
 
 import psutil, copy
-from typing import Sequence, Dict, Union, Tuple, List
+from typing import Tuple, Sequence, Dict, Union, List
 
 import numpy as np
 from nptyping import NDArray
