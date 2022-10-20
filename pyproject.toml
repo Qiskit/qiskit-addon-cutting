@@ -35,3 +35,14 @@ notebook-dependencies = [
     "ipywidgets",
     "pylatexenc",
 ]
+
+[tool.autoflake]
+remove-unused-variables = true
+imports = [
+    "qiskit",
+    "qiskit_aer",
+    "qiskit_nature",
+    "qiskit_ibm_runtime",
+    "quantum_serverless",
+    "pyscf",
+]

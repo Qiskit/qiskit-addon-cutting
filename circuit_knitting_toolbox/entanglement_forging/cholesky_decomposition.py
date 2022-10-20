@@ -12,7 +12,7 @@
 """File containing the EntanglementForgingGroundStateSolver class and associated functions."""
 
 import copy
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
@@ -21,7 +21,6 @@ from qiskit.quantum_info import Pauli
 from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit_nature.drivers.second_quantization import (
     ElectronicStructureDriver,
-    BaseDriver,
 )
 from qiskit_nature.mappers.second_quantization import JordanWignerMapper
 from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
