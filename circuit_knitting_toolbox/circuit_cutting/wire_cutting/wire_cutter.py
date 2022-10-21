@@ -68,7 +68,14 @@ class WireCutter:
             - None
         """
         # Set class fields
+        if len(circuit.parameters) > 0:
+            raise ValueError("All circuit parameters must be bound prior to cutting.")
         self._circuit = circuit
+        for i in circuit.data:
+            if i.operation.name == "barrier":
+                raise ValueError("Circuit must not have any barriers.")
+        self._circuit.remove_final_measurements()
+        self._circuit.decompose()
         self.service = service
         self._options = options
         self._backend_names = backend_names
