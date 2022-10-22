@@ -9,6 +9,8 @@
   [![License](https://img.shields.io/github/license/qiskit-community/prototype-entanglement-forging?label=License)](LICENSE.txt)
   [![Tests](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml)
 
+# Circuit Knitting Toolbox
+
 <!-- TABLE OF CONTENTS -->
 ### Table of Contents
 * [About](#about)
@@ -28,11 +30,9 @@ Each tool in the CKT will partition a user's problem into quantum and classical 
 
 The toolbox will allow users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
 
-*Status of current tools:*
-- *Entanglement Forging: ready for internal testing*
-- *Circuit Cutting (wire-cutting aka CutQC): ready for internal testing*
-- *Other Circuit Cutting techniques: TBD*
-- *Classical Embedding: TBD*
+The toolbox currently contains the following tools:
+- Entanglement Forging [[1]](#references)
+- Circuit Cutting [[2]](#references)
   
 ----------------------------------------------------------------------------------------------------
   
