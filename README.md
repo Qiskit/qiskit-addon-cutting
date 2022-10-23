@@ -9,6 +9,8 @@
   [![License](https://img.shields.io/github/license/qiskit-community/prototype-entanglement-forging?label=License)](LICENSE.txt)
   [![Tests](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml)
 
+# Circuit Knitting Toolbox
+
 <!-- TABLE OF CONTENTS -->
 ### Table of Contents
 * [About](#about)
@@ -28,11 +30,9 @@ Each tool in the CKT will partition a user's problem into quantum and classical 
 
 The toolbox will allow users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
 
-*Status of current tools:*
-- *Entanglement Forging: ready for internal testing*
-- *Circuit Cutting (wire-cutting aka CutQC): ready for internal testing*
-- *Other Circuit Cutting techniques: TBD*
-- *Classical Embedding: TBD*
+The toolbox currently contains the following tools:
+- Entanglement Forging [[1]](#references)
+- Circuit Cutting [[2]](#references)
   
 ----------------------------------------------------------------------------------------------------
   
@@ -91,9 +91,9 @@ The home directory includes a subdirectory named `persistent-volume`.  All work 
 
 <!-- REFERENCES -->
 ### References
-[1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi, Antonio Mezzacapo, Charles Hadfield, Sarah Sheldon, *Doubling the size of quantum simulators by entanglement forging*. PRX Quantum 3, 010309 (2022). https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.010309
+[1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi, Antonio Mezzacapo, Charles Hadfield, Sarah Sheldon, [Doubling the size of quantum simulators by entanglement forging](https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.010309). PRX Quantum 3, 010309 (2022).
 
-[2] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, *CutQC: Using Small Quantum Computers for Large Quantum Circuit Evaluations*, Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021). https://doi.org/10.1145/3445814.3446758
+[2] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, [CutQC: Using Small Quantum Computers for Large Quantum Circuit Evaluations](https://doi.org/10.1145/3445814.3446758), Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021).
 
 ----------------------------------------------------------------------------------------------------
 
