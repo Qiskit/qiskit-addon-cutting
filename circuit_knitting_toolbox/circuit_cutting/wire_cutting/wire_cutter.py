@@ -38,11 +38,11 @@ class WireCutter:
     distribution.
 
     Attributes:
-        - _circuit (QuantumCircuit): original quantum circuit to be
+        - circuit (QuantumCircuit): original quantum circuit to be
             cut into subcircuits
         - service (QiskitRuntimeService): the runtime service used to simulate or
             execute the subcircuits on real systems
-        - _options (Options): the options for the qiskit runtime primitives
+        - options (Options): the options for the qiskit runtime primitives
     """
 
     def __init__(
