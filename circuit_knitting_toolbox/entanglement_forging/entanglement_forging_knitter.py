@@ -35,21 +35,21 @@ class EntanglementForgingKnitter:
     A class which performs entanglement forging and returns the
     ground state energy and Schmidt coefficients found for given
     ansatz parameters and Schmidt coefficients.
-
-    Attributes:
-        - _ansatz (EntanglementForgingAnsatz): the ansatz containing the
-            information for the circuit structure and bitstrings to be used
-        - _backend_names (List[str]): the names of the backends to use
-        - _service (QiskitRuntimeService): the service used to access backends
-        - _tensor_circuits_u (List[QuantumCircuit]): the set of circuits used for the first
-            operator that have the same Schmidt values
-        - _superposition_circuits_u (List[QuantumCircuit]): the set of circuits used for
-            the first operator that have different Schmidt values
-        - _tensor_circuits_v (List[QuantumCircuit]): the set of circuits used for the second
-            operator that have the same Schmidt values
-        - _superposition_circuits_v (List[QuantumCircuit]): the set of circuits used for
-            the second operator that have different Schmidt values
     """
+
+    # Attributes:
+    #     - _ansatz (EntanglementForgingAnsatz): the ansatz containing the
+    #         information for the circuit structure and bitstrings to be used
+    #     - _backend_names (List[str]): the names of the backends to use
+    #     - _service (QiskitRuntimeService): the service used to access backends
+    #     - _tensor_circuits_u (List[QuantumCircuit]): the set of circuits used for the first
+    #         operator that have the same Schmidt values
+    #     - _superposition_circuits_u (List[QuantumCircuit]): the set of circuits used for
+    #         the first operator that have different Schmidt values
+    #     - _tensor_circuits_v (List[QuantumCircuit]): the set of circuits used for the second
+    #         operator that have the same Schmidt values
+    #     - _superposition_circuits_v (List[QuantumCircuit]): the set of circuits used for
+    #         the second operator that have different Schmidt values
 
     def __init__(
         self,
