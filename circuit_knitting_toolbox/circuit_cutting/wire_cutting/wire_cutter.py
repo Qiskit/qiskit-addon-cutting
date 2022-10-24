@@ -53,8 +53,6 @@ class WireCutter:
         backend_names: Optional[Sequence[str]] = None,
     ):
         """
-        Assign the necessary member variable.
-
         Args:
             - circuit (QuantumCircuit): original quantum circuit to be
                 cut into subcircuits
