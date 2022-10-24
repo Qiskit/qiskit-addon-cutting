@@ -35,7 +35,7 @@ def chi2_distance(target, obs):  # noqa: D301
         - obs (NDArray): the actually observed feature vector
 
     Returns:
-        - (Float): the computed distance
+        - (float): the computed distance
 
     Raises:
         - Exception: if the target is not a numpy array or dictionary, an exception
@@ -81,7 +81,7 @@ def MSE(target, obs):  # noqa: D301
         - obs (NDArray): the actually observed feature vector
 
     Returns:
-        - (Float): the computed MSE
+        - (float): the computed MSE
 
     Raises:
         - Exception: if the target is not a dict, or if the target and obs are not
@@ -132,7 +132,7 @@ def MAPE(target, obs):  # noqa: D301
         - obs (NDArray): the actually observed feature vector
 
     Returns:
-        - (Float): the computed MAPE
+        - (float): the computed MAPE
 
     Raises:
         - Exception: if the target is not a dict, or if the target and obs are not
@@ -191,7 +191,7 @@ def cross_entropy(target, obs):  # noqa: D301
         - obs (NDArray): the actually observed feature vector
 
     Returns:
-        - (Float): the computed cross entropy
+        - (float): the computed cross entropy
 
     Raises:
         - Exception: if the target is not a dict, or if the target and obs are not
@@ -240,7 +240,7 @@ def HOP(target, obs):
         - obs (NDArray): the actually observed feature vector
 
     Returns:
-        - (Float): the computed HOP
+        - (float): the computed HOP
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
