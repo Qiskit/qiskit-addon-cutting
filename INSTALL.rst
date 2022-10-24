@@ -30,15 +30,15 @@ Option 1: Local installation
     pip install tox notebook -e '.[notebook-dependencies]'
     jupyter notebook
 
--  Navigate to the notebooks in the ``docs/`` directory to run the
+-  Navigate to the notebooks in the ``docs/tutorials/`` directory to run the
    tutorials.
 
 Option 2: Use within Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have provided a ``Dockerfile`` <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile>`__, which can be used to
+We have provided a `Dockerfile <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile>`__, which can be used to
 build a Docker image, as well as a
-```docker-compose.yml`` <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docker-compose.yml>`__ file, which allows one
+`docker-compose.yml <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docker-compose.yml>`__ file, which allows one
 to use the Docker image with just a few simple commands. If you have
 Docker installed but not `Docker
 Compose <https://pypi.org/project/docker-compose/>`__, the latter can be
