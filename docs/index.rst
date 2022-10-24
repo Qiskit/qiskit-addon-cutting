@@ -8,7 +8,7 @@ This build currently only contains the API reference portion of the documentatio
   :maxdepth: 2
 
   Entanglement Forging <entanglement_forging/index>
-  Circuit Cutting <entanglement_forging/index>
+  Circuit Cutting <circuit_cutting/index>
   API References <apidocs/index>
 
 .. Hiding - Indices and tables

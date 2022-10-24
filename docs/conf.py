@@ -65,7 +65,7 @@ autoclass_content = "both"
 
 # nbsphinx options (for tutorials)
 nbsphinx_timeout = 180
-nbsphinx_execute = "always"
+nbsphinx_execute = "auto"
 nbsphinx_widgets_path = ""
 exclude_patterns = [
     "_build",
