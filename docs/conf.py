@@ -41,10 +41,10 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.extlinks",
-    # "jupyter_sphinx",
+    "jupyter_sphinx",
     "sphinx_autodoc_typehints",
     # "reno.sphinxext",
-    # "nbsphinx",
+    "nbsphinx",
 ]
 templates_path = ["_templates"]
 numfig = True
