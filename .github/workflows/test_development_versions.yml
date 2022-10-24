@@ -43,4 +43,4 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add - <<< '${{ secrets.PRIVATE_SSH_KEY }}'
           pver=${{ matrix.python-version }}
-          tox -epy${pver/./},py${pver/./}-notebook --ignore-glob=*CH3*.ipynb
+          tox -epy${pver/./},py${pver/./}-notebook -- --ignore-glob=*CH3*.ipynb
