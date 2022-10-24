@@ -22,13 +22,13 @@ Option 1: Local installation
 
 .. code:: sh
 
-    $ git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-    $ cd circuit-knitting-toolbox
-    $ python3 -m venv venv
-    $ source venv/bin/activate
-    $ pip install --upgrade pip
-    $ pip install tox notebook -e '.[notebook-dependencies]'
-    $ jupyter notebook
+    git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+    cd circuit-knitting-toolbox
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install tox notebook -e '.[notebook-dependencies]'
+    jupyter notebook
 
 -  Navigate to the notebooks in the ``docs/`` directory to run the
    tutorials.
@@ -46,10 +46,10 @@ installed by first running ``pip install docker-compose``.
 
 .. code:: sh
 
-    $ git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-    $ cd circuit-knitting-toolbox
-    $ docker-compose build
-    $ docker-compose up
+    git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+    cd circuit-knitting-toolbox
+    docker-compose build
+    docker-compose up
 
 Depending on your system configuration, you may need to type ``sudo``
 before each ``docker-compose`` command.
