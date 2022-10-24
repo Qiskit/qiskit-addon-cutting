@@ -16,7 +16,7 @@ Option 1: Local installation
    automatically find optimized cut points for a circuits too large for
    the free version of CPLEX, they should acquire a license and install
    the `full
-   version <https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjuq9OM1M75AhVoFNQBHWqGBW4YABAAGgJvYQ&ohost=www.google.com&cid=CAESauD2CglQCoRYTsgQCH50ip7Y_PCiHfnYyojivn_Od4YBaoXY74TyZYrKZNZuL0H9je0pzRNWut7uutUNmRc2x-P0nuTbQLAaC2p2fI3PTD87BbRBI07uzMo0ZTSmkyWQiGb9C3Hkv1bbawk&sig=AOD64_0oLk3SUhEbH-EQ35AWeP5_94a45A&q&adurl&ved=2ahUKEwiA1MmM1M75AhXXrmoFHdAcCVQQ0Qx6BAgEEAE&nis=2>`__.
+   version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
 
 -  Enter a Python environment and install the software
 
