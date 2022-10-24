@@ -71,9 +71,5 @@ nbsphinx_widgets_path = ""
 exclude_patterns = [
     "_build",
     "**.ipynb_checkpoints",
-    "tutorials",
-    "demos",
-    "how_tos",
     "test_notebooks",
-    "background",
 ]

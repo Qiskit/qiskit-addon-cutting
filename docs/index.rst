@@ -17,10 +17,9 @@ Contents
 --------
 
 .. toctree::
-  :maxdepth: 2
+  :maxdepth: 3
 
-  Entanglement Forging <entanglement_forging/index>
-  Circuit Cutting <circuit_cutting/index>
+  Tutorials <tutorials/index>
   API References <apidocs/index>
 
 .. Hiding - Indices and tables
