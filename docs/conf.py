@@ -45,6 +45,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     # "reno.sphinxext",
     "nbsphinx",
+    "sphinx_copybutton",
 ]
 templates_path = ["_templates"]
 numfig = True
