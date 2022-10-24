@@ -6,6 +6,23 @@ build-backend = "flit_core.buildapi"
 name = "circuit_knitting_toolbox"
 version = "0.0.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
 requires-python = ">=3.7"
 
 dependencies = [
