@@ -19,7 +19,10 @@ Contents
 .. toctree::
   :maxdepth: 3
 
+  Installation Instructions <install>
   Tutorials <tutorials/index>
+  Explanatory Material <explanation/index>
+  How-To Guides <how-tos/index>
   API References <apidocs/index>
 
 .. Hiding - Indices and tables
