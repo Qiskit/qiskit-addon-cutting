@@ -43,7 +43,7 @@ class EntanglementForgingKnitter:
         - _service (QiskitRuntimeService): the service used to access backends
         - _tensor_circuits_u (List[QuantumCircuit]): the set of circuits used for the first
             operator that have the same Schmidt values
-        - _superposition_circuits_u ()List[QuantumCircuit]: the set of circuits used for
+        - _superposition_circuits_u (List[QuantumCircuit]): the set of circuits used for
             the first operator that have different Schmidt values
         - _tensor_circuits_v (List[QuantumCircuit]): the set of circuits used for the second
             operator that have the same Schmidt values
