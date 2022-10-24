@@ -10,7 +10,7 @@
 # that they have been altered from the originals.
 
 """
-Utility functions
+Utility functions.
 
 .. autosummary::
    :toctree: ../stubs/

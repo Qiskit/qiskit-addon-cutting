@@ -51,7 +51,7 @@ class WireCutter:
         service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
         options: Optional[Options] = None,
         backend_names: Optional[Sequence[str]] = None,
-    ):
+    ):  # noqa: D205, D400
         """
         Args:
             - circuit (QuantumCircuit): original quantum circuit to be
