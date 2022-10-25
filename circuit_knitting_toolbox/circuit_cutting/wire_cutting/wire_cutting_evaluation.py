@@ -74,7 +74,10 @@ def run_subcircuit_instances(
             ]
             for subcircuit_idx, subcircuit in enumerate(subcircuits)
         ]
-        subcircuit_instance_probs = pool.starmap(_run_subcircuit_batch, args)
+        subcircuit_instance_probs_list = pool.starmap(_run_subcircuit_batch, args)
+
+        for i, partition_batch in enumerate(subcircuit_instance_probs_list):
+            subcircuit_instance_probs[i] = partition_batch
 
     return subcircuit_instance_probs
 

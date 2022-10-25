@@ -171,7 +171,7 @@ class WireCutter:
             - (Dict): the dictionary containing the results from running
                 each of the subcircuits
         """
-        subcircuit_probability = evaluate_subcircuits(
+        subcircuit_instance_probabilities = evaluate_subcircuits(
             cuts,
             self._service,
             self._backend_names,
@@ -199,7 +199,7 @@ class WireCutter:
             - (NDArray): the reconstructed probability vector
 
         """
-        reconstructed_probability = reconstruct_full_distribution(
+        reconstructed_probabilities = reconstruct_full_distribution(
             circuit=self.circuit,
             subcircuit_instance_probabilities=subcircuit_instance_probabilities,
             cuts=cuts,
