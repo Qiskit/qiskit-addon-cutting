@@ -291,11 +291,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """Compute Ground State properties.
 
         Args:
-            problem: a class encoding a problem to be solved.
-            aux_operators: Additional auxiliary operators to evaluate.
+            - problem: a class encoding a problem to be solved.
+            - aux_operators: Additional auxiliary operators to evaluate.
 
         Returns:
-            An interpreted :class:`~.EigenstateResult`. For more information see also
+            - An interpreted :class:`~.EigenstateResult`. For more information see also
             :meth:`~.BaseProblem.interpret`.
         """
         if not isinstance(problem, ElectronicStructureProblem):
@@ -417,7 +417,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """Whether this class returns only the ground state energy or also the ground state itself.
 
         Returns:
-            True, if this class also returns the ground state in the results object.
+            - True, if this class also returns the ground state in the results object.
             False otherwise.
         """
         return True
