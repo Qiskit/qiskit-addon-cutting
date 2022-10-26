@@ -112,7 +112,7 @@ class EntanglementForgingKnitter:
     def ansatz(self) -> EntanglementForgingAnsatz:
         """
         Property function for the ansatz.
-        
+
         Returns:
             - (EntanglementForgingAnsatz): the ansatz member variable
         """
