@@ -114,7 +114,7 @@ class EntanglementForgingAnsatz:
     def bitstrings_u(self) -> List[Bitstring]:
         """
         Property function for the first bitstrings.
-        
+
         Returns:
             - (List[Bitstring]): the _bitstrings_u member variable
         """
