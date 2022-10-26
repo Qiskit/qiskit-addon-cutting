@@ -54,9 +54,10 @@ language = "en"
 pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting_toolbox."]
+html_css_files = ["gallery.css"]
 
 # html theme options
-# html_static_path = ["_static"]
+html_static_path = ["_static"]
 # html_logo = "_static/images/logo.png"
 
 # autodoc/autosummary options
