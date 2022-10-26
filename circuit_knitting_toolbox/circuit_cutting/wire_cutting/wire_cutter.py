@@ -66,7 +66,7 @@ class WireCutter:
 
         Returns:
             - None
-            
+
         Raises:
             - ValueError: if the circuit has unbound parameters or barriers
         """
