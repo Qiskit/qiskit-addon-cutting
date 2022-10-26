@@ -112,10 +112,7 @@ class EntanglementForgingKnitter:
     def ansatz(self) -> EntanglementForgingAnsatz:
         """
         Property function for the ansatz.
-
-        Args:
-            - self
-
+        
         Returns:
             - (EntanglementForgingAnsatz): the ansatz member variable
         """
@@ -125,9 +122,6 @@ class EntanglementForgingKnitter:
     def backend_names(self) -> Optional[List[str]]:
         """
         List of backend names to be used.
-
-        Args:
-            - self
 
         Returns:
             - (List[str]): the backend_names member variable
@@ -140,7 +134,6 @@ class EntanglementForgingKnitter:
         Change the backend_names class field.
 
         Args:
-            - self
             - backend_names (List[str]): the list of backends to use
 
         Returns:
@@ -155,9 +148,6 @@ class EntanglementForgingKnitter:
         """
         Property function for service class field.
 
-        Args:
-            - self
-
         Returns:
             - (QiskitRuntimeService): the service member variable
         """
@@ -169,7 +159,6 @@ class EntanglementForgingKnitter:
         Change the service class field.
 
         Args:
-            - self
             - service (QiskitRuntimeService): the service used to spawn Qiskit primitives
 
         Returns:
