@@ -66,9 +66,6 @@ class EntanglementForgingOperator:  # noqa: D301
         """
         Representation function for EntanglementForgingOperator.
 
-        Args:
-            - self
-
         Returns:
             - (str): printable repesentation of class
         """
