@@ -3,11 +3,14 @@ Installation Instructions
 #########################
 
 There are two options: installing locally or using within a Docker
-container. If you are using macOS or Linux with an Intel chip (i.e., not
-the new M1 or M2 chips), everything should work natively, so we
-recommend the first option. All users on ARM chips, as well as all
-Windows users, will have to use the toolbox within Docker (the second
-option) for everything to work as designed.
+container.
+
+- If you are using Linux or macOS with an Intel chip (i.e., not the
+  new M1 or M2 chips), everything should work natively, so we
+  recommend the first option.
+- All users on ARM chips, as well as all Windows users, will have to
+  use the toolbox within Docker (the second option) for everything to
+  work as designed.
 
 Option 1: Local installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
