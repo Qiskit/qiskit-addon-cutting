@@ -91,16 +91,16 @@ simulations, and is indicated in the table below.
 | Quantity      | Scaling             | Notes         | Ways to       |
 |               |                     |               | Reduce        |
 +===============+=====================+===============+===============+
-| Orbitals      | Fifth power         |               | `Orbital      |
-|               |                     |               | freezing <#fr |
-|               |                     |               | eezing-orbita |
-|               |                     |               | ls>`__        |
+| Orbitals      | Fifth power         |               | :ref:`Orbital |
+|               |                     |               | freezing      |
+|               |                     |               | <Freezing     |
+|               |                     |               | orbitals>`    |
 +---------------+---------------------+---------------+---------------+
-| Bitstring     | Quadratic           | Increasing    | `Schmidt      |
+| Bitstring     | Quadratic           | Increasing    | :ref:`Schmidt |
 | states        |                     | the number of | decomposition |
-| :math:`\lvert |                     | bitstring     | truncation <# |
-| b_n \rangle`  |                     | states can    | picking-the-b |
-|               |                     | increase the  | itstrings>`__ |
+| :math:`\lvert |                     | bitstring     | truncation    |
+| b_n \rangle`  |                     | states can    | <picking the  |
+|               |                     | increase the  | bitstrings>`  |
 |               |                     | accuracy of   |               |
 |               |                     | the           |               |
 |               |                     | simulation,   |               |
@@ -109,12 +109,12 @@ simulations, and is indicated in the table below.
 |               |                     | execution     |               |
 |               |                     | time.         |               |
 +---------------+---------------------+---------------+---------------+
-| Ansatz        | Linear              | An increased  | `Redesign the |
-| parameters    |                     | number of     | ansatz <#desi |
-| :math:`\{θ\}` |                     | ansatz        | gning-the-ans |
-|               |                     | parameters    | atz-used-in-e |
-|               |                     | can increase  | ntanglement-f |
-|               |                     | the accuracy  | orging>`__    |
+| Ansatz        | Linear              | An increased  | :ref:`Redesign|
+| parameters    |                     | number of     | the ansatz    |
+| :math:`\{θ\}` |                     | ansatz        | <Ansatz       |
+|               |                     | parameters    | design>`      |
+|               |                     | can increase  |               |
+|               |                     | the accuracy  |               |
 |               |                     | of the        |               |
 |               |                     | simulation,   |               |
 |               |                     | but at the    |               |
@@ -122,6 +122,8 @@ simulations, and is indicated in the table below.
 |               |                     | execution     |               |
 |               |                     | time.         |               |
 +---------------+---------------------+---------------+---------------+
+
+.. _Freezing orbitals:
 
 Freezing orbitals
 ~~~~~~~~~~~~~~~~~
@@ -164,6 +166,8 @@ Leading excitation analysis = 3 unique bitstrings
     >>> print(f'Bitstrings after orbital reduction: {reduced_bitstrings}')
     Bitstrings after orbital reduction: [[1, 1, 1, 0, 0], [0, 1, 1, 0, 1], [0, 1, 1, 1, 0]]
 
+.. _Picking the bitstrings:
+
 Picking the bitstrings
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -194,8 +198,7 @@ spin up (α electron) or spin down (β electron), its bit will be set to
   equal the number of α or β particles.
 
 Further reduction in computational resources can be achieved by
-`freezing some
-orbitals <#freezing-orbitals>`__
+:ref:`freezing some orbitals <Freezing orbitals>`
 that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
@@ -219,6 +222,8 @@ with the hop gates, D & E qubits entangled with hop gates, while the
 partition between (A,B,C) and (D,E) are only entangled with a CZ gate.
 
 .. figure:: figs/Fig_5_c.png
+
+.. _Ansatz design:
 
 Designing the ansatz used in Entanglement Forging
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
