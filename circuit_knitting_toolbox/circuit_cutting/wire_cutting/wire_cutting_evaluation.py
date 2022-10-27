@@ -12,7 +12,7 @@
 """Contains functions for executing subcircuits."""
 import itertools, copy
 from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from nptyping import NDArray
@@ -63,7 +63,7 @@ def run_subcircuit_instances(
         backend_names_repeated = [None] * len(subcircuits)
 
     subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
-    with Pool() as pool:
+    with ThreadPool() as pool:
         args = [
             [
                 subcircuit_instances[subcircuit_idx],
