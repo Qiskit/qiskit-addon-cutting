@@ -9,15 +9,25 @@
     <title>Circuit Knitting Toolbox documentation &#8212; Circuit Knitting Toolbox 0.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Circuit Knitting Toolbox API References" href="apidocs/index.html" />
+    <link rel="next" title="Installation Instructions" href="install.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -36,12 +46,76 @@
             
   <section id="circuit-knitting-toolbox-documentation">
 <h1>Circuit Knitting Toolbox documentation<a class="headerlink" href="#circuit-knitting-toolbox-documentation" title="Permalink to this heading">¶</a></h1>
-<p>This build currently only contains the API reference portion of the documentation.  To see other portions of the documentation, visit <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs">the project’s documentation on github.com</a>.</p>
+<p>Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit’s outcome. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.</p>
+<p>Each tool in the CKT partitions a user’s problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It is designed to work seamlessly with the <a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> framework, which enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.</p>
+<p>The toolbox currently contains the following tools:</p>
+<ul class="simple">
+<li><p>Entanglement Forging</p></li>
+<li><p>Circuit Cutting</p></li>
+</ul>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#option-1-local-installation">Option 1: Local installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#option-2-use-within-docker">Option 2: Use within Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/entanglement_forging/index.html">Entanglement Forging Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/entanglement_forging/tutorial_1_H2.html">Tutorial 1: Entanglement Forging VQE for the H₂ molecule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/entanglement_forging/tutorial_2_CH3_asymmetric_bitstrings.html">Tutorial 2: Entanglement Forging Solver for the CH₃ molecule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/entanglement_forging/tutorial_3_H2O_reduce_bitstrings.html">Tutorial 3: Entanglement Forging Ground State Solver for the H₂O molecule</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/circuit_cutting/index.html">Circuit Cutting Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_1_automatic_cut_finding.html">Tutorial 1: Circuit Cutting with Automatic Cut Finding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_2_manual_cutting.html">Tutorial 2: Circuit Cutting with Manual Wire Cutting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.html">Tutorial 3: Circuit Cutting with Quantum Serverless</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="explanation/entanglement_forging/index.html">Entanglement Forging Explanation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#overview-of-entanglement-forging">Overview of entanglement forging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#entanglement-forging-procedure">Entanglement Forging Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#scaling">Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#current-limitations">⚠️ Current limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="explanation/circuit_cutting/index.html">Circuit Cutting Explanation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how-tos/entanglement_forging/index.html">Entanglement Forging How-To Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-tos/circuit_cutting/index.html">Circuit Cutting How-To Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/circuit_cutting.html">Circuit Cutting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.WireCutter.html">circuit_knitting_toolbox.circuit_cutting.WireCutter</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/entanglement_forging.html">Entanglement Forging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="apidocs/entanglement_forging.html#classes">Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidocs/entanglement_forging.html#decomposition-functions">Decomposition Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/utils.html">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.html">circuit_knitting_toolbox.utils.conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.html">circuit_knitting_toolbox.utils.metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html">circuit_knitting_toolbox.utils.integral_driver.IntegralDriver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
+</section>
 </section>
 
 
@@ -62,6 +136,10 @@
 
 <h3>Navigation</h3>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
 </ul>
 
@@ -69,7 +147,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="apidocs/index.html" title="next chapter">Circuit Knitting Toolbox API References</a></li>
+      <li>Next: <a href="install.html" title="next chapter">Installation Instructions</a></li>
   </ul></li>
 </ul>
 </div>

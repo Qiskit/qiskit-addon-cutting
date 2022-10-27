@@ -1,0 +1,35 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.WireCutter
+======================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+
+.. autoclass:: WireCutter
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WireCutter.__init__
+      ~WireCutter.decompose
+      ~WireCutter.evaluate
+      ~WireCutter.reconstruct
+      ~WireCutter.verify
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WireCutter.backend_names
+      ~WireCutter.circuit
+      ~WireCutter.options
+      ~WireCutter.service
+   
+   

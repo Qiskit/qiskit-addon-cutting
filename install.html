@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Installation Instructions &#8212; Circuit Knitting Toolbox 0.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials/index.html" />
+    <link rel="prev" title="Circuit Knitting Toolbox documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="installation-instructions">
+<h1>Installation Instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this heading">¶</a></h1>
+<p>There are two options: installing locally or using within a Docker
+container.</p>
+<ul class="simple">
+<li><p>If you are using Linux or macOS with an Intel chip (i.e., not the
+new M1 or M2 chips), everything should work natively, so we
+recommend the first option.</p></li>
+<li><p>All users on ARM chips, as well as all Windows users, will have to
+use the toolbox within Docker (the second option) for everything to
+work as designed.</p></li>
+</ul>
+<section id="option-1-local-installation">
+<h2>Option 1: Local installation<a class="headerlink" href="#option-1-local-installation" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>OPTIONAL</strong> If a user wishes to use the circuit cutting tool to
+automatically find optimized wire cuts for a circuit too large for
+the free version of CPLEX, they should acquire a license and install
+the <a class="reference external" href="https://www.ibm.com/products/ilog-cplex-optimization-studio">full
+version</a>.</p></li>
+<li><p>Enter a Python environment and install the software</p></li>
+</ul>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+<span class="nb">cd</span> circuit-knitting-toolbox
+python3 -m venv venv
+<span class="nb">source</span> venv/bin/activate
+pip install --upgrade pip
+pip install tox notebook -e <span class="s1">&#39;.[notebook-dependencies]&#39;</span>
+jupyter notebook
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Navigate to the notebooks in the <code class="docutils literal notranslate"><span class="pre">docs/tutorials/</span></code> directory to run the
+tutorials.</p></li>
+</ul>
+</section>
+<section id="option-2-use-within-docker">
+<h2>Option 2: Use within Docker<a class="headerlink" href="#option-2-use-within-docker" title="Permalink to this heading">¶</a></h2>
+<p>We have provided a <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile">Dockerfile</a>, which can be used to
+build a Docker image, as well as a
+<a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docker-compose.yml">docker-compose.yml</a> file, which allows one
+to use the Docker image with just a few simple commands. If you have
+Docker installed but not <a class="reference external" href="https://pypi.org/project/docker-compose/">Docker
+Compose</a>, the latter can be
+installed by first running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">docker-compose</span></code>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+<span class="nb">cd</span> circuit-knitting-toolbox
+docker-compose build
+docker-compose up
+</pre></div>
+</div>
+<p>Depending on your system configuration, you may need to type <code class="docutils literal notranslate"><span class="pre">sudo</span></code>
+before each <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> command.</p>
+<p>Once the container is running, you should see a message like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>notebook_1  |     To access the server, open this file in a browser:
+notebook_1  |         file:///home/jovyan/.local/share/jupyter/runtime/jpserver-7-open.html
+notebook_1  |     Or copy and paste one of these URLs:
+notebook_1  |         http://e4a04564eb39:8888/lab?token=00ed70b5342f79f0a970ee9821c271eeffaf760a7dcd36ec
+notebook_1  |      or http://127.0.0.1:8888/lab?token=00ed70b5342f79f0a970ee9821c271eeffaf760a7dcd36ec
+</pre></div>
+</div>
+<p>Locate the <em>last</em> URL in your terminal (the one that includes
+<code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>), and navigate to that URL in a web browser to access the
+Jupyter notebook interface.</p>
+<p>The home directory includes a subdirectory named <code class="docutils literal notranslate"><span class="pre">persistent-volume</span></code>.
+All work you’d like to save should be placed in this directory, as it is
+the only one that will be saved across different container runs.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Circuit Knitting Toolbox</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#option-1-local-installation">Option 1: Local installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#option-2-use-within-docker">Option 2: Use within Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Circuit Knitting Toolbox documentation</a></li>
+      <li>Next: <a href="tutorials/index.html" title="next chapter">Tutorials</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/install.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

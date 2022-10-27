@@ -8,12 +8,22 @@
     <title>Index &#8212; Circuit Knitting Toolbox 0.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -39,7 +49,10 @@
  <a href="#_"><strong>_</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#E"><strong>E</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -53,6 +66,10 @@
         <li><a href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__">(EntanglementForgingKnitter method)</a>
 </li>
         <li><a href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.__init__">(EntanglementForgingOperator method)</a>
+</li>
+        <li><a href="stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html#circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.__init__">(IntegralDriver method)</a>
+</li>
+        <li><a href="stubs/circuit_knitting_toolbox.circuit_cutting.WireCutter.html#circuit_knitting_toolbox.circuit_cutting.WireCutter.__init__">(WireCutter method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -77,8 +94,6 @@
         <li><a href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     circuit_knitting_toolbox.entanglement_forging
 
@@ -86,11 +101,27 @@
         <li><a href="apidocs/entanglement_forging.html#module-circuit_knitting_toolbox.entanglement_forging">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     circuit_knitting_toolbox.utils
 
       <ul>
         <li><a href="apidocs/utils.html#module-circuit_knitting_toolbox.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    circuit_knitting_toolbox.utils.conversion
+
+      <ul>
+        <li><a href="stubs/circuit_knitting_toolbox.utils.conversion.html#module-circuit_knitting_toolbox.utils.conversion">module</a>
+</li>
+      </ul></li>
+      <li>
+    circuit_knitting_toolbox.utils.metrics
+
+      <ul>
+        <li><a href="stubs/circuit_knitting_toolbox.utils.metrics.html#module-circuit_knitting_toolbox.utils.metrics">module</a>
 </li>
       </ul></li>
       <li><a href="stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html#circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator">convert_cholesky_operator() (in module circuit_knitting_toolbox.entanglement_forging)</a>
@@ -114,6 +145,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html#circuit_knitting_toolbox.utils.integral_driver.IntegralDriver">IntegralDriver (class in circuit_knitting_toolbox.utils.integral_driver)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -129,7 +168,27 @@
 </li>
         <li><a href="apidocs/utils.html#module-circuit_knitting_toolbox.utils">circuit_knitting_toolbox.utils</a>
 </li>
+        <li><a href="stubs/circuit_knitting_toolbox.utils.conversion.html#module-circuit_knitting_toolbox.utils.conversion">circuit_knitting_toolbox.utils.conversion</a>
+</li>
+        <li><a href="stubs/circuit_knitting_toolbox.utils.metrics.html#module-circuit_knitting_toolbox.utils.metrics">circuit_knitting_toolbox.utils.metrics</a>
+</li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html#circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings">reduce_bitstrings() (in module circuit_knitting_toolbox.utils.orbital_reduction)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="stubs/circuit_knitting_toolbox.circuit_cutting.WireCutter.html#circuit_knitting_toolbox.circuit_cutting.WireCutter">WireCutter (class in circuit_knitting_toolbox.circuit_cutting)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -152,6 +211,10 @@
 
 <h3>Navigation</h3>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
 </ul>
 
