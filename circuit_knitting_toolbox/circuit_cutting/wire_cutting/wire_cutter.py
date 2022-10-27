@@ -63,6 +63,9 @@ class WireCutter:
 
         Returns:
             - None
+
+        Raises:
+            - ValueError: if the circuit has unbound parameters or barriers
         """
         # Set class fields
         if len(circuit.parameters) > 0:
