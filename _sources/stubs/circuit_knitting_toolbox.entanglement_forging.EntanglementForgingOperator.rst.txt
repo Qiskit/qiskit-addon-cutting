@@ -1,0 +1,22 @@
+﻿circuit\_knitting\_toolbox.entanglement\_forging.EntanglementForgingOperator
+============================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.entanglement_forging
+
+.. autoclass:: EntanglementForgingOperator
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~EntanglementForgingOperator.__init__
+   
+   
+
+   
+   
+   

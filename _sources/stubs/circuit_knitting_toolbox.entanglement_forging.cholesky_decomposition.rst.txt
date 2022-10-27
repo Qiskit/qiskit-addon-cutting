@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.entanglement\_forging.cholesky\_decomposition
+========================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.entanglement_forging
+
+.. autofunction:: cholesky_decomposition
