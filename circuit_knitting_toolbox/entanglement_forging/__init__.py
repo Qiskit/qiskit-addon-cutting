@@ -14,8 +14,8 @@ Entanglement Forging (:mod:`circuit_knitting_toolbox.entanglement_forging`).
 
 .. currentmodule:: circuit_knitting_toolbox.entanglement_forging
 
-Entanglement Forging Classes
-=============================
+Classes
+=======
 
 .. autosummary::
    :toctree: ../stubs/

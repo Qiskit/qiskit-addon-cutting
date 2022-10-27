@@ -9,7 +9,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Code to initialize imports for utils."""
+"""
+Utility functions.
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   conversion
+   metrics
+   integral_driver.IntegralDriver
+   orbital_reduction.reduce_bitstrings
+"""
 
 from .integral_driver import IntegralDriver
 from .orbital_reduction import reduce_bitstrings

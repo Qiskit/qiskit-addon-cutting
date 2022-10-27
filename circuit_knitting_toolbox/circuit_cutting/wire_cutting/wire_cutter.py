@@ -50,10 +50,8 @@ class WireCutter:
         service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
         options: Optional[Options] = None,
         backend_names: Optional[Sequence[str]] = None,
-    ):
+    ):  # noqa: D205, D400
         """
-        Assign the necessary member variable.
-
         Args:
             - circuit (QuantumCircuit): original quantum circuit to be
                 cut into subcircuits

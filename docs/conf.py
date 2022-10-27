@@ -41,10 +41,12 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.extlinks",
-    # "jupyter_sphinx",
+    # "sphinx.ext.autosectionlabel",
+    "jupyter_sphinx",
     "sphinx_autodoc_typehints",
     # "reno.sphinxext",
-    # "nbsphinx",
+    "nbsphinx",
+    "sphinx_copybutton",
 ]
 templates_path = ["_templates"]
 numfig = True
@@ -53,9 +55,10 @@ language = "en"
 pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting_toolbox."]
+html_css_files = ["gallery.css"]
 
 # html theme options
-# html_static_path = ["_static"]
+html_static_path = ["_static"]
 # html_logo = "_static/images/logo.png"
 
 # autodoc/autosummary options
@@ -65,14 +68,10 @@ autoclass_content = "both"
 
 # nbsphinx options (for tutorials)
 nbsphinx_timeout = 180
-nbsphinx_execute = "always"
+nbsphinx_execute = "auto"
 nbsphinx_widgets_path = ""
 exclude_patterns = [
     "_build",
     "**.ipynb_checkpoints",
-    "tutorials",
-    "demos",
-    "how_tos",
     "test_notebooks",
-    "background",
 ]
