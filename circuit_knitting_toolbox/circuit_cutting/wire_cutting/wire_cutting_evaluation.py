@@ -12,7 +12,7 @@
 """Contains functions for executing subcircuits."""
 import itertools, copy
 from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
-from multiprocessing import Pool
+import multiprocessing as mp
 
 import numpy as np
 from nptyping import NDArray
@@ -63,7 +63,8 @@ def run_subcircuit_instances(
         backend_names_repeated = [None] * len(subcircuits)
 
     subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
-    with Pool() as pool:
+    # Why "spawn"?  See https://pythonspeed.com/articles/python-multiprocessing/
+    with mp.get_context("spawn").Pool() as pool:
         args = [
             [
                 subcircuit_instances[subcircuit_idx],
