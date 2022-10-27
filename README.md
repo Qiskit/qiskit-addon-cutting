@@ -24,11 +24,11 @@
 <!-- ABOUT -->
 
 ### About
-Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor, then recomposing their results into an estimation of the outcome of the original circuit. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
+Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
 
-Each tool in the CKT will partition a user's problem into quantum and classical components to optimize efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It will assign the execution of "quantum code" to QPUs or QPU simulators and "classical code" to various heterogeneous classical resources such as CPUs, GPUs, and TPUs made available via hybrid cloud, on-prem, data centers, etc. 
+Each tool in the CKT partitions a user's problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It can assign the execution of "quantum code" to QPUs or QPU simulators and "classical code" to various heterogeneous classical resources such as CPUs, GPUs, and TPUs made available via hybrid cloud, on-prem, data centers, etc. 
 
-The toolbox will allow users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
+The toolbox enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
 
 The toolbox currently contains the following tools:
 - Entanglement Forging [[1]](#references)

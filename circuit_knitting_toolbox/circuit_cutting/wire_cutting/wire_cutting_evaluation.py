@@ -12,6 +12,7 @@
 """Contains functions for executing subcircuits."""
 import itertools, copy
 from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
+from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from nptyping import NDArray
@@ -21,7 +22,6 @@ from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 from qiskit.primitives import Sampler as TestSampler
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
-from quantum_serverless import run_qiskit_remote, get
 
 from circuit_knitting_toolbox.utils.conversion import dict_to_array
 
@@ -63,19 +63,21 @@ def run_subcircuit_instances(
         backend_names_repeated = [None] * len(subcircuits)
 
     subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
-    subcircuit_instance_probs_futures = [
-        _run_subcircuit_batch(
-            subcircuit_instances[subcircuit_idx],
-            subcircuit,
-            service_args=service_args,
-            backend_name=backend_names_repeated[subcircuit_idx],
-            options=options,
-        )
-        for subcircuit_idx, subcircuit in enumerate(subcircuits)
-    ]
+    with ThreadPool() as pool:
+        args = [
+            [
+                subcircuit_instances[subcircuit_idx],
+                subcircuit,
+                service_args,
+                backend_names_repeated[subcircuit_idx],
+                options,
+            ]
+            for subcircuit_idx, subcircuit in enumerate(subcircuits)
+        ]
+        subcircuit_instance_probs_list = pool.starmap(_run_subcircuit_batch, args)
 
-    for i, partition_batch_futures in enumerate(subcircuit_instance_probs_futures):
-        subcircuit_instance_probs[i] = get(partition_batch_futures)
+        for i, partition_batch in enumerate(subcircuit_instance_probs_list):
+            subcircuit_instance_probs[i] = partition_batch
 
     return subcircuit_instance_probs
 
@@ -280,7 +282,6 @@ def measure_state(full_state: int, meas: Tuple[Any, ...]) -> Tuple[int, int]:
     return sigma, effective_state
 
 
-@run_qiskit_remote()
 def _run_subcircuit_batch(
     subcircuit_instance: Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int],
     subcircuit: QuantumCircuit,

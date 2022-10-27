@@ -20,7 +20,6 @@ from qiskit_ibm_runtime import (
     Options,
     QiskitRuntimeService,
 )
-from quantum_serverless import run_qiskit_remote, get
 
 from .wire_cutting import find_wire_cuts, cut_circuit_wire
 from .wire_cutting_evaluation import run_subcircuit_instances
@@ -66,7 +65,14 @@ class WireCutter:
             - None
         """
         # Set class fields
+        if len(circuit.parameters) > 0:
+            raise ValueError("All circuit parameters must be bound prior to cutting.")
         self._circuit = circuit
+        for i in circuit.data:
+            if i.operation.name == "barrier":
+                raise ValueError("Circuit must not have any barriers.")
+        self._circuit.remove_final_measurements()
+        self._circuit.decompose()
         self.service = service
         self._options = options
         self._backend_names = backend_names
@@ -139,7 +145,7 @@ class WireCutter:
                 "A circuit must be passed to WireCutter before decompose() is called."
             )
 
-        cuts_futures = cut_circuit_wires(
+        cuts = cut_circuit_wires(
             self.circuit,
             method,
             subcircuit_vertices=subcircuit_vertices,
@@ -149,7 +155,6 @@ class WireCutter:
             max_subcircuit_cuts=max_subcircuit_cuts,
             max_subcircuit_size=max_subcircuit_size,
         )
-        cuts = get(cuts_futures)
 
         return cuts
 
@@ -164,13 +169,12 @@ class WireCutter:
             - (Dict): the dictionary containing the results from running
                 each of the subcircuits
         """
-        subcircuit_probability_futures = evaluate_subcircuits(
+        subcircuit_instance_probabilities = evaluate_subcircuits(
             cuts,
             self._service,
             self._backend_names,
             self._options,
         )
-        subcircuit_instance_probabilities = get(subcircuit_probability_futures)
 
         return subcircuit_instance_probabilities
 
@@ -193,13 +197,12 @@ class WireCutter:
             - (NDArray): the reconstructed probability vector
 
         """
-        reconstructed_probability_futures = reconstruct_full_distribution(
+        reconstructed_probabilities = reconstruct_full_distribution(
             circuit=self.circuit,
             subcircuit_instance_probabilities=subcircuit_instance_probabilities,
             cuts=cuts,
             num_threads=num_threads,
         )
-        reconstructed_probabilities = get(reconstructed_probability_futures)
 
         return reconstructed_probabilities
 
@@ -229,7 +232,6 @@ class WireCutter:
         return metrics, real_probabilities
 
 
-@run_qiskit_remote()
 def cut_circuit_wires(
     circuit: QuantumCircuit,
     method: str,
@@ -289,7 +291,6 @@ def cut_circuit_wires(
     return cuts
 
 
-@run_qiskit_remote()
 def evaluate_subcircuits(
     cuts: Dict[str, Any],
     service_args: Optional[Dict[str, Any]] = None,
@@ -322,7 +323,6 @@ def evaluate_subcircuits(
     return subcircuit_instance_probabilities
 
 
-@run_qiskit_remote()
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
     subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],

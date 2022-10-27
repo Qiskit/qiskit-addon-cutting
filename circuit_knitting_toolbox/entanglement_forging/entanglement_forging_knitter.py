@@ -19,9 +19,7 @@ from nptyping import Float, Int, NDArray, Shape
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
 from qiskit.primitives import Estimator as TestEstimator
-from qiskit_ibm_runtime import (
-    QiskitRuntimeService,
-)
+from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
 from quantum_serverless import get, run_qiskit_remote
 

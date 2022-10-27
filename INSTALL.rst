@@ -16,7 +16,7 @@ Option 1: Local installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -  **OPTIONAL** If a user wishes to use the circuit cutting tool to
-   automatically find optimized cut points for a circuits too large for
+   automatically find optimized wire cuts for a circuit too large for
    the free version of CPLEX, they should acquire a license and install
    the `full
    version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
