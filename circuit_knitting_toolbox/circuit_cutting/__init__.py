@@ -22,3 +22,7 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 """
 
 from .wire_cutting.wire_cutter import WireCutter
+
+__all__ = [
+    "WireCutter",
+]

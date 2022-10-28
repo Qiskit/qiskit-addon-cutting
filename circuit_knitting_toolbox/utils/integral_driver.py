@@ -11,8 +11,7 @@
 
 """IntegralDriver."""
 
-import numpy as np
-from nptyping import Float, Int, NDArray, Shape
+from nptyping import Float, NDArray, Shape
 from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.properties.second_quantization.electronic import (
     ElectronicEnergy,

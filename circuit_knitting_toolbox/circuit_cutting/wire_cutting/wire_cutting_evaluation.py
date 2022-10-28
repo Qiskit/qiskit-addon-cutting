@@ -23,8 +23,6 @@ from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 from qiskit.primitives import Sampler as TestSampler
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
-from circuit_knitting_toolbox.utils.conversion import dict_to_array
-
 
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],

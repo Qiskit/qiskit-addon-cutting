@@ -16,7 +16,6 @@ from typing import Sequence, Dict, Tuple, Union, Any, Optional, List, cast
 
 from docplex.mp.model import Model
 from docplex.mp.utils import DOcplexException
-from docplex.mp.sdetails import SolveDetails
 import numpy as np
 
 from qiskit import QuantumCircuit, QuantumRegister
