@@ -30,7 +30,6 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
     OneBodyElectronicIntegrals,
     TwoBodyElectronicIntegrals,
 )
-from quantum_serverless import get, run_qiskit_remote
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -42,7 +41,6 @@ Matrix = NDArray[Shape["N, N"], Float]
 TwoBodyIntegrals = NDArray[Shape["N, N, N, N"], Float]
 
 
-@run_qiskit_remote()
 def get_cholesky_op(
     l_op: NDArray, g: int, converter: QubitConverter, opname: str
 ) -> PauliSumOp:
@@ -404,10 +402,9 @@ def _get_fermionic_ops_with_cholesky(
 
     qubit_op._name = opname + "_onebodyop"
 
-    cholesky_op_futures = [
+    cholesky_ops = [
         get_cholesky_op(l_op, g, converter, opname) for g in range(l_op.shape[2])
     ]
-    cholesky_ops = get(cholesky_op_futures)
 
     return qubit_op, cholesky_ops, freeze_shift, h1, h2
 
