@@ -11,6 +11,10 @@ The toolbox currently contains the following tools:
 - Entanglement Forging
 - Circuit Cutting
 
+.. note::
+
+   The `Quantum Serverless <https://github.com/Qiskit-Extensions/quantum-serverless>`_ framework is documented separately, as it lives in its own repository.  Currently, the Entanglement Forging module of this toolbox depends on Quantum Serverless and uses it automatically.  The Circuit Cutting module of this toolbox does not use Quantum Serverless automatically, but `Tutorial 3: Circuit Cutting with Quantum Serverless <./tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.ipynb>`_ demonstrates how it can be used with a circuit cutting workflow.
+
 Contents
 --------
 
