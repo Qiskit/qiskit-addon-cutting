@@ -1,6 +1,6 @@
-######################################
-Circuit Knitting Toolbox documentation
-######################################
+########################
+Circuit Knitting Toolbox
+########################
 
 Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
 
