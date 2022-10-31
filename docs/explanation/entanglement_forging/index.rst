@@ -161,7 +161,7 @@ Leading excitation analysis = 3 unique bitstrings
 
     >>> from circuit_knitting_toolbox.utils import reduce_bitstrings
     >>> orbitals_to_reduce = [0,3]
-    >>> bitstrings = [[1,1,1,1,1,0,0],[1,0,1,1,1,0,1],[1,0,1,1,1,1,0]]
+    >>> bitstrings = [(1,1,1,1,1,0,0), (1,0,1,1,1,0,1), (1,0,1,1,1,1,0)]
     >>> reduced_bitstrings = reduce_bitstrings(bitstrings, orbitals_to_reduce)
     >>> print(f'Bitstrings after orbital reduction: {reduced_bitstrings}')
     Bitstrings after orbital reduction: [[1, 1, 1, 0, 0], [0, 1, 1, 0, 1], [0, 1, 1, 1, 0]]
