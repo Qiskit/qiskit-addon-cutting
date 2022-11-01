@@ -1,6 +1,7 @@
 <!-- SHIELDS -->
 <div align="left">
 
+  [![Stability](https://img.shields.io/badge/Stability-alpha-f4d03f.svg)](https://github.com/Qiskit-Extensions/quantum-serverless/releases)
   ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-informational)
   [![Python](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-informational)](https://www.python.org/)
   [![Qiskit](https://img.shields.io/badge/Qiskit-%E2%89%A5%200.39.0-6133BD)](https://github.com/Qiskit/qiskit)
@@ -41,6 +42,12 @@ The toolbox currently contains the following tools:
 ### Installation
 
 See [`INSTALL.rst`](INSTALL.rst)
+
+----------------------------------------------------------------------------------------------------
+
+### Deprecation Policy
+
+This project is meant to evolve rapidly and, as such, does not follow [Qiskit's deprecation policy](https://qiskit.org/documentation/contributing_to_qiskit.html#deprecation-policy).  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the release notes.
 
 ----------------------------------------------------------------------------------------------------
 
