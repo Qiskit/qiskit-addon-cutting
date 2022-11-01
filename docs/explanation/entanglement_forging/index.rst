@@ -166,6 +166,8 @@ Leading excitation analysis = 3 unique bitstrings
     >>> print(f'Bitstrings after orbital reduction: {reduced_bitstrings}')
     Bitstrings after orbital reduction: [[1, 1, 1, 0, 0], [0, 1, 1, 0, 1], [0, 1, 1, 1, 0]]
 
+A complete example is provided in the `guide on freezing orbitals <../../how-tos/entanglement_forging/12-freeze-orbitals.ipynb>`_.
+
 .. _Picking the bitstrings:
 
 Picking the bitstrings
