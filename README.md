@@ -12,19 +12,18 @@
 
 # Circuit Knitting Toolbox
 
-<!-- TABLE OF CONTENTS -->
 ### Table of Contents
+
 * [About](#about)
-* [Tutorials](docs/tutorials/)
-* [Installation](#installation)
+* [Documentation](#documentation)
+* [Deprecation Policy](#deprecation-policy)
 * [References](#references)
 * [License](#license)
 
 ----------------------------------------------------------------------------------------------------
 
-<!-- ABOUT -->
-
 ### About
+
 Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
 
 Each tool in the CKT partitions a user's problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It can assign the execution of "quantum code" to QPUs or QPU simulators and "classical code" to various heterogeneous classical resources such as CPUs, GPUs, and TPUs made available via hybrid cloud, on-prem, data centers, etc. 
@@ -37,11 +36,9 @@ The toolbox currently contains the following tools:
   
 ----------------------------------------------------------------------------------------------------
   
-<!-- INSTALLATION -->
+### Documentation
 
-### Installation
-
-See [`INSTALL.rst`](INSTALL.rst)
+The documentation, including installation instructions, is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
 
 ----------------------------------------------------------------------------------------------------
 
@@ -51,8 +48,8 @@ This project is meant to evolve rapidly and, as such, does not follow [Qiskit's 
 
 ----------------------------------------------------------------------------------------------------
 
-<!-- REFERENCES -->
 ### References
+
 [1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi, Antonio Mezzacapo, Charles Hadfield, Sarah Sheldon, [Doubling the size of quantum simulators by entanglement forging](https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.3.010309). PRX Quantum 3, 010309 (2022).
 
 [2] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, [CutQC: Using Small Quantum Computers for Large Quantum Circuit Evaluations](https://doi.org/10.1145/3445814.3446758), Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021).
