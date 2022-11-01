@@ -12,6 +12,7 @@
 """File containing the knitter class and associated functions."""
 
 from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
+from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
@@ -21,7 +22,6 @@ from qiskit.quantum_info import Pauli
 from qiskit.primitives import Estimator as TestEstimator
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
-from quantum_serverless import get, run_qiskit_remote
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -249,33 +249,35 @@ class EntanglementForgingKnitter:
         else:
             session_ids = self._session_ids
 
-        partitioned_expval_futures = [
-            _estimate_expvals(  # type: ignore
-                tensor_ansatze=tensor_ansatze_partition,
-                tensor_paulis=forged_operator.tensor_paulis,
-                superposition_ansatze=superposition_ansatze_partition,
-                superposition_paulis=forged_operator.superposition_paulis,
-                service_args=service_args,
-                backend_names=self._backend_names,
-                backend_index=partition_index,
-                session_id=session_ids[partition_index],
-            )
-            for partition_index, (
-                tensor_ansatze_partition,
-                superposition_ansatze_partition,
-            ) in enumerate(
-                zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
-            )
-        ]
+        with ThreadPool() as pool:
+            args = [
+                [
+                    tensor_ansatze_partition,
+                    forged_operator.tensor_paulis,
+                    superposition_ansatze_partition,
+                    forged_operator.superposition_paulis,
+                    service_args,
+                    self._backend_names,
+                    partition_index,
+                    session_ids[partition_index],
+                ]
+                for partition_index, (
+                    tensor_ansatze_partition,
+                    superposition_ansatze_partition,
+                ) in enumerate(
+                    zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
+                )
+            ]
+            partitioned_expvals = pool.starmap(_estimate_expvals, args)
 
         tensor_expvals = []
         superposition_expvals = []
-        for i, partition_expval_futures in enumerate(partitioned_expval_futures):
+        for i, partition_expval in enumerate(partitioned_expvals):
             (
                 partition_tensor_expvals,
                 partition_superposition_expvals,
                 job_id,
-            ) = get(partition_expval_futures)
+            ) = partition_expval
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
             # Start a session for each thread if this is the first run
@@ -553,7 +555,6 @@ def _partition(a, n):
     return (a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n))
 
 
-@run_qiskit_remote()
 def _estimate_expvals(
     tensor_ansatze: List[QuantumCircuit],
     tensor_paulis: List[Pauli],
