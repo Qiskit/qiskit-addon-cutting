@@ -75,7 +75,6 @@
     <span class="n">OneBodyElectronicIntegrals</span><span class="p">,</span>
     <span class="n">TwoBodyElectronicIntegrals</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">quantum_serverless</span> <span class="kn">import</span> <span class="n">get</span><span class="p">,</span> <span class="n">run_qiskit_remote</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
@@ -87,7 +86,6 @@
 <span class="n">TwoBodyIntegrals</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N, N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
 
 
-<span class="nd">@run_qiskit_remote</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">get_cholesky_op</span><span class="p">(</span>
     <span class="n">l_op</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">QubitConverter</span><span class="p">,</span> <span class="n">opname</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSumOp</span><span class="p">:</span>
@@ -449,10 +447,9 @@
 
     <span class="n">qubit_op</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">opname</span> <span class="o">+</span> <span class="s2">&quot;_onebodyop&quot;</span>
 
-    <span class="n">cholesky_op_futures</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">cholesky_ops</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">get_cholesky_op</span><span class="p">(</span><span class="n">l_op</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">converter</span><span class="p">,</span> <span class="n">opname</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l_op</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
     <span class="p">]</span>
-    <span class="n">cholesky_ops</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">cholesky_op_futures</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">qubit_op</span><span class="p">,</span> <span class="n">cholesky_ops</span><span class="p">,</span> <span class="n">freeze_shift</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span>
 

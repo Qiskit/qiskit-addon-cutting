@@ -57,6 +57,7 @@
 <span class="sd">&quot;&quot;&quot;File containing the knitter class and associated functions.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Shape</span>
@@ -66,7 +67,6 @@
 <span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span> <span class="k">as</span> <span class="n">TestEstimator</span>
 <span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
 <span class="kn">from</span> <span class="nn">qiskit_ibm_runtime.estimator</span> <span class="kn">import</span> <span class="n">EstimatorResultDecoder</span>
-<span class="kn">from</span> <span class="nn">quantum_serverless</span> <span class="kn">import</span> <span class="n">get</span><span class="p">,</span> <span class="n">run_qiskit_remote</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">Bitstring</span><span class="p">,</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
@@ -294,33 +294,35 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">session_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span>
 
-        <span class="n">partitioned_expval_futures</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">_estimate_expvals</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-                <span class="n">tensor_ansatze</span><span class="o">=</span><span class="n">tensor_ansatze_partition</span><span class="p">,</span>
-                <span class="n">tensor_paulis</span><span class="o">=</span><span class="n">forged_operator</span><span class="o">.</span><span class="n">tensor_paulis</span><span class="p">,</span>
-                <span class="n">superposition_ansatze</span><span class="o">=</span><span class="n">superposition_ansatze_partition</span><span class="p">,</span>
-                <span class="n">superposition_paulis</span><span class="o">=</span><span class="n">forged_operator</span><span class="o">.</span><span class="n">superposition_paulis</span><span class="p">,</span>
-                <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
-                <span class="n">backend_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">,</span>
-                <span class="n">backend_index</span><span class="o">=</span><span class="n">partition_index</span><span class="p">,</span>
-                <span class="n">session_id</span><span class="o">=</span><span class="n">session_ids</span><span class="p">[</span><span class="n">partition_index</span><span class="p">],</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">partition_index</span><span class="p">,</span> <span class="p">(</span>
-                <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
-                <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
-            <span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="nb">zip</span><span class="p">(</span><span class="n">partitioned_tensor_ansatze</span><span class="p">,</span> <span class="n">partitioned_superposition_ansatze</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
+        <span class="k">with</span> <span class="n">ThreadPool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">[</span>
+                    <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
+                    <span class="n">forged_operator</span><span class="o">.</span><span class="n">tensor_paulis</span><span class="p">,</span>
+                    <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
+                    <span class="n">forged_operator</span><span class="o">.</span><span class="n">superposition_paulis</span><span class="p">,</span>
+                    <span class="n">service_args</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">,</span>
+                    <span class="n">partition_index</span><span class="p">,</span>
+                    <span class="n">session_ids</span><span class="p">[</span><span class="n">partition_index</span><span class="p">],</span>
+                <span class="p">]</span>
+                <span class="k">for</span> <span class="n">partition_index</span><span class="p">,</span> <span class="p">(</span>
+                    <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
+                    <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
+                <span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                    <span class="nb">zip</span><span class="p">(</span><span class="n">partitioned_tensor_ansatze</span><span class="p">,</span> <span class="n">partitioned_superposition_ansatze</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">partitioned_expvals</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_estimate_expvals</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
         <span class="n">tensor_expvals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">superposition_expvals</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition_expval_futures</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitioned_expval_futures</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition_expval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitioned_expvals</span><span class="p">):</span>
             <span class="p">(</span>
                 <span class="n">partition_tensor_expvals</span><span class="p">,</span>
                 <span class="n">partition_superposition_expvals</span><span class="p">,</span>
                 <span class="n">job_id</span><span class="p">,</span>
-            <span class="p">)</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">partition_expval_futures</span><span class="p">)</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="n">partition_expval</span>
             <span class="n">tensor_expvals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">partition_tensor_expvals</span><span class="p">)</span>
             <span class="n">superposition_expvals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">partition_superposition_expvals</span><span class="p">)</span>
             <span class="c1"># Start a session for each thread if this is the first run</span>
@@ -598,7 +600,6 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
 
 
-<span class="nd">@run_qiskit_remote</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">_estimate_expvals</span><span class="p">(</span>
     <span class="n">tensor_ansatze</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
     <span class="n">tensor_paulis</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
