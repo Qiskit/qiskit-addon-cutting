@@ -17,12 +17,4 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
-
-   WireCutter
 """
-
-from .wire_cutting.wire_cutter import WireCutter
-
-__all__ = [
-    "WireCutter",
-]
