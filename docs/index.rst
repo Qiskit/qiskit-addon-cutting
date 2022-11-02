@@ -11,6 +11,8 @@ The toolbox currently contains the following tools:
 - Entanglement Forging
 - Circuit Cutting
 
+The source code to the toolbox is available `on GitHub <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox>`_.
+
 .. note::
 
    The `Quantum Serverless <https://github.com/Qiskit-Extensions/quantum-serverless>`_ framework is documented separately, as it lives in its own repository.  Check out `Tutorial 2: Forging with Quantum Serverless <./tutorials/entanglement_forging/tutorial_2_forging_with_quantum_serverless.ipynb>`_  and `Tutorial 3: Circuit Cutting with Quantum Serverless <./tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.ipynb>`_ for examples on how to integrate Quantum Serverless into circuit knitting workflows.
