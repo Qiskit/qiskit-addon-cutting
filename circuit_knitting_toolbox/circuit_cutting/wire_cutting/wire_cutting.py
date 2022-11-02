@@ -8,7 +8,7 @@ from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
 from qiskit.converters import circuit_to_dag, dag_to_circuit
-from qiskit_ibm_runtime import Options
+from qiskit_ibm_runtime import Options, QiskitRuntimeService
 
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -81,30 +81,55 @@ def cut_circuit_wires(
 
 def evaluate_subcircuits(
     cuts: Dict[str, Any],
-    service_args: Optional[Dict[str, Any]] = None,
-    backend_names: Optional[Sequence[str]] = None,
-    options: Optional[Options] = None,
+    service: Optional[QiskitRuntimeService] = None,
+    backend_names: Optional[Union[str, Sequence[str]]] = None,
+    options: Optional[Union[Options, Sequence[Options]]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Evaluate the subcircuits.
 
     Args:
         - cuts (Dict): the results of cutting
-        - service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
-        - options: Optional[Options] = None,
-        - backend_names: Optional[Sequence[str]] = None,
+        - service (QiskitRuntimeService): A service for connecting to Qiskit Runtime Service
+        - options (Union[Options, Sequence[Options]]): Options to use on each backend
+        - backend_names (Union[str, Sequence[str]]): The name(s) of the backend(s) to be used
     Returns:
         - (Dict): the dictionary containing the results from running
             each of the subcircuits
     """
+    # Put backend_names and options in lists to ensure it is unambiguous how to sync them
+    backends_list: Sequence[str] = []
+    options_list: Sequence[Options] = []
+    if backend_names is None or isinstance(backend_names, str):
+        if isinstance(options, Options):
+            options_list = [options]
+        elif isinstance(options, Sequence) and (len(options) != 1):
+            options_list = [options[0]]
+        if isinstance(backend_names, str):
+            backends_list = [backend_names]
+    else:
+        backends_list = backend_names
+        if isinstance(options, Options):
+            options_list = [options] * len(backends_list)
+        elif options is None:
+            options_list = [None] * len(backends_list)
+        else:
+            options_list = options
+
+    if backend_names:
+        if len(backends_list) != len(options_list):
+            raise AttributeError(
+                f"The list of backend names is length ({len(backends_list)}), but the list of options is length ({len(options_list)}). It is ambiguous how these options should be applied."
+            )
+
     _, _, subcircuit_instances = _generate_metadata(cuts)
 
     subcircuit_instance_probabilities = _run_subcircuits(
         cuts,
         subcircuit_instances,
-        service_args=service_args,
-        backend_names=backend_names,
-        options=options,
+        service=service,
+        backend_names=backends_list,
+        options=options_list,
     )
 
     return subcircuit_instance_probabilities
@@ -183,9 +208,9 @@ def _generate_metadata(
 def _run_subcircuits(
     cuts: Dict[str, Any],
     subcircuit_instances: Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
-    service_args: Optional[Dict[str, Any]] = None,
+    service: Optional[QiskitRuntimeService] = None,
     backend_names: Optional[Sequence[str]] = None,
-    options: Optional[Union[Dict, Options]] = None,
+    options: Optional[Sequence[Options]] = None,
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Execute all the subcircuit instances.
@@ -196,7 +221,7 @@ def _run_subcircuits(
         - cuts (Dict[str, Any]): results from the cutting step
         - subcircuit_instances (Dict): the dictionary containing the index information for each
             of the subcircuit instances
-        - service_args (Dict): the arguments for the runtime service
+        - service (QiskitRuntimeService): the arguments for the runtime service
         - backend_names (Sequence[str]): the backend(s) used to run the subcircuits
         - options (Options): options for the runtime execution of subcircuits
     Returns:
@@ -205,7 +230,7 @@ def _run_subcircuits(
     subcircuit_instance_probs = run_subcircuit_instances(
         subcircuits=cuts["subcircuits"],
         subcircuit_instances=subcircuit_instances,
-        service_args=service_args,
+        service=service,
         backend_names=backend_names,
         options=options,
     )
