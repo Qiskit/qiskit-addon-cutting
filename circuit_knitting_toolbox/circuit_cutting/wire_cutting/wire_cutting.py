@@ -1,3 +1,4 @@
+"""Functions for conducting the wire cutting on quantum circuits."""
 import typing
 from typing import Optional, Sequence, Any, Dict, Tuple, List, Union, cast
 
@@ -28,6 +29,7 @@ def cut_circuit_wires(
 ) -> Dict[str, Any]:
     """
     Decompose the circuit into a collection of subcircuits.
+
     Args:
         - method (str): whether to have the cuts be 'automatically' found, in a
             provably optimal way, or whether to 'manually' specify the cuts
@@ -85,11 +87,12 @@ def evaluate_subcircuits(
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Evaluate the subcircuits.
-        service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
-        options: Optional[Options] = None,
-        backend_names: Optional[Sequence[str]] = None,
+
     Args:
         - cuts (Dict): the results of cutting
+        - service: Optional[Union[QiskitRuntimeService, Dict[str, Any]]] = None,
+        - options: Optional[Options] = None,
+        - backend_names: Optional[Sequence[str]] = None,
     Returns:
         - (Dict): the dictionary containing the results from running
             each of the subcircuits
@@ -115,6 +118,7 @@ def reconstruct_full_distribution(
 ) -> NDArray:
     """
     Reconstruct the full probabilities from the subcircuit evaluations.
+
     Args:
         - circuit (QuantumCircuit): the original full circuit
         - subcircuit_instance_probabilities (dict): the probability vectors from each
@@ -156,6 +160,7 @@ def _generate_metadata(
 ]:
     """
     Generate metadata used to execute subcircuits and reconstruct probabilities of original circuit.
+
     Args:
         - cuts (Dict[str, Any]): results from the cutting step
     Returns:
@@ -184,7 +189,9 @@ def _run_subcircuits(
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Execute all the subcircuit instances.
+
     task['subcircuit_instance_probs'][subcircuit_idx][subcircuit_instance_idx] = measured prob
+
     Args:
         - cuts (Dict[str, Any]): results from the cutting step
         - subcircuit_instances (Dict): the dictionary containing the index information for each
@@ -214,7 +221,9 @@ def _attribute_shots(
 ) -> Dict[int, Dict[int, NDArray]]:
     """
     Attribute the shots into respective subcircuit entries.
+
     task['subcircuit_entry_probs'][subcircuit_idx][subcircuit_entry_idx] = prob
+
     Args:
         - subcircuit_entries (Dict): dictionary containing information about each of the
             subcircuit instances
@@ -277,8 +286,10 @@ def find_wire_cuts(
 ) -> Dict[str, Any]:
     """
     Find optimal cuts for the wires.
+
     Will print if the model cannot find a solution at all, and will print whether
     the found solution is optimal or not.
+
     Args:
         - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
         - max_subcircuit_width (int): max number of qubits in each subcircuit
@@ -382,7 +393,9 @@ def cut_circuit_wire(
 ) -> Dict[str, Any]:
     """
     Perform the provided cuts.
+
     Used when cut locations are chosen manually.
+
     Args:
         - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
         - subcircuit_vertices (list): the list of vertices to apply the cuts to
@@ -446,6 +459,7 @@ def _print_cutter_result(
 ) -> None:
     """
     Pretty print the results.
+
     Args:
         - num_subciruit (int): the number of subcircuits
         - num_cuts (int): the number of cuts
@@ -478,6 +492,7 @@ def _cuts_parser(
 ) -> List[Tuple[Qubit, int]]:
     """
     Convert cuts to wires.
+
     Args:
         - cuts (list): the cuts found by the model (or provided by the user)
         - circ (QuantumCircuit): the quantum circuit the cuts are from
@@ -547,6 +562,7 @@ def _subcircuits_parser(
 ) -> Tuple[Sequence[QuantumCircuit], Dict[Qubit, List[Dict[str, Union[int, Qubit]]]]]:
     """
     Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.
+
     Args:
         - subcircuit_gates (list): the gates in the subcircuits
         - circuit (QuantumCircuit): the original circuit
@@ -683,8 +699,10 @@ def _generate_subcircuits(
 ) -> Sequence[QuantumCircuit]:
     """
     Generate the subcircuits from given nodes and paths.
+
     Called in the subcircuit_parser function to convert the found paths and nodes
     into actual quantum circuit objects.
+
     Args:
         - subcircuit_op_nodes (dict): the nodes of each of the subcircuits
         - complete_path_map (dict): the complete path through the subcircuits
@@ -734,6 +752,7 @@ def _get_counter(
 ) -> Dict[int, Dict[str, int]]:
     """
     Create information regarding each of the subcircuit parameters (qubits, width, etc.).
+
     Args:
         - subcircuits (list): the list of subcircuits
         - O_rho_pairs (list): the pairs for each qubit path as generated in the _get_pairs
@@ -766,6 +785,7 @@ def _get_counter(
 def _cost_estimate(counter: Dict[int, Dict[str, int]]) -> float:
     """
     Estimate the cost of processing the subcircuits.
+
     Args:
         - counter (dict): dictionary containing information for each of the
             subcircuits
@@ -794,8 +814,10 @@ def _get_pairs(
 ) -> List[Tuple[Dict[str, Union[int, Qubit]], Dict[str, Union[int, Qubit]]]]:
     """
     Get all pairs through each path.
+
     Iterates through the path for each of the qubits and keeps track of the
     each pair of neigbors.
+
     Args:
         - complete_path_map (dict): the dictionary containing all path information
     Returns:
@@ -815,6 +837,7 @@ def _get_pairs(
 def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
     """
     Remove all single qubit and barrier type gates.
+
     Args:
         - circuit (QuantumCircuit): the circuit to strip
     Returns:
@@ -835,6 +858,7 @@ def _read_circuit(
 ) -> Tuple[int, List[Tuple[int, int]], Dict[str, int], Dict[int, str]]:
     """
     Read the input circuit to a graph based representation for the MIP model.
+
     Args:
         - circuit (QuantumCircuit): a stripped circuit to be converted into a
             DAG like representation
