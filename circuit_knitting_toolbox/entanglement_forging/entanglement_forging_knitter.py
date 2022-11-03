@@ -20,7 +20,7 @@ from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
 from qiskit.primitives import Estimator as TestEstimator
 from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_ibm_runtime.estimator import EstimatorResultDecoder
+from qiskit_ibm_runtime.utils.estimator_result_decoder import EstimatorResultDecoder
 from quantum_serverless import get, run_qiskit_remote
 
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
