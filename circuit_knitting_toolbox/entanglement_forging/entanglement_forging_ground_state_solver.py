@@ -348,7 +348,9 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 options=self._options,
             )
         else:
-            self._knitter = EntanglementForgingKnitter(self._ansatz, options=self._options)
+            self._knitter = EntanglementForgingKnitter(
+                self._ansatz, options=self._options
+            )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
 
