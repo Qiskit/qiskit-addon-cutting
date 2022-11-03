@@ -43,7 +43,7 @@ from qiskit_nature.problems.second_quantization import (
     ElectronicStructureProblem,
 )
 from qiskit_nature.results import EigenstateResult
-from qiskit_ibm_runtime import QiskitRuntimeService
+from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
@@ -190,7 +190,8 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         optimizer: Optional[Union[Optimizer, MINIMIZER]] = None,
         initial_point: Optional[NDArray] = None,
         orbitals_to_reduce: Optional[Sequence[int]] = None,
-        backend_names: Optional[List[str]] = None,
+        backend_names: Optional[Union[str, List[str]]] = None,
+        options: Optional[Union[Options, List[Options]]] = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -202,7 +203,8 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             - initial_point: Initial values for ansatz parameters
             - orbitals_to_reduce: List of orbital indices to remove from the problem before
                 decomposition.
-            - backend_names: List of backend names to use during parallel computation
+            - backend_names: Backend name or list of backend names to use during parallel computation
+            - options: Options or list of options to be applied to the backends
 
         Returns:
             - None
@@ -217,7 +219,8 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         self._service: Optional[QiskitRuntimeService] = service
         self._initial_point: Optional[NDArray] = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
-        self._backend_names = backend_names
+        self.backend_names = backend_names  # type: ignore
+        self.options = options
 
         self._optimizer: Union[Optimizer, MINIMIZER] = optimizer or SPSA()
 
@@ -277,9 +280,25 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         return self._backend_names
 
     @backend_names.setter
-    def backend_names(self, backend_names: List[str]) -> None:
+    def backend_names(self, backend_names: Union[str, List[str]]) -> None:
         """Set the backend names."""
-        self._backend_names = backend_names
+        if isinstance(backend_names, str):
+            self._backend_names = [backend_names]
+        else:
+            self._backend_names = backend_names
+
+    @property
+    def options(self) -> Optional[List[Options]]:
+        """Return the options."""
+        return self._options
+
+    @options.setter
+    def options(self, options: Union[Options, List[Options]]) -> None:
+        """Set the options."""
+        if isinstance(options, Options):
+            self._options = [options]
+        else:
+            self._options = options
 
     def solve(
         self,
@@ -302,6 +321,14 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             raise AttributeError(
                 "EntanglementForgingGroundStateSolver only accepts ElectronicStructureProblem as input to its solve method."
             )
+        if self._backend_names and self._options:
+            if len(self._backend_names) != len(self._options):
+                if len(self._options) == 1:
+                    self._options = [self._options[0]] * len(self._backend_names)
+                else:
+                    raise AttributeError(
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                    )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
         if self._initial_point is None:
@@ -315,10 +342,13 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         if self._service:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz, service=self._service, backend_names=backend_names
+                self._ansatz,
+                service=self._service,
+                backend_names=backend_names,
+                options=self._options,
             )
         else:
-            self._knitter = EntanglementForgingKnitter(self._ansatz)
+            self._knitter = EntanglementForgingKnitter(self._ansatz, options=self._options)
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
 

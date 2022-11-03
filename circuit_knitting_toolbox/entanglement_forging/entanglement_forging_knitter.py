@@ -54,7 +54,8 @@ class EntanglementForgingKnitter:
         self,
         ansatz: EntanglementForgingAnsatz,
         service: Optional[QiskitRuntimeService] = None,
-        backend_names: Optional[List[str]] = None,
+        backend_names: Optional[Union[str, List[str]]] = None,
+        options: Optional[Union[Options, List[Options]]] = None,
     ):
         """
         Assign the necessary member variables.
@@ -64,13 +65,18 @@ class EntanglementForgingKnitter:
                 to be used (and generate the stateprep circuits)
             - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs
             - backend_names (List[str]): Names of the backends to use for calculating expectation values
+            - options (List[Options]): Options to use with the backends
 
         Returns:
             - None
         """
         # Call backend_names setter to update the session_ids hidden class field
         self._session_ids: Optional[List[Union[str, None]]] = None
-        self.backend_names = backend_names
+        self._backend_names: Optional[List[str]] = None
+        self._options: Optional[List[Options]] = None
+        # Call constructors
+        self.backend_names = backend_names  # type: ignore
+        self.options = options
 
         # The service hidden class field is a json representing the QiskitRuntimeService object
         self._service = service.active_account() if service is not None else service
@@ -128,7 +134,7 @@ class EntanglementForgingKnitter:
         return self._backend_names
 
     @backend_names.setter
-    def backend_names(self, backend_names: Optional[List[str]]) -> None:
+    def backend_names(self, backend_names: Optional[Union[str, List[str]]]) -> None:
         """
         Change the backend_names class field.
 
@@ -138,9 +144,38 @@ class EntanglementForgingKnitter:
         Returns:
             - None
         """
-        self._backend_names = backend_names
+        if isinstance(backend_names, str):
+            self._backend_names = [backend_names]
+        else:
+            self._backend_names = backend_names
         if backend_names:
             self._session_ids = [None] * len(backend_names)
+
+    @property
+    def options(self) -> Optional[List[Options]]:
+        """
+        List of options to be used.
+
+        Returns:
+            - (List[Options]): the options member variable
+        """
+        return self._options
+
+    @options.setter
+    def options(self, options: Optional[Union[Options, List[Options]]]) -> None:
+        """
+        Change the options class field.
+
+        Args:
+            - options (List[Options]): the list of options to use
+
+        Returns:
+            - None
+        """
+        if isinstance(options, Options):
+            self._options = [options]
+        else:
+            self._options = options
 
     @property
     def service(self) -> Optional[QiskitRuntimeService]:
@@ -201,6 +236,14 @@ class EntanglementForgingKnitter:
                 containing the energy (i.e. forged expectation value), the Schmidt coefficients,
                 and the full Schmidt decomposition matrix
         """
+        if self._backend_names and self._options:
+            if len(self._backend_names) != len(self._options):
+                if len(self._options) == 1:
+                    self._options = [self._options[0]] * len(self._backend_names)
+                else:
+                    raise AttributeError(
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                    )
         # For now, we only assign the parameters to a copy of the ansatz
         circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
 
@@ -263,6 +306,9 @@ class EntanglementForgingKnitter:
                     if self._backend_names is None
                     else self._backend_names[partition_index]
                 )
+                options = (
+                    None if self._options is None else self._options[partition_index]
+                )
                 tensor_pauli_list = list(forged_operator.tensor_paulis)
                 superposition_pauli_list = list(forged_operator.superposition_paulis)
                 partitioned_expval_futures.append(
@@ -274,6 +320,7 @@ class EntanglementForgingKnitter:
                         superposition_pauli_list,
                         service_args,
                         backend_name,
+                        options,
                         session_ids[partition_index],
                     )
                 )
@@ -407,7 +454,11 @@ class EntanglementForgingKnitter:
             return
         else:
             for i, session_id in enumerate(self._session_ids):
-                session = Session(service=self.service, backend=self.backend_names[i])
+                if self._backend_names is None:
+                    raise ValueError(
+                        f"There was a problem closing session id ({session_id}). No backend to associate with session."
+                    )
+                session = Session(service=self.service, backend=self._backend_names[i])
                 session._session_id = session_id
                 session.close()
 
@@ -590,6 +641,7 @@ def _estimate_expvals(
     superposition_paulis: List[Pauli],
     service_args: Optional[Dict[str, Any]] = None,
     backend_name: Optional[str] = None,
+    options: Optional[Options] = None,
     session_id: Optional[str] = None,
 ) -> Tuple[List[NDArray], List[NDArray], Optional[str]]:
     """Run quantum circuits to generate the expectation values.
@@ -612,6 +664,7 @@ def _estimate_expvals(
             coefficients
         - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives
         - backend_name (str): The backend to use to evaluate the grouped experiments
+        - options (Options): The options to use with the backend
         - session_id (str): The session id to use when calling primitive programs
 
     Returns:
@@ -647,9 +700,6 @@ def _estimate_expvals(
         service = QiskitRuntimeService(**service_args)
         session = Session(service=service, backend=backend_name)
         session._session_id = session_id
-        options = Options(
-            optimization_level=3, resilience_level=1, execution={"shots": 1024}
-        )
         estimator = Estimator(session=session, options=options)
 
         job = estimator.run(
