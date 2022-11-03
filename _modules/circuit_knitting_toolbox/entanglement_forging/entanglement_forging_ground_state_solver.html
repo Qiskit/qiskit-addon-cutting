@@ -88,7 +88,7 @@
     <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.results</span> <span class="kn">import</span> <span class="n">EigenstateResult</span>
-<span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
+<span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Options</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_knitter</span> <span class="kn">import</span> <span class="n">EntanglementForgingKnitter</span>
@@ -235,7 +235,8 @@
         <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Optimizer</span><span class="p">,</span> <span class="n">MINIMIZER</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">initial_point</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary class variables and initialize any defaults.</span>
@@ -247,7 +248,8 @@
 <span class="sd">            - initial_point: Initial values for ansatz parameters</span>
 <span class="sd">            - orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
 <span class="sd">                decomposition.</span>
-<span class="sd">            - backend_names: List of backend names to use during parallel computation</span>
+<span class="sd">            - backend_names: Backend name or list of backend names to use during parallel computation</span>
+<span class="sd">            - options: Options or list of options to be applied to the backends</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
@@ -262,7 +264,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="n">service</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initial_point</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orbitals_to_reduce</span> <span class="o">=</span> <span class="n">orbitals_to_reduce</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_optimizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Optimizer</span><span class="p">,</span> <span class="n">MINIMIZER</span><span class="p">]</span> <span class="o">=</span> <span class="n">optimizer</span> <span class="ow">or</span> <span class="n">SPSA</span><span class="p">()</span></div>
 
@@ -322,9 +325,25 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span>
 
     <span class="nd">@backend_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Set the backend names.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">backend_names</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the options.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+
+    <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the options.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">options</span>
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -347,6 +366,14 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
                 <span class="s2">&quot;EntanglementForgingGroundStateSolver only accepts ElectronicStructureProblem as input to its solve method.&quot;</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous how to combine the options with the backends.&quot;</span>
+                    <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Ansatz must be set before calling solve.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -360,10 +387,15 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">:</span>
             <span class="n">backend_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;ibmq_qasm_simulator&quot;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_knitter</span> <span class="o">=</span> <span class="n">EntanglementForgingKnitter</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span> <span class="n">backend_names</span><span class="o">=</span><span class="n">backend_names</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="p">,</span>
+                <span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span>
+                <span class="n">backend_names</span><span class="o">=</span><span class="n">backend_names</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_knitter</span> <span class="o">=</span> <span class="n">EntanglementForgingKnitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_knitter</span> <span class="o">=</span> <span class="n">EntanglementForgingKnitter</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_history</span> <span class="o">=</span> <span class="n">EntanglementForgingHistory</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_eval_count</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -400,6 +432,9 @@
         <span class="n">result</span><span class="o">.</span><span class="n">energy_shift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_energy_shift</span>
         <span class="n">result</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history</span><span class="o">.</span><span class="n">evaluations</span>
         <span class="n">result</span><span class="o">.</span><span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">elapsed_time</span>
+
+        <span class="c1"># Close any runtime sessions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_knitter</span><span class="o">.</span><span class="n">close_sessions</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">result</span>
 

@@ -32,6 +32,7 @@
       ~EntanglementForgingGroundStateSolver.backend_names
       ~EntanglementForgingGroundStateSolver.initial_point
       ~EntanglementForgingGroundStateSolver.optimizer
+      ~EntanglementForgingGroundStateSolver.options
       ~EntanglementForgingGroundStateSolver.orbitals_to_reduce
       ~EntanglementForgingGroundStateSolver.qubit_converter
       ~EntanglementForgingGroundStateSolver.service

@@ -387,12 +387,11 @@ q_1: ┤1                     ├
 <section id="Set-up-the-Qiskit-Runtime-Service">
 <h2>Set up the Qiskit Runtime Service<a class="headerlink" href="#Set-up-the-Qiskit-Runtime-Service" title="Permalink to this heading">¶</a></h2>
 <p>The Qiskit Runtime Service provides access to Qiskit Runtime Primitives and quantum backends. See the <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/">Qiskit Runtime documentation</a> for more information. Here, we specify the backend(s) to be used to evaluate the circuits. Backends could be <a class="reference external" href="https://quantum-computing.ibm.com/services/resources?tab=systems">simulator(s) and/or quantum device(s)</a>.</p>
-<p>Alternatively, if a Qiskit Runtime Service is not passed, then a local simulator will be used with the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>, and the <code class="docutils literal notranslate"><span class="pre">backend_names</span></code> argument will be ignored.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Options</span>
 
 <span class="c1"># By default, use a local simulator to implement the Qiskit Runtime Primitives</span>
 <span class="n">service</span> <span class="o">=</span> <span class="kc">None</span>
@@ -401,6 +400,9 @@ q_1: ┤1                     ├
 <span class="c1"># service = QiskitRuntimeService(channel=&quot;ibm_quantum&quot;)</span>
 
 <span class="n">backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ibmq_qasm_simulator&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+
+<span class="c1"># If a single set of options are passed, it will be applied to all backends</span>
+<span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="n">Options</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">}),</span> <span class="n">Options</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">})]</span>
 </pre></div>
 </div>
 </div>
@@ -411,10 +413,13 @@ q_1: ┤1                     ├
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ansatz</span></code> field is required.</p></li>
 <li><p>If no optimizer is passed, <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.algorithms.optimizers.SPSA.html">SPSA</a> with default settings will be used.</p></li>
+<li><p>If a Qiskit Runtime Service is not passed, then a local simulator will be used with the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>, and the <code class="docutils literal notranslate"><span class="pre">backend_names</span></code> argument will be ignored.</p></li>
+<li><p>If multiple backend names are passed, the expectation value calculations at each iteration will be divided evenly among them and calculated in parallel.</p></li>
+<li><p>If a single options argument is passed, it will be used for all backends. If a list of options is passed, they will be synchronized with the backends 1:1</p></li>
 <li><p>If the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> field is not set, it will be initialized to all 0’s.</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -430,6 +435,7 @@ q_1: ┤1                     ├
     <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
     <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
     <span class="n">backend_names</span><span class="o">=</span><span class="n">backend_names</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
     <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
@@ -440,7 +446,7 @@ q_1: ┤1                     ├
 <h2>Calculate the ground state energy<a class="headerlink" href="#Calculate-the-ground-state-energy" title="Permalink to this heading">¶</a></h2>
 <p>Once a user has set up their <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>, <code class="docutils literal notranslate"><span class="pre">EntanglementForgingAnsatz</span></code>, and other program options, the only thing remaining is call <code class="docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver.solve</span></code>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
@@ -454,7 +460,7 @@ q_1: ┤1                     ├
 <h2>Visualize the results<a class="headerlink" href="#Visualize-the-results" title="Permalink to this heading">¶</a></h2>
 <p>Visualize the convergence of the estimated ground state energy and the Schmidt coefficients as the ansatz parameters are optimized.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -523,7 +529,7 @@ Parameters:
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
@@ -536,7 +542,7 @@ Parameters:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.22.0</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.19.2</td></tr><tr><td><code>qiskit</code></td><td>0.39.0</td></tr><tr><td><code>qiskit-nature</code></td><td>0.4.5</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.10.6</td></tr><tr><td>Python compiler</td><td>Clang 13.1.6 (clang-1316.0.21.2.5)</td></tr><tr><td>Python build</td><td>main, Aug 11 2022 13:49:25</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Mon Oct 31 17:08:55 2022 CDT</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.22.1</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.19.2</td></tr><tr><td><code>qiskit</code></td><td>0.39.1</td></tr><tr><td><code>qiskit-nature</code></td><td>0.4.5</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.13</td></tr><tr><td>Python compiler</td><td>Clang 12.0.0 </td></tr><tr><td>Python build</td><td>main, Aug 25 2022 18:29:29</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Thu Nov 03 18:09:29 2022 CDT</td></tr></table></div>
 </div>
 </section>
 <section id="This-code-is-a-Qiskit-project.">

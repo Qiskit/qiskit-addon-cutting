@@ -55,9 +55,10 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;File containing the knitter class and associated functions.&quot;&quot;&quot;</span>
-
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Shape</span>
@@ -65,8 +66,7 @@
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
 <span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span> <span class="k">as</span> <span class="n">TestEstimator</span>
-<span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
-<span class="kn">from</span> <span class="nn">qiskit_ibm_runtime.utils.estimator_result_decoder</span> <span class="kn">import</span> <span class="n">EstimatorResultDecoder</span>
+<span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Options</span><span class="p">,</span> <span class="n">Estimator</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">Bitstring</span><span class="p">,</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
@@ -98,7 +98,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
         <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary member variables.</span>
@@ -108,13 +109,18 @@
 <span class="sd">                to be used (and generate the stateprep circuits)</span>
 <span class="sd">            - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs</span>
 <span class="sd">            - backend_names (List[str]): Names of the backends to use for calculating expectation values</span>
+<span class="sd">            - options (List[Options]): Options to use with the backends</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Call backend_names setter to update the session_ids hidden class field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Call constructors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
 
         <span class="c1"># The service hidden class field is a json representing the QiskitRuntimeService object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">active_account</span><span class="p">()</span> <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">service</span>
@@ -172,7 +178,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span>
 
     <span class="nd">@backend_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the backend_names class field.</span>
 
@@ -182,9 +188,38 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">backend_names</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>
         <span class="k">if</span> <span class="n">backend_names</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">backend_names</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of options to be used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - (List[Options]): the options member variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
+
+    <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change the options class field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            - options (List[Options]): the list of options to use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">options</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]:</span>
@@ -245,6 +280,14 @@
 <span class="sd">                containing the energy (i.e. forged expectation value), the Schmidt coefficients,</span>
 <span class="sd">                and the full Schmidt decomposition matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous how to combine the options with the backends.&quot;</span>
+                    <span class="p">)</span>
         <span class="c1"># For now, we only assign the parameters to a copy of the ansatz</span>
         <span class="n">circuit_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="o">.</span><span class="n">circuit_u</span><span class="o">.</span><span class="n">bind_parameters</span><span class="p">(</span><span class="n">ansatz_parameters</span><span class="p">)</span>
 
@@ -294,35 +337,46 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">session_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span>
 
-        <span class="k">with</span> <span class="n">ThreadPool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">[</span>
-                    <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
-                    <span class="n">forged_operator</span><span class="o">.</span><span class="n">tensor_paulis</span><span class="p">,</span>
-                    <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
-                    <span class="n">forged_operator</span><span class="o">.</span><span class="n">superposition_paulis</span><span class="p">,</span>
-                    <span class="n">service_args</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">,</span>
-                    <span class="n">partition_index</span><span class="p">,</span>
-                    <span class="n">session_ids</span><span class="p">[</span><span class="n">partition_index</span><span class="p">],</span>
-                <span class="p">]</span>
-                <span class="k">for</span> <span class="n">partition_index</span><span class="p">,</span> <span class="p">(</span>
-                    <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
-                    <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
-                <span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                    <span class="nb">zip</span><span class="p">(</span><span class="n">partitioned_tensor_ansatze</span><span class="p">,</span> <span class="n">partitioned_superposition_ansatze</span><span class="p">)</span>
+        <span class="n">partitioned_expval_futures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">()</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">partition_index</span><span class="p">,</span> <span class="p">(</span>
+                <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
+                <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">partitioned_tensor_ansatze</span><span class="p">,</span> <span class="n">partitioned_superposition_ansatze</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">backend_name</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="kc">None</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">[</span><span class="n">partition_index</span><span class="p">]</span>
                 <span class="p">)</span>
-            <span class="p">]</span>
-            <span class="n">partitioned_expvals</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_estimate_expvals</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="n">partition_index</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">tensor_pauli_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">forged_operator</span><span class="o">.</span><span class="n">tensor_paulis</span><span class="p">)</span>
+                <span class="n">superposition_pauli_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">forged_operator</span><span class="o">.</span><span class="n">superposition_paulis</span><span class="p">)</span>
+                <span class="n">partitioned_expval_futures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                        <span class="n">_estimate_expvals</span><span class="p">,</span>
+                        <span class="n">tensor_ansatze_partition</span><span class="p">,</span>
+                        <span class="n">tensor_pauli_list</span><span class="p">,</span>
+                        <span class="n">superposition_ansatze_partition</span><span class="p">,</span>
+                        <span class="n">superposition_pauli_list</span><span class="p">,</span>
+                        <span class="n">service_args</span><span class="p">,</span>
+                        <span class="n">backend_name</span><span class="p">,</span>
+                        <span class="n">options</span><span class="p">,</span>
+                        <span class="n">session_ids</span><span class="p">[</span><span class="n">partition_index</span><span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
         <span class="n">tensor_expvals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">superposition_expvals</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partition_expval</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitioned_expvals</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">partitioned_expval_future</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partitioned_expval_futures</span><span class="p">):</span>
             <span class="p">(</span>
                 <span class="n">partition_tensor_expvals</span><span class="p">,</span>
                 <span class="n">partition_superposition_expvals</span><span class="p">,</span>
                 <span class="n">job_id</span><span class="p">,</span>
-            <span class="p">)</span> <span class="o">=</span> <span class="n">partition_expval</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="n">partitioned_expval_future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="n">tensor_expvals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">partition_tensor_expvals</span><span class="p">)</span>
             <span class="n">superposition_expvals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">partition_superposition_expvals</span><span class="p">)</span>
             <span class="c1"># Start a session for each thread if this is the first run</span>
@@ -428,7 +482,31 @@
         <span class="k">for</span> <span class="n">element</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">h_schmidt_off_diagonals</span><span class="p">,</span> <span class="n">superpos_indices</span><span class="p">):</span>
             <span class="n">h_schmidt</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">element</span>
 
-        <span class="k">return</span> <span class="n">h_schmidt</span></div>
+        <span class="k">return</span> <span class="n">h_schmidt</span>
+
+    <span class="k">def</span> <span class="nf">close_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close all the sessions opened by this object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            - None</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;There was a problem closing session id (</span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">). No backend to associate with session.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="n">session_id</span>
+                <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span></div>
 
 
 <span class="k">def</span> <span class="nf">_construct_stateprep_circuits</span><span class="p">(</span>
@@ -606,8 +684,8 @@
     <span class="n">superposition_ansatze</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
     <span class="n">superposition_paulis</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
     <span class="n">service_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">backend_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">NDArray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Run quantum circuits to generate the expectation values.</span>
@@ -629,8 +707,8 @@
 <span class="sd">            the expectation values from for the circuits with different Schmidt</span>
 <span class="sd">            coefficients</span>
 <span class="sd">        - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives</span>
-<span class="sd">        - backend_names (List[str]): The list of backends to use to evaluate the grouped experiments</span>
-<span class="sd">        - backend_index (int): The index of the backend to be used</span>
+<span class="sd">        - backend_name (str): The backend to use to evaluate the grouped experiments</span>
+<span class="sd">        - options (Options): The options to use with the backend</span>
 <span class="sd">        - session_id (str): The session id to use when calling primitive programs</span>
 
 <span class="sd">    Returns:</span>
@@ -641,68 +719,57 @@
     <span class="n">all_observables</span> <span class="o">=</span> <span class="n">tensor_paulis</span> <span class="o">+</span> <span class="n">superposition_paulis</span>
 
     <span class="n">ansatz_t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ansatz_t_idx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">observables_t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">observables_t_idx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensor_ansatze</span><span class="p">):</span>
         <span class="n">ansatz_t</span> <span class="o">+=</span> <span class="p">[</span><span class="n">circuit</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensor_paulis</span><span class="p">)</span>
-        <span class="n">ansatz_t_idx</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensor_paulis</span><span class="p">)</span>
         <span class="n">observables_t</span> <span class="o">+=</span> <span class="n">tensor_paulis</span>
-        <span class="n">observables_t_idx</span> <span class="o">+=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tensor_paulis</span><span class="p">))</span>
 
     <span class="n">ansatz_s</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ansatz_s_idx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">observables_s</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">observables_s_idx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">superposition_ansatze</span><span class="p">):</span>
         <span class="n">ansatz_s</span> <span class="o">+=</span> <span class="p">[</span><span class="n">circuit</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">superposition_paulis</span><span class="p">)</span>
-        <span class="n">ansatz_s_idx</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">superposition_paulis</span><span class="p">)</span>
         <span class="n">observables_s</span> <span class="o">+=</span> <span class="n">superposition_paulis</span>
-        <span class="n">observables_s_idx</span> <span class="o">+=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">superposition_paulis</span><span class="p">))</span>
 
     <span class="n">all_ansatze_for_estimator</span> <span class="o">=</span> <span class="n">ansatz_t</span> <span class="o">+</span> <span class="n">ansatz_s</span>
-    <span class="n">all_ansatze_for_estimator_idx</span> <span class="o">=</span> <span class="n">ansatz_t_idx</span> <span class="o">+</span> <span class="n">ansatz_s_idx</span>
     <span class="n">all_observables_for_estimator</span> <span class="o">=</span> <span class="n">observables_t</span> <span class="o">+</span> <span class="n">observables_s</span>
-    <span class="n">all_observables_for_estimator_idx</span> <span class="o">=</span> <span class="n">observables_t_idx</span> <span class="o">+</span> <span class="n">observables_s_idx</span>
 
     <span class="c1"># ID for this job. If it is the first job for the knitter, it will become the session ID</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">service_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Set the backend. Default to runtime qasm simulator</span>
-        <span class="k">if</span> <span class="n">backend_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;If passing a QiskitRuntimeService, a list of backend names must be specified.&quot;</span>
             <span class="p">)</span>
         <span class="n">service</span> <span class="o">=</span> <span class="n">QiskitRuntimeService</span><span class="p">(</span><span class="o">**</span><span class="n">service_args</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend_name</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 
-        <span class="n">backend_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">}</span>
-        <span class="n">transpilation_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimization_level&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
-        <span class="n">resilience_settings</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;level&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">all_circuits</span><span class="p">,</span>
-            <span class="s2">&quot;observables&quot;</span><span class="p">:</span> <span class="n">all_observables</span><span class="p">,</span>
-            <span class="s2">&quot;circuit_indices&quot;</span><span class="p">:</span> <span class="n">all_ansatze_for_estimator_idx</span><span class="p">,</span>
-            <span class="s2">&quot;observable_indices&quot;</span><span class="p">:</span> <span class="n">all_observables_for_estimator_idx</span><span class="p">,</span>
-            <span class="s2">&quot;run_options&quot;</span><span class="p">:</span> <span class="n">backend_options</span><span class="p">,</span>
-            <span class="s2">&quot;transpilation_settings&quot;</span><span class="p">:</span> <span class="n">transpilation_settings</span><span class="p">,</span>
-            <span class="s2">&quot;resilience_settings&quot;</span><span class="p">:</span> <span class="n">resilience_settings</span><span class="p">,</span>
-        <span class="p">}</span>
-
-        <span class="c1"># Start a session if this is the first invocation of the knitter</span>
-        <span class="n">start_session</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">session_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">start_session</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="n">runtime_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="n">backend_names</span><span class="p">[</span><span class="n">backend_index</span><span class="p">]}</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">program_id</span><span class="o">=</span><span class="s2">&quot;estimator&quot;</span><span class="p">,</span>
-            <span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
-            <span class="n">options</span><span class="o">=</span><span class="n">runtime_options</span><span class="p">,</span>
-            <span class="n">result_decoder</span><span class="o">=</span><span class="n">EstimatorResultDecoder</span><span class="p">,</span>
-            <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-            <span class="n">start_session</span><span class="o">=</span><span class="n">start_session</span><span class="p">,</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">circuits</span><span class="o">=</span><span class="n">all_ansatze_for_estimator</span><span class="p">,</span>
+            <span class="n">observables</span><span class="o">=</span><span class="n">all_observables_for_estimator</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="c1"># If a None result was returned, keep checking for a minute, then error out</span>
+        <span class="c1"># This is necessary due to some unexplained behavior from runtime, which is causing valid</span>
+        <span class="c1"># job results to be returned as None. These results often seem to be retrievable at a later time,</span>
+        <span class="c1"># so we have hacked together this loop to try and prevent a crash of the program.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;A None result was returned from Qiskit Runtime.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;A None result was returned from Qiskit Runtime. Waiting 3 seconds and querying again...&quot;</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+
         <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+
         <span class="n">job_id</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">job_id</span>
 
     <span class="k">else</span><span class="p">:</span>

@@ -49,7 +49,7 @@
 <h1>circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter<a class="headerlink" href="#circuit-knitting-toolbox-entanglement-forging-entanglementforgingknitter" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EntanglementForgingKnitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_knitter.html#EntanglementForgingKnitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EntanglementForgingKnitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_knitter.html#EntanglementForgingKnitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container for Knitter class functions and attributes.</p>
 <p>A class which performs entanglement forging and returns the
 ground state energy and Schmidt coefficients found for given
@@ -62,6 +62,7 @@ ansatz parameters and Schmidt coefficients.</p>
 to be used (and generate the stateprep circuits)</p></li>
 <li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
 <li><p><strong>backend_names</strong> (<em>-</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>-</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -73,7 +74,7 @@ to be used (and generate the stateprep circuits)</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_knitter.html#EntanglementForgingKnitter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_knitter.html#EntanglementForgingKnitter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the necessary member variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -82,6 +83,7 @@ to be used (and generate the stateprep circuits)</p></li>
 to be used (and generate the stateprep circuits)</p></li>
 <li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
 <li><p><strong>backend_names</strong> (<em>-</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>-</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -96,8 +98,11 @@ to be used (and generate the stateprep circuits)</p></li>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(ansatz[, service, backend_names])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(ansatz[, service, backend_names, ...])</p></td>
 <td><p>Assign the necessary member variables.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close_sessions</span></code>()</p></td>
+<td><p>Close all the sessions opened by this object.</p></td>
 </tr>
 </tbody>
 </table>
@@ -110,7 +115,10 @@ to be used (and generate the stateprep circuits)</p></li>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">backend_names</span></code></p></td>
 <td><p>List of backend names to be used.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">service</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code></p></td>
+<td><p>List of options to be used.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">service</span></code></p></td>
 <td><p>Property function for service class field.</p></td>
 </tr>
 </tbody>

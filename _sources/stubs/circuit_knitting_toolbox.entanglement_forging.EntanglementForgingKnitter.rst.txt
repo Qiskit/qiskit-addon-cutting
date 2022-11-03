@@ -14,6 +14,7 @@
    .. autosummary::
    
       ~EntanglementForgingKnitter.__init__
+      ~EntanglementForgingKnitter.close_sessions
    
    
 
@@ -25,6 +26,7 @@
    
       ~EntanglementForgingKnitter.ansatz
       ~EntanglementForgingKnitter.backend_names
+      ~EntanglementForgingKnitter.options
       ~EntanglementForgingKnitter.service
    
    
