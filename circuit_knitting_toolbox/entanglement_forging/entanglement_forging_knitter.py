@@ -257,14 +257,20 @@ class EntanglementForgingKnitter:
             ) in enumerate(
                 zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
             ):
-                backend_name = None if self._backend_names is None else self._backend_names[partition_index]
+                backend_name = (
+                    None
+                    if self._backend_names is None
+                    else self._backend_names[partition_index]
+                )
+                tensor_pauli_list = list(forged_operator.tensor_paulis)
+                superposition_pauli_list = list(forged_operator.superposition_paulis)
                 partitioned_expval_futures.append(
                     executor.submit(
                         _estimate_expvals,
                         tensor_ansatze_partition,
-                        forged_operator.tensor_paulis,
+                        tensor_pauli_list,
                         superposition_ansatze_partition,
-                        forged_operator.superposition_paulis,
+                        superposition_pauli_list,
                         service_args,
                         backend_name,
                         session_ids[partition_index],
@@ -385,6 +391,26 @@ class EntanglementForgingKnitter:
             h_schmidt[indices] = element
 
         return h_schmidt
+
+    def close_sessions(self) -> None:
+        """
+        Close all the sessions opened by this object.
+
+        Args:
+            - None
+
+        Returns:
+            - None
+        """
+        if self._session_ids is None:
+            return
+        else:
+            for session_id in self._session_ids:
+                session = Session()
+                session._session_id = session_id
+                session.close()
+
+        return
 
 
 def _construct_stateprep_circuits(

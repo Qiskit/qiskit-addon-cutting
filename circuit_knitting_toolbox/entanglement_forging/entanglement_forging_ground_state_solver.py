@@ -356,6 +356,9 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         result.history = self._history.evaluations
         result.elapsed_time = elapsed_time
 
+        # Close any runtime sessions
+        self._knitter.close_sessions()
+
         return result
 
     def get_eigenvalue_evaluation(
