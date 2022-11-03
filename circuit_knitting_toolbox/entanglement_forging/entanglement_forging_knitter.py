@@ -12,7 +12,7 @@
 """File containing the knitter class and associated functions."""
 
 from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
-from multiprocessing.pool import ThreadPool
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
@@ -249,35 +249,36 @@ class EntanglementForgingKnitter:
         else:
             session_ids = self._session_ids
 
-        with ThreadPool() as pool:
-            args = [
-                [
-                    tensor_ansatze_partition,
-                    forged_operator.tensor_paulis,
-                    superposition_ansatze_partition,
-                    forged_operator.superposition_paulis,
-                    service_args,
-                    self._backend_names,
-                    partition_index,
-                    session_ids[partition_index],
-                ]
-                for partition_index, (
-                    tensor_ansatze_partition,
-                    superposition_ansatze_partition,
-                ) in enumerate(
-                    zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
+        partitioned_expval_futures = []
+        with ThreadPoolExecutor() as executor:
+            for partition_index, (
+                tensor_ansatze_partition,
+                superposition_ansatze_partition,
+            ) in enumerate(
+                zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
+            ):
+                partitioned_expval_futures.append(
+                    executor.submit(
+                        _estimate_expvals,
+                        tensor_ansatze_partition,
+                        forged_operator.tensor_paulis,
+                        superposition_ansatze_partition,
+                        forged_operator.superposition_paulis,
+                        service_args,
+                        self._backend_names,
+                        partition_index,
+                        session_ids[partition_index],
+                    )
                 )
-            ]
-            partitioned_expvals = pool.starmap(_estimate_expvals, args)
 
         tensor_expvals = []
         superposition_expvals = []
-        for i, partition_expval in enumerate(partitioned_expvals):
+        for i, partitioned_expval_future in enumerate(partitioned_expval_futures):
             (
                 partition_tensor_expvals,
                 partition_superposition_expvals,
                 job_id,
-            ) = partition_expval
+            ) = partitioned_expval_future.result()
             tensor_expvals.extend(partition_tensor_expvals)
             superposition_expvals.extend(partition_superposition_expvals)
             # Start a session for each thread if this is the first run
