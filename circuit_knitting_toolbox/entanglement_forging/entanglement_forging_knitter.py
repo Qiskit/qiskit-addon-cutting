@@ -10,7 +10,8 @@
 # that they have been altered from the originals.
 
 """File containing the knitter class and associated functions."""
-
+import time
+import logging
 from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
@@ -405,8 +406,8 @@ class EntanglementForgingKnitter:
         if self._session_ids is None:
             return
         else:
-            for session_id in self._session_ids:
-                session = Session()
+            for i, session_id in enumerate(self._session_ids):
+                session = Session(service=self.service, backend=self.backend_names[i])
                 session._session_id = session_id
                 session.close()
 
@@ -655,6 +656,24 @@ def _estimate_expvals(
             circuits=all_ansatze_for_estimator,
             observables=all_observables_for_estimator,
         )
+
+        # If a None result was returned, keep checking for a minute, then error out
+        # This is necessary due to some unexplained behavior from runtime, which is causing valid
+        # job results to be returned as None. These results often seem to be retrievable at a later time,
+        # so we have hacked together this loop to try and prevent a crash of the program.
+        for i in range(20):
+            if job.result() is None:
+                if i == 19:
+                    raise RuntimeError(
+                        "A None result was returned from Qiskit Runtime."
+                    )
+                logging.warning(
+                    "A None result was returned from Qiskit Runtime. Waiting 3 seconds and querying again..."
+                )
+                time.sleep(3)
+            else:
+                break
+
         results = job.result().values
 
         job_id = job.job_id
