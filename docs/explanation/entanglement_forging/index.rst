@@ -138,6 +138,12 @@ orbital). Furthermore, in the case of water, it turns out that orbital 3
 symmetry to the other orbitals, so excitations to orbital 3 are
 suppressed. For water, we thus freeze orbitals 0 and 3.
 
+The core orbitals can be found with the following code:
+
+::
+
+    qmolecule = driver.run()
+    print(f"Core orbitals: {qmolecule.core_orbitals}")
 
 Example: Water molecule
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -199,6 +205,26 @@ that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
 
+Fixing the Hartree-Fock bitstring
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In some cases, it is possible to increase the accuracy of simulations
+and speed up the execution by setting ``fix_first_bitstring=True`` in
+``EntanglementForgedConfig``. This bypasses the computation of the first
+bitstring and replaces the result with HF energy.
+
+This setting requires an ansatz that leaves the Hartree-Fock (HF) state
+unchanged under ``var_form``. As a rule of thumb, this can be achieved
+by restricting entanglement between the qubits representing occupied
+orbitals (bits = 1) in the HF state and the qubits representing
+unoccupied orbitals (bits = 0) in the HF state.
+
+For example, this figure from [1] shows the A, B, and C qubits entangled
+with the hop gates, D & E qubits entangled with hop gates, while the
+partition between (A,B,C) and (D,E) are only entangled with a CZ gate.
+
+.. figure:: figs/Fig_5_c.png
+
 .. _Ansatz design:
 
 Designing the ansatz used in Entanglement Forging
@@ -213,6 +239,52 @@ open question is how to choose the best unitaries for a given problem.
 For a chemistry simulation problem, the number of qubits in the circuit
 must equal the number of orbitals (minus the number of frozen orbitals,
 if applicable).
+
+Picking the backend
+~~~~~~~~~~~~~~~~~~~
+
+``backend`` is an option in the
+``EntanglementForgedConfig``
+class. Users can choose between Statevector simulation, QASM simulation,
+or real quantum hardware.
+
+Statevector simulation is useful when we want to:
+
+1. get the exact values of energies (e.g. for chemistry problems)
+   without any error bars (assuming there are no other sources of
+   randomness)
+2. test the performance of an algorithm in the absence of shot noise
+   (for VQE, there could be a difference between the trajectory of the
+   parameters in the presence and absence of shot noise; in this case
+   the statevector simulator can concretely provide an answer
+   regarding the expressivity of a given ansatz without any
+   uncertainty coming from shot noise)
+
+QASM simulation is useful when:
+
+1. the system sizes are larger because the statevector simulator
+   scales exponentially in system size and will not be useful beyond
+   small systems
+2. simulating circuits with noise to mimic a real noisy quantum
+   computer
+
+When running the entanglement forging module either on the QASM
+simulator or on real quantum hardware, several additional options are
+available: ``shots``, ``bootstrap_trials``, ``copysample_job_size``,
+``meas_error_mit``, ``meas_error_shots``,
+``meas_error_refresh_period_minutes``, ``zero_noise_extrap``. These
+options can be specified in the ``EntanglementForgedConfig``
+class. Users can use the QASM simulator to test out these options before
+running them on real quantum hardware.
+
+Notes:
+
+- In the limit of infinite shots, the mean value of the QASM simulator
+  will be equal to the value of the statevector simulator.
+- The QASM simulator also has a method that `mimics the statevector
+  simulator
+  <https://qiskit.org/documentation/tutorials/simulators/1_aer_provider.html>`__
+  without shot noise as an alternative to statevector simulator.
 
 ⚠️ Current limitations
 ----------------------
@@ -233,6 +305,26 @@ Ansatz & bitstrings
       gamma point and without inversion symmetry), the Hamiltonian is
       defined by the complex numbers.
    -  There are plans in the future to implement complex ansatze.
+
+Orbitals
+~~~~~~~~
+
+-  The current implementation of Forged VQE also requires that the
+   number of alpha particles equals the number of beta particles. The
+   relevant parameters can be found with the following code:
+
+::
+
+    qmolecule = driver.run()
+    print(f"Number of spatial orbitals: {qmolecule.num_molecular_orbitals}")
+    print(f"Number of alpha particles: {qmolecule.num_alpha}")
+    print(f"Number of beta particles: {qmolecule.num_beta}")
+
+Converter
+~~~~~~~~~
+
+-  The current implementation only supports the ``JordanWignerMapper``
+   converter.
 
 Results
 ~~~~~~~
@@ -262,11 +354,17 @@ Getting good results will require using a quantum backend with good
 properties (qubit fidelity, gate fidelity etc.), as well as a lot of
 fine-tuning of parameters.
 
-Running on quantum hardware
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-There is currently no Pauli grouping for the expectation value experiments
-calculated at each iteration, so expectation values are calculated on the
-full Pauli basis. This can result in long training times for larger systems.
+Unsupported Qiskit VQE features
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module is based on Qiskit’s Variational Quantum Eigensolver (VQE)
+algorithm, however, some of the features available in VQE are not
+currently supported by this module. Here is a list of known features
+that are not supported:
+
+-  Using ``QuantumInstance`` instead of ``backend``.
+
+This list is not exhaustive.
 
 References
 ----------
