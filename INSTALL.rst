@@ -57,6 +57,18 @@ installed by first running ``pip install docker-compose``.
 Depending on your system configuration, you may need to type ``sudo``
 before each ``docker-compose`` command.
 
+.. note::
+
+   If you are instead using `podman <https://podman.io/>`_ and
+   `podman-compose <https://github.com/containers/podman-compose>`_,
+   the commands are:
+
+   .. code:: sh
+
+       podman machine start
+       podman-compose --podman-pull-args short-name-mode="permissive" build
+       podman-compose up
+
 Once the container is running, you should see a message like this:
 
 ::

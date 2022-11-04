@@ -304,7 +304,7 @@ def _run_subcircuit_batch(
     options: Optional[Options] = None,
 ):
     """
-    Execute a circuit using qiskit runtime and quantum serverless.
+    Execute a circuit using qiskit runtime.
 
     Args:
         - subcircuit_instances (Dict): dictionary containing information about each of the
