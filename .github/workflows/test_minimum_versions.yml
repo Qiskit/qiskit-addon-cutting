@@ -39,7 +39,5 @@ jobs:
       - name: Test using tox environment
         shell: bash
         run: |
-          eval $(ssh-agent -s)
-          ssh-add - <<< '${{ secrets.PRIVATE_SSH_KEY }}'
           pver=${{ matrix.python-version }}
           tox -epy${pver/./},py${pver/./}-notebook
