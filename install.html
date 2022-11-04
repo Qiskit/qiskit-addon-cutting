@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tutorials" href="tutorials/index.html" />
-    <link rel="prev" title="Circuit Knitting Toolbox documentation" href="index.html" />
+    <link rel="prev" title="Circuit Knitting Toolbox" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -98,6 +98,17 @@ docker-compose up
 </div>
 <p>Depending on your system configuration, you may need to type <code class="docutils literal notranslate"><span class="pre">sudo</span></code>
 before each <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> command.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are instead using <a class="reference external" href="https://podman.io/">podman</a> and
+<a class="reference external" href="https://github.com/containers/podman-compose">podman-compose</a>,
+the commands are:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>podman machine start
+podman-compose --podman-pull-args short-name-mode<span class="o">=</span><span class="s2">&quot;permissive&quot;</span> build
+podman-compose up
+</pre></div>
+</div>
+</div>
 <p>Once the container is running, you should see a message like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>notebook_1  |     To access the server, open this file in a browser:
 notebook_1  |         file:///home/jovyan/.local/share/jupyter/runtime/jpserver-7-open.html
@@ -148,7 +159,7 @@ the only one that will be saved across different container runs.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Circuit Knitting Toolbox documentation</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Circuit Knitting Toolbox</a></li>
       <li>Next: <a href="tutorials/index.html" title="next chapter">Tutorials</a></li>
   </ul></li>
 </ul>

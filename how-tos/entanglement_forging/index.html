@@ -27,7 +27,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Circuit Cutting How-To Guides" href="../circuit_cutting/index.html" />
+    <link rel="next" title="How to specify the problem" href="specify-problem.html" />
     <link rel="prev" title="How-To Guides" href="../index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -47,6 +47,28 @@
             
   <section id="entanglement-forging-how-to-guides">
 <h1>Entanglement Forging How-To Guides<a class="headerlink" href="#entanglement-forging-how-to-guides" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="specify-problem.html">How to specify the problem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#Import-the-relevant-modules">Import the relevant modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#Define-the-\mathrm{CH}_3-molecule,-define-the-active-space-transform,-and-instantiate-an-ElectronicStructureProblem">Define the <span class="math notranslate nohighlight">\(\mathrm{CH}_3\)</span> molecule, define the active space transform, and instantiate an <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#Retrieve-the-one-and-two-body-integrals-and-the-nuclear-repulsion-energy.-These-will-be-used-to-decompose-the-operator-into-a-bipartite-system.">Retrieve the one and two-body integrals and the nuclear repulsion energy. These will be used to decompose the operator into a bipartite system.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#Use-the-IntegralDriver-and-ElectronicStructureProblem-objects-to-specify-the-entanglement-forged-operator">Use the <code class="docutils literal notranslate"><span class="pre">IntegralDriver</span></code> and <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code> objects to specify the entanglement-forged operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#Prepare-the-bitstrings-and-the-ansatz.">Prepare the bitstrings and the ansatz.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-asymmetric-bitstrings.html#This-code-is-a-Qiskit-project.">This code is a Qiskit project.</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="freeze-orbitals.html">How to freeze orbitals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="freeze-orbitals.html#Import-the-relevant-modules">Import the relevant modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freeze-orbitals.html#Instantiate-the-ElectronicStructureProblem">Instantiate the <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="freeze-orbitals.html#Compute-the-classical-result">Compute the classical result</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freeze-orbitals.html#Prepare-the-bitstrings-and-the-ansatz">Prepare the bitstrings and the ansatz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freeze-orbitals.html#This-code-is-a-Qiskit-project.">This code is a Qiskit project.</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
 
@@ -71,7 +93,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../explanation/index.html">Explanatory Material</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">How-To Guides</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Entanglement Forging How-To Guides</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Entanglement Forging How-To Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="specify-problem.html">How to specify the problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="freeze-orbitals.html">How to freeze orbitals</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/index.html">Circuit Cutting How-To Guides</a></li>
 </ul>
 </li>
@@ -84,7 +111,7 @@
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">How-To Guides</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">How-To Guides</a></li>
-      <li>Next: <a href="../circuit_cutting/index.html" title="next chapter">Circuit Cutting How-To Guides</a></li>
+      <li>Next: <a href="specify-problem.html" title="next chapter">How to specify the problem</a></li>
   </ul></li>
   </ul></li>
 </ul>
