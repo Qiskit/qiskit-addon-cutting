@@ -71,6 +71,8 @@
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">Bitstring</span><span class="p">,</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
 
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="EntanglementForgingKnitter"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter">[docs]</a><span class="k">class</span> <span class="nc">EntanglementForgingKnitter</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Container for Knitter class functions and attributes.</span>
@@ -756,17 +758,15 @@
         <span class="c1"># job results to be returned as None. These results often seem to be retrievable at a later time,</span>
         <span class="c1"># so we have hacked together this loop to try and prevent a crash of the program.</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="s2">&quot;A None result was returned from Qiskit Runtime.&quot;</span>
-                    <span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;A None result was returned from Qiskit Runtime. Waiting 3 seconds and querying again...&quot;</span>
-                <span class="p">)</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">break</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;A None result was returned from Qiskit Runtime (job id: </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">). &quot;</span>
+                <span class="s2">&quot;Waiting 3 seconds and querying again...&quot;</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;A None result was returned from Qiskit Runtime.&quot;</span><span class="p">)</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
 
