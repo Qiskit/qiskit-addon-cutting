@@ -27,7 +27,7 @@ def mapfunc_dev(dep):
         return "qiskit-terra>=0.22.0rc1"
 
     return re.sub(
-        r"^(qiskit-(?:terra|nature)).*$",
+        r"^(qiskit-(?:terra|nature|ibm-runtime)).*$",
         r"\1 @ git+https://github.com/Qiskit/\1.git",
         dep,
     )
