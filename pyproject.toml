@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "circuit_knitting_toolbox"
+name = "circuit-knitting-toolbox"
 version = "0.0.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
@@ -61,3 +61,6 @@ notebook-dependencies = [
 [tool.autoflake]
 remove-unused-variables = true
 remove-all-unused-imports = true
+
+[tool.flit.module]
+name = "circuit_knitting_toolbox"
