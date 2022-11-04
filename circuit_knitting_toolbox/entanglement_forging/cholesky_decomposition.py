@@ -12,17 +12,14 @@
 """File containing the EntanglementForgingGroundStateSolver class and associated functions."""
 
 import copy
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
 from nptyping import Float, Int, NDArray, Shape
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit_nature.drivers.second_quantization import (
-    ElectronicStructureDriver,
-    BaseDriver,
-)
+from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.mappers.second_quantization import JordanWignerMapper
 from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
 from qiskit_nature.properties.second_quantization.electronic.bases import (
@@ -33,7 +30,6 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
     OneBodyElectronicIntegrals,
     TwoBodyElectronicIntegrals,
 )
-from quantum_serverless import get, run_qiskit_remote
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -45,7 +41,6 @@ Matrix = NDArray[Shape["N, N"], Float]
 TwoBodyIntegrals = NDArray[Shape["N, N, N, N"], Float]
 
 
-@run_qiskit_remote()
 def get_cholesky_op(
     l_op: NDArray, g: int, converter: QubitConverter, opname: str
 ) -> PauliSumOp:
@@ -407,10 +402,9 @@ def _get_fermionic_ops_with_cholesky(
 
     qubit_op._name = opname + "_onebodyop"
 
-    cholesky_op_futures = [
+    cholesky_ops = [
         get_cholesky_op(l_op, g, converter, opname) for g in range(l_op.shape[2])
     ]
-    cholesky_ops = get(cholesky_op_futures)
 
     return qubit_op, cholesky_ops, freeze_shift, h1, h2
 

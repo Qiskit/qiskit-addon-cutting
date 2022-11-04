@@ -63,7 +63,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         self.energy_shift_cn = -67.18561556466743
 
     def create_mock_ansatz_circuit(self, num_qubits: int) -> QuantumCircuit:
-        n_theta = 1
         theta = Parameter("θ")
         mock_gate = QuantumCircuit(1, name="mock gate")
         mock_gate.rz(theta, 0)

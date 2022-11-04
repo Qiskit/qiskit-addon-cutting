@@ -9,6 +9,12 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Code to initialize the WireCutter import."""
+"""
+Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 
-from .wire_cutting.wire_cutter import WireCutter
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+"""

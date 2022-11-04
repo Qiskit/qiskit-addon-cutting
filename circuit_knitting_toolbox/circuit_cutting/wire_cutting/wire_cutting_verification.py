@@ -12,7 +12,7 @@
 """File that contains the function to verify the results of the cut circuits."""
 
 import psutil, copy
-from typing import Sequence, Dict, Union, Tuple, List
+from typing import Tuple, Sequence, Dict, Union, List
 
 import numpy as np
 from nptyping import NDArray
@@ -34,7 +34,7 @@ from circuit_knitting_toolbox.utils.metrics import (
 def verify(
     full_circuit: QuantumCircuit,
     reconstructed_output: NDArray,
-) -> Dict[str, Dict[str, float]]:
+) -> Tuple[Dict[str, Dict[str, float]], Sequence[float]]:
     """
     Compare the reconstructed probabilities to the ground truth.
 
@@ -50,6 +50,7 @@ def verify(
     Returns:
         - (dict): a dictionary containing a variety of distributional difference metrics for the
             ground truth and reconstructed distributions
+        - (Sequence[float]): the true probability distribution of the full circuit
     """
     ground_truth = _evaluate_circuit(circuit=full_circuit)
     metrics = {}
@@ -70,7 +71,7 @@ def verify(
             "Cross Entropy": ce,
             "HOP": hop,
         }
-    return metrics
+    return metrics, ground_truth
 
 
 def generate_reconstructed_output(
@@ -143,10 +144,13 @@ def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     Returns:
         - (Sequence[float]): the final probability vector of the circuit
     """
-    circuit = copy.deepcopy(circuit)
     max_memory_mb = psutil.virtual_memory().total >> 20
     max_memory_mb = int(max_memory_mb / 4 * 3)
-    simulator = Aer.get_backend("statevector_simulator")
+    simulator = Aer.get_backend(
+        "aer_simulator_statevector", max_memory_mb=max_memory_mb
+    )
+    circuit = copy.deepcopy(circuit)
+    circuit.save_state()
     result = simulator.run(circuit).result()
     statevector = result.get_statevector(circuit)
     prob_vector = Statevector(statevector).probabilities()

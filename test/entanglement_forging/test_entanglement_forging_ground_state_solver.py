@@ -11,7 +11,6 @@
 
 """Tests for EntanglementForgingVQE module."""
 
-import ray
 import unittest
 import numpy as np
 from qiskit.algorithms.optimizers import SPSA
@@ -22,20 +21,14 @@ from qiskit_nature.problems.second_quantization import ElectronicStructureProble
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
-    EntanglementForgingKnitter,
     EntanglementForgingGroundStateSolver,
 )
 
 
 class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def setUp(self):
-        ray.init(ignore_reinit_error=True)
-
         # Hard-code some ansatz params/lambdas
         self.optimizer = SPSA(maxiter=0)
-
-    def tearDown(self):
-        ray.shutdown()
 
     def test_entanglement_forging_vqe_hydrogen(self):
         """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""

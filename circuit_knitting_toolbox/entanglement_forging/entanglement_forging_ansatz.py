@@ -105,9 +105,6 @@ class EntanglementForgingAnsatz:
         """
         Property function for the circuit.
 
-        Args:
-            - self
-
         Returns:
             - (QuantumCircuit): the _circuit_u member variable
         """
@@ -117,9 +114,6 @@ class EntanglementForgingAnsatz:
     def bitstrings_u(self) -> List[Bitstring]:
         """
         Property function for the first bitstrings.
-
-        Args:
-            - self
 
         Returns:
             - (List[Bitstring]): the _bitstrings_u member variable
@@ -131,9 +125,6 @@ class EntanglementForgingAnsatz:
         """
         Property function for the second bitstrings.
 
-        Args:
-            - self
-
         Returns:
             - (List[Bitstring]): the _bitstrings_v member variable
         """
@@ -143,9 +134,6 @@ class EntanglementForgingAnsatz:
     def bitstrings_are_symmetric(self) -> bool:
         """
         Property function for the symmetry of bitstrings.
-
-        Args:
-            - self
 
         Returns:
             - (bool): whether the first and second set of bitstrings are the same
@@ -157,9 +145,6 @@ class EntanglementForgingAnsatz:
         """
         Property function for the length of bitstrings.
 
-        Args:
-            - self
-
         Returns:
             - (int): the number of bitstrings
         """
@@ -168,9 +153,6 @@ class EntanglementForgingAnsatz:
     def __repr__(self) -> str:
         """
         Representation function for EntanglementForgingAnsatz.
-
-        Args:
-            - self
 
         Returns:
             - (str): printable repesentation of class

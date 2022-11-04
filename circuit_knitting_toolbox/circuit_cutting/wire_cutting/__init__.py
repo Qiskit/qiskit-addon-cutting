@@ -14,3 +14,18 @@
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import verify
+from .wire_cutting import (
+    cut_circuit_wires,
+    evaluate_subcircuits,
+    reconstruct_full_distribution,
+)
+
+__all__ = [
+    "run_subcircuit_instances",
+    "generate_summation_terms",
+    "build",
+    "verify",
+    "cut_circuit_wires",
+    "evaluate_subcircuits",
+    "reconstruct_full_distribution",
+]

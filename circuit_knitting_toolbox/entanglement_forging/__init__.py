@@ -14,8 +14,8 @@ Entanglement Forging (:mod:`circuit_knitting_toolbox.entanglement_forging`).
 
 .. currentmodule:: circuit_knitting_toolbox.entanglement_forging
 
-Entanglement Forging Classes
-=============================
+Classes
+=======
 
 .. autosummary::
    :toctree: ../stubs/
@@ -45,3 +45,12 @@ from .entanglement_forging_ground_state_solver import (
     EntanglementForgingGroundStateSolver,
 )
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
+
+__all__ = [
+    "EntanglementForgingAnsatz",
+    "EntanglementForgingKnitter",
+    "EntanglementForgingOperator",
+    "EntanglementForgingGroundStateSolver",
+    "cholesky_decomposition",
+    "convert_cholesky_operator",
+]

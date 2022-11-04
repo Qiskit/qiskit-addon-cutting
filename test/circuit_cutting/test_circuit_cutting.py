@@ -16,7 +16,12 @@ import unittest
 import numpy as np
 from qiskit import QuantumCircuit
 
-from circuit_knitting_toolbox.circuit_cutting import WireCutter
+from circuit_knitting_toolbox.circuit_cutting.wire_cutting import (
+    cut_circuit_wires,
+    evaluate_subcircuits,
+    reconstruct_full_distribution,
+    verify,
+)
 
 
 class TestCircuitCutting(unittest.TestCase):
@@ -43,8 +48,8 @@ class TestCircuitCutting(unittest.TestCase):
 
     def test_circuit_cutting_automatic(self):
         qc = self.circuit
-        cutter = WireCutter(qc)
-        cuts = cutter.decompose(
+        cuts = cut_circuit_wires(
+            circuit=qc,
             method="automatic",
             max_subcircuit_width=3,
             max_subcircuit_cuts=10,
@@ -52,25 +57,26 @@ class TestCircuitCutting(unittest.TestCase):
             max_cuts=10,
             num_subcircuits=[2],
         )
-        subcircuit_instance_probabilities = cutter.evaluate(cuts)
-        reconstructed_probabilities = cutter.recompose(
-            subcircuit_instance_probabilities, cuts
+        subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
+        reconstructed_probabilities = reconstruct_full_distribution(
+            qc, subcircuit_instance_probabilities, cuts
         )
 
-        metrics = cutter.verify(reconstructed_probabilities)
+        metrics, _ = verify(qc, reconstructed_probabilities)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
     def test_circuit_cutting_manual(self):
         qc = self.circuit
-        cutter = WireCutter(qc)
 
-        cuts = cutter.decompose(method="manual", subcircuit_vertices=[[0, 1], [2, 3]])
-        subcircuit_instance_probabilities = cutter.evaluate(cuts)
-        reconstructed_probabilities = cutter.recompose(
-            subcircuit_instance_probabilities, cuts
+        cuts = cut_circuit_wires(
+            circuit=qc, method="manual", subcircuit_vertices=[[0, 1], [2, 3]]
+        )
+        subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
+        reconstructed_probabilities = reconstruct_full_distribution(
+            qc, subcircuit_instance_probabilities, cuts
         )
 
-        metrics = cutter.verify(reconstructed_probabilities)
+        metrics, _ = verify(qc, reconstructed_probabilities)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
