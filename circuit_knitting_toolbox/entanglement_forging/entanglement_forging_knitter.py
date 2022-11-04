@@ -26,6 +26,8 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Session, Options, Estimator
 from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
 
+logger = logging.getLogger(__name__)
+
 
 class EntanglementForgingKnitter:
     """Container for Knitter class functions and attributes.
@@ -711,17 +713,15 @@ def _estimate_expvals(
         # job results to be returned as None. These results often seem to be retrievable at a later time,
         # so we have hacked together this loop to try and prevent a crash of the program.
         for i in range(20):
-            if job.result() is None:
-                if i == 19:
-                    raise RuntimeError(
-                        "A None result was returned from Qiskit Runtime."
-                    )
-                logging.warning(
-                    "A None result was returned from Qiskit Runtime. Waiting 3 seconds and querying again..."
-                )
-                time.sleep(3)
-            else:
+            if job.result() is not None:
                 break
+            logger.warning(
+                f"A None result was returned from Qiskit Runtime (job id: {job.job_id}). "
+                "Waiting 3 seconds and querying again..."
+            )
+            time.sleep(3)
+        else:
+            raise RuntimeError("A None result was returned from Qiskit Runtime.")
 
         results = job.result().values
 
