@@ -80,10 +80,10 @@ Hamiltonian <span class="math notranslate nohighlight">\(H_{2n}\)</span> can be 
 of products of <span class="math notranslate nohighlight">\(n\)</span>-qubit wavefunctions with respect to <span class="math notranslate nohighlight">\(n\)</span>-qubit
 operators. These <span class="math notranslate nohighlight">\(n\)</span>-qubit expectation values correspond to
 sub-experiments.</p>
-<figure class="align-default" id="id3">
+<figure class="align-default" id="id4">
 <img alt="Entanglement Forging Infographic" src="../../_images/forging_info_graphic.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Entanglement Forging Infographic</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Entanglement Forging Infographic</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -196,11 +196,6 @@ orbital). Furthermore, in the case of water, it turns out that orbital 3
 (corresponding to the out-of-plane oxygen 2p orbitals) has different
 symmetry to the other orbitals, so excitations to orbital 3 are
 suppressed. For water, we thus freeze orbitals 0 and 3.</p>
-<p>The core orbitals can be found with the following code:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmolecule</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Core orbitals: </span><span class="si">{</span><span class="n">qmolecule</span><span class="o">.</span><span class="n">core_orbitals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
 <section id="example-water-molecule">
 <h4>Example: Water molecule<a class="headerlink" href="#example-water-molecule" title="Permalink to this heading">¶</a></h4>
 <p>The total number of orbitals (core + valence) = 7 orbitals</p>
@@ -250,24 +245,6 @@ that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.</p>
 </section>
-<section id="fixing-the-hartree-fock-bitstring">
-<h4>Fixing the Hartree-Fock bitstring<a class="headerlink" href="#fixing-the-hartree-fock-bitstring" title="Permalink to this heading">¶</a></h4>
-<p>In some cases, it is possible to increase the accuracy of simulations
-and speed up the execution by setting <code class="docutils literal notranslate"><span class="pre">fix_first_bitstring=True</span></code> in
-<code class="docutils literal notranslate"><span class="pre">EntanglementForgedConfig</span></code>. This bypasses the computation of the first
-bitstring and replaces the result with HF energy.</p>
-<p>This setting requires an ansatz that leaves the Hartree-Fock (HF) state
-unchanged under <code class="docutils literal notranslate"><span class="pre">var_form</span></code>. As a rule of thumb, this can be achieved
-by restricting entanglement between the qubits representing occupied
-orbitals (bits = 1) in the HF state and the qubits representing
-unoccupied orbitals (bits = 0) in the HF state.</p>
-<p>For example, this figure from [1] shows the A, B, and C qubits entangled
-with the hop gates, D &amp; E qubits entangled with hop gates, while the
-partition between (A,B,C) and (D,E) are only entangled with a CZ gate.</p>
-<figure class="align-default">
-<img alt="../../_images/Fig_5_c.png" src="../../_images/Fig_5_c.png" />
-</figure>
-</section>
 </section>
 <section id="designing-the-ansatz-used-in-entanglement-forging">
 <span id="ansatz-design"></span><h3>Designing the ansatz used in Entanglement Forging<a class="headerlink" href="#designing-the-ansatz-used-in-entanglement-forging" title="Permalink to this heading">¶</a></h3>
@@ -279,49 +256,6 @@ open question is how to choose the best unitaries for a given problem.</p>
 <p>For a chemistry simulation problem, the number of qubits in the circuit
 must equal the number of orbitals (minus the number of frozen orbitals,
 if applicable).</p>
-</section>
-<section id="picking-the-backend">
-<h3>Picking the backend<a class="headerlink" href="#picking-the-backend" title="Permalink to this heading">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">backend</span></code> is an option in the
-<code class="docutils literal notranslate"><span class="pre">EntanglementForgedConfig</span></code>
-class. Users can choose between Statevector simulation, QASM simulation,
-or real quantum hardware.</p>
-<p>Statevector simulation is useful when we want to:</p>
-<ol class="arabic simple">
-<li><p>get the exact values of energies (e.g. for chemistry problems)
-without any error bars (assuming there are no other sources of
-randomness)</p></li>
-<li><p>test the performance of an algorithm in the absence of shot noise
-(for VQE, there could be a difference between the trajectory of the
-parameters in the presence and absence of shot noise; in this case
-the statevector simulator can concretely provide an answer
-regarding the expressivity of a given ansatz without any
-uncertainty coming from shot noise)</p></li>
-</ol>
-<p>QASM simulation is useful when:</p>
-<ol class="arabic simple">
-<li><p>the system sizes are larger because the statevector simulator
-scales exponentially in system size and will not be useful beyond
-small systems</p></li>
-<li><p>simulating circuits with noise to mimic a real noisy quantum
-computer</p></li>
-</ol>
-<p>When running the entanglement forging module either on the QASM
-simulator or on real quantum hardware, several additional options are
-available: <code class="docutils literal notranslate"><span class="pre">shots</span></code>, <code class="docutils literal notranslate"><span class="pre">bootstrap_trials</span></code>, <code class="docutils literal notranslate"><span class="pre">copysample_job_size</span></code>,
-<code class="docutils literal notranslate"><span class="pre">meas_error_mit</span></code>, <code class="docutils literal notranslate"><span class="pre">meas_error_shots</span></code>,
-<code class="docutils literal notranslate"><span class="pre">meas_error_refresh_period_minutes</span></code>, <code class="docutils literal notranslate"><span class="pre">zero_noise_extrap</span></code>. These
-options can be specified in the <code class="docutils literal notranslate"><span class="pre">EntanglementForgedConfig</span></code>
-class. Users can use the QASM simulator to test out these options before
-running them on real quantum hardware.</p>
-<p>Notes:</p>
-<ul class="simple">
-<li><p>In the limit of infinite shots, the mean value of the QASM simulator
-will be equal to the value of the statevector simulator.</p></li>
-<li><p>The QASM simulator also has a method that <a class="reference external" href="https://qiskit.org/documentation/tutorials/simulators/1_aer_provider.html">mimics the statevector
-simulator</a>
-without shot noise as an alternative to statevector simulator.</p></li>
-</ul>
 </section>
 </section>
 <section id="current-limitations">
@@ -344,27 +278,6 @@ defined by the complex numbers.</p></li>
 <li><p>There are plans in the future to implement complex ansatze.</p></li>
 </ul>
 </li>
-</ul>
-</section>
-<section id="orbitals">
-<h3>Orbitals<a class="headerlink" href="#orbitals" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The current implementation of Forged VQE also requires that the
-number of alpha particles equals the number of beta particles. The
-relevant parameters can be found with the following code:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmolecule</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of spatial orbitals: </span><span class="si">{</span><span class="n">qmolecule</span><span class="o">.</span><span class="n">num_molecular_orbitals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of alpha particles: </span><span class="si">{</span><span class="n">qmolecule</span><span class="o">.</span><span class="n">num_alpha</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of beta particles: </span><span class="si">{</span><span class="n">qmolecule</span><span class="o">.</span><span class="n">num_beta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="converter">
-<h3>Converter<a class="headerlink" href="#converter" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>The current implementation only supports the <code class="docutils literal notranslate"><span class="pre">JordanWignerMapper</span></code>
-converter.</p></li>
 </ul>
 </section>
 <section id="results">
@@ -399,16 +312,11 @@ Getting good results will require using a quantum backend with good
 properties (qubit fidelity, gate fidelity etc.), as well as a lot of
 fine-tuning of parameters.</p>
 </section>
-<section id="unsupported-qiskit-vqe-features">
-<h3>Unsupported Qiskit VQE features<a class="headerlink" href="#unsupported-qiskit-vqe-features" title="Permalink to this heading">¶</a></h3>
-<p>This module is based on Qiskit’s Variational Quantum Eigensolver (VQE)
-algorithm, however, some of the features available in VQE are not
-currently supported by this module. Here is a list of known features
-that are not supported:</p>
-<ul class="simple">
-<li><p>Using <code class="docutils literal notranslate"><span class="pre">QuantumInstance</span></code> instead of <code class="docutils literal notranslate"><span class="pre">backend</span></code>.</p></li>
-</ul>
-<p>This list is not exhaustive.</p>
+<section id="id3">
+<h3>Running on quantum hardware<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<p>There is currently no Pauli grouping for the expectation value experiments
+calculated at each iteration, so expectation values are calculated on the
+full Pauli basis. This can result in long training times for larger systems.</p>
 </section>
 </section>
 <section id="references">
