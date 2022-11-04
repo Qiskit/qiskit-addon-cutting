@@ -27,6 +27,4 @@ jobs:
       - name: Run styles check
         shell: bash
         run: |
-          eval $(ssh-agent -s)
-          ssh-add - <<< '${{ secrets.PRIVATE_SSH_KEY }}'
           tox -elint

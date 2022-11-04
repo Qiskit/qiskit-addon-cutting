@@ -32,8 +32,6 @@ jobs:
           pip install tox coveragepy-lcov
       - name: Run coverage
         run: |
-          eval $(ssh-agent -s)
-          ssh-add - <<< '${{ secrets.PRIVATE_SSH_KEY }}'
           tox -e coverage
       - name: Convert to lcov
         run: coveragepy-lcov --output_file_path coveralls.info
