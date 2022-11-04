@@ -74,4 +74,5 @@ exclude_patterns = [
     "_build",
     "**.ipynb_checkpoints",
     "test_notebooks",
+    "**/README.rst",
 ]
