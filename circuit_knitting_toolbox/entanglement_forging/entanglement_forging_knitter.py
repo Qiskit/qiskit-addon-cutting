@@ -647,11 +647,9 @@ def _estimate_expvals(
 ) -> Tuple[List[NDArray], List[NDArray], Optional[str]]:
     """Run quantum circuits to generate the expectation values.
 
-    Function to estimate the exepctation value of some observables on the
+    Function to estimate the expectation value of some observables on the
     tensor and superposition circuits used for reconstructing the full
-    expectation value from the Schmidt decomposed circuit. The ray decorator
-    indicates that this is an actor function (that runs its own python
-    process).
+    expectation value from the Schmidt decomposed circuit.
 
     Args:
         - tensor_ansatze (List[QuantumCircuit]): the circuits that have the same
