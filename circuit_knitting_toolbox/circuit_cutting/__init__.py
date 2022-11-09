@@ -17,4 +17,12 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
+
+    wire_cutting.run_subcircuit_instances
+    wire_cutting.generate_summation_terms
+    wire_cutting.build
+    wire_cutting.verify
+    wire_cutting.cut_circuit_wires
+    wire_cutting.evaluate_subcircuits
+    wire_cutting.reconstruct_full_distribution
 """

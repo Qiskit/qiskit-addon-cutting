@@ -236,14 +236,14 @@ def generate_summation_terms(
 
     Final CutQC reconstruction result = Sum(summation_terms).
 
-    summation_terms (list) : [summation_term_0, summation_term_1, ...] --> 4^#cuts elements.
+    summation_terms (list): [summation_term_0, summation_term_1, ...] --> 4^#cuts elements.
 
-    summation_term[subcircuit_idx] = subcircuit_entry_idx.
-    E.g. summation_term = {0:0,1:13,2:7} = Kron(subcircuit_0_entry_0, subcircuit_1_entry_13, subcircuit_2_entry_7).
+    | summation_term[subcircuit_idx] = subcircuit_entry_idx.
+    | E.g. summation_term = {0:0,1:13,2:7} = Kron(subcircuit_0_entry_0, subcircuit_1_entry_13, subcircuit_2_entry_7).
 
-    subcircuit_entries[subcircuit_idx][init_label,meas_label] = subcircuit_entry_idx, kronecker_term.
-    kronecker_term (list): (coefficient, subcircuit_instance_idx).
-    Add coefficient*subcircuit_instance to subcircuit_entry.
+    | subcircuit_entries[subcircuit_idx][init_label,meas_label] = subcircuit_entry_idx, kronecker_term.
+    | kronecker_term (list): (coefficient, subcircuit_instance_idx).
+    | Add coefficient*subcircuit_instance to subcircuit_entry.
 
     subcircuit_instances[subcircuit_idx][init,meas] = subcircuit_instance_idx.
 
@@ -253,6 +253,9 @@ def generate_summation_terms(
         - num_cuts (int): the number of cuts
 
     Returns:
+        a tuple
+        containing:
+
         - (dict): dictionary containing information on the summation terms
         - (dict): dictionary containing the subcircuits entry information
         - (dict): dictionary containing subcircuit instances
@@ -398,8 +401,11 @@ def build(
         - num_threads (int): the number of threads to use for multithreading
 
     Returns:
+        a tuple
+        containing:
+
         - (NDArray): the reconstructed probability distribution of the full
-            circuit
+          circuit
         - (list): the ordering of the distribution
         - (dict): the computational post-processing overhead
     """
