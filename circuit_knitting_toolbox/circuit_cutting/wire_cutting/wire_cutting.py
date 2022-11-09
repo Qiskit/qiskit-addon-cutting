@@ -43,8 +43,8 @@ def cut_circuit_wires(
         - max_subcircuit_size (int, optional): max number of gates in a subcircuit
         - verbose (bool, optional): flag for printing output of cutting
     Returns:
-        - (Dict[str, Any]): A dictionary containing information on the cuts,
-            including the subcircuits themselves (key: 'subcircuits')
+        (Dict[str, Any]): A dictionary containing information on the cuts,
+        including the subcircuits themselves (key: 'subcircuits')
     Raises:
         - ValueError: if the input method does not match the other provided arguments
     """
@@ -94,8 +94,8 @@ def evaluate_subcircuits(
         - options (Union[Options, Sequence[Options]]): Options to use on each backend
         - backend_names (Union[str, Sequence[str]]): The name(s) of the backend(s) to be used
     Returns:
-        - (Dict): the dictionary containing the results from running
-            each of the subcircuits
+        (Dict): the dictionary containing the results from running
+        each of the subcircuits
     """
     # Put backend_names and options in lists to ensure it is unambiguous how to sync them
     backends_list: Sequence[str] = []

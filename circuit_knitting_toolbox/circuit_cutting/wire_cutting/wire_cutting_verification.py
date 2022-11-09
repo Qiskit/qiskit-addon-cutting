@@ -48,9 +48,12 @@ def verify(
             execution of the subcircuits
 
     Returns:
-        - (dict): a dictionary containing a variety of distributional difference metrics for the
-            ground truth and reconstructed distributions
-        - (Sequence[float]): the true probability distribution of the full circuit
+        a tuple
+        containing:
+
+        - a dictionary containing a variety of distributional difference
+          metrics for the ground truth and reconstructed distributions; and,
+        - the true probability distribution of the full circuit
     """
     ground_truth = _evaluate_circuit(circuit=full_circuit)
     metrics = {}
