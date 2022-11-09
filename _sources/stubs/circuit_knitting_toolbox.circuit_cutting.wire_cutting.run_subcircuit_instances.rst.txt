@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.wire\_cutting.run\_subcircuit\_instances
+====================================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.wire_cutting
+
+.. autofunction:: run_subcircuit_instances
