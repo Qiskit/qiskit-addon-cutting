@@ -157,10 +157,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -434,7 +435,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 </section>
 <section id="Set-up-Quantum-Serverless">
 <h2>Set up Quantum Serverless<a class="headerlink" href="#Set-up-Quantum-Serverless" title="Permalink to this heading">¶</a></h2>
-<p>We can use Quantum Serverless to send the entanglement forging routine to a remote compute resource. For this tutorial, we will use our local CPU cores as the compute cluster. See the <a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> documentation (and below) for more informatin about how to use other clusters.</p>
+<p>We can use Quantum Serverless to send the entanglement forging routine to a remote compute resource. For this tutorial, we will use our local CPU cores as the compute cluster. See the <a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> documentation (and below) for more information about how to use other clusters.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -476,7 +477,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 <span class="nd">@run_qiskit_remote</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">solve_remote</span><span class="p">(</span>
     <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
-    <span class="n">ansatz_circuit</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
+    <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
     <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span><span class="p">,</span>
     <span class="n">service_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

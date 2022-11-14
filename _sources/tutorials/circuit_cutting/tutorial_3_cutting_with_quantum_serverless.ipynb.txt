@@ -76,7 +76,7 @@
    "source": [
     "## Set up Quantum Serverless\n",
     "\n",
-    "We can use Quantum Serverless to allocate the steps of wire cutting to various compute resources. For this tutorial, we will use our local CPU cores as our cluster. See the [Quantum Serverless](https://github.com/Qiskit-Extensions/quantum-serverless) documentation (and below) for more informatin about how to use other clusters."
+    "We can use Quantum Serverless to allocate the steps of wire cutting to various compute resources. For this tutorial, we will use our local CPU cores as our cluster. See the [Quantum Serverless](https://github.com/Qiskit-Extensions/quantum-serverless) documentation (and below) for more information about how to use other clusters."
    ]
   },
   {
