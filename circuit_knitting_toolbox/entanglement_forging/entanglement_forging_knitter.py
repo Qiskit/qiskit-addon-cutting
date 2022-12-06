@@ -37,20 +37,6 @@ class EntanglementForgingKnitter:
     ansatz parameters and Schmidt coefficients.
     """
 
-    # Attributes:
-    #     - _ansatz (EntanglementForgingAnsatz): the ansatz containing the
-    #         information for the circuit structure and bitstrings to be used
-    #     - _backend_names (List[str]): the names of the backends to use
-    #     - _service (QiskitRuntimeService): the service used to access backends
-    #     - _tensor_circuits_u (List[QuantumCircuit]): the set of circuits used for the first
-    #         operator that have the same Schmidt values
-    #     - _superposition_circuits_u (List[QuantumCircuit]): the set of circuits used for
-    #         the first operator that have different Schmidt values
-    #     - _tensor_circuits_v (List[QuantumCircuit]): the set of circuits used for the second
-    #         operator that have the same Schmidt values
-    #     - _superposition_circuits_v (List[QuantumCircuit]): the set of circuits used for
-    #         the second operator that have different Schmidt values
-
     def __init__(
         self,
         ansatz: EntanglementForgingAnsatz,
@@ -100,7 +86,9 @@ class EntanglementForgingKnitter:
         (
             self._tensor_circuits_u,
             self._superposition_circuits_u,
-        ) = _construct_stateprep_circuits(self._ansatz.bitstrings_u)
+        ) = _construct_stateprep_circuits(
+            self._ansatz.bitstrings_u, fix_first_bitstring=self._ansatz.fix_first_bitstring
+        )
         if self._ansatz.bitstrings_are_symmetric:
             self._tensor_circuits_v, self._superposition_circuits_v = (
                 self._tensor_circuits_u,
@@ -111,7 +99,8 @@ class EntanglementForgingKnitter:
                 self._tensor_circuits_v,
                 self._superposition_circuits_v,
             ) = _construct_stateprep_circuits(
-                self._ansatz.bitstrings_v  # type: ignore
+                self._ansatz.bitstrings_v,  # type: ignore
+                fix_first_bitstring=self._ansatz.fix_first_bitstring,
             )
 
     @property
@@ -469,6 +458,7 @@ class EntanglementForgingKnitter:
 def _construct_stateprep_circuits(
     bitstrings: List[Bitstring],
     subsystem_id: Optional[str] = None,
+    fix_first_bitstring: bool = False,
 ) -> Tuple[List[QuantumCircuit], List[QuantumCircuit]]:  # noqa: D301
     r"""Prepare all circuits.
 
@@ -537,6 +527,7 @@ def _construct_stateprep_circuits(
 
     if subsystem_id is None:
         subsystem_id = "u"
+
     # If the spin-up and spin-down spin orbitals are together a 2*N qubit system,
     # the bitstring should be N bits long.
     bitstring_array = np.asarray(bitstrings)
@@ -544,6 +535,11 @@ def _construct_stateprep_circuits(
         _prepare_bitstring(bs, name=f"bs{subsystem_id}{str(bs_idx)}")
         for bs_idx, bs in enumerate(bitstring_array)
     ]
+
+    if fix_first_bitstring:
+        # Drops the HF bitstring, which is assumed to be first,
+        # Generally, the ansatze should be designed to leave it unchanged
+        tensor_prep_circuits = tensor_prep_circuits[1:]
 
     superpos_prep_circuits = []
     # Create superposition circuits for each bitstring pair
