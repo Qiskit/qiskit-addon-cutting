@@ -87,7 +87,8 @@ class EntanglementForgingKnitter:
             self._tensor_circuits_u,
             self._superposition_circuits_u,
         ) = _construct_stateprep_circuits(
-            self._ansatz.bitstrings_u, fix_first_bitstring=self._ansatz.fix_first_bitstring
+            self._ansatz.bitstrings_u,
+            fix_first_bitstring=self._ansatz.fix_first_bitstring,
         )
         if self._ansatz.bitstrings_are_symmetric:
             self._tensor_circuits_v, self._superposition_circuits_v = (
