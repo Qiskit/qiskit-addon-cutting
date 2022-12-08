@@ -47,8 +47,6 @@ class EntanglementForgingAnsatz:
             used for the second subsystem in the Schmidt decomposition. Must be the
             same shape as bitstrings_u. If not provided, then bitstrings_u is used
             for both subsystems.
-        - fix_first_bitstring (bool): Fix Hartree-Fock value for corresponding
-            bitstring circuit
     """
 
     def __init__(
@@ -56,7 +54,6 @@ class EntanglementForgingAnsatz:
         circuit_u: QuantumCircuit,
         bitstrings_u: List[Bitstring],
         bitstrings_v: Optional[List[Bitstring]] = None,
-        fix_first_bitstring: bool = False,
     ):
         """
         Assign the necessary member variables and check for shaping errors.
@@ -74,8 +71,6 @@ class EntanglementForgingAnsatz:
                 used for the second subsystem in the Schmidt decomposition. Must be the
                 same shape as bitstrings_u. If not provided, then bitstrings_u is used
                 for both subsystems.
-            - fix_first_bitstring (bool): Fix Hartree-Fock value for corresponding
-                bitstring circuit
 
         Returns:
             - None
@@ -104,7 +99,6 @@ class EntanglementForgingAnsatz:
         self._circuit_u: QuantumCircuit = circuit_u
         self._bitstrings_u: List[Bitstring] = bitstrings_u
         self._bitstrings_v: List[Bitstring] = bitstrings_v or bitstrings_u
-        self._fix_first_bitstring: bool = fix_first_bitstring
 
     @property
     def circuit_u(self) -> QuantumCircuit:
@@ -135,16 +129,6 @@ class EntanglementForgingAnsatz:
             - (List[Bitstring]): the _bitstrings_v member variable
         """
         return self._bitstrings_v
-
-    @property
-    def fix_first_bitstring(self) -> bool:
-        """
-        Property function for the fix_first_bitstring field.
-
-        Returns:
-            - (bool): fix the Hartree-Fock bitstring values
-        """
-        return self._fix_first_bitstring
 
     @property
     def bitstrings_are_symmetric(self) -> bool:
