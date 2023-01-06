@@ -397,6 +397,24 @@ class EntanglementForgingKnitter:
                     )
                 self._session_ids[i] = job_id
 
+        if self._fix_first_bitstring:
+            # Insert nans for U HF bitstring
+            if self._ansatz.bitstrings_are_symmetric:
+                nans = np.empty(np.shape(tensor_expvals[0]))
+                nans[:] = np.nan
+
+                tensor_expvals.insert(0, nans)
+            # Insert nans for U and V HF bitstrings
+            else:
+                num_tensor_terms = int(np.shape(tensor_expvals)[0] / 2)
+                nans_u = np.empty(np.shape(tensor_expvals[0]))
+                nans_u[:] = np.nan
+                nans_v = np.empty(np.shape(tensor_expvals[num_tensor_terms]))
+                nans_v[:] = np.nan
+
+                tensor_expvals.insert(num_tensor_terms, nans_v)
+                tensor_expvals.insert(0, nans_u)
+
         # Compute the Schmidt matrix
         h_schmidt = self._compute_h_schmidt(
             forged_operator,
@@ -815,12 +833,8 @@ def _estimate_expvals(
             np.insert(estimator_results_t, 0, np.nan)
     estimator_results_s = results[num_tensor_expvals:]
 
-    num_tensor_ansatze = len(tensor_ansatze)
-    if fix_first_bitstring:
-        num_tensor_ansatze += 1
-
     tensor_expval_list = list(
-        estimator_results_t.reshape((num_tensor_ansatze, len(tensor_paulis)))
+        estimator_results_t.reshape((len(tensor_ansatze), len(tensor_paulis)))
     )
     superposition_expval_list = list(
         estimator_results_s.reshape(
