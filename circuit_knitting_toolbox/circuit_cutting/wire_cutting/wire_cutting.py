@@ -268,11 +268,7 @@ def _attribute_shots(
                 label
             ]
             subcircuit_entry_prob: Optional[NDArray] = None
-            for term in kronecker_term:
-                if len(term) == 2:
-                    coefficient, subcircuit_instance_idx = cast(Tuple[int, int], term)
-                else:
-                    raise ValueError("Ill-formed Kronecker term: {term}")
+            for coefficient, subcircuit_instance_idx in kronecker_term:
                 if subcircuit_entry_prob is None:
                     subcircuit_entry_prob = (
                         coefficient
