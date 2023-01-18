@@ -13,9 +13,6 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/gallery.css" />
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/jquery.js"></script>
-    <script src="../../../_static/underscore.js"></script>
-    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/thebelab-helper.js"></script>
@@ -66,7 +63,7 @@
 
 <div class="viewcode-block" id="EntanglementForgingOperator"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">EntanglementForgingOperator</span><span class="p">:</span>  <span class="c1"># noqa: D301</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Operator class for Entanglement Forging.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Operator class for Entanglement Forging.</span>
 
 <span class="sd">    A class that contains the :math:`2N` qubit Pauli operator :math:`\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b} \hat{S}_{a, b}`</span>
 <span class="sd">    and associated weights. These operators are knitted by the :class:`EntanglementForgingKnitter` to provide esimates of the</span>
@@ -88,7 +85,7 @@
         <span class="n">w_ij</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*, *&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span>
         <span class="n">w_ab</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*, *&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span>
     <span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary member variables.</span>
 
 <span class="sd">        Args:</span>
@@ -108,7 +105,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">w_ab</span> <span class="o">=</span> <span class="n">w_ab</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Representation function for EntanglementForgingOperator.</span>
 
 <span class="sd">        Returns:</span>
@@ -184,8 +181,8 @@
       &copy;2022.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>
 

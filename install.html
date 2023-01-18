@@ -14,9 +14,6 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/thebelab-helper.js"></script>
@@ -67,13 +64,13 @@ the <a class="reference external" href="https://www.ibm.com/products/ilog-cplex-
 version</a>.</p></li>
 <li><p>Enter a Python environment and install the software</p></li>
 </ul>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-<span class="nb">cd</span> circuit-knitting-toolbox
-python3 -m venv venv
-<span class="nb">source</span> venv/bin/activate
-pip install --upgrade pip
-pip install tox notebook -e <span class="s1">&#39;.[notebook-dependencies]&#39;</span>
-jupyter notebook
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+<span class="nb">cd</span><span class="w"> </span>circuit-knitting-toolbox
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>tox<span class="w"> </span>notebook<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[notebook-dependencies]&#39;</span>
+jupyter<span class="w"> </span>notebook
 </pre></div>
 </div>
 <ul class="simple">
@@ -90,10 +87,10 @@ to use the Docker image with just a few simple commands. If you have
 Docker installed but not <a class="reference external" href="https://pypi.org/project/docker-compose/">Docker
 Compose</a>, the latter can be
 installed by first running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">docker-compose</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-<span class="nb">cd</span> circuit-knitting-toolbox
-docker-compose build
-docker-compose up
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+<span class="nb">cd</span><span class="w"> </span>circuit-knitting-toolbox
+docker-compose<span class="w"> </span>build
+docker-compose<span class="w"> </span>up
 </pre></div>
 </div>
 <p>Depending on your system configuration, you may need to type <code class="docutils literal notranslate"><span class="pre">sudo</span></code>
@@ -103,9 +100,9 @@ before each <code class="docutils literal notranslate"><span class="pre">docker-
 <p>If you are instead using <a class="reference external" href="https://podman.io/">podman</a> and
 <a class="reference external" href="https://github.com/containers/podman-compose">podman-compose</a>,
 the commands are:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>podman machine start
-podman-compose --podman-pull-args short-name-mode<span class="o">=</span><span class="s2">&quot;permissive&quot;</span> build
-podman-compose up
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>podman<span class="w"> </span>machine<span class="w"> </span>start
+podman-compose<span class="w"> </span>--podman-pull-args<span class="w"> </span>short-name-mode<span class="o">=</span><span class="s2">&quot;permissive&quot;</span><span class="w"> </span>build
+podman-compose<span class="w"> </span>up
 </pre></div>
 </div>
 </div>
@@ -190,8 +187,8 @@ the only one that will be saved across different container runs.</p>
       &copy;2022.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/install.rst.txt"
