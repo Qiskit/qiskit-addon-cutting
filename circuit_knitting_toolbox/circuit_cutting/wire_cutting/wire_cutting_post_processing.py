@@ -371,9 +371,11 @@ def naive_compute(
             if summation_term_prob is None:
                 summation_term_prob = subcircuit_entry_prob
             else:
-                summation_term_prob = np.kron(
-                    summation_term_prob, subcircuit_entry_prob
-                )
+                summation_term_prob = (
+                    summation_term_prob[:, None,]*subcircuit_entry_prob[None, :,]
+                    ).reshape(
+                        summation_term_prob.size * subcircuit_entry_prob.size
+                    ) 
                 overhead["multiplications"] += len(summation_term_prob)
         if reconstructed_prob is None:
             reconstructed_prob = summation_term_prob
