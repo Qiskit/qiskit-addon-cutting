@@ -20,7 +20,7 @@ from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
-from qiskit.primitives import Sampler as TestSampler
+from qiskit.primitives import BaseSampler, Sampler as TestSampler
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 
@@ -204,6 +204,38 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
+def run_subcircuits_using_sampler(
+    subcircuits: Sequence[QuantumCircuit],
+    sampler: BaseSampler,
+) -> List[NDArray]:
+    """
+    Execute the subcircuit(s).
+
+    Args:
+        - subcircuit (QuantumCircuit): the subcircuits to be executed
+        - sampler (BaseSampler): the Sampler to use for executions
+
+    Returns:
+        - (NDArray): the probability distributions
+    """
+    for subcircuit in subcircuits:
+        if subcircuit.num_clbits == 0:
+            subcircuit.measure_all()
+
+    quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
+
+    all_probabilities_out = []
+    for i, qd in enumerate(quasi_dists):
+        probabilities = qd.nearest_probability_distribution()
+        probabilities_out = np.zeros(2 ** subcircuits[i].num_qubits, dtype=float)
+
+        for state in probabilities:
+            probabilities_out[state] = probabilities[state]
+        all_probabilities_out.append(probabilities_out)
+
+    return all_probabilities_out
+
+
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
     service: Optional[QiskitRuntimeService] = None,
@@ -222,28 +254,13 @@ def run_subcircuits(
     Returns:
         - (NDArray): the probability distributions
     """
-    for subcircuit in subcircuits:
-        if subcircuit.num_clbits == 0:
-            subcircuit.measure_all()
-
     if service is not None:
         session = Session(service=service, backend=backend_name)
         sampler = Sampler(session=session, options=options)
     else:
         sampler = TestSampler(options=options)
 
-    quasi_dists = sampler.run(circuits=subcircuits).result().quasi_dists
-
-    all_probabilities_out = []
-    for i, qd in enumerate(quasi_dists):
-        probabilities = qd.nearest_probability_distribution()
-        probabilities_out = np.zeros(2 ** subcircuits[i].num_qubits, dtype=float)
-
-        for state in probabilities:
-            probabilities_out[state] = probabilities[state]
-        all_probabilities_out.append(probabilities_out)
-
-    return all_probabilities_out
+    return run_subcircuits_using_sampler(subcircuits, sampler)
 
 
 def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
