@@ -24,7 +24,6 @@ from qiskit_ibm_runtime import Options, QiskitRuntimeService
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import generate_reconstructed_output
-from .mip_model import MIPModel
 
 
 def cut_circuit_wires(
@@ -366,6 +365,8 @@ def find_wire_cuts(
             num_qubits=num_qubits,
             max_cuts=max_cuts,
         )
+
+        from .mip_model import MIPModel
 
         mip_model = MIPModel(**kwargs)
         feasible = mip_model.solve(min_postprocessing_cost=min_cost)
