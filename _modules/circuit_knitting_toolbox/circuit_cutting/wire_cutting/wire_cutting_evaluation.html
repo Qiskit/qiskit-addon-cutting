@@ -62,7 +62,7 @@
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.converters</span> <span class="kn">import</span> <span class="n">circuit_to_dag</span><span class="p">,</span> <span class="n">dag_to_circuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit.library.standard_gates</span> <span class="kn">import</span> <span class="n">HGate</span><span class="p">,</span> <span class="n">SGate</span><span class="p">,</span> <span class="n">SdgGate</span><span class="p">,</span> <span class="n">XGate</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span> <span class="k">as</span> <span class="n">TestSampler</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span><span class="p">,</span> <span class="n">Sampler</span> <span class="k">as</span> <span class="n">TestSampler</span>
 <span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Sampler</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Options</span>
 
 
@@ -246,6 +246,38 @@
     <span class="k">return</span> <span class="n">subcircuit_instance_circuit</span>
 
 
+<span class="k">def</span> <span class="nf">run_subcircuits_using_sampler</span><span class="p">(</span>
+    <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
+    <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Execute the subcircuit(s).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        - subcircuit (QuantumCircuit): the subcircuits to be executed</span>
+<span class="sd">        - sampler (BaseSampler): the Sampler to use for executions</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        - (NDArray): the probability distributions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">subcircuits</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">num_clbits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">subcircuit</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>
+
+    <span class="n">quasi_dists</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuits</span><span class="o">=</span><span class="n">subcircuits</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">quasi_dists</span>
+
+    <span class="n">all_probabilities_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">qd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">quasi_dists</span><span class="p">):</span>
+        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">qd</span><span class="o">.</span><span class="n">nearest_probability_distribution</span><span class="p">()</span>
+        <span class="n">probabilities_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">subcircuits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">probabilities</span><span class="p">:</span>
+            <span class="n">probabilities_out</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+        <span class="n">all_probabilities_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">probabilities_out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_probabilities_out</span>
+
+
 <span class="k">def</span> <span class="nf">run_subcircuits</span><span class="p">(</span>
     <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
     <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -264,28 +296,13 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        - (NDArray): the probability distributions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">subcircuits</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">num_clbits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">subcircuit</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>
-
     <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend_name</span><span class="p">)</span>
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">TestSampler</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 
-    <span class="n">quasi_dists</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuits</span><span class="o">=</span><span class="n">subcircuits</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">quasi_dists</span>
-
-    <span class="n">all_probabilities_out</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">qd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">quasi_dists</span><span class="p">):</span>
-        <span class="n">probabilities</span> <span class="o">=</span> <span class="n">qd</span><span class="o">.</span><span class="n">nearest_probability_distribution</span><span class="p">()</span>
-        <span class="n">probabilities_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">subcircuits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">probabilities</span><span class="p">:</span>
-            <span class="n">probabilities_out</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
-        <span class="n">all_probabilities_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">probabilities_out</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">all_probabilities_out</span>
+    <span class="k">return</span> <span class="n">run_subcircuits_using_sampler</span><span class="p">(</span><span class="n">subcircuits</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">measure_prob</span><span class="p">(</span><span class="n">unmeasured_prob</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">meas</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
