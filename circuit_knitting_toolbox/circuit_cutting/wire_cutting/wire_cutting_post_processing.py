@@ -15,7 +15,6 @@ import multiprocessing as mp
 from typing import Dict, Sequence, Union, Tuple, List, Optional, Any
 
 
-import numpy as np
 from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
@@ -372,10 +371,15 @@ def naive_compute(
                 summation_term_prob = subcircuit_entry_prob
             else:
                 summation_term_prob = (
-                    summation_term_prob[:, None,]*subcircuit_entry_prob[None, :,]
-                    ).reshape(
-                        summation_term_prob.size * subcircuit_entry_prob.size
-                    ) 
+                    summation_term_prob[
+                        :,
+                        None,
+                    ]
+                    * subcircuit_entry_prob[
+                        None,
+                        :,
+                    ]
+                ).reshape(summation_term_prob.size * subcircuit_entry_prob.size)
                 overhead["multiplications"] += len(summation_term_prob)
         if reconstructed_prob is None:
             reconstructed_prob = summation_term_prob
