@@ -569,7 +569,9 @@ def _cuts_parser(
 
         wire = None
         for qubit in circ.qubits:
-            if circ.find_bit(qubit).registers[0][0].name == qubit_cut[0].split("[")[0] and circ.find_bit(qubit).index == int(
+            if circ.find_bit(qubit).registers[0][0].name == qubit_cut[0].split("[")[
+                0
+            ] and circ.find_bit(qubit).index == int(
                 qubit_cut[0].split("[")[1].split("]")[0]
             ):
                 wire = qubit
