@@ -569,7 +569,7 @@ def _cuts_parser(
 
         wire = None
         for qubit in circ.qubits:
-            if qubit.register.name == qubit_cut[0].split("[")[0] and qubit.index == int(
+            if circ.find_bit(qubit).registers[0][0].name == qubit_cut[0].split("[")[0] and circ.find_bit(qubit).index == int(
                 qubit_cut[0].split("[")[1].split("]")[0]
             ):
                 wire = qubit
@@ -633,8 +633,8 @@ def _subcircuits_parser(
         gate_depth_encoding = ""
         for qarg in op_node.qargs:
             gate_depth_encoding += "%s[%d]%d " % (
-                qarg.register.name,
-                qarg.index,
+                circuit.find_bit(qarg).registers[0][0].name,
+                circuit.find_bit(qarg).index,
                 qubit_allGate_depths[qarg],
             )
         gate_depth_encoding = gate_depth_encoding[:-1]
@@ -645,8 +645,8 @@ def _subcircuits_parser(
             MIP_gate_depth_encoding = ""
             for qarg in op_node.qargs:
                 MIP_gate_depth_encoding += "%s[%d]%d " % (
-                    qarg.register.name,
-                    qarg.index,
+                    circuit.find_bit(qarg).registers[0][0].name,
+                    circuit.find_bit(qarg).index,
                     qubit_2qGate_depths[qarg],
                 )
                 qubit_2qGate_depths[qarg] += 1
@@ -914,11 +914,11 @@ def _read_circuit(
             raise Exception("vertex does not have 2 qargs!")
         arg0, arg1 = vertex.qargs
         vertex_name = "%s[%d]%d %s[%d]%d" % (
-            arg0.register.name,
-            arg0.index,
+            circuit.find_bit(arg0).registers[0][0].name,
+            circuit.find_bit(arg0).index,
             qubit_gate_counter[arg0],
-            arg1.register.name,
-            arg1.index,
+            circuit.find_bit(arg1).registers[0][0].name,
+            circuit.find_bit(arg1).index,
             qubit_gate_counter[arg1],
         )
         qubit_gate_counter[arg0] += 1
