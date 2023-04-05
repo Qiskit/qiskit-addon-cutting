@@ -36,9 +36,9 @@ from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
 from qiskit.result import Result
 from qiskit_nature import ListOrDictType
-from qiskit_nature.algorithms import GroundStateSolver
+from qiskit_nature.second_q.algorithms import GroundStateSolver
 from qiskit_nature.operators.second_quantization import SecondQuantizedOp
-from qiskit_nature.problems.second_quantization import (
+from qiskit_nature.second_q.problems import (
     BaseProblem,
     ElectronicStructureProblem,
 )
@@ -456,6 +456,9 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             False otherwise.
         """
         return True
+
+    def supports_aux_operators(self):
+        return False
 
     @property
     def qubit_converter(self):

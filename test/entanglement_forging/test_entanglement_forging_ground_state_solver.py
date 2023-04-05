@@ -12,12 +12,16 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
+from typing import cast
+
 import numpy as np
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
-from qiskit_nature.drivers import Molecule
-from qiskit_nature.drivers.second_quantization import PySCFDriver
-from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
+from qiskit_nature.drivers import UnitsType
+from qiskit_nature.second_q.formats.molecule_info import MoleculeInfo
+from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.properties.second_quantization.electronic import ElectronicEnergy
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -33,16 +37,17 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def test_entanglement_forging_vqe_hydrogen(self):
         """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""
 
-        # Specify molecule
-        molecule = Molecule(
-            geometry=[("H", [0.0, 0.0, 0.0]), ("H", [0.0, 0.0, 0.735])],
-            charge=0,
-            multiplicity=1,
-        )
-
         # Set up the ElectronicStructureProblem
-        driver = PySCFDriver.from_molecule(molecule)
-        problem = ElectronicStructureProblem(driver)
+        driver = PySCFDriver(
+            atom="H .0 .0 .0; H .0 .0 0.735",
+            unit=UnitsType.ANGSTROM,
+            charge=0,
+            spin=0,
+            basis="sto3g",
+        )
+        driver_result = driver.run()
+        electronic_energy = cast(ElectronicEnergy, driver_result.hamiltonian)
+        problem = ElectronicStructureProblem(electronic_energy)
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(

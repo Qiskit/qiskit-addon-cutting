@@ -25,6 +25,7 @@ from qiskit_nature.problems.second_quantization import ElectronicStructureProble
 from qiskit_nature.properties.second_quantization.electronic.bases import (
     ElectronicBasis,
 )
+from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 from qiskit_nature.properties.second_quantization.electronic.integrals import (
     IntegralProperty,
     OneBodyElectronicIntegrals,
@@ -95,41 +96,19 @@ def cholesky_decomposition(
     # Store the ElectronicStructureProblem
     problem.second_q_ops()
 
-    if problem.grouped_property_transformed is None:
+    if len(problem.properties) == 0:
         raise AttributeError(
-            "There was a problem retrieving the grouped properties from the ElectronicStructureProblem."
-        )
-    if problem.driver is None:
-        raise AttributeError("The ElectronicStructureProblem has no driver.")
-
-    if not isinstance(problem.driver, ElectronicStructureDriver):
-        raise AttributeError(
-            "The ElectronicStructureProblem's driver should be an instance of ElectronicStructureDriver."
+            "There was a problem retrieving the properties from the ElectronicStructureProblem."
         )
 
-    electronic_basis_transform = problem.grouped_property_transformed.get_property(
-        "ElectronicBasisTransform"
-    )
-    if electronic_basis_transform is None:
+    electronic_energy = problem.hamiltonian
+
+    if not isinstance (electronic_energy, ElectronicEnergy):
         raise AttributeError(
-            "There was a problem retrieving the ElectronicBasisTransform property from the ElectronicStructureProblem."
+            "The Hamiltonian used in the ElectronicStructureProblem must be an ElectronicEnergy object."
         )
 
-    electronic_energy = problem.grouped_property_transformed.get_property(
-        "ElectronicEnergy"
-    )
-    if electronic_energy is None:
-        raise AttributeError(
-            "There was a problem retrieving the ElectronicEnergy property from the ElectronicStructureProblem."
-        )
-
-    particle_number = problem.grouped_property_transformed.get_property(
-        "ParticleNumber"
-    )
-    if particle_number is None:
-        raise AttributeError(
-            "There was a problem retrieving the ParticleNumber property from the ElectronicStructureProblem."
-        )
+    particle_number = problem.properties.particle_number
 
     # Get data for generating the cholesky decomposition
     mo_coeff: Matrix = electronic_basis_transform.coeff_alpha
@@ -139,7 +118,7 @@ def cholesky_decomposition(
     eri: TwoBodyIntegrals = electronic_energy.get_electronic_integral(
         ElectronicBasis.AO, 2
     )._matrices[0]
-    num_alpha = particle_number.num_alpha
+    num_alpha = problem.num_alpha
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
