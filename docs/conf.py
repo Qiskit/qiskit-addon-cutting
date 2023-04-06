@@ -44,7 +44,7 @@ extensions = [
     # "sphinx.ext.autosectionlabel",
     "jupyter_sphinx",
     "sphinx_autodoc_typehints",
-    # "reno.sphinxext",
+    "reno.sphinxext",
     "nbsphinx",
     "sphinx_copybutton",
 ]
