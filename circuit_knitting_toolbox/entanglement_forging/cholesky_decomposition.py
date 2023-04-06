@@ -19,18 +19,16 @@ from nptyping import Float, Int, NDArray, Shape
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.mappers.second_quantization import JordanWignerMapper
-from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
 from qiskit_nature.properties.second_quantization.electronic.bases import (
     ElectronicBasis,
 )
-from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 from qiskit_nature.properties.second_quantization.electronic.integrals import (
     IntegralProperty,
     OneBodyElectronicIntegrals,
     TwoBodyElectronicIntegrals,
 )
+from qiskit_nature.second_q.drivers import PySCFDriver
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -75,15 +73,14 @@ def get_cholesky_op(
 
 
 def cholesky_decomposition(
-    problem: ElectronicStructureProblem,
+    driver: PySCFDriver,
     orbitals_to_reduce: Optional[Sequence[int]] = None,
 ) -> Tuple[ListOp, float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
-        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
-            calculated.
+        - driver (PySCFDriver): A ``PySCFDriver`` from which the decomposed Hamiltonian will be calculated.
         - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -93,23 +90,13 @@ def cholesky_decomposition(
             - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
               calculating properties of the decomposed operator (i.e. ground state energy).
     """
-    # Store the ElectronicStructureProblem
-    problem.second_q_ops()
-
-    electronic_energy = problem.hamiltonian
-
-    if not isinstance (electronic_energy, ElectronicEnergy):
-        raise AttributeError(
-            "The Hamiltonian used in the ElectronicStructureProblem must be an ElectronicEnergy object."
-        )
-
-    particle_number = problem.properties.particle_number
-
     # Get data for generating the cholesky decomposition
-    mo_coeff = electronic_basis_transform.coeff_alpha
-    hcore = electronic_energy.electronic_integrals.one_body
-    eri = electronic_energy.electronic_integrals.two_body
-    num_alpha = problem.num_alpha
+    mo_coeff = driver._calc.mo_coeff
+    hcore = driver._calc.get_hcore()
+    eri = driver._mol.intor("int2e", aosym=1)
+    qcschema = driver.to_qcschema()
+    num_alpha = qcschema.properties.calcinfo_nalpha
+    nuclear_repulsion_energy = qcschema.properties.nuclear_repulsion_energy
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
@@ -121,7 +108,6 @@ def cholesky_decomposition(
     # Hold fields used to calculate the final energy shift
     # Freeze shift will be calculated during decomposition
     freeze_shift = 0.0
-    nuclear_repulsion_energy = electronic_energy.nuclear_repulsion_energy
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
         mo_coeff,

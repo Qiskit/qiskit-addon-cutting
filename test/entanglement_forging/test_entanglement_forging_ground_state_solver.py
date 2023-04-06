@@ -18,7 +18,6 @@ import numpy as np
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit_nature.drivers import UnitsType
-from qiskit_nature.second_q.formats.molecule_info import MoleculeInfo
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.properties.second_quantization.electronic import ElectronicEnergy
@@ -45,9 +44,6 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             spin=0,
             basis="sto3g",
         )
-        driver_result = driver.run()
-        electronic_energy = cast(ElectronicEnergy, driver_result.hamiltonian)
-        problem = ElectronicStructureProblem(electronic_energy)
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -63,7 +59,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         )
 
         # Solve for the ground state energy
-        results = solver.solve(problem)
+        results = solver.solve(driver)
         ground_state_energy = results.groundenergy + results.energy_shift
 
         # Ensure ground state energy output is within tolerance
