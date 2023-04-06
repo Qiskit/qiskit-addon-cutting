@@ -19,6 +19,7 @@ from nptyping import Float, Int, NDArray, Shape
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit_nature.converters.second_quantization import QubitConverter
+from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.mappers.second_quantization import JordanWignerMapper
 from qiskit_nature.properties.second_quantization.electronic.bases import (
     ElectronicBasis,
@@ -29,6 +30,7 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
     TwoBodyElectronicIntegrals,
 )
 from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.second_q.problems import ElectronicStructureProblem
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -73,14 +75,15 @@ def get_cholesky_op(
 
 
 def cholesky_decomposition(
-    driver: PySCFDriver,
+    problem: ElectronicStructureProblem,
     orbitals_to_reduce: Optional[Sequence[int]] = None,
 ) -> Tuple[ListOp, float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
-        - driver (PySCFDriver): A ``PySCFDriver`` from which the decomposed Hamiltonian will be calculated.
+        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
+            calculated.
         - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -91,12 +94,14 @@ def cholesky_decomposition(
               calculating properties of the decomposed operator (i.e. ground state energy).
     """
     # Get data for generating the cholesky decomposition
+    driver = PySCFDriver.from_molecule(problem.molecule)
+    driver.run()
     mo_coeff = driver._calc.mo_coeff
-    hcore = driver._calc.get_hcore()
-    eri = driver._mol.intor("int2e", aosym=1)
-    qcschema = driver.to_qcschema()
-    num_alpha = qcschema.properties.calcinfo_nalpha
-    nuclear_repulsion_energy = qcschema.properties.nuclear_repulsion_energy
+    hcore: SingleBodyIntegrals = problem.hamiltonian.electronic_integrals.one_body.alpha['+-']
+    eri: TwoBodyIntegrals = problem.hamiltonian.electronic_integrals.two_body.alpha['++--']
+    # I believe the number of alpha particles is always half the total spatial orbitals
+    # TODO: Double check this
+    num_alpha = problem.properties.particle_number.num_spatial_orbitals / 2
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
@@ -108,6 +113,11 @@ def cholesky_decomposition(
     # Hold fields used to calculate the final energy shift
     # Freeze shift will be calculated during decomposition
     freeze_shift = 0.0
+    nuclear_repulsion_energy = problem.nuclear_repulsion_energy
+
+    print(mo_coeff)
+    print(hcore)
+    print(eri)
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
         mo_coeff,

@@ -12,14 +12,12 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
-from typing import cast
-
 import numpy as np
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit_nature.drivers import UnitsType
 from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis
 from qiskit_nature.properties.second_quantization.electronic import ElectronicEnergy
 
 from circuit_knitting_toolbox.entanglement_forging import (
@@ -35,7 +33,6 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
 
     def test_entanglement_forging_vqe_hydrogen(self):
         """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""
-
         # Set up the ElectronicStructureProblem
         driver = PySCFDriver(
             atom="H .0 .0 .0; H .0 .0 0.735",
@@ -58,8 +55,11 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             initial_point=[0.0, np.pi / 2],
         )
 
+        driver.run()
+        problem = driver.to_problem(basis=ElectronicBasis.AO)
+
         # Solve for the ground state energy
-        results = solver.solve(driver)
+        results = solver.solve(problem)
         ground_state_energy = results.groundenergy + results.energy_shift
 
         # Ensure ground state energy output is within tolerance

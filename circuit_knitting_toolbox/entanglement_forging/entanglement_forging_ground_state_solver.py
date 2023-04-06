@@ -36,11 +36,10 @@ from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
 from qiskit.result import Result
 from qiskit_nature import ListOrDictType
-from qiskit_nature.second_q.algorithms import GroundStateSolver
-from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.algorithms import GroundStateSolver
 from qiskit_nature.operators.second_quantization import SecondQuantizedOp
-
 from qiskit_nature.results import EigenstateResult
+from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -300,7 +299,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def solve(
         self,
-        driver: PySCFDriver,
+        problem: ElectronicStructureProblem,
         aux_operators: Optional[
             ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
         ] = None,
@@ -308,18 +307,17 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """Compute Ground State properties.
 
         Args:
-            - driver: a molecule driver
+            - problem: a class encoding a problem to be solved.
             - aux_operators: Additional auxiliary operators to evaluate.
 
         Returns:
             - An interpreted :class:`~.EigenstateResult`. For more information see also
             :meth:`~.BaseProblem.interpret`.
         """
-        if not isinstance(driver, PySCFDriver):
+        if not isinstance(problem, ElectronicStructureProblem):
             raise AttributeError(
-                "EntanglementForgingGroundStateSolver only accepts PySCFDriver as input to its solve method."
+                "EntanglementForgingGroundStateSolver only accepts ElectronicStructureProblem as input to its solve method."
             )
-        driver.run()
         if self._backend_names and self._options:
             if len(self._backend_names) != len(self._options):
                 if len(self._options) == 1:
@@ -335,10 +333,10 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 [0.0 for i in range(len(self._ansatz.circuit_u.parameters))]
             )
 
-        hamiltonian_terms = self.get_qubit_operators(driver)
+        hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
-        if self._service:
+        if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
@@ -358,11 +356,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            self.optimizer(
+            optimizer_result = self.optimizer(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
         else:
-            self.optimizer.minimize(
+            optimizer_result = self.optimizer.minimize(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
@@ -406,9 +404,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         def evaluate_eigenvalue(parameters: Sequence[float]) -> float:
             if self._knitter is None:
-                raise AttributeError(
-                    "Knitter must be set before evaluating eigenvalue."
-                )
+                raise RuntimeError("Knitter must be set before evaluating eigenvalue.")
 
             eigenvalue, schmidt_coeffs, _ = self._knitter(
                 ansatz_parameters=parameters, forged_operator=operator
@@ -423,7 +419,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def get_qubit_operators(
         self,
-        driver: PySCFDriver,
+        problem: ElectronicStructureProblem,
         aux_operators: Optional[
             ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
         ] = None,
@@ -431,20 +427,19 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
-          - driver (PySCFDriver): A molecule driver.
+          - problem (ElectronicStructureProblem): A class encoding a problem to be solved.
           - aux_operators (ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
         """
-        if not isinstance(driver, PySCFDriver):
-            raise AttributeError(
-                "EntanglementForgingGroundStateSolver only supports PySCFDriver."
+        if not isinstance(problem, ElectronicStructureProblem):
+            raise TypeError(
+                "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
             )
-        decomposed_operator = cholesky_decomposition(driver, self._orbitals_to_reduce)
-        hamiltonian_ops = decomposed_operator[0]
-        self._energy_shift = decomposed_operator[1]
-
+        hamiltonian_ops, self._energy_shift = cholesky_decomposition(
+            problem, self._orbitals_to_reduce
+        )
         return hamiltonian_ops
 
     def returns_groundstate(self) -> bool:
@@ -456,16 +451,15 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """
         return True
 
-    def supports_aux_operators(self):
-        return False
-
     @property
     def qubit_converter(self):
         """Not implemented."""
+        raise NotImplementedError
 
     @property
     def solver(self):
         """Not implemented."""
+        raise NotImplementedError
 
     def evaluate_operators(
         self,
