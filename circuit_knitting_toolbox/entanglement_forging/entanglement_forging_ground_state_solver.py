@@ -339,7 +339,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
-        if self._service:
+        if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
@@ -407,9 +407,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         def evaluate_eigenvalue(parameters: Sequence[float]) -> float:
             if self._knitter is None:
-                raise AttributeError(
-                    "Knitter must be set before evaluating eigenvalue."
-                )
+                raise RuntimeError("Knitter must be set before evaluating eigenvalue.")
 
             eigenvalue, schmidt_coeffs, _ = self._knitter(
                 ansatz_parameters=parameters, forged_operator=operator
@@ -439,13 +437,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
         """
         if not isinstance(problem, ElectronicStructureProblem):
-            raise AttributeError(
+            raise TypeError(
                 "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
             )
-        decomposed_operator = cholesky_decomposition(problem, self._orbitals_to_reduce)
-        hamiltonian_ops = decomposed_operator[0]
-        self._energy_shift = decomposed_operator[1]
-
+        hamiltonian_ops, self._energy_shift = cholesky_decomposition(
+            problem, self._orbitals_to_reduce
+        )
         return hamiltonian_ops
 
     def returns_groundstate(self) -> bool:
@@ -460,10 +457,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     @property
     def qubit_converter(self):
         """Not implemented."""
+        raise NotImplementedError
 
     @property
     def solver(self):
         """Not implemented."""
+        raise NotImplementedError
 
     def evaluate_operators(
         self,
