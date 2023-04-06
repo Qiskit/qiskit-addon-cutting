@@ -115,10 +115,6 @@ def cholesky_decomposition(
     freeze_shift = 0.0
     nuclear_repulsion_energy = problem.nuclear_repulsion_energy
 
-    print(mo_coeff)
-    print(hcore)
-    print(eri)
-
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
         mo_coeff,
         hcore,
