@@ -96,11 +96,6 @@ def cholesky_decomposition(
     # Store the ElectronicStructureProblem
     problem.second_q_ops()
 
-    if len(problem.properties) == 0:
-        raise AttributeError(
-            "There was a problem retrieving the properties from the ElectronicStructureProblem."
-        )
-
     electronic_energy = problem.hamiltonian
 
     if not isinstance (electronic_energy, ElectronicEnergy):
@@ -111,13 +106,9 @@ def cholesky_decomposition(
     particle_number = problem.properties.particle_number
 
     # Get data for generating the cholesky decomposition
-    mo_coeff: Matrix = electronic_basis_transform.coeff_alpha
-    hcore: SingleBodyIntegrals = electronic_energy.get_electronic_integral(
-        ElectronicBasis.AO, 1
-    )._matrices[0]
-    eri: TwoBodyIntegrals = electronic_energy.get_electronic_integral(
-        ElectronicBasis.AO, 2
-    )._matrices[0]
+    mo_coeff = electronic_basis_transform.coeff_alpha
+    hcore = electronic_energy.electronic_integrals.one_body
+    eri = electronic_energy.electronic_integrals.two_body
     num_alpha = problem.num_alpha
 
     # Store the reduced orbitals as virtual and occupied lists
