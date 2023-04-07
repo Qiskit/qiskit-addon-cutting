@@ -31,6 +31,7 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
 )
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.second_q.operators.tensor_ordering import to_chemist_ordering
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -97,8 +98,10 @@ def cholesky_decomposition(
     driver = PySCFDriver.from_molecule(problem.molecule)
     driver.run()
     mo_coeff = driver._calc.mo_coeff
-    hcore: SingleBodyIntegrals = problem.hamiltonian.electronic_integrals.one_body.alpha['+-']
-    eri: TwoBodyIntegrals = problem.hamiltonian.electronic_integrals.two_body.alpha['++--']
+    hcore: SingleBodyIntegrals = (
+        problem.hamiltonian.electronic_integrals.one_body.alpha["+-"]
+    )
+    eri: TwoBodyIntegrals = to_chemist_ordering(problem.hamiltonian.electronic_integrals.two_body.alpha["++--"])
     # I believe the number of alpha particles is always half the total spatial orbitals
     # TODO: Double check this
     num_alpha = problem.properties.particle_number.num_spatial_orbitals / 2
