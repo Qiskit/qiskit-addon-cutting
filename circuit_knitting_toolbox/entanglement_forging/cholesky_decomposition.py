@@ -29,7 +29,7 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
-from qiskit_nature.second_q.operators import ElectronicIntegrals
+from qiskit_nature.second_q.operators import ElectronicIntegrals, FermionicOp, PolynomialTensor
 from qiskit_nature.second_q.operators.tensor_ordering import to_chemist_ordering
 from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 
@@ -357,7 +357,8 @@ def _get_fermionic_ops_with_cholesky(
 
     converter = QubitConverter(JordanWignerMapper())
     integrals = ElectronicIntegrals.from_raw_integrals(h1, h2)
-    fer_op = ElectronicEnergy(integrals).second_q_op()
+    pt = PolynomialTensor({'+-': h1, '++--': h2})
+    fer_op = FermionicOp.from_polynomial_tensor(pt)
     qubit_op = converter.convert(fer_op)
 
     qubit_op._name = opname + "_onebodyop"
