@@ -14,7 +14,6 @@
 from dataclasses import dataclass
 from typing import Sequence
 
-from nptyping import Float, NDArray, Shape
 from qiskit.quantum_info import Pauli
 import numpy as np
 
@@ -32,16 +31,16 @@ class EntanglementForgingOperator:  # noqa: D301
             Schmidt coefficients
         - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
             Schmidt coefficients
-        - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
-        - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
+        - w_ij (np.ndarray): The weight matrix associated with the tensor paulis
+        - w_ab (np.ndarray, Float]): The weight matrix associated with the superposition paulis
     """
 
     def __init__(
         self,
         tensor_paulis: Sequence[Pauli],
         superposition_paulis: Sequence[Pauli],
-        w_ij: NDArray[Shape["*, *"], Float],
-        w_ab: NDArray[Shape["*, *"], Float],
+        w_ij: np.ndarray,
+        w_ab: np.ndarray,
     ):
         r"""
         Assign the necessary member variables.
@@ -51,8 +50,8 @@ class EntanglementForgingOperator:  # noqa: D301
                 Schmidt coefficients
             - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different
                 Schmidt coefficients
-            - w_ij (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the tensor paulis
-            - w_ab (NDArray[Shape["\*, \*"], Float]): The weight matrix associated with the superposition paulis
+            - w_ij (np.ndarray): The weight matrix associated with the tensor paulis
+            - w_ab (np.ndarray): The weight matrix associated with the superposition paulis
 
         Returns:
             - None

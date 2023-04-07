@@ -25,21 +25,15 @@ from typing import (
     Tuple,
 )
 
-import scipy
 import numpy as np
-from nptyping import NDArray
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
-from qiskit.result import Result
-from qiskit_nature import ListOrDictType
-from qiskit_nature.algorithms import GroundStateSolver
-from qiskit_nature.operators.second_quantization import SecondQuantizedOp
-from qiskit_nature.results import EigenstateResult
-from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.second_q.problems import ElectronicStructureProblem, EigenstateResult
+from qiskit_nature.second_q.algorithms import GroundStateSolver
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -48,14 +42,14 @@ from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
-RESULT = Union[scipy.optimize.OptimizeResult, OptimizerResult]
-OBJECTIVE = Callable[[NDArray], float]
+RESULT = OptimizerResult
+OBJECTIVE = Callable[[np.ndarray], float]
 MINIMIZER = Callable[
     [
         OBJECTIVE,  # the objective function to minimize
-        NDArray,  # the initial point for the optimization
+        np.ndarray,  # the initial point for the optimization
     ],
-    RESULT,  # a result object (either SciPy's or Qiskit's)
+    RESULT,  # a result object
 ]
 _T = TypeVar("_T")  # Pylint does not allow single character class names.
 
@@ -68,7 +62,7 @@ class EntanglementForgingEvaluation:
 
     parameters: Sequence[float]
     eigenvalue: float
-    eigenstate: NDArray
+    eigenstate: np.ndarray
 
 
 @dataclass
@@ -124,7 +118,7 @@ class EntanglementForgingResult(EigenstateResult):
         Union[
             str,
             dict,
-            Result,
+            EigenstateResult,
             list,
             np.ndarray,
             Statevector,
@@ -143,7 +137,7 @@ class EntanglementForgingResult(EigenstateResult):
             Union[
                 str,
                 dict,
-                Result,
+                EigenstateResult,
                 list,
                 np.ndarray,
                 Statevector,
@@ -185,7 +179,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         ansatz: Optional[EntanglementForgingAnsatz] = None,
         service: Optional[QiskitRuntimeService] = None,
         optimizer: Optional[Union[Optimizer, MINIMIZER]] = None,
-        initial_point: Optional[NDArray] = None,
+        initial_point: Optional[np.ndarray] = None,
         orbitals_to_reduce: Optional[Sequence[int]] = None,
         backend_names: Optional[Union[str, List[str]]] = None,
         options: Optional[Union[Options, List[Options]]] = None,
@@ -214,7 +208,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         # Set class fields
         self._ansatz: Optional[EntanglementForgingAnsatz] = ansatz
         self._service: Optional[QiskitRuntimeService] = service
-        self._initial_point: Optional[NDArray] = initial_point
+        self._initial_point: Optional[np.ndarray] = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -262,12 +256,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         self._optimizer = optimizer
 
     @property
-    def initial_point(self) -> Optional[NDArray]:
+    def initial_point(self) -> Optional[np.ndarray]:
         """Return the initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, initial_point: Optional[NDArray]) -> None:
+    def initial_point(self, initial_point: Optional[np.ndarray]) -> None:
         """Set the initial point."""
         self._initial_point = initial_point
 
@@ -300,9 +294,6 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def solve(
         self,
         problem: ElectronicStructureProblem,
-        aux_operators: Optional[
-            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
-        ] = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
@@ -420,15 +411,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def get_qubit_operators(
         self,
         problem: ElectronicStructureProblem,
-        aux_operators: Optional[
-            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
-        ] = None,
-    ) -> Tuple[PauliSumOp, Optional[ListOrDictType[PauliSumOp]]]:
+    ) -> PauliSumOp:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
           - problem (ElectronicStructureProblem): A class encoding a problem to be solved.
-          - aux_operators (ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
@@ -437,6 +424,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             raise TypeError(
                 "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
             )
+
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
             problem, self._orbitals_to_reduce
         )
@@ -450,6 +438,15 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             False otherwise.
         """
         return True
+
+    def supports_aux_operators(self) -> bool:
+        """Whether this class supports evaluation of aux operators.
+
+        Returns:
+            - True, if this class supports aux operators.
+            False otherwise.
+        """
+        return False
 
     @property
     def qubit_converter(self):
@@ -466,7 +463,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         state: Union[
             str,
             dict,
-            Result,
+            EigenstateResult,
             list,
             np.ndarray,
             Statevector,

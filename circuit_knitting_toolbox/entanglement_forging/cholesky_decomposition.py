@@ -15,37 +15,29 @@ import copy
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
-from nptyping import Float, Int, NDArray, Shape
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
-from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
-from qiskit_nature.properties.second_quantization.electronic.bases import (
-    ElectronicBasis,
-)
-from qiskit_nature.properties.second_quantization.electronic.integrals import (
-    IntegralProperty,
-    OneBodyElectronicIntegrals,
-)
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
-from qiskit_nature.second_q.operators import ElectronicIntegrals, FermionicOp, PolynomialTensor
-from qiskit_nature.second_q.operators.tensor_ordering import to_chemist_ordering
+from qiskit_nature.second_q.operators import (
+    ElectronicIntegrals,
+    FermionicOp,
+    PolynomialTensor,
+)
+from qiskit_nature.second_q.operators.tensor_ordering import (
+    to_chemist_ordering,
+    to_physicist_ordering,
+)
 from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
-
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
-SingleBodyIntegrals = NDArray[Shape["N, N"], Float]
-Matrix = NDArray[Shape["N, N"], Float]
-TwoBodyIntegrals = NDArray[Shape["N, N, N, N"], Float]
-
-
 def get_cholesky_op(
-    l_op: NDArray, g: int, converter: QubitConverter, opname: str
+    l_op: np.ndarray, g: int, converter: QubitConverter, opname: str
 ) -> PauliSumOp:
     """
     Convert a two-body term into a cholesky operator.
@@ -63,16 +55,11 @@ def get_cholesky_op(
     from qiskit_nature.settings import settings
 
     settings.dict_aux_operators = True
-
-    cholesky_int = OneBodyElectronicIntegrals(
-        basis=ElectronicBasis.SO, matrices=l_op[:, :, g]
-    )
-    cholesky_property = IntegralProperty("cholesky_op", [cholesky_int])
-    if isinstance(cholesky_property.second_q_ops(), dict):
-        cholesky_op = converter.convert(cholesky_property.second_q_ops()["cholesky_op"])
-    else:
-        cholesky_op = converter.convert(cholesky_property.second_q_ops()[0])
+    pt = PolynomialTensor({"+-": l_op[:, :, g]})
+    fer_op = FermionicOp.from_polynomial_tensor(pt)
+    cholesky_op = converter.convert(fer_op)
     cholesky_op._name = opname + "_chol" + str(g)
+
     return cholesky_op
 
 
@@ -95,24 +82,26 @@ def cholesky_decomposition(
             - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
               calculating properties of the decomposed operator (i.e. ground state energy).
     """
-    # Get data for generating the cholesky decomposition
-    driver = PySCFDriver.from_molecule(problem.molecule)
-    driver.run()
-    mo_coeff = driver._calc.mo_coeff
-    hcore: SingleBodyIntegrals = (
-        problem.hamiltonian.electronic_integrals.one_body.alpha["+-"]
+    hcore: np.ndarray = problem.hamiltonian.electronic_integrals.one_body.alpha["+-"]
+    eri: np.ndarray = to_chemist_ordering(
+        problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
     )
-    eri: TwoBodyIntegrals = to_chemist_ordering(problem.hamiltonian.electronic_integrals.two_body.alpha["++--"])
-    # I believe the number of alpha particles is always half the total spatial orbitals
-    # TODO: Double check this
-    num_alpha = problem.properties.particle_number.num_spatial_orbitals / 2
+    mo_shape = eri.shape[0]
+    num_alpha = None # Need to find out how to get this
+    if problem.molecule is None:
+        mo_coeff = np.eye(mo_shape, mo_shape)
+    else:
+        driver = PySCFDriver.from_molecule(problem.molecule)
+        driver.run()
+        mo_coeff = driver._calc.mo_coeff
+        num_alpha = problem.properties.particle_number.num_spatial_orbitals / 2
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
         orbitals_to_reduce = []
-    orbitals_to_reduce_dict: Dict[
-        str, NDArray[Shape["*"], Int]
-    ] = _get_orbitals_to_reduce(orbitals_to_reduce, num_alpha)
+    orbitals_to_reduce_dict: Dict[str, np.ndarray] = _get_orbitals_to_reduce(
+        orbitals_to_reduce, num_alpha
+    )
 
     # Hold fields used to calculate the final energy shift
     # Freeze shift will be calculated during decomposition
@@ -249,37 +238,37 @@ def convert_cholesky_operator(
 
 
 def _get_fermionic_ops_with_cholesky(
-    mo_coeff: Matrix,
-    h1: SingleBodyIntegrals,
-    h2: TwoBodyIntegrals,
+    mo_coeff: np.ndarray,
+    h1: np.ndarray,
+    h2: np.ndarray,
     opname: str,
     halve_transformed_h2: bool = False,
-    occupied_orbitals_to_reduce: Optional[NDArray[Shape["*"], Int]] = None,
-    virtual_orbitals_to_reduce: Optional[NDArray[Shape["*"], Int]] = None,
+    occupied_orbitals_to_reduce: Optional[np.ndarray] = None,
+    virtual_orbitals_to_reduce: Optional[np.ndarray] = None,
     epsilon_cholesky: float = 1e-10,
-) -> Tuple[PauliSumOp, List[PauliSumOp], float, SingleBodyIntegrals, TwoBodyIntegrals,]:
+) -> Tuple[PauliSumOp, List[PauliSumOp], float, np.ndarray, np.ndarray,]:
     r"""
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
     Args:
-        - mo_coeff (NDArray[Shape["N, N"], Float]): 2D array representing coefficients for converting from AO to MO basis.
-        - h1 (NDArray[Shape["N, N"], Float]): 2D array representing operator
+        - mo_coeff (np.ndarray): 2D array representing coefficients for converting from AO to MO basis.
+        - h1 (np.ndarray): 2D array representing operator
             coefficients of one-body integrals in the AO basis.
-        - h2 (NDArray[Shape["N, N, N, N"], Float]): 4D array representing operator coefficients
+        - h2 (np.ndarray): 4D array representing operator coefficients
             of two-body integrals in the AO basis.
         - halve_transformed_h2 (Optional[bool]): Should be set to True for Hamiltonian
             operator to agree with Qiskit conventions.
-        - occupied_orbitals_to_reduce (Optional[NDArray[Shape["*"], Int]]): Optional; A list of occupied orbitals that will be removed.
-        - virtual_orbitals_to_reduce (Optional[NDArray[Shape["*"], Int]]):Optional; A list of virtual orbitals that will be removed.
+        - occupied_orbitals_to_reduce (Optional[np.ndarray]): Optional; A list of occupied orbitals that will be removed.
+        - virtual_orbitals_to_reduce (Optional[np.ndarray]):Optional; A list of virtual orbitals that will be removed.
         - epsilon_cholesky (Optional[float]): The threshold for the decomposition (typically a number close to 0).
 
     Returns:
         - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.
         - cholesky_ops (List[PauliSumOp]): L_\\gamma in the Cholesky decomposition
         - freeze_shift (float): Energy shift due to freezing.
-        - h1 (NDArray[Shape["N, N"], Float]): 2D array representing operator coefficients of one-body
+        - h1 (np.ndarray): 2D array representing operator coefficients of one-body
             integrals in the MO basis.
-        - h2 (NDArray[Shape["N, N, N, N"], Float]): 4D array representing operator coefficients of
+        - h2 (np.ndarray): 4D array representing operator coefficients of
             two-body integrals in the MO basis.
     """
     if virtual_orbitals_to_reduce is None:
@@ -356,8 +345,7 @@ def _get_fermionic_ops_with_cholesky(
         h2 /= 2  # type: ignore
 
     converter = QubitConverter(JordanWignerMapper())
-    integrals = ElectronicIntegrals.from_raw_integrals(h1, h2)
-    pt = PolynomialTensor({'+-': h1, '++--': h2})
+    pt = PolynomialTensor({"+-": h1, "++--": to_physicist_ordering(h2)})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
     qubit_op = converter.convert(fer_op)
 
@@ -370,9 +358,7 @@ def _get_fermionic_ops_with_cholesky(
     return qubit_op, cholesky_ops, freeze_shift, h1, h2
 
 
-def _get_modified_cholesky(
-    two_body_overlap_integrals: NDArray[Shape["*, *, *"], Float], eps: float
-):
+def _get_modified_cholesky(two_body_overlap_integrals: np.ndarray, eps: float):
     """Perform modified Cholesky decomposition on the two-body integrals given an epsilon value."""
     n_basis_states = two_body_overlap_integrals.shape[0]  # number of basis states
     # Max (chmax) and current (n_gammas) number of Cholesky vectors
@@ -402,7 +388,7 @@ def _get_modified_cholesky(
 def _get_orbitals_to_reduce(
     orbitals_to_reduce: Iterable[int],
     num_alpha: int,
-) -> Dict[str, NDArray[Shape["*"], Int]]:
+) -> Dict[str, np.ndarray]:
     orb_to_reduce_dict = {
         "occupied": np.asarray(orbitals_to_reduce),
         "virtual": np.asarray(orbitals_to_reduce),

@@ -12,13 +12,16 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
-import numpy as np
+import math
+
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
-from qiskit_nature.drivers import UnitsType
+from qiskit_nature.units import DistanceUnit
 from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis
-from qiskit_nature.properties.second_quantization.electronic import ElectronicEnergy
+from qiskit_nature.second_q.problems import (
+    ElectronicStructureProblem,
+    ElectronicBasis,
+)
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -36,7 +39,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         # Set up the ElectronicStructureProblem
         driver = PySCFDriver(
             atom="H .0 .0 .0; H .0 .0 0.735",
-            unit=UnitsType.ANGSTROM,
+            unit=DistanceUnit.ANGSTROM,
             charge=0,
             spin=0,
             basis="sto3g",
@@ -52,7 +55,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
             optimizer=self.optimizer,
-            initial_point=[0.0, np.pi / 2],
+            initial_point=[0.0, math.pi / 2],
         )
 
         driver.run()

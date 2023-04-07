@@ -16,7 +16,6 @@ from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
-from nptyping import Float, Int, NDArray, Shape
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
@@ -205,9 +204,7 @@ class EntanglementForgingKnitter:
         self,
         ansatz_parameters: Sequence[float],
         forged_operator: EntanglementForgingOperator,
-    ) -> Tuple[
-        float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]
-    ]:  # noqa: D301, D202
+    ) -> Tuple[float, np.ndarray, np.ndarray]:  # noqa: D301, D202
         r"""Calculate the energy.
 
         Computes ⟨H⟩ - the energy value and the Schmidt matrix, $h_{n, m}$, given
@@ -233,7 +230,7 @@ class EntanglementForgingKnitter:
                 value from
 
         Returns:
-            - (Tuple[float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]]): a tuple
+            - (Tuple[float, np.ndarray, np.ndarray]): a tuple
                 containing the energy (i.e. forged expectation value), the Schmidt coefficients,
                 and the full Schmidt decomposition matrix
         """
@@ -357,22 +354,22 @@ class EntanglementForgingKnitter:
     def _compute_h_schmidt(
         self,
         forged_operator: EntanglementForgingOperator,
-        tensor_expvals: NDArray[Shape["*, *"], Float],
-        superpos_expvals: NDArray[Shape["*, *"], Float],
-    ) -> NDArray[Shape["*, *"], Float]:  # noqa: D202
+        tensor_expvals: np.ndarray,
+        superpos_expvals: np.ndarray,
+    ) -> np.ndarray:  # noqa: D202
         """
         Compute the Schmidt decomposition of the Hamiltonian.
 
         Args:
             - forged_operator (EntanglementForgingOperator): the operator that the
                 forged expectation values are computed with
-            - tensor_expvals (NDArray[Shape["*, *"], Float]): the expectation values
+            - tensor_expvals (np.ndarray): the expectation values
                 for the tensor circuits (i.e. same Schmidt coefficients)
-            - superpos_expvals (NDArray[Shape["*, *"], Float]): the expectation values
+            - superpos_expvals (np.ndarray, Float]): the expectation values
                 for the superposition circuits (i.e. different Schmidt coefficients)
 
         Returns:
-           - (NDArray[Shape["*, *"], Float]): the Schmidt matrix
+           - (np.ndarray, Float]): the Schmidt matrix
         """
 
         # Calculate the diagonal entries of the Schmidt matrix by
@@ -593,7 +590,7 @@ def _construct_stateprep_circuits(
 
 
 def _prepare_bitstring(
-    bitstring: Union[NDArray[Shape["*"], Int], Bitstring],
+    bitstring: Union[np.ndarray, Bitstring],
     name: Optional[str] = None,
 ) -> QuantumCircuit:
     """Prepare the bitstring circuits.
@@ -602,7 +599,7 @@ def _prepare_bitstring(
     every qubit that has a 1 in the bitstring.
 
     Args:
-        - bitstring (Union[NDArray[Shape["*"], Int], Bitstring]): the container for the
+        - bitstring (Union[np.ndarray, Bitstring]): the container for the
             bitstring information. Must contain 0s and 1s and the 1s are used to determine
             where to put the X gates
         - name (str, optional): the name of the circuit
@@ -644,7 +641,7 @@ def _estimate_expvals(
     backend_name: Optional[str] = None,
     options: Optional[Options] = None,
     session_id: Optional[str] = None,
-) -> Tuple[List[NDArray], List[NDArray], Optional[str]]:
+) -> Tuple[List[np.ndarray], List[np.ndarray], Optional[str]]:
     """Run quantum circuits to generate the expectation values.
 
     Function to estimate the exepctation value of some observables on the
@@ -669,7 +666,7 @@ def _estimate_expvals(
         - session_id (str): The session id to use when calling primitive programs
 
     Returns:
-        - (Tuple[List[NDArray], List[NDArray], Optional[str]]): the expectation values for the
+        - (Tuple[List[np.ndarray], List[np.ndarray], Optional[str]]): the expectation values for the
             tensor circuits and superposition circuits
     """
     all_circuits = tensor_ansatze + superposition_ansatze
@@ -728,10 +725,7 @@ def _estimate_expvals(
         job_id = job.job_id
 
     else:
-        estimator = TestEstimator(
-            circuits=all_circuits,
-            observables=all_observables,
-        )
+        estimator = TestEstimator()
         results = (
             estimator.run(
                 circuits=all_ansatze_for_estimator,
