@@ -18,23 +18,24 @@ import numpy as np
 from nptyping import Float, Int, NDArray, Shape
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
-from qiskit_nature.converters.second_quantization import QubitConverter
 from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
-from qiskit_nature.mappers.second_quantization import JordanWignerMapper
 from qiskit_nature.properties.second_quantization.electronic.bases import (
     ElectronicBasis,
 )
 from qiskit_nature.properties.second_quantization.electronic.integrals import (
     IntegralProperty,
     OneBodyElectronicIntegrals,
-    TwoBodyElectronicIntegrals,
 )
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
+from qiskit_nature.second_q.operators import ElectronicIntegrals
 from qiskit_nature.second_q.operators.tensor_ordering import to_chemist_ordering
+from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
+
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
@@ -353,16 +354,10 @@ def _get_fermionic_ops_with_cholesky(
 
     if halve_transformed_h2:
         h2 /= 2  # type: ignore
-    h1_int = OneBodyElectronicIntegrals(basis=ElectronicBasis.SO, matrices=h1)
-    h2_int = TwoBodyElectronicIntegrals(basis=ElectronicBasis.SO, matrices=h2)
-    int_property = IntegralProperty("fer_op", [h1_int, h2_int])
-
-    if isinstance(int_property.second_q_ops(), dict):
-        fer_op = int_property.second_q_ops()["fer_op"]
-    else:
-        fer_op = int_property.second_q_ops()[0]
 
     converter = QubitConverter(JordanWignerMapper())
+    integrals = ElectronicIntegrals.from_raw_integrals(h1, h2)
+    fer_op = ElectronicEnergy(integrals).second_q_op()
     qubit_op = converter.convert(fer_op)
 
     qubit_op._name = opname + "_onebodyop"
