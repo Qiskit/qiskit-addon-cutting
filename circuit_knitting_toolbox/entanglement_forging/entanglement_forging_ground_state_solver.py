@@ -22,7 +22,6 @@ from typing import (
     Sequence,
     TypeVar,
     Union,
-    Tuple,
 )
 
 import numpy as np
@@ -34,6 +33,7 @@ from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
 from qiskit_nature.second_q.problems import ElectronicStructureProblem, EigenstateResult
 from qiskit_nature.second_q.algorithms import GroundStateSolver
+from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -315,7 +315,8 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length "
+                        f"({len(self._options)}). It is ambiguous how to combine the options with the backends."
                     )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
@@ -425,8 +426,24 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
             )
 
+        if problem.molecule is None:
+            if problem.basis == ElectronicBasis.AO:
+                raise ValueError(
+                    "Cannot map integrals to MO basis. No molecule information found in input ElectronicStructuctureProblem, "
+                    "and the ElectronicStructureProblem is in the AO basis."
+                )
+            size = problem.hamiltonian.electronic_integrals.two_body.alpha[
+                "++--"
+            ].shape[0]
+            mo_coeffs = np.eye(size, size)
+
+        else:
+            driver = PySCFDriver.from_molecule(problem.molecule)
+            driver.run()
+            mo_coeffs = driver._calc.mo_coeff
+
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
-            problem, self._orbitals_to_reduce
+            problem, mo_coeffs, self._orbitals_to_reduce
         )
         return hamiltonian_ops
 

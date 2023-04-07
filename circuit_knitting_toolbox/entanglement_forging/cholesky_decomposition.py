@@ -17,11 +17,9 @@ from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 import numpy as np
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
-from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
 from qiskit_nature.second_q.operators import (
-    ElectronicIntegrals,
     FermionicOp,
     PolynomialTensor,
 )
@@ -29,7 +27,6 @@ from qiskit_nature.second_q.operators.tensor_ordering import (
     to_chemist_ordering,
     to_physicist_ordering,
 )
-from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -65,6 +62,7 @@ def get_cholesky_op(
 
 def cholesky_decomposition(
     problem: ElectronicStructureProblem,
+    mo_coeffs: Optional[np.ndarray] = None,
     orbitals_to_reduce: Optional[Sequence[int]] = None,
 ) -> Tuple[ListOp, float]:
     """
@@ -73,6 +71,7 @@ def cholesky_decomposition(
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
+        - mo_coeffs (Optional[np.ndarray]): The coefficients for mapping to the MO basis
         - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -86,15 +85,10 @@ def cholesky_decomposition(
     eri: np.ndarray = to_chemist_ordering(
         problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
     )
-    mo_shape = eri.shape[0]
-    num_alpha = None # Need to find out how to get this
-    if problem.molecule is None:
-        mo_coeff = np.eye(mo_shape, mo_shape)
-    else:
-        driver = PySCFDriver.from_molecule(problem.molecule)
-        driver.run()
-        mo_coeff = driver._calc.mo_coeff
-        num_alpha = problem.properties.particle_number.num_spatial_orbitals / 2
+    num_alpha = problem.num_alpha
+    if mo_coeffs is None:
+        size = eri.shape[0]
+        mo_coeffs = np.eye(size, size)
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
@@ -109,7 +103,7 @@ def cholesky_decomposition(
     nuclear_repulsion_energy = problem.nuclear_repulsion_energy
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
-        mo_coeff,
+        mo_coeffs,
         hcore,
         eri,
         opname="H",
