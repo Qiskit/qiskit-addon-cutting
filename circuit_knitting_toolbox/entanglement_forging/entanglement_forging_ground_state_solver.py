@@ -31,7 +31,7 @@ from qiskit.circuit import Instruction
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
-from qiskit_nature.second_q.problems import ElectronicStructureProblem, EigenstateResult
+from qiskit_nature.second_q.problems import ElectronicStructureProblem, EigenstateResult, ElectronicBasis
 from qiskit_nature.second_q.algorithms import GroundStateSolver
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
