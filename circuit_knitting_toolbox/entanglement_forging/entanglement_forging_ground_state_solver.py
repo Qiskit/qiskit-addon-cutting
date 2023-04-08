@@ -25,6 +25,7 @@ from typing import (
     Tuple,
 )
 
+import scipy
 import numpy as np
 from nptyping import NDArray
 

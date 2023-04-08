@@ -246,7 +246,7 @@ def _get_fermionic_ops_with_cholesky(
     occupied_orbitals_to_reduce: Optional[NDArray[Shape["*"], Int]] = None,
     virtual_orbitals_to_reduce: Optional[NDArray[Shape["*"], Int]] = None,
     epsilon_cholesky: float = 1e-10,
-) -> Tuple[PauliSumOp, List[PauliSumOp], float, SingleBodyIntegrals, TwoBodyIntegrals]:
+) -> Tuple[PauliSumOp, List[PauliSumOp], float, SingleBodyIntegrals, TwoBodyIntegrals,]:
     r"""
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 

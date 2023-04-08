@@ -233,7 +233,7 @@ class EntanglementForgingKnitter:
                 value from
 
         Returns:
-            - (Tuple[float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]): a tuple
+            - (Tuple[float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]]): a tuple
                 containing the energy (i.e. forged expectation value), the Schmidt coefficients,
                 and the full Schmidt decomposition matrix
         """
@@ -243,9 +243,7 @@ class EntanglementForgingKnitter:
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), "
-                        f"but the list of options is length ({len(self._options)}). It is ambiguous "
-                        "how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
                     )
         # For now, we only assign the parameters to a copy of the ansatz
         circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
