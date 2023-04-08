@@ -86,12 +86,22 @@ def cholesky_decomposition(
               shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
             - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
               calculating properties of the decomposed operator (i.e. ground state energy).
+
+    Raises:
+        - ValueError:
+            The input ElectronicStructureProblem contains no particle number information.
     """
-    hcore: np.ndarray = problem.hamiltonian.electronic_integrals.one_body.alpha["+-"]
-    eri: np.ndarray = to_chemist_ordering(
+    hcore = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
+    eri = to_chemist_ordering(
         problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
     )
     num_alpha = problem.num_alpha
+    if num_alpha is None:
+        raise ValueError(
+            "The input ElectronicStructureProblem contains no particle number information."
+        )
+
+    # If no mo coeffs are passed, we assume the integrals are with respect to MO basis
     if mo_coeffs is None:
         size = eri.shape[0]
         mo_coeffs = np.eye(size, size)
@@ -107,6 +117,8 @@ def cholesky_decomposition(
     # Freeze shift will be calculated during decomposition
     freeze_shift = 0.0
     nuclear_repulsion_energy = problem.nuclear_repulsion_energy
+    if nuclear_repulsion_energy is None:
+        nuclear_repulsion_energy = 0.0
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
         mo_coeffs,
