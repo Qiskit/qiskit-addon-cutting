@@ -73,6 +73,10 @@ notebook-dependencies = [
     "pylatexenc",
 ]
 
+[project.urls]
+"Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
+"Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
+
 [tool.autoflake]
 remove-unused-variables = true
 remove-all-unused-imports = true
