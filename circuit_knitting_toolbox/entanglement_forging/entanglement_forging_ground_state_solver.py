@@ -25,6 +25,7 @@ from typing import (
 )
 
 import numpy as np
+from nptyping import NDArray
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction
@@ -43,11 +44,11 @@ from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_ope
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 RESULT = OptimizerResult
-OBJECTIVE = Callable[[np.ndarray], float]
+OBJECTIVE = Callable[[NDArray], float]
 MINIMIZER = Callable[
     [
         OBJECTIVE,  # the objective function to minimize
-        np.ndarray,  # the initial point for the optimization
+        NDArray,  # the initial point for the optimization
     ],
     RESULT,  # a result object
 ]
@@ -62,7 +63,7 @@ class EntanglementForgingEvaluation:
 
     parameters: Sequence[float]
     eigenvalue: float
-    eigenstate: np.ndarray
+    eigenstate: NDArray
 
 
 @dataclass
@@ -179,7 +180,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         ansatz: Optional[EntanglementForgingAnsatz] = None,
         service: Optional[QiskitRuntimeService] = None,
         optimizer: Optional[Union[Optimizer, MINIMIZER]] = None,
-        initial_point: Optional[np.ndarray] = None,
+        initial_point: Optional[NDArray] = None,
         orbitals_to_reduce: Optional[Sequence[int]] = None,
         backend_names: Optional[Union[str, List[str]]] = None,
         options: Optional[Union[Options, List[Options]]] = None,
@@ -208,7 +209,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         # Set class fields
         self._ansatz: Optional[EntanglementForgingAnsatz] = ansatz
         self._service: Optional[QiskitRuntimeService] = service
-        self._initial_point: Optional[np.ndarray] = initial_point
+        self._initial_point: Optional[NDArray] = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -256,12 +257,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         self._optimizer = optimizer
 
     @property
-    def initial_point(self) -> Optional[np.ndarray]:
+    def initial_point(self) -> Optional[NDArray]:
         """Return the initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, initial_point: Optional[np.ndarray]) -> None:
+    def initial_point(self, initial_point: Optional[NDArray]) -> None:
         """Set the initial point."""
         self._initial_point = initial_point
 
@@ -348,11 +349,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            optimizer_result = self.optimizer(
+            self.optimizer(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
         else:
-            optimizer_result = self.optimizer.minimize(
+            self.optimizer.minimize(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
