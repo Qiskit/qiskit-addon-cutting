@@ -29,13 +29,9 @@ import scipy
 import numpy as np
 from nptyping import NDArray
 
-from qiskit import QuantumCircuit
-from qiskit.circuit import Instruction
 from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
-from qiskit.opflow import PauliSumOp, OperatorBase
-from qiskit.quantum_info import Statevector
-from qiskit.result import Result
+from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit_nature.second_q.problems import (
     BaseProblem,
@@ -380,7 +376,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         Args:
           - problem (BaseProblem): A class encoding a problem to be solved.
-          - aux_operators (ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]): Additional auxiliary operators to evaluate.
+          - aux_operators (Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]]): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
@@ -444,23 +440,3 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def solver(self):
         """Not implemented."""
         raise NotImplementedError
-
-    def evaluate_operators(
-        self,
-        state: Union[
-            str,
-            dict,
-            Result,
-            list,
-            np.ndarray,
-            Statevector,
-            QuantumCircuit,
-            Instruction,
-            OperatorBase,
-        ],
-        operators: Union[PauliSumOp, OperatorBase, list, dict],
-    ) -> Union[float, List[float], Dict[str, List[float]]]:
-        """Not necessary to implement."""
-        raise NotImplementedError(
-            "This class method is not used by EntanglementForgingGroundStateSolver."
-        )
