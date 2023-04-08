@@ -103,8 +103,7 @@ def cholesky_decomposition(
 
     # If no mo coeffs are passed, we assume the integrals are with respect to MO basis
     if mo_coeffs is None:
-        size = eri.shape[0]
-        mo_coeffs = np.eye(size, size)
+        mo_coeffs = np.eye(eri.shape[0], eri.shape[0])
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
