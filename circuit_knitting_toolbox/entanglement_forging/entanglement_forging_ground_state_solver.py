@@ -445,6 +445,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
             problem, mo_coeffs, self._orbitals_to_reduce
+
         )
         return hamiltonian_ops
 

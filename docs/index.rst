@@ -30,6 +30,7 @@ Contents
   Explanatory Material <explanation/index>
   How-To Guides <how-tos/index>
   API References <apidocs/index>
+  Release Notes <release-notes>
 
 .. Hiding - Indices and tables
    :ref:`genindex`
