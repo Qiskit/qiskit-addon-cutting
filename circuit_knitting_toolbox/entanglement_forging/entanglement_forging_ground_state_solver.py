@@ -31,18 +31,22 @@ from nptyping import NDArray
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction
+from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
 from qiskit.result import Result
-from qiskit_nature import ListOrDictType
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit_nature.second_q.problems import (
+    BaseProblem,
     ElectronicStructureProblem,
     EigenstateResult,
     ElectronicBasis,
 )
 from qiskit_nature.second_q.algorithms import GroundStateSolver
 from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.second_q.operators import SparseLabelOp
+from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -51,6 +55,8 @@ from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
+
+QubitOperator = Union[BaseOperator, PauliSumOp]
 RESULT = Union[scipy.optimize.OptimizeResult, OptimizerResult]
 OBJECTIVE = Callable[[NDArray], float]
 MINIMIZER = Callable[
@@ -101,16 +107,6 @@ class EntanglementForgingResult(EigenstateResult):
         self._history: List[EntanglementForgingEvaluation] = []
 
     @property
-    def groundenergy(self) -> Optional[float]:
-        """Return ground energy."""
-        return self._groundenergy
-
-    @groundenergy.setter
-    def groundenergy(self, energy: Optional[float]) -> None:
-        """Set ground energy."""
-        self._groundenergy = energy
-
-    @property
     def history(self) -> List[EntanglementForgingEvaluation]:
         """Return optimizer history."""
         return self._history
@@ -119,45 +115,6 @@ class EntanglementForgingResult(EigenstateResult):
     def history(self, history: List[EntanglementForgingEvaluation]) -> None:
         """Set optimizer history."""
         self._history = history
-
-    @property
-    def groundstate(
-        self,
-    ) -> Optional[
-        Union[
-            str,
-            dict,
-            Result,
-            list,
-            np.ndarray,
-            Statevector,
-            QuantumCircuit,
-            Instruction,
-            OperatorBase,
-        ]
-    ]:
-        """Return ground state."""
-        return self._groundstate
-
-    @groundstate.setter
-    def groundstate(
-        self,
-        groundstate: Optional[
-            Union[
-                str,
-                dict,
-                Result,
-                list,
-                np.ndarray,
-                Statevector,
-                QuantumCircuit,
-                Instruction,
-                OperatorBase,
-            ]
-        ],
-    ) -> None:
-        """Set ground state."""
-        self._groundstate = groundstate
 
     @property
     def energy_shift(self) -> float:
@@ -209,6 +166,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         Returns:
             - None
         """
+        super().__init__(QubitConverter(JordanWignerMapper()))
         # These fields will be used when solve is called
         self._knitter: Optional[EntanglementForgingKnitter] = None
         self._history: EntanglementForgingHistory = EntanglementForgingHistory()
@@ -303,9 +261,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def solve(
         self,
         problem: BaseProblem,
-        aux_operators: Optional[
-            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
-        ] = None,
+        aux_operators: Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]] = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
@@ -373,17 +329,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         if optimal_evaluation is None:
             raise RuntimeError("Unable to retrieve optimal evaluation.")
 
-        result = EntanglementForgingResult()
-        result.eigenenergies = np.array(
-            [e.eigenvalue for e in self._history.evaluations]
+        min_eigsolver_result = MinimumEigensolverResult()
+        min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
+        min_eigsolver_result.eigenstate = optimal_evaluation.eigenstate
+        result = EntanglementForgingResult.from_minimum_eigensolver_result(
+            min_eigsolver_result
         )
-        result.eigenstates = np.array([e.eigenstate for e in self._history.evaluations])  # type: ignore
-        if self._history.optimal_evaluation is None:
-            raise ValueError(
-                "Something unexpected happened, and the solver was not able to find an optimal parametrization."
-            )
-        result.groundenergy = self._history.optimal_evaluation.eigenvalue
-        result.groundstate = self._history.optimal_evaluation.eigenstate
         result.energy_shift = self._energy_shift
         result.history = self._history.evaluations
         result.elapsed_time = elapsed_time
@@ -423,10 +374,8 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def get_qubit_operators(
         self,
         problem: BaseProblem,
-        aux_operators: Optional[
-            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
-        ] = None,
-    ) -> Tuple[PauliSumOp, Optional[ListOrDictType[PauliSumOp]]]:
+        aux_operators: Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]] = None,
+    ) -> Tuple[QubitOperator, Dict[str, Optional[QubitOperator]]]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
@@ -447,9 +396,15 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                     "Cannot map integrals to MO basis. No molecule information found in input ElectronicStructuctureProblem, "
                     "and the ElectronicStructureProblem is in the AO basis."
                 )
-            size = problem.hamiltonian.electronic_integrals.two_body.alpha[
-                "++--"
-            ].shape[0]
+            eri_aa = problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
+            if isinstance(eri_aa, (Sequence, np.ndarray)):
+                size = np.array(eri_aa).shape[0]
+            else:
+                raise ValueError(
+                    "The integrals could not be interpreted from the input ElectronicStructureProblem. "
+                    "Try specifying the integrals as lists or NumPy arrays."
+                )
+
             mo_coeffs = np.eye(size, size)
 
         else:
