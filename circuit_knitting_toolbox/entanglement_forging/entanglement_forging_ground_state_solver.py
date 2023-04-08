@@ -32,7 +32,11 @@ from qiskit.circuit import Instruction
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
-from qiskit_nature.second_q.problems import ElectronicStructureProblem, EigenstateResult, ElectronicBasis
+from qiskit_nature.second_q.problems import (
+    ElectronicStructureProblem,
+    EigenstateResult,
+    ElectronicBasis,
+)
 from qiskit_nature.second_q.algorithms import GroundStateSolver
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
@@ -349,13 +353,9 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            self.optimizer(
-                fun=evaluate_eigenvalue, x0=self._initial_point
-            )
+            self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
         else:
-            self.optimizer.minimize(
-                fun=evaluate_eigenvalue, x0=self._initial_point
-            )
+            self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
 
         elapsed_time = time() - start_time
 
@@ -445,7 +445,6 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
             problem, mo_coeffs, self._orbitals_to_reduce
-
         )
         return hamiltonian_ops
 
