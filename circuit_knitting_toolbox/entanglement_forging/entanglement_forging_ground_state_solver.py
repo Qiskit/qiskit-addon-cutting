@@ -22,6 +22,7 @@ from typing import (
     Sequence,
     TypeVar,
     Union,
+    Tuple,
 )
 
 import numpy as np
@@ -32,6 +33,8 @@ from qiskit.circuit import Instruction
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import PauliSumOp, OperatorBase
 from qiskit.quantum_info import Statevector
+from qiskit.result import Result
+from qiskit_nature import ListOrDictType
 from qiskit_nature.second_q.problems import (
     ElectronicStructureProblem,
     EigenstateResult,
@@ -47,14 +50,14 @@ from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
-RESULT = OptimizerResult
+RESULT = Union[scipy.optimize.OptimizeResult, OptimizerResult]
 OBJECTIVE = Callable[[NDArray], float]
 MINIMIZER = Callable[
     [
         OBJECTIVE,  # the objective function to minimize
         NDArray,  # the initial point for the optimization
     ],
-    RESULT,  # a result object
+    RESULT,  # a result object (either SciPy's or Qiskit's)
 ]
 _T = TypeVar("_T")  # Pylint does not allow single character class names.
 
@@ -123,7 +126,7 @@ class EntanglementForgingResult(EigenstateResult):
         Union[
             str,
             dict,
-            EigenstateResult,
+            Result,
             list,
             np.ndarray,
             Statevector,
@@ -142,7 +145,7 @@ class EntanglementForgingResult(EigenstateResult):
             Union[
                 str,
                 dict,
-                EigenstateResult,
+                Result,
                 list,
                 np.ndarray,
                 Statevector,
@@ -298,7 +301,10 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def solve(
         self,
-        problem: ElectronicStructureProblem,
+        problem: BaseProblem,
+        aux_operators: Optional[
+            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
+        ] = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
@@ -320,8 +326,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length "
-                        f"({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
                     )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
@@ -353,9 +358,13 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
+            optimizer_result = self.optimizer(
+                fun=evaluate_eigenvalue, x0=self._initial_point
+            )
         else:
-            self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
+            optimizer_result = self.optimizer.minimize(
+                fun=evaluate_eigenvalue, x0=self._initial_point
+            )
 
         elapsed_time = time() - start_time
 
@@ -412,12 +421,16 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def get_qubit_operators(
         self,
-        problem: ElectronicStructureProblem,
-    ) -> PauliSumOp:
+        problem: BaseProblem,
+        aux_operators: Optional[
+            ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]
+        ] = None,
+    ) -> Tuple[PauliSumOp, Optional[ListOrDictType[PauliSumOp]]]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
-          - problem (ElectronicStructureProblem): A class encoding a problem to be solved.
+          - problem (BaseProblem): A class encoding a problem to be solved.
+          - aux_operators (ListOrDictType[Union[SecondQuantizedOp, PauliSumOp]]): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
@@ -481,7 +494,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         state: Union[
             str,
             dict,
-            EigenstateResult,
+            Result,
             list,
             np.ndarray,
             Statevector,
