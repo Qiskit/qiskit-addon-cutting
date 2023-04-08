@@ -672,9 +672,6 @@ def _estimate_expvals(
         - (Tuple[List[NDArray], List[NDArray], Optional[str]]): the expectation values for the
             tensor circuits and superposition circuits
     """
-    all_circuits = tensor_ansatze + superposition_ansatze
-    all_observables = tensor_paulis + superposition_paulis
-
     ansatz_t: List[QuantumCircuit] = []
     observables_t: List[Pauli] = []
     for i, circuit in enumerate(tensor_ansatze):
@@ -728,10 +725,7 @@ def _estimate_expvals(
         job_id = job.job_id
 
     else:
-        estimator = TestEstimator(
-            circuits=all_circuits,
-            observables=all_observables,
-        )
+        estimator = TestEstimator()
         results = (
             estimator.run(
                 circuits=all_ansatze_for_estimator,
