@@ -18,14 +18,11 @@ Utility functions.
 
    conversion
    metrics
-   integral_driver.IntegralDriver
    orbital_reduction.reduce_bitstrings
 """
 
-from .integral_driver import IntegralDriver
 from .orbital_reduction import reduce_bitstrings
 
 __all__ = [
-    "IntegralDriver",
     "reduce_bitstrings",
 ]
