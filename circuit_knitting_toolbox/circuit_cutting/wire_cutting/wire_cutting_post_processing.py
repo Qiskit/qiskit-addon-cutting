@@ -14,9 +14,7 @@ import itertools
 import multiprocessing as mp
 from typing import Dict, Sequence, Union, Tuple, List, Optional, Any
 
-
 import numpy as np
-from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 
@@ -340,8 +338,8 @@ def generate_summation_terms(
 def naive_compute(
     subcircuit_order: Sequence[int],
     summation_terms: Sequence[Dict[int, int]],
-    subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
-) -> Tuple[Optional[NDArray], Dict[str, int]]:
+    subcircuit_entry_probs: Dict[int, Dict[int, np.ndarray]],
+) -> Tuple[Optional[np.ndarray], Dict[str, int]]:
     """
     Reconstruct the full probability distribution from the subcircuits.
 
@@ -356,7 +354,7 @@ def naive_compute(
             the subcircuit executions
 
     Returns:
-        - (NDArray): the reconstructed probability distribution
+        - (np.ndarray): the reconstructed probability distribution
         - (dict): the approximate computational overhead of the function
     """
     reconstructed_prob = None
@@ -385,10 +383,10 @@ def naive_compute(
 
 def build(
     summation_terms: Sequence[Dict[int, int]],
-    subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
+    subcircuit_entry_probs: Dict[int, Dict[int, np.ndarray]],
     num_cuts: int,
     num_threads: int,
-) -> Tuple[NDArray, List[int], Dict[str, int]]:
+) -> Tuple[np.ndarray, List[int], Dict[str, int]]:
     """
     Reconstruct the full probability distribution from the subcircuits.
 
@@ -404,7 +402,7 @@ def build(
         a tuple
         containing:
 
-        - (NDArray): the reconstructed probability distribution of the full
+        - (np.ndarray): the reconstructed probability distribution of the full
           circuit
         - (list): the ordering of the distribution
         - (dict): the computational post-processing overhead

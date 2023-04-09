@@ -15,7 +15,6 @@ import psutil, copy
 from typing import Tuple, Sequence, Dict, Union, List
 
 import numpy as np
-from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
@@ -33,7 +32,7 @@ from circuit_knitting_toolbox.utils.metrics import (
 
 def verify(
     full_circuit: QuantumCircuit,
-    reconstructed_output: NDArray,
+    reconstructed_output: np.ndarray,
 ) -> Tuple[Dict[str, Dict[str, float]], Sequence[float]]:
     """
     Compare the reconstructed probabilities to the ground truth.
@@ -44,7 +43,7 @@ def verify(
 
     Args:
         - full_circuit (QuantumCircuit): the original quantum circuit that was cut
-        - reconstructed_output (NDArray): the reconstructed probability distribution from the
+        - reconstructed_output (np.ndarray): the reconstructed probability distribution from the
             execution of the subcircuits
 
     Returns:
@@ -80,23 +79,23 @@ def verify(
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
     subcircuits: Sequence[QuantumCircuit],
-    unordered: NDArray,
+    unordered: np.ndarray,
     smart_order: Sequence[int],
     complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]],
-) -> NDArray:
+) -> np.ndarray:
     """
     Reorder the probability distribution.
 
     Args:
         - full_circuit (QuantumCircuit): the original uncut circuit
         - subcircuits (list): the cut subcircuits
-        - unordered (NDArray): the unordered results of the subcircuits
+        - unordered (np.ndarray): the unordered results of the subcircuits
         - smart_order (list): the correct ordering of the subcircuits
         - complete_path_map (dict): the path map of the cuts, as defined from the
             cutting function
 
     Returns:
-        - (NDArray): the reordered and reconstructed probability distribution over the
+        - (np.ndarray): the reordered and reconstructed probability distribution over the
             full circuit
     """
     subcircuit_out_qubits: Dict[int, List[Qubit]] = {
