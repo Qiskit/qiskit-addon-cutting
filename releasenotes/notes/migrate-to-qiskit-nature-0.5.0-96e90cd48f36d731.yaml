@@ -2,7 +2,7 @@
 features:
   - |
     Full support for Qiskit Nature 0.5.0.
-issues:
+deprecations:
   - |
     As ``circuit-knitting-toolbox`` is in the alpha development stages, there
     will be no deprecation period on entanglement forging workflows using 
@@ -15,3 +15,8 @@ issues:
 
     For more information on adapting your entanglement forging workflows, check
     out the [tutorials](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/tutorials/entanglement_forging) and [how-to's](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/how-tos/entanglement_forging) in the ``circuit-knitting-toolbox`` repository.
+
+  - |
+    The ``:class:~circuit_knitting_toolbox.utils.IntegralDriver`` class will be removed, as the new Qiskit Nature
+API allows for a more flexible build-up of the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
+and this driver is no longer needed.
