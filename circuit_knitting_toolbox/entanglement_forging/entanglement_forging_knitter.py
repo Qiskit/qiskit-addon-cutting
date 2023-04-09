@@ -371,7 +371,6 @@ class EntanglementForgingKnitter:
         Returns:
            - (np.ndarray): the Schmidt matrix
         """
-
         # Calculate the diagonal entries of the Schmidt matrix by
         # summing the expectation values associated with the tensor terms
         # h𝑛𝑛 = Σ_ab 𝑤𝑎𝑏•[ 𝜆𝑛^2•⟨b𝑛|U^t•P𝑎•U|b𝑛⟩⟨b𝑛|V^t•P𝑏•V|b𝑛⟩ ]
