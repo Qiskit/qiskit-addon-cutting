@@ -57,7 +57,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Shape</span>
 <span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span><span class="p">,</span> <span class="n">PauliSumOp</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
@@ -78,13 +77,8 @@
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 
 
-<span class="n">SingleBodyIntegrals</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
-<span class="n">Matrix</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
-<span class="n">TwoBodyIntegrals</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N, N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
-
-
 <span class="k">def</span> <span class="nf">get_cholesky_op</span><span class="p">(</span>
-    <span class="n">l_op</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">QubitConverter</span><span class="p">,</span> <span class="n">opname</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">l_op</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">g</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">converter</span><span class="p">:</span> <span class="n">QubitConverter</span><span class="p">,</span> <span class="n">opname</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSumOp</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a two-body term into a cholesky operator.</span>
@@ -174,11 +168,11 @@
         <span class="p">)</span>
 
     <span class="c1"># Get data for generating the cholesky decomposition</span>
-    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">Matrix</span> <span class="o">=</span> <span class="n">electronic_basis_transform</span><span class="o">.</span><span class="n">coeff_alpha</span>
-    <span class="n">hcore</span><span class="p">:</span> <span class="n">SingleBodyIntegrals</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
+    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_basis_transform</span><span class="o">.</span><span class="n">coeff_alpha</span>
+    <span class="n">hcore</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
         <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">AO</span><span class="p">,</span> <span class="mi">1</span>
     <span class="p">)</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">eri</span><span class="p">:</span> <span class="n">TwoBodyIntegrals</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
+    <span class="n">eri</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
         <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">AO</span><span class="p">,</span> <span class="mi">2</span>
     <span class="p">)</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">num_alpha</span> <span class="o">=</span> <span class="n">particle_number</span><span class="o">.</span><span class="n">num_alpha</span>
@@ -186,9 +180,9 @@
     <span class="c1"># Store the reduced orbitals as virtual and occupied lists</span>
     <span class="k">if</span> <span class="n">orbitals_to_reduce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">orbitals_to_reduce</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">orbitals_to_reduce_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
-        <span class="nb">str</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">Int</span><span class="p">]</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">_get_orbitals_to_reduce</span><span class="p">(</span><span class="n">orbitals_to_reduce</span><span class="p">,</span> <span class="n">num_alpha</span><span class="p">)</span>
+    <span class="n">orbitals_to_reduce_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_orbitals_to_reduce</span><span class="p">(</span>
+        <span class="n">orbitals_to_reduce</span><span class="p">,</span> <span class="n">num_alpha</span>
+    <span class="p">)</span>
 
     <span class="c1"># Hold fields used to calculate the final energy shift</span>
     <span class="c1"># Freeze shift will be calculated during decomposition</span>
@@ -325,37 +319,37 @@
 
 
 <span class="k">def</span> <span class="nf">_get_fermionic_ops_with_cholesky</span><span class="p">(</span>
-    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span>
-    <span class="n">h1</span><span class="p">:</span> <span class="n">SingleBodyIntegrals</span><span class="p">,</span>
-    <span class="n">h2</span><span class="p">:</span> <span class="n">TwoBodyIntegrals</span><span class="p">,</span>
+    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">h1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">h2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">opname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">halve_transformed_h2</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">occupied_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">Int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">virtual_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">Int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">occupied_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">virtual_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epsilon_cholesky</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="n">SingleBodyIntegrals</span><span class="p">,</span> <span class="n">TwoBodyIntegrals</span><span class="p">,]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decompose the Hamiltonian operators into a form appropriate for entanglement forging.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - mo_coeff (NDArray[Shape[&quot;N, N&quot;], Float]): 2D array representing coefficients for converting from AO to MO basis.</span>
-<span class="sd">        - h1 (NDArray[Shape[&quot;N, N&quot;], Float]): 2D array representing operator</span>
+<span class="sd">        - mo_coeff (np.ndarray): 2D array representing coefficients for converting from AO to MO basis.</span>
+<span class="sd">        - h1 (np.ndarray): 2D array representing operator</span>
 <span class="sd">            coefficients of one-body integrals in the AO basis.</span>
-<span class="sd">        - h2 (NDArray[Shape[&quot;N, N, N, N&quot;], Float]): 4D array representing operator coefficients</span>
+<span class="sd">        - h2 (np.ndarray): 4D array representing operator coefficients</span>
 <span class="sd">            of two-body integrals in the AO basis.</span>
 <span class="sd">        - halve_transformed_h2 (Optional[bool]): Should be set to True for Hamiltonian</span>
 <span class="sd">            operator to agree with Qiskit conventions.</span>
-<span class="sd">        - occupied_orbitals_to_reduce (Optional[NDArray[Shape[&quot;*&quot;], Int]]): Optional; A list of occupied orbitals that will be removed.</span>
-<span class="sd">        - virtual_orbitals_to_reduce (Optional[NDArray[Shape[&quot;*&quot;], Int]]):Optional; A list of virtual orbitals that will be removed.</span>
+<span class="sd">        - occupied_orbitals_to_reduce (Optional[np.ndarray]): Optional; A list of occupied orbitals that will be removed.</span>
+<span class="sd">        - virtual_orbitals_to_reduce (Optional[np.ndarray]):Optional; A list of virtual orbitals that will be removed.</span>
 <span class="sd">        - epsilon_cholesky (Optional[float]): The threshold for the decomposition (typically a number close to 0).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.</span>
 <span class="sd">        - cholesky_ops (List[PauliSumOp]): L_\\gamma in the Cholesky decomposition</span>
 <span class="sd">        - freeze_shift (float): Energy shift due to freezing.</span>
-<span class="sd">        - h1 (NDArray[Shape[&quot;N, N&quot;], Float]): 2D array representing operator coefficients of one-body</span>
+<span class="sd">        - h1 (np.ndarray): 2D array representing operator coefficients of one-body</span>
 <span class="sd">            integrals in the MO basis.</span>
-<span class="sd">        - h2 (NDArray[Shape[&quot;N, N, N, N&quot;], Float]): 4D array representing operator coefficients of</span>
+<span class="sd">        - h2 (np.ndarray): 4D array representing operator coefficients of</span>
 <span class="sd">            two-body integrals in the MO basis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">virtual_orbitals_to_reduce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -451,9 +445,7 @@
     <span class="k">return</span> <span class="n">qubit_op</span><span class="p">,</span> <span class="n">cholesky_ops</span><span class="p">,</span> <span class="n">freeze_shift</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span>
 
 
-<span class="k">def</span> <span class="nf">_get_modified_cholesky</span><span class="p">(</span>
-    <span class="n">two_body_overlap_integrals</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*, *, *&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span>
-<span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_modified_cholesky</span><span class="p">(</span><span class="n">two_body_overlap_integrals</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform modified Cholesky decomposition on the two-body integrals given an epsilon value.&quot;&quot;&quot;</span>
     <span class="n">n_basis_states</span> <span class="o">=</span> <span class="n">two_body_overlap_integrals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># number of basis states</span>
     <span class="c1"># Max (chmax) and current (n_gammas) number of Cholesky vectors</span>
@@ -483,7 +475,7 @@
 <span class="k">def</span> <span class="nf">_get_orbitals_to_reduce</span><span class="p">(</span>
     <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">num_alpha</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span> <span class="n">Int</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="n">orb_to_reduce_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;occupied&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals_to_reduce</span><span class="p">),</span>
         <span class="s2">&quot;virtual&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals_to_reduce</span><span class="p">),</span>

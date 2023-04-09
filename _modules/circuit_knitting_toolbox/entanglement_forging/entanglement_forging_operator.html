@@ -56,9 +56,8 @@
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
-<span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Shape</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
 
 
 <div class="viewcode-block" id="EntanglementForgingOperator"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator">[docs]</a><span class="nd">@dataclass</span>
@@ -74,16 +73,16 @@
 <span class="sd">            Schmidt coefficients</span>
 <span class="sd">        - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different</span>
 <span class="sd">            Schmidt coefficients</span>
-<span class="sd">        - w_ij (NDArray[Shape[&quot;\*, \*&quot;], Float]): The weight matrix associated with the tensor paulis</span>
-<span class="sd">        - w_ab (NDArray[Shape[&quot;\*, \*&quot;], Float]): The weight matrix associated with the superposition paulis</span>
+<span class="sd">        - w_ij (np.ndarray): The weight matrix associated with the tensor paulis</span>
+<span class="sd">        - w_ab (np.ndarray): The weight matrix associated with the superposition paulis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="EntanglementForgingOperator.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tensor_paulis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
         <span class="n">superposition_paulis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
-        <span class="n">w_ij</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*, *&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span>
-        <span class="n">w_ab</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;*, *&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span>
+        <span class="n">w_ij</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">w_ab</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary member variables.</span>
@@ -93,8 +92,8 @@
 <span class="sd">                Schmidt coefficients</span>
 <span class="sd">            - superposition_paulis (Sequence[PauliOp]): The operators acting on subsystems that have different</span>
 <span class="sd">                Schmidt coefficients</span>
-<span class="sd">            - w_ij (NDArray[Shape[&quot;\*, \*&quot;], Float]): The weight matrix associated with the tensor paulis</span>
-<span class="sd">            - w_ab (NDArray[Shape[&quot;\*, \*&quot;], Float]): The weight matrix associated with the superposition paulis</span>
+<span class="sd">            - w_ij (np.ndarray): The weight matrix associated with the tensor paulis</span>
+<span class="sd">            - w_ab (np.ndarray): The weight matrix associated with the superposition paulis</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>

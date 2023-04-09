@@ -52,8 +52,8 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;IntegralDriver.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">,</span> <span class="n">Shape</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.drivers.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureDriver</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.properties.second_quantization.electronic</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ElectronicEnergy</span><span class="p">,</span>
@@ -69,18 +69,15 @@
     <span class="n">TwoBodyElectronicIntegrals</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">SingleBodyIntegrals</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
-<span class="n">TwoBodyIntegrals</span> <span class="o">=</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N, N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">]</span>
-
 
 <div class="viewcode-block" id="IntegralDriver"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html#circuit_knitting_toolbox.utils.integral_driver.IntegralDriver">[docs]</a><span class="k">class</span> <span class="nc">IntegralDriver</span><span class="p">(</span><span class="n">ElectronicStructureDriver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;IntegralDriver.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="IntegralDriver.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html#circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hcore</span><span class="p">:</span> <span class="n">SingleBodyIntegrals</span><span class="p">,</span>
-        <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">Shape</span><span class="p">[</span><span class="s2">&quot;N, N&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">],</span>
-        <span class="n">eri</span><span class="p">:</span> <span class="n">TwoBodyIntegrals</span><span class="p">,</span>
+        <span class="n">hcore</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">eri</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">num_alpha</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">num_beta</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">nuclear_repulsion_energy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>

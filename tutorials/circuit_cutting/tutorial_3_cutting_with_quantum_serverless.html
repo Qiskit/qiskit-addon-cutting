@@ -126,7 +126,6 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
-<span class="kn">from</span> <span class="nn">nptyping</span> <span class="kn">import</span> <span class="n">NDArray</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.circuit_cutting.wire_cutting</span> <span class="kn">import</span> <span class="n">cut_circuit_wires</span>
 <span class="kn">from</span> <span class="nn">quantum_serverless</span> <span class="kn">import</span> <span class="n">run_qiskit_remote</span><span class="p">,</span> <span class="n">get</span>
@@ -181,43 +180,52 @@
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/var/folders/7x/vt18h4bx4xlc6qlk9qdylffh0000gn/T/ipykernel_86969/3604348126.py:1: DeprecationWarning: Calling `with serverless: ...` is deprecated. Please, consider using `with serverless.context(): ...`
+  with serverless:
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Exporting as a LP file to let you check the model that will be solved :  inf &lt;class &#39;float&#39;&gt;
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Version identifier: 22.1.0.0 | 2022-03-27 | 54982fbec
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> CPXPARAM_Read_DataCheck                          1
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> CPXPARAM_TimeLimit                               300
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Warning:  Non-integral bounds for integer variables rounded.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Tried aggregator 3 times.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> MIP Presolve eliminated 37 rows and 8 columns.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> MIP Presolve modified 7 coefficients.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Aggregator did 103 substitutions.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Reduced MIP has 366 rows, 127 columns, and 1072 nonzeros.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Reduced MIP has 121 binaries, 6 generals, 0 SOSs, and 0 indicators.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Presolve time = 0.00 sec. (2.10 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Found incumbent of value 2.000000 after 0.01 sec. (3.52 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Probing fixed 18 vars, tightened 0 bounds.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Probing changed sense of 36 constraints.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Probing time = 0.00 sec. (1.05 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Cover probing fixed 4 vars, tightened 14 bounds.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Tried aggregator 2 times.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> MIP Presolve eliminated 347 rows and 108 columns.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> MIP Presolve modified 102 coefficients.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Aggregator did 19 substitutions.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> All rows and columns eliminated.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Presolve time = 0.00 sec. (0.90 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Root node processing (before b&amp;c):
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>   Real time             =    0.01 sec. (5.60 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Parallel b&amp;c, 16 threads:
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>   Real time             =    0.00 sec. (0.00 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>   Sync time (average)   =    0.00 sec.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>   Wait time (average)   =    0.00 sec.
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span>                           ------------
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> Total (root+branch&amp;cut) =    0.01 sec. (5.60 ticks)
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> --------------------
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> subcircuit 0
-<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=85257)</span> ρ qubits = 0, O qubits = 2, width = 5, effective = 3, depth = 8, size = 19
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Exporting as a LP file to let you check the model that will be solved :  inf &lt;class &#39;float&#39;&gt;
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Version identifier: 22.1.0.0 | 2022-03-27 | 54982fbec
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> CPXPARAM_Read_DataCheck                          1
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> CPXPARAM_TimeLimit                               300
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Warning:  Non-integral bounds for integer variables rounded.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Tried aggregator 3 times.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> MIP Presolve eliminated 37 rows and 8 columns.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> MIP Presolve modified 7 coefficients.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Aggregator did 103 substitutions.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Reduced MIP has 366 rows, 127 columns, and 1072 nonzeros.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Reduced MIP has 121 binaries, 6 generals, 0 SOSs, and 0 indicators.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Presolve time = 0.02 sec. (2.10 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Found incumbent of value 2.000000 after 0.04 sec. (3.52 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Probing fixed 18 vars, tightened 0 bounds.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Probing changed sense of 36 constraints.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Probing time = 0.00 sec. (1.05 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Cover probing fixed 4 vars, tightened 14 bounds.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Tried aggregator 2 times.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> MIP Presolve eliminated 347 rows and 108 columns.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> MIP Presolve modified 102 coefficients.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Aggregator did 19 substitutions.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> All rows and columns eliminated.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Presolve time = 0.00 sec. (0.90 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Root node processing (before b&amp;c):
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>   Real time             =    0.05 sec. (5.60 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Parallel b&amp;c, 16 threads:
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>   Real time             =    0.00 sec. (0.00 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>   Sync time (average)   =    0.00 sec.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>   Wait time (average)   =    0.00 sec.
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span>                           ------------
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> Total (root+branch&amp;cut) =    0.05 sec. (5.60 ticks)
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> --------------------
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> subcircuit 0
+<span class="ansi-cyan-fg">(cut_circuit_wires_remote pid=87030)</span> ρ qubits = 0, O qubits = 2, width = 5, effective = 3, depth = 8, size = 19
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -225,7 +233,7 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/caleb/opt/anaconda3/envs/ckt/lib/python3.9/site-packages/ray/_private/worker.py:976: UserWarning: len(ctx) is deprecated. Use len(ctx.address_info) instead.
+/Users/caleb/opt/anaconda3/envs/ckt/lib/python3.8/site-packages/ray/_private/worker.py:995: UserWarning: len(ctx) is deprecated. Use len(ctx.address_info) instead.
   warnings.warn(&#34;len(ctx) is deprecated. Use len(ctx.address_info) instead.&#34;)
 </pre></div></div>
 </div>
@@ -287,7 +295,7 @@
     <span class="n">service_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">options_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
     <span class="n">service</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">service_args</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">QiskitRuntimeService</span><span class="p">(</span><span class="o">**</span><span class="n">service_args</span><span class="p">)</span>
     <span class="n">options</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">options_dict</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">Options</span><span class="p">(</span><span class="o">**</span><span class="n">options_dict</span><span class="p">)</span>
 
@@ -340,7 +348,7 @@
 <h3>Evaluate the subcircuits on the quantum backend(s)<a class="headerlink" href="#Evaluate-the-subcircuits-on-the-quantum-backend(s)" title="Permalink to this heading">¶</a></h3>
 <p>We will call the <code class="docutils literal notranslate"><span class="pre">evaluate_subcircuits_remote</span></code> function within a <code class="docutils literal notranslate"><span class="pre">QuantumServerless</span></code> context, which means it will be run on the specified cluster. Remember, our local CPU is the default cluster for this demo. To specify a new cluster, the <code class="docutils literal notranslate"><span class="pre">QuantumServerless.set_provider</span></code> method should be used.</p>
 <p>When the remote function is called, it will return a “future” object, and Python will continue interpreting the next line of code. The <code class="docutils literal notranslate"><span class="pre">get</span></code> function from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> is a blocking command which should be used to retrieve the results of the remote function via the “future” object. The program will not continue past the <code class="docutils literal notranslate"><span class="pre">get</span></code> call until the results of the remote function are returned.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
@@ -363,6 +371,15 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/var/folders/7x/vt18h4bx4xlc6qlk9qdylffh0000gn/T/ipykernel_86969/1893705531.py:3: DeprecationWarning: Calling `with serverless: ...` is deprecated. Please, consider using `with serverless.context(): ...`
+  with serverless:
+</pre></div></div>
+</div>
 </section>
 </section>
 <section id="Reconstruct-the-full-circuit-output">
@@ -383,10 +400,10 @@
 <span class="nd">@run_qiskit_remote</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">reconstruct_full_distribution_remote</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
-    <span class="n">subcircuit_instance_probabilities</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]],</span>
+    <span class="n">subcircuit_instance_probabilities</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
     <span class="n">cuts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">reconstruct_full_distribution</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">,</span> <span class="n">subcircuit_instance_probabilities</span><span class="p">,</span> <span class="n">cuts</span>
     <span class="p">)</span>
@@ -444,16 +461,16 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;nearest&#39;: {&#39;chi2&#39;: 0.014781577189785336,
-  &#39;Mean Squared Error&#39;: 3.607494186206942e-07,
-  &#39;Mean Absolute Percentage Error&#39;: 78992.90552703604,
-  &#39;Cross Entropy&#39;: 3.6842346725058057,
-  &#39;HOP&#39;: 0.9934651038602943},
- &#39;naive&#39;: {&#39;chi2&#39;: 0.014293570101341663,
-  &#39;Mean Squared Error&#39;: 3.7810267377915685e-07,
-  &#39;Mean Absolute Percentage Error&#39;: 80793.04233599117,
-  &#39;Cross Entropy&#39;: 3.6693264359537037,
-  &#39;HOP&#39;: 0.9915340741625416}}
+{&#39;nearest&#39;: {&#39;chi2&#39;: 0,
+  &#39;Mean Squared Error&#39;: 2.2648565230319555e-34,
+  &#39;Mean Absolute Percentage Error&#39;: 6.110316442259772e-10,
+  &#39;Cross Entropy&#39;: 3.5645511160682197,
+  &#39;HOP&#39;: 0.9945381353717195},
+ &#39;naive&#39;: {&#39;chi2&#39;: 0,
+  &#39;Mean Squared Error&#39;: 1.7085367117461912e-34,
+  &#39;Mean Absolute Percentage Error&#39;: 6.11031022923885e-10,
+  &#39;Cross Entropy&#39;: 3.5645511160682184,
+  &#39;HOP&#39;: 0.99453813537172}}
 </pre></div></div>
 </div>
 </section>
@@ -519,7 +536,7 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.22.1</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.19.2</td></tr><tr><td><code>qiskit</code></td><td>0.39.1</td></tr><tr><td><code>qiskit-nature</code></td><td>0.4.5</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.13</td></tr><tr><td>Python compiler</td><td>Clang 12.0.0 </td></tr><tr><td>Python build</td><td>main, Aug 25 2022 18:29:29</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Thu Nov 03 18:23:57 2022 CDT</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.8.16</td></tr><tr><td>Python compiler</td><td>Clang 14.0.6 </td></tr><tr><td>Python build</td><td>default, Mar  1 2023 21:19:10</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Sat Apr 08 19:38:03 2023 CDT</td></tr></table></div>
 </div>
 <p>This code is a Qiskit project. © Copyright IBM 2022.</p>
 <p>This code is licensed under the Apache License, Version 2.0. You may obtain a copy of this license in the LICENSE.txt file in the root directory of this source tree or at <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>.</p>
