@@ -11,8 +11,10 @@
 
 """File containing the EntanglementForgingGroundStateSolver class and associated functions."""
 
+from __future__ import annotations
+
 import copy
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Sequence
 
 import numpy as np
 from qiskit.opflow import ListOp, PauliSumOp
@@ -69,15 +71,15 @@ def get_cholesky_op(
 
 def cholesky_decomposition(
     problem: ElectronicStructureProblem,
-    orbitals_to_reduce: Optional[Sequence[int]] = None,
-) -> Tuple[ListOp, float]:
+    orbitals_to_reduce: Sequence[int] | None = None,
+) -> tuple[ListOp, float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
-        - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
+        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
         - Tuple containing
@@ -138,7 +140,7 @@ def cholesky_decomposition(
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
         orbitals_to_reduce = []
-    orbitals_to_reduce_dict: Dict[str, np.ndarray] = _get_orbitals_to_reduce(
+    orbitals_to_reduce_dict: dict[str, np.ndarray] = _get_orbitals_to_reduce(
         orbitals_to_reduce, num_alpha
     )
 
@@ -282,10 +284,10 @@ def _get_fermionic_ops_with_cholesky(
     h2: np.ndarray,
     opname: str,
     halve_transformed_h2: bool = False,
-    occupied_orbitals_to_reduce: Optional[np.ndarray] = None,
-    virtual_orbitals_to_reduce: Optional[np.ndarray] = None,
+    occupied_orbitals_to_reduce: np.ndarray | None = None,
+    virtual_orbitals_to_reduce: np.ndarray | None = None,
     epsilon_cholesky: float = 1e-10,
-) -> Tuple[PauliSumOp, List[PauliSumOp], float, np.ndarray, np.ndarray,]:
+) -> tuple[PauliSumOp, list[PauliSumOp], float, np.ndarray, np.ndarray,]:
     r"""
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
@@ -295,15 +297,15 @@ def _get_fermionic_ops_with_cholesky(
             coefficients of one-body integrals in the AO basis.
         - h2 (np.ndarray): 4D array representing operator coefficients
             of two-body integrals in the AO basis.
-        - halve_transformed_h2 (Optional[bool]): Should be set to True for Hamiltonian
+        - halve_transformed_h2 (bool | None): Should be set to True for Hamiltonian
             operator to agree with Qiskit conventions.
-        - occupied_orbitals_to_reduce (Optional[np.ndarray]): Optional; A list of occupied orbitals that will be removed.
-        - virtual_orbitals_to_reduce (Optional[np.ndarray]):Optional; A list of virtual orbitals that will be removed.
-        - epsilon_cholesky (Optional[float]): The threshold for the decomposition (typically a number close to 0).
+        - occupied_orbitals_to_reduce (np.ndarray | None): A list of occupied orbitals that will be removed.
+        - virtual_orbitals_to_reduce (np.ndarray | None): A list of virtual orbitals that will be removed.
+        - epsilon_cholesky (float | None): The threshold for the decomposition (typically a number close to 0).
 
     Returns:
         - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.
-        - cholesky_ops (List[PauliSumOp]): L_\\gamma in the Cholesky decomposition
+        - cholesky_ops (list[PauliSumOp]): L_\\gamma in the Cholesky decomposition
         - freeze_shift (float): Energy shift due to freezing.
         - h1 (np.ndarray): 2D array representing operator coefficients of one-body
             integrals in the MO basis.
@@ -431,9 +433,9 @@ def _get_modified_cholesky(two_body_overlap_integrals: np.ndarray, eps: float):
 
 
 def _get_orbitals_to_reduce(
-    orbitals_to_reduce: Iterable[int],
+    orbitals_to_reduce: Sequence[int],
     num_alpha: int,
-) -> Dict[str, np.ndarray]:
+) -> dict[str, np.ndarray]:
     orb_to_reduce_dict = {
         "occupied": np.asarray(orbitals_to_reduce),
         "virtual": np.asarray(orbitals_to_reduce),
