@@ -19,7 +19,6 @@ from typing import (
     Callable,
     Iterable,
     Sequence,
-    TypeVar,
     Union,
 )
 
