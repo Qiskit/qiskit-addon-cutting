@@ -13,8 +13,7 @@
 import typing
 from typing import Optional, Sequence, Any, Dict, Tuple, List, Union, cast
 
-from nptyping import NDArray
-
+import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
@@ -95,7 +94,7 @@ def evaluate_subcircuits(
     service: Optional[QiskitRuntimeService] = None,
     backend_names: Optional[Union[str, Sequence[str]]] = None,
     options: Optional[Union[Options, Sequence[Options]]] = None,
-) -> Dict[int, Dict[int, NDArray]]:
+) -> Dict[int, Dict[int, np.ndarray]]:
     """
     Evaluate the subcircuits.
 
@@ -148,10 +147,10 @@ def evaluate_subcircuits(
 
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
-    subcircuit_instance_probabilities: Dict[int, Dict[int, NDArray]],
+    subcircuit_instance_probabilities: Dict[int, Dict[int, np.ndarray]],
     cuts: Dict[str, Any],
     num_threads: int = 1,
-) -> NDArray:
+) -> np.ndarray:
     """
     Reconstruct the full probabilities from the subcircuit evaluations.
 
@@ -161,7 +160,7 @@ def reconstruct_full_distribution(
             of the subcircuit instances, as output by the _run_subcircuits function
         - num_threads (int): the number of threads to use to parallelize the recomposing
     Returns:
-        - (NDArray): the reconstructed probability vector
+        - (np.ndarray): the reconstructed probability vector
     """
     summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
 
@@ -222,7 +221,7 @@ def _run_subcircuits(
     service: Optional[QiskitRuntimeService] = None,
     backend_names: Optional[Sequence[str]] = None,
     options: Optional[Sequence[Options]] = None,
-) -> Dict[int, Dict[int, NDArray]]:
+) -> Dict[int, Dict[int, np.ndarray]]:
     """
     Execute all the subcircuit instances.
 
@@ -253,8 +252,8 @@ def _attribute_shots(
     subcircuit_entries: Dict[
         int, Dict[Tuple[str, str], Tuple[int, Sequence[Tuple[int, int]]]]
     ],
-    subcircuit_instance_probs: Dict[int, Dict[int, NDArray]],
-) -> Dict[int, Dict[int, NDArray]]:
+    subcircuit_instance_probs: Dict[int, Dict[int, np.ndarray]],
+) -> Dict[int, Dict[int, np.ndarray]]:
     """
     Attribute the shots into respective subcircuit entries.
 
@@ -271,14 +270,14 @@ def _attribute_shots(
         - ValueError: if each of the kronecker terms are not of size two or if there are no subcircuit
             probs provided
     """
-    subcircuit_entry_probs: Dict[int, Dict[int, NDArray]] = {}
+    subcircuit_entry_probs: Dict[int, Dict[int, np.ndarray]] = {}
     for subcircuit_idx in subcircuit_entries:
         subcircuit_entry_probs[subcircuit_idx] = {}
         for label in subcircuit_entries[subcircuit_idx]:
             subcircuit_entry_idx, kronecker_term = subcircuit_entries[subcircuit_idx][
                 label
             ]
-            subcircuit_entry_prob: Optional[NDArray] = None
+            subcircuit_entry_prob: Optional[np.ndarray] = None
             for coefficient, subcircuit_instance_idx in kronecker_term:
                 if subcircuit_entry_prob is None:
                     subcircuit_entry_prob = (

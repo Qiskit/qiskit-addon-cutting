@@ -10,8 +10,8 @@
 # that they have been altered from the originals.
 
 """IntegralDriver."""
+import numpy as np
 
-from nptyping import Float, NDArray, Shape
 from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
 from qiskit_nature.properties.second_quantization.electronic import (
     ElectronicEnergy,
@@ -27,18 +27,15 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
     TwoBodyElectronicIntegrals,
 )
 
-SingleBodyIntegrals = NDArray[Shape["N, N"], Float]
-TwoBodyIntegrals = NDArray[Shape["N, N, N, N"], Float]
-
 
 class IntegralDriver(ElectronicStructureDriver):
     """IntegralDriver."""
 
     def __init__(
         self,
-        hcore: SingleBodyIntegrals,
-        mo_coeff: NDArray[Shape["N, N"], Float],
-        eri: TwoBodyIntegrals,
+        hcore: np.ndarray,
+        mo_coeff: np.ndarray,
+        eri: np.ndarray,
         num_alpha: int,
         num_beta: int,
         nuclear_repulsion_energy: float,
