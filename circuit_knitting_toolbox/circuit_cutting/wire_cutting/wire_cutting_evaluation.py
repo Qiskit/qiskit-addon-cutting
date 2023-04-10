@@ -15,7 +15,6 @@ from typing import Dict, Tuple, Sequence, Optional, List, Any, Union
 from multiprocessing.pool import ThreadPool
 
 import numpy as np
-from nptyping import NDArray
 
 from qiskit import QuantumCircuit
 from qiskit.converters import circuit_to_dag, dag_to_circuit
@@ -30,7 +29,7 @@ def run_subcircuit_instances(
     service: Optional[QiskitRuntimeService] = None,
     backend_names: Optional[Sequence[str]] = None,
     options: Optional[Sequence[Options]] = None,
-) -> Dict[int, Dict[int, NDArray]]:
+) -> Dict[int, Dict[int, np.ndarray]]:
     """
     Execute all provided subcircuits.
 
@@ -77,7 +76,7 @@ def run_subcircuit_instances(
         backend_names_repeated = [None] * len(subcircuits)
         options_repeated = [None] * len(subcircuits)
 
-    subcircuit_instance_probs: Dict[int, Dict[int, NDArray]] = {}
+    subcircuit_instance_probs: Dict[int, Dict[int, np.ndarray]] = {}
     with ThreadPool() as pool:
         args = [
             [
@@ -207,7 +206,7 @@ def modify_subcircuit_instance(
 def run_subcircuits_using_sampler(
     subcircuits: Sequence[QuantumCircuit],
     sampler: BaseSampler,
-) -> List[NDArray]:
+) -> List[np.ndarray]:
     """
     Execute the subcircuit(s).
 
@@ -216,7 +215,7 @@ def run_subcircuits_using_sampler(
         - sampler (BaseSampler): the Sampler to use for executions
 
     Returns:
-        - (NDArray): the probability distributions
+        - (np.ndarray): the probability distributions
     """
     for subcircuit in subcircuits:
         if subcircuit.num_clbits == 0:
@@ -241,7 +240,7 @@ def run_subcircuits(
     service: Optional[QiskitRuntimeService] = None,
     backend_name: Optional[str] = None,
     options: Optional[Options] = None,
-) -> List[NDArray]:
+) -> List[np.ndarray]:
     """
     Execute the subcircuit(s).
 
@@ -252,7 +251,7 @@ def run_subcircuits(
         - options (Options): options for the runtime execution of subcircuits
 
     Returns:
-        - (NDArray): the probability distributions
+        - (np.ndarray): the probability distributions
     """
     if service is not None:
         session = Session(service=service, backend=backend_name)
@@ -263,7 +262,7 @@ def run_subcircuits(
     return run_subcircuits_using_sampler(subcircuits, sampler)
 
 
-def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
+def measure_prob(unmeasured_prob: np.ndarray, meas: Tuple[Any, ...]) -> np.ndarray:
     """
     Compute the effective probability distribution from the subcircuit distribution.
 
@@ -272,7 +271,7 @@ def measure_prob(unmeasured_prob: NDArray, meas: Tuple[Any, ...]) -> NDArray:
         - meas (tuple): the measurement bases
 
     Returns:
-        - (NDArray): the updated measured probability distribution
+        - (np.ndarray): the updated measured probability distribution
     """
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)

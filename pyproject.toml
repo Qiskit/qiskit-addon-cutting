@@ -30,7 +30,6 @@ dependencies = [
     "qiskit-terra>=0.22.0",
     "qiskit-nature>=0.5.0",
     "qiskit-ibm-runtime>=0.7.0",
-    "nptyping>=2.1.1",
     "docplex>=2.23.222",
     "cplex>=22.1.0.0; platform_machine != 'arm64'",
 ]
@@ -72,6 +71,10 @@ notebook-dependencies = [
     "ipywidgets",
     "pylatexenc",
 ]
+
+[project.urls]
+"Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
+"Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
 
 [tool.autoflake]
 remove-unused-variables = true
