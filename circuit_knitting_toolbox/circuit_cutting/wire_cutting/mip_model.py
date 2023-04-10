@@ -10,7 +10,10 @@
 # that they have been altered from the originals.
 
 """File containing the tools to find and manage the cuts."""
-from typing import Sequence, Dict, Tuple, Any, List
+
+from __future__ import annotations
+
+from typing import Sequence, Any
 
 from docplex.mp.model import Model
 from docplex.mp.utils import DOcplexException
@@ -51,9 +54,9 @@ class MIPModel(object):
     def __init__(
         self,
         n_vertices: int,
-        edges: Sequence[Tuple[int]],
-        vertex_ids: Dict[str, int],
-        id_vertices: Dict[int, str],
+        edges: Sequence[tuple[int]],
+        vertex_ids: dict[str, int],
+        id_vertices: dict[int, str],
         num_subcircuit: int,
         max_subcircuit_width: int,
         max_subcircuit_cuts: int,
@@ -95,7 +98,7 @@ class MIPModel(object):
         self.num_qubits = num_qubits
         self.max_cuts = max_cuts
 
-        self.subcircuit_counter: Dict[int, Dict[str, Any]] = {}
+        self.subcircuit_counter: dict[int, dict[str, Any]] = {}
 
         """
         Count the number of input qubits directly connected to each node
@@ -410,7 +413,7 @@ class MIPModel(object):
 
     def pwl_exp(
         self, lb: int, ub: int, base: int, coefficient: int, integer_only: bool
-    ) -> Tuple[List[int], List[int]]:
+    ) -> tuple[list[int], list[int]]:
         """
         Approximate a nonlinear exponential function via a piecewise linear function.
 
@@ -437,7 +440,7 @@ class MIPModel(object):
             ptf.append(y)
         return ptx, ptf
 
-    def check_graph(self, n_vertices: int, edges: Sequence[Tuple[int]]) -> None:
+    def check_graph(self, n_vertices: int, edges: Sequence[tuple[int]]) -> None:
         """
         Ensure circuit DAG is viable.
 
