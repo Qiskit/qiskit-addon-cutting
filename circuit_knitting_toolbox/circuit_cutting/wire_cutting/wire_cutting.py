@@ -233,9 +233,9 @@ def _run_subcircuits(
         - cuts (dict[str, Any]): results from the cutting step
         - subcircuit_instances (dict): the dictionary containing the index information for each
             of the subcircuit instances
-        - service (QiskitRuntimeService): the arguments for the runtime service
-        - backend_names (Sequence[str]): the backend(s) used to run the subcircuits
-        - options (Options): options for the runtime execution of subcircuits
+        - service (QiskitRuntimeService | None): the arguments for the runtime service
+        - backend_names (Sequence[str] | None): the backend(s) used to run the subcircuits
+        - options (Options | None): options for the runtime execution of subcircuits
     Returns:
         - (dict): the resulting probabilities from each of the subcircuit instances
     """

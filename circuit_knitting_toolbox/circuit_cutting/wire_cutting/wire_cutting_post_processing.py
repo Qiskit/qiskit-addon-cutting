@@ -24,7 +24,7 @@ from qiskit.circuit import Qubit
 
 def get_cut_qubit_pairs(
     complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]]
-) -> list[tuple[dict[str, int | Any], dict[str, int | Any]]]:
+) -> list[tuple[dict[str, Any], dict[str, Any]]]:
     """
     Get O-rho cut qubit pairs.
 
@@ -72,7 +72,7 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
 
 def attribute_label(
     label: Sequence[str],
-    O_rho_pairs: list[tuple[dict[str, int | Any], dict[str, int | Any]]],
+    O_rho_pairs: list[tuple[dict[str, Any], dict[str, Any]]],
     num_subcircuits: int,
 ) -> dict[int, dict[str, str]]:
     """
@@ -111,7 +111,7 @@ def fill_label(
     subcircuit_idx: int,
     subcircuit: QuantumCircuit,
     subcircuit_label: dict[str, str],
-    O_rho_pairs: list[tuple[dict[str, int | Any], dict[str, int | Any]]],
+    O_rho_pairs: list[tuple[dict[str, Any], dict[str, Any]]],
 ) -> tuple[list[str], list[str]]:
     """
     Given a subcircuit, its label and O-rho cut qubit pairs fill the full init, meas strings.

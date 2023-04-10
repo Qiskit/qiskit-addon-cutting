@@ -44,9 +44,9 @@ def run_subcircuit_instances(
         - subcircuits (Sequence[QuantumCircuit]): the list of subcircuits to execute
         - subcircuit_instances (dict): dictionary containing information about each of the
             subcircuit instances
-        - service (QiskitRuntimeService): the runtime service
-        - backend_names (Sequence[str]): the backend(s) used to execute the subcircuits
-        - options (Sequence[Options]): options for the runtime execution of subcircuits
+        - service (QiskitRuntimeService | None): the runtime service
+        - backend_names (Sequence[str] | None): the backend(s) used to execute the subcircuits
+        - options (Sequence[Options] | None): options for the runtime execution of subcircuits
 
     Returns:
         - (dict): the probability vectors from each of the subcircuit instances
@@ -249,9 +249,9 @@ def run_subcircuits(
 
     Args:
         - subcircuit (QuantumCircuit): the subcircuits to be executed
-        - service (QiskitRuntimeService): the runtime service
-        - backend_name (str): the backend used to execute the subcircuits
-        - options (Options): options for the runtime execution of subcircuits
+        - service (QiskitRuntimeService | None): the runtime service
+        - backend_name (str | None): the backend used to execute the subcircuits
+        - options (Options | None): options for the runtime execution of subcircuits
 
     Returns:
         - (np.ndarray): the probability distributions
