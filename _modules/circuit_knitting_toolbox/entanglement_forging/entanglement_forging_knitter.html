@@ -52,9 +52,12 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;File containing the knitter class and associated functions.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -64,7 +67,7 @@
 <span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span> <span class="k">as</span> <span class="n">TestEstimator</span>
 <span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Session</span><span class="p">,</span> <span class="n">Options</span><span class="p">,</span> <span class="n">Estimator</span>
 
-<span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">Bitstring</span><span class="p">,</span> <span class="n">EntanglementForgingAnsatz</span>
+<span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -81,23 +84,23 @@
     <span class="c1"># Attributes:</span>
     <span class="c1">#     - _ansatz (EntanglementForgingAnsatz): the ansatz containing the</span>
     <span class="c1">#         information for the circuit structure and bitstrings to be used</span>
-    <span class="c1">#     - _backend_names (List[str]): the names of the backends to use</span>
+    <span class="c1">#     - _backend_names (list[str]): the names of the backends to use</span>
     <span class="c1">#     - _service (QiskitRuntimeService): the service used to access backends</span>
-    <span class="c1">#     - _tensor_circuits_u (List[QuantumCircuit]): the set of circuits used for the first</span>
+    <span class="c1">#     - _tensor_circuits_u (list[QuantumCircuit]): the set of circuits used for the first</span>
     <span class="c1">#         operator that have the same Schmidt values</span>
-    <span class="c1">#     - _superposition_circuits_u (List[QuantumCircuit]): the set of circuits used for</span>
+    <span class="c1">#     - _superposition_circuits_u (list[QuantumCircuit]): the set of circuits used for</span>
     <span class="c1">#         the first operator that have different Schmidt values</span>
-    <span class="c1">#     - _tensor_circuits_v (List[QuantumCircuit]): the set of circuits used for the second</span>
+    <span class="c1">#     - _tensor_circuits_v (list[QuantumCircuit]): the set of circuits used for the second</span>
     <span class="c1">#         operator that have the same Schmidt values</span>
-    <span class="c1">#     - _superposition_circuits_v (List[QuantumCircuit]): the set of circuits used for</span>
+    <span class="c1">#     - _superposition_circuits_v (list[QuantumCircuit]): the set of circuits used for</span>
     <span class="c1">#         the second operator that have different Schmidt values</span>
 
 <div class="viewcode-block" id="EntanglementForgingKnitter.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
-        <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">service</span><span class="p">:</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">backend_names</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary member variables.</span>
@@ -106,16 +109,16 @@
 <span class="sd">            - ansatz (EntanglementForgingAnsatz): The container for the circuit structure and bitstrings</span>
 <span class="sd">                to be used (and generate the stateprep circuits)</span>
 <span class="sd">            - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs</span>
-<span class="sd">            - backend_names (List[str]): Names of the backends to use for calculating expectation values</span>
-<span class="sd">            - options (List[Options]): Options to use with the backends</span>
+<span class="sd">            - backend_names (list[str]): Names of the backends to use for calculating expectation values</span>
+<span class="sd">            - options (list[Options]): Options to use with the backends</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Call backend_names setter to update the session_ids hidden class field</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Call constructors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend_names</span> <span class="o">=</span> <span class="n">backend_names</span>  <span class="c1"># type: ignore</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
@@ -166,22 +169,22 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List of backend names to be used.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (List[str]): the backend_names member variable</span>
+<span class="sd">            - (list[str]): the backend_names member variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span>
 
     <span class="nd">@backend_names</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the backend_names class field.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - backend_names (List[str]): the list of backends to use</span>
+<span class="sd">            - backend_names (list[str]): the list of backends to use</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
@@ -194,22 +197,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">backend_names</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List of options to be used.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (List[Options]): the options member variable</span>
+<span class="sd">            - (list[Options]): the options member variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
 
     <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Options</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the options class field.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - options (List[Options]): the list of options to use</span>
+<span class="sd">            - options (list[Options]): the list of options to use</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            - None</span>
@@ -220,7 +223,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="n">options</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Property function for service class field.</span>
 
@@ -230,7 +233,7 @@
         <span class="k">return</span> <span class="n">QiskitRuntimeService</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">)</span>
 
     <span class="nd">@service</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Change the service class field.</span>
 
@@ -246,7 +249,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ansatz_parameters</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
         <span class="n">forged_operator</span><span class="p">:</span> <span class="n">EntanglementForgingOperator</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the energy.</span>
 
 <span class="sd">        Computes ⟨H⟩ - the energy value and the Schmidt matrix, $h_{n, m}$, given</span>
@@ -272,7 +275,7 @@
 <span class="sd">                value from</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (Tuple[float, np.ndarray, np.ndarray]): a tuple</span>
+<span class="sd">            - (tuple[float, np.ndarray, np.ndarray]): a tuple</span>
 <span class="sd">                containing the energy (i.e. forged expectation value), the Schmidt coefficients,</span>
 <span class="sd">                and the full Schmidt decomposition matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -327,7 +330,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">:</span>
             <span class="n">service_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span>
 
-        <span class="n">session_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">session_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">session_ids</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_partitions</span>
         <span class="k">else</span><span class="p">:</span>
@@ -505,9 +508,9 @@
 
 
 <span class="k">def</span> <span class="nf">_construct_stateprep_circuits</span><span class="p">(</span>
-    <span class="n">bitstrings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">],</span>
-    <span class="n">subsystem_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]]:</span>
+    <span class="n">bitstrings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">subsystem_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Prepare all circuits.</span>
 
 <span class="sd">    Function to make the state preparation circuits. This constructs a set</span>
@@ -561,11 +564,11 @@
 <span class="sd">         └───┘     └───┘</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - bitstrings (List[Bitstring]): the input list of bitstrings used to generate the state preparation circuits</span>
-<span class="sd">        - subsystem_id (Optional[str]): the subsystem the bitstring reflects (&quot;u&quot; or &quot;v&quot;)</span>
+<span class="sd">        - bitstrings (list[tuple[int, ...]]): the input list of bitstrings used to generate the state preparation circuits</span>
+<span class="sd">        - subsystem_id (str | None): the subsystem the bitstring reflects (&quot;u&quot; or &quot;v&quot;)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (Tuple[List[QuantumCircuit], List[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition</span>
+<span class="sd">        - (tuple[list[QuantumCircuit], list[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition</span>
 <span class="sd">            or bitstring) circuits in the first index (length = len(bitstrings)) and the super-position circuits</span>
 <span class="sd">            as the second element</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -631,8 +634,8 @@
 
 
 <span class="k">def</span> <span class="nf">_prepare_bitstring</span><span class="p">(</span>
-    <span class="n">bitstring</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Bitstring</span><span class="p">],</span>
-    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">bitstring</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare the bitstring circuits.</span>
 
@@ -640,7 +643,7 @@
 <span class="sd">    every qubit that has a 1 in the bitstring.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - bitstring (Union[np.ndarray, Bitstring]): the container for the</span>
+<span class="sd">        - bitstring (np.ndarray | tuple[int, ...]): the container for the</span>
 <span class="sd">            bitstring information. Must contain 0s and 1s and the 1s are used to determine</span>
 <span class="sd">            where to put the X gates</span>
 <span class="sd">        - name (str, optional): the name of the circuit</span>
@@ -674,15 +677,15 @@
 
 
 <span class="k">def</span> <span class="nf">_estimate_expvals</span><span class="p">(</span>
-    <span class="n">tensor_ansatze</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
-    <span class="n">tensor_paulis</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
-    <span class="n">superposition_ansatze</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
-    <span class="n">superposition_paulis</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
-    <span class="n">service_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="n">tensor_ansatze</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
+    <span class="n">tensor_paulis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
+    <span class="n">superposition_ansatze</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
+    <span class="n">superposition_paulis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span>
+    <span class="n">service_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">session_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run quantum circuits to generate the expectation values.</span>
 
 <span class="sd">    Function to estimate the exepctation value of some observables on the</span>
@@ -692,32 +695,32 @@
 <span class="sd">    process).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - tensor_ansatze (List[QuantumCircuit]): the circuits that have the same</span>
+<span class="sd">        - tensor_ansatze (list[QuantumCircuit]): the circuits that have the same</span>
 <span class="sd">            Schmidt coefficient</span>
-<span class="sd">        - tensor_paulis (List[Pauli]): the pauli operators to measure and calculate</span>
+<span class="sd">        - tensor_paulis (list[Pauli]): the pauli operators to measure and calculate</span>
 <span class="sd">            the expectation values from for the circuits with the same Schmidt coefficient</span>
-<span class="sd">        - superposition_ansatze (List[QuantumCircuit]): the circuits with different</span>
+<span class="sd">        - superposition_ansatze (list[QuantumCircuit]): the circuits with different</span>
 <span class="sd">            Schmidt coefficients</span>
-<span class="sd">        - superposition_paulis (List[Pauli]): the pauli operators to measure and calculate</span>
+<span class="sd">        - superposition_paulis (list[Pauli]): the pauli operators to measure and calculate</span>
 <span class="sd">            the expectation values from for the circuits with different Schmidt</span>
 <span class="sd">            coefficients</span>
-<span class="sd">        - service_args (Dict[str, Any]): The service account used to spawn Qiskit primitives</span>
+<span class="sd">        - service_args (dict[str, Any]): The service account used to spawn Qiskit primitives</span>
 <span class="sd">        - backend_name (str): The backend to use to evaluate the grouped experiments</span>
 <span class="sd">        - options (Options): The options to use with the backend</span>
 <span class="sd">        - session_id (str): The session id to use when calling primitive programs</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (Tuple[List[np.ndarray], List[np.ndarray], Optional[str]]): the expectation values for the</span>
+<span class="sd">        - (tuple[list[np.ndarray], list[np.ndarray], str | None]): the expectation values for the</span>
 <span class="sd">            tensor circuits and superposition circuits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ansatz_t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">observables_t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ansatz_t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">observables_t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tensor_ansatze</span><span class="p">):</span>
         <span class="n">ansatz_t</span> <span class="o">+=</span> <span class="p">[</span><span class="n">circuit</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">tensor_paulis</span><span class="p">)</span>
         <span class="n">observables_t</span> <span class="o">+=</span> <span class="n">tensor_paulis</span>
 
-    <span class="n">ansatz_s</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">observables_s</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ansatz_s</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">observables_s</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">superposition_ansatze</span><span class="p">):</span>
         <span class="n">ansatz_s</span> <span class="o">+=</span> <span class="p">[</span><span class="n">circuit</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">superposition_paulis</span><span class="p">)</span>
         <span class="n">observables_s</span> <span class="o">+=</span> <span class="n">superposition_paulis</span>
@@ -726,7 +729,7 @@
     <span class="n">all_observables_for_estimator</span> <span class="o">=</span> <span class="n">observables_t</span> <span class="o">+</span> <span class="n">observables_s</span>
 
     <span class="c1"># ID for this job. If it is the first job for the knitter, it will become the session ID</span>
-    <span class="n">job_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">service_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Set the backend. Default to runtime qasm simulator</span>
         <span class="k">if</span> <span class="n">backend_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

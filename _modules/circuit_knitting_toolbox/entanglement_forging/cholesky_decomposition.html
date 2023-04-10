@@ -53,8 +53,10 @@
 
 <span class="sd">&quot;&quot;&quot;File containing the EntanglementForgingGroundStateSolver class and associated functions.&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span><span class="p">,</span> <span class="n">PauliSumOp</span>
@@ -111,15 +113,15 @@
 
 <div class="viewcode-block" id="cholesky_decomposition"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition.html#circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition">[docs]</a><span class="k">def</span> <span class="nf">cholesky_decomposition</span><span class="p">(</span>
     <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
-    <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ListOp</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ListOp</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be</span>
 <span class="sd">            calculated.</span>
-<span class="sd">        - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.</span>
+<span class="sd">        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - Tuple containing</span>
@@ -180,7 +182,7 @@
     <span class="c1"># Store the reduced orbitals as virtual and occupied lists</span>
     <span class="k">if</span> <span class="n">orbitals_to_reduce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">orbitals_to_reduce</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">orbitals_to_reduce_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_orbitals_to_reduce</span><span class="p">(</span>
+    <span class="n">orbitals_to_reduce_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_orbitals_to_reduce</span><span class="p">(</span>
         <span class="n">orbitals_to_reduce</span><span class="p">,</span> <span class="n">num_alpha</span>
     <span class="p">)</span>
 
@@ -324,10 +326,10 @@
     <span class="n">h2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">opname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">halve_transformed_h2</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">occupied_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">virtual_orbitals_to_reduce</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">occupied_orbitals_to_reduce</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">virtual_orbitals_to_reduce</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">epsilon_cholesky</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decompose the Hamiltonian operators into a form appropriate for entanglement forging.</span>
 
@@ -337,15 +339,15 @@
 <span class="sd">            coefficients of one-body integrals in the AO basis.</span>
 <span class="sd">        - h2 (np.ndarray): 4D array representing operator coefficients</span>
 <span class="sd">            of two-body integrals in the AO basis.</span>
-<span class="sd">        - halve_transformed_h2 (Optional[bool]): Should be set to True for Hamiltonian</span>
+<span class="sd">        - halve_transformed_h2 (bool | None): Should be set to True for Hamiltonian</span>
 <span class="sd">            operator to agree with Qiskit conventions.</span>
-<span class="sd">        - occupied_orbitals_to_reduce (Optional[np.ndarray]): Optional; A list of occupied orbitals that will be removed.</span>
-<span class="sd">        - virtual_orbitals_to_reduce (Optional[np.ndarray]):Optional; A list of virtual orbitals that will be removed.</span>
-<span class="sd">        - epsilon_cholesky (Optional[float]): The threshold for the decomposition (typically a number close to 0).</span>
+<span class="sd">        - occupied_orbitals_to_reduce (np.ndarray | None): A list of occupied orbitals that will be removed.</span>
+<span class="sd">        - virtual_orbitals_to_reduce (np.ndarray | None): A list of virtual orbitals that will be removed.</span>
+<span class="sd">        - epsilon_cholesky (float | None): The threshold for the decomposition (typically a number close to 0).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.</span>
-<span class="sd">        - cholesky_ops (List[PauliSumOp]): L_\\gamma in the Cholesky decomposition</span>
+<span class="sd">        - cholesky_ops (list[PauliSumOp]): L_\\gamma in the Cholesky decomposition</span>
 <span class="sd">        - freeze_shift (float): Energy shift due to freezing.</span>
 <span class="sd">        - h1 (np.ndarray): 2D array representing operator coefficients of one-body</span>
 <span class="sd">            integrals in the MO basis.</span>
@@ -473,9 +475,9 @@
 
 
 <span class="k">def</span> <span class="nf">_get_orbitals_to_reduce</span><span class="p">(</span>
-    <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">num_alpha</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="n">orb_to_reduce_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;occupied&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals_to_reduce</span><span class="p">),</span>
         <span class="s2">&quot;virtual&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals_to_reduce</span><span class="p">),</span>

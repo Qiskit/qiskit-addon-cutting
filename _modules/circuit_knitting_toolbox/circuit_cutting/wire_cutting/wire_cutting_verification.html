@@ -53,8 +53,10 @@
 
 <span class="sd">&quot;&quot;&quot;File that contains the function to verify the results of the cut circuits.&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">psutil</span><span class="o">,</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
@@ -75,7 +77,7 @@
 <div class="viewcode-block" id="verify"><a class="viewcode-back" href="../../../../stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.verify.html#circuit_knitting_toolbox.circuit_cutting.wire_cutting.verify">[docs]</a><span class="k">def</span> <span class="nf">verify</span><span class="p">(</span>
     <span class="n">full_circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
     <span class="n">reconstructed_output</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare the reconstructed probabilities to the ground truth.</span>
 
@@ -123,7 +125,7 @@
     <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
     <span class="n">unordered</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">smart_order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-    <span class="n">complete_path_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]],</span>
+    <span class="n">complete_path_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reorder the probability distribution.</span>
@@ -140,7 +142,7 @@
 <span class="sd">        - (np.ndarray): the reordered and reconstructed probability distribution over the</span>
 <span class="sd">            full circuit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subcircuit_out_qubits</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">subcircuit_out_qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">subcircuit_idx</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">subcircuit_idx</span> <span class="ow">in</span> <span class="n">smart_order</span>
     <span class="p">}</span>
     <span class="k">for</span> <span class="n">input_qubit</span> <span class="ow">in</span> <span class="n">complete_path_map</span><span class="p">:</span>
@@ -160,7 +162,7 @@
             <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">subcircuit_out_qubits</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">]</span>
         <span class="p">]</span>
 
-    <span class="n">unordered_qubit</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">unordered_qubit</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">subcircuit_idx</span> <span class="ow">in</span> <span class="n">smart_order</span><span class="p">:</span>
         <span class="n">unordered_qubit</span> <span class="o">+=</span> <span class="n">subcircuit_out_qubits</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">]</span>
 

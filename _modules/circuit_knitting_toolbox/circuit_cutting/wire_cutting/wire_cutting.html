@@ -52,8 +52,10 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;Functions for conducting the wire cutting on quantum circuits.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">no_type_check</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">QuantumRegister</span>
@@ -71,14 +73,14 @@
 <div class="viewcode-block" id="cut_circuit_wires"><a class="viewcode-back" href="../../../../stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires.html#circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires">[docs]</a><span class="k">def</span> <span class="nf">cut_circuit_wires</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">subcircuit_vertices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_subcircuit_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_subcircuit_cuts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_subcircuit_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_cuts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">num_subcircuits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">subcircuit_vertices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_subcircuit_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_subcircuit_cuts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_subcircuit_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_cuts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decompose the circuit into a collection of subcircuits.</span>
 
@@ -95,7 +97,7 @@
 <span class="sd">        - max_subcircuit_size (int, optional): max number of gates in a subcircuit</span>
 <span class="sd">        - verbose (bool, optional): flag for printing output of cutting</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        (Dict[str, Any]): A dictionary containing information on the cuts,</span>
+<span class="sd">        (dict[str, Any]): A dictionary containing information on the cuts,</span>
 <span class="sd">        including the subcircuits themselves (key: &#39;subcircuits&#39;)</span>
 <span class="sd">    Raises:</span>
 <span class="sd">        - ValueError: if the input method does not match the other provided arguments</span>
@@ -132,21 +134,21 @@
 
 
 <div class="viewcode-block" id="evaluate_subcircuits"><a class="viewcode-back" href="../../../../stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.evaluate_subcircuits.html#circuit_knitting_toolbox.circuit_cutting.wire_cutting.evaluate_subcircuits">[docs]</a><span class="k">def</span> <span class="nf">evaluate_subcircuits</span><span class="p">(</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Options</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Options</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">service</span><span class="p">:</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend_names</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluate the subcircuits.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts (Dict): the results of cutting</span>
-<span class="sd">        - service (QiskitRuntimeService): A service for connecting to Qiskit Runtime Service</span>
-<span class="sd">        - options (Union[Options, Sequence[Options]]): Options to use on each backend</span>
-<span class="sd">        - backend_names (Union[str, Sequence[str]]): The name(s) of the backend(s) to be used</span>
+<span class="sd">        - cuts (dict): the results of cutting</span>
+<span class="sd">        - service (QiskitRuntimeService | None): A service for connecting to Qiskit Runtime Service</span>
+<span class="sd">        - options (Options | Sequence[Options] | None): Options to use on each backend</span>
+<span class="sd">        - backend_names (str | Sequence[str] | None): The name(s) of the backend(s) to be used</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        (Dict): the dictionary containing the results from running</span>
+<span class="sd">        (dict): the dictionary containing the results from running</span>
 <span class="sd">        each of the subcircuits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Put backend_names and options in lists to ensure it is unambiguous how to sync them</span>
@@ -189,8 +191,8 @@
 
 <div class="viewcode-block" id="reconstruct_full_distribution"><a class="viewcode-back" href="../../../../stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.reconstruct_full_distribution.html#circuit_knitting_toolbox.circuit_cutting.wire_cutting.reconstruct_full_distribution">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_full_distribution</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
-    <span class="n">subcircuit_instance_probabilities</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">subcircuit_instance_probabilities</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -229,17 +231,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_metadata</span><span class="p">(</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
-    <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
-    <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]],</span>
-    <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+    <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]],</span>
+    <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]],</span>
 <span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate metadata used to execute subcircuits and reconstruct probabilities of original circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts (Dict[str, Any]): results from the cutting step</span>
+<span class="sd">        - cuts (dict[str, Any]): results from the cutting step</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        - (tuple): information about the 4^(num cuts) summation terms used to reconstruct original</span>
 <span class="sd">            probabilities, a dictionary with information on each of the subcircuits, and a dictionary</span>
@@ -258,26 +260,26 @@
 
 
 <span class="k">def</span> <span class="nf">_run_subcircuits</span><span class="p">(</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">subcircuit_instances</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]],</span>
-    <span class="n">service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitRuntimeService</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">backend_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Options</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="n">subcircuit_instances</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">service</span><span class="p">:</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">backend_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Execute all the subcircuit instances.</span>
 
 <span class="sd">    task[&#39;subcircuit_instance_probs&#39;][subcircuit_idx][subcircuit_instance_idx] = measured prob</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts (Dict[str, Any]): results from the cutting step</span>
-<span class="sd">        - subcircuit_instances (Dict): the dictionary containing the index information for each</span>
+<span class="sd">        - cuts (dict[str, Any]): results from the cutting step</span>
+<span class="sd">        - subcircuit_instances (dict): the dictionary containing the index information for each</span>
 <span class="sd">            of the subcircuit instances</span>
-<span class="sd">        - service (QiskitRuntimeService): the arguments for the runtime service</span>
-<span class="sd">        - backend_names (Sequence[str]): the backend(s) used to run the subcircuits</span>
-<span class="sd">        - options (Options): options for the runtime execution of subcircuits</span>
+<span class="sd">        - service (QiskitRuntimeService | None): the arguments for the runtime service</span>
+<span class="sd">        - backend_names (Sequence[str] | None): the backend(s) used to run the subcircuits</span>
+<span class="sd">        - options (Options | None): options for the runtime execution of subcircuits</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        - (Dict): the resulting probabilities from each of the subcircuit instances</span>
+<span class="sd">        - (dict): the resulting probabilities from each of the subcircuit instances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_instance_probs</span> <span class="o">=</span> <span class="n">run_subcircuit_instances</span><span class="p">(</span>
         <span class="n">subcircuits</span><span class="o">=</span><span class="n">cuts</span><span class="p">[</span><span class="s2">&quot;subcircuits&quot;</span><span class="p">],</span>
@@ -291,35 +293,35 @@
 
 
 <span class="k">def</span> <span class="nf">_attribute_shots</span><span class="p">(</span>
-    <span class="n">subcircuit_entries</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
-        <span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span>
+    <span class="n">subcircuit_entries</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span>
+        <span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span>
     <span class="p">],</span>
-    <span class="n">subcircuit_instance_probs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+    <span class="n">subcircuit_instance_probs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Attribute the shots into respective subcircuit entries.</span>
 
 <span class="sd">    task[&#39;subcircuit_entry_probs&#39;][subcircuit_idx][subcircuit_entry_idx] = prob</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_entries (Dict): dictionary containing information about each of the</span>
+<span class="sd">        - subcircuit_entries (dict): dictionary containing information about each of the</span>
 <span class="sd">            subcircuit instances</span>
-<span class="sd">        - subcircuit_instance_probs (Dict): the probability vectors from each of the subcircuit</span>
+<span class="sd">        - subcircuit_instance_probs (dict): the probability vectors from each of the subcircuit</span>
 <span class="sd">            instances, as output by the _run_subcircuits function</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        - (Dict): a dictionary containing the probability results to each of the appropriate subcircuits</span>
+<span class="sd">        - (dict): a dictionary containing the probability results to each of the appropriate subcircuits</span>
 <span class="sd">    Raises:</span>
 <span class="sd">        - ValueError: if each of the kronecker terms are not of size two or if there are no subcircuit</span>
 <span class="sd">            probs provided</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subcircuit_entry_probs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">subcircuit_entry_probs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">subcircuit_idx</span> <span class="ow">in</span> <span class="n">subcircuit_entries</span><span class="p">:</span>
         <span class="n">subcircuit_entry_probs</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">subcircuit_entries</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">]:</span>
             <span class="n">subcircuit_entry_idx</span><span class="p">,</span> <span class="n">kronecker_term</span> <span class="o">=</span> <span class="n">subcircuit_entries</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">][</span>
                 <span class="n">label</span>
             <span class="p">]</span>
-            <span class="n">subcircuit_entry_prob</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">subcircuit_entry_prob</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">coefficient</span><span class="p">,</span> <span class="n">subcircuit_instance_idx</span> <span class="ow">in</span> <span class="n">kronecker_term</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">subcircuit_entry_prob</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">subcircuit_entry_prob</span> <span class="o">=</span> <span class="p">(</span>
@@ -347,16 +349,16 @@
     <span class="k">return</span> <span class="n">subcircuit_entry_probs</span>
 
 
-<span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
+<span class="nd">@no_type_check</span>
 <span class="k">def</span> <span class="nf">find_wire_cuts</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
     <span class="n">max_subcircuit_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">max_cuts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-    <span class="n">num_subcircuits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
-    <span class="n">max_subcircuit_cuts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-    <span class="n">max_subcircuit_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">max_cuts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_subcircuit_cuts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_subcircuit_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find optimal cuts for the wires.</span>
 
@@ -435,6 +437,8 @@
     <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">cut_solution</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
         <span class="n">classical_cost</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cut_solution</span><span class="p">[</span><span class="s2">&quot;classical_cost&quot;</span><span class="p">])</span>
+        <span class="c1"># We can remove typing.Dict from this cast statement when py38 is deprecated.</span>
+        <span class="c1"># https://bugs.python.org/issue45117</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">cut_solution</span><span class="p">[</span><span class="s2">&quot;counter&quot;</span><span class="p">])</span>
         <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut_solution</span><span class="p">[</span><span class="s2">&quot;subcircuits&quot;</span><span class="p">]</span>
         <span class="n">num_cuts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">cut_solution</span><span class="p">[</span><span class="s2">&quot;num_cuts&quot;</span><span class="p">]</span>
@@ -463,7 +467,7 @@
 
 <span class="k">def</span> <span class="nf">cut_circuit_wire</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">subcircuit_vertices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform the provided cuts.</span>
 
@@ -527,7 +531,7 @@
     <span class="n">num_subcircuit</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">num_cuts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
-    <span class="n">counter</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">counter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
     <span class="n">classical_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -561,8 +565,8 @@
 
 
 <span class="k">def</span> <span class="nf">_cuts_parser</span><span class="p">(</span>
-    <span class="n">cuts</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">circ</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+    <span class="n">cuts</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">circ</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert cuts to wires.</span>
 
@@ -633,8 +637,8 @@
 
 
 <span class="k">def</span> <span class="nf">_subcircuits_parser</span><span class="p">(</span>
-    <span class="n">subcircuit_gates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]]]:</span>
+    <span class="n">subcircuit_gates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.</span>
 
@@ -704,11 +708,11 @@
                         <span class="n">subcircuit_gates</span><span class="p">[</span><span class="n">subcircuit_idx</span><span class="p">][</span><span class="n">gate_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">gate_depth_encoding</span>
                         <span class="k">break</span>
     <span class="c1"># print(&#39;After translation :&#39;,subcircuit_gates,flush=True)</span>
-    <span class="n">subcircuit_op_nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGOpNode</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">subcircuit_op_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">DAGOpNode</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">x</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subcircuit_gates</span><span class="p">))</span>
     <span class="p">}</span>
     <span class="n">subcircuit_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subcircuit_gates</span><span class="p">))]</span>
-    <span class="n">complete_path_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">complete_path_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">circuit_qubit</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">qubits</span><span class="p">:</span>
         <span class="n">complete_path_map</span><span class="p">[</span><span class="n">circuit_qubit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">qubit_ops</span> <span class="o">=</span> <span class="n">dag</span><span class="o">.</span><span class="n">nodes_on_wire</span><span class="p">(</span><span class="n">wire</span><span class="o">=</span><span class="n">circuit_qubit</span><span class="p">,</span> <span class="n">only_ops</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -767,8 +771,8 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_subcircuits</span><span class="p">(</span>
-    <span class="n">subcircuit_op_nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGOpNode</span><span class="p">]],</span>
-    <span class="n">complete_path_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]],</span>
+    <span class="n">subcircuit_op_nodes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">DAGOpNode</span><span class="p">]],</span>
+    <span class="n">complete_path_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]],</span>
     <span class="n">subcircuit_sizes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">dag</span><span class="p">:</span> <span class="n">DAGCircuit</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]:</span>
@@ -821,10 +825,8 @@
 
 <span class="k">def</span> <span class="nf">_get_counter</span><span class="p">(</span>
     <span class="n">subcircuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
-    <span class="n">O_rho_pairs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span>
-        <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]</span>
-    <span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+    <span class="n">O_rho_pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create information regarding each of the subcircuit parameters (qubits, width, etc.).</span>
 
@@ -846,7 +848,6 @@
             <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span>
         <span class="p">}</span>
     <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">O_rho_pairs</span><span class="p">:</span>
-        <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;O_rho_pairs must be length 2: </span><span class="si">{</span><span class="n">pair</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">O_qubit</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -857,7 +858,7 @@
     <span class="k">return</span> <span class="n">counter</span>
 
 
-<span class="k">def</span> <span class="nf">_cost_estimate</span><span class="p">(</span><span class="n">counter</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_cost_estimate</span><span class="p">(</span><span class="n">counter</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the cost of processing the subcircuits.</span>
 
@@ -885,8 +886,8 @@
 
 
 <span class="k">def</span> <span class="nf">_get_pairs</span><span class="p">(</span>
-    <span class="n">complete_path_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">]]]]:</span>
+    <span class="n">complete_path_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Qubit</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get all pairs through each path.</span>
 
@@ -930,7 +931,7 @@
 
 <span class="k">def</span> <span class="nf">_read_circuit</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read the input circuit to a graph based representation for the MIP model.</span>
 

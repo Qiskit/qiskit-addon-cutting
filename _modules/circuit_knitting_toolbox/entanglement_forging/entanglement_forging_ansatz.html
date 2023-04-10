@@ -53,12 +53,9 @@
 
 <span class="sd">&quot;&quot;&quot;File containing the entanglement forging ansatz class.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-
-
-<span class="n">Bitstring</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="EntanglementForgingAnsatz"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz">[docs]</a><span class="k">class</span> <span class="nc">EntanglementForgingAnsatz</span><span class="p">:</span>
@@ -80,12 +77,12 @@
 <span class="sd">        - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to</span>
 <span class="sd">            find the minimum energy of the original problem. It represents the</span>
 <span class="sd">            unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
-<span class="sd">        - bitstrings_u (List[Tuple[Int]]): the input bitstrings for each N-qubit</span>
+<span class="sd">        - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit</span>
 <span class="sd">            subsystem. The bitstrings represent the computational basis states</span>
 <span class="sd">            contributing to the Schmidt decomposition. List must contain less than</span>
 <span class="sd">            or equal to 2^N elements and each bitstring must have length N. These</span>
 <span class="sd">            bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
-<span class="sd">        - bitstrings_v (List[Tuple[Int]], optional): specifies the bitstrings to be</span>
+<span class="sd">        - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be</span>
 <span class="sd">            used for the second subsystem in the Schmidt decomposition. Must be the</span>
 <span class="sd">            same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
 <span class="sd">            for both subsystems.</span>
@@ -94,8 +91,8 @@
 <div class="viewcode-block" id="EntanglementForgingAnsatz.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuit_u</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
-        <span class="n">bitstrings_u</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">],</span>
-        <span class="n">bitstrings_v</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bitstrings_u</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+        <span class="n">bitstrings_v</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assign the necessary member variables and check for shaping errors.</span>
@@ -104,12 +101,12 @@
 <span class="sd">            - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to</span>
 <span class="sd">                find the minimum energy of the original problem. It represents the</span>
 <span class="sd">                unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
-<span class="sd">            - bitstrings_u (List[Tuple[Int]]): the input bitstrings for each N-qubit</span>
+<span class="sd">            - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit</span>
 <span class="sd">                subsystem. The bitstrings represent the computational basis states</span>
 <span class="sd">                contributing to the Schmidt decomposition. List must contain less than</span>
 <span class="sd">                or equal to 2^N elements and each bitstring must have length N. These</span>
 <span class="sd">                bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
-<span class="sd">            - bitstrings_v (List[Tuple[Int]], optional): specifies the bitstrings to be</span>
+<span class="sd">            - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be</span>
 <span class="sd">                used for the second subsystem in the Schmidt decomposition. Must be the</span>
 <span class="sd">                same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
 <span class="sd">                for both subsystems.</span>
@@ -139,8 +136,8 @@
                 <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_u</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">=</span> <span class="n">circuit_u</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">]</span> <span class="o">=</span> <span class="n">bitstrings_u</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_v</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">]</span> <span class="o">=</span> <span class="n">bitstrings_v</span> <span class="ow">or</span> <span class="n">bitstrings_u</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="n">bitstrings_u</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_v</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="n">bitstrings_v</span> <span class="ow">or</span> <span class="n">bitstrings_u</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">circuit_u</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
@@ -153,22 +150,22 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_u</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bitstrings_u</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">bitstrings_u</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Property function for the first bitstrings.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (List[Bitstring]): the _bitstrings_u member variable</span>
+<span class="sd">            - (list[tuple[int, ...]]): the _bitstrings_u member variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bitstrings_v</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Bitstring</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">bitstrings_v</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Property function for the second bitstrings.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (List[Bitstring]): the _bitstrings_v member variable</span>
+<span class="sd">            - (list[tuple[int, ...]]): the _bitstrings_v member variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_v</span>
 
