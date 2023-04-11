@@ -77,9 +77,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         """
         # Set up the ELectrionicStructureProblem
         driver = PySCFDriver("H 0.0 0.0 0.0; H 0.0 0.0 0.735")
-        driver.run()
+        problem = driver.run()
+        problem.basis = ElectronicBasis.AO
         qcschema = driver.to_qcschema()
-        problem = driver.to_problem(basis=ElectronicBasis.AO)
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -122,9 +122,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         molecule = f"O 0.0 0.0 0.0; H {h1_x} 0.0 0.0; H {h2_x} {h2_y} 0.0"
         driver = PySCFDriver(molecule, basis="sto6g")
-        driver.run()
+        problem = driver.run()
+        problem.basis = ElectronicBasis.AO
         qcschema = driver.to_qcschema()
-        problem = driver.to_problem(basis=ElectronicBasis.AO)
 
         # solution
         orbitals_to_reduce = [0, 3]

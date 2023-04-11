@@ -44,7 +44,8 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             spin=0,
             basis="sto3g",
         )
-        driver.run()
+        problem = driver.run()
+        problem.basis = ElectronicBasis.AO
         qcschema = driver.to_qcschema()
 
         # Specify the ansatz and bitstrings
@@ -61,7 +62,6 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             initial_point=[0.0, np.pi / 2],
             mo_coeff=mo_coeff,
         )
-        problem = driver.to_problem(basis=ElectronicBasis.AO)
 
         # Solve for the ground state energy
         results = solver.solve(problem)
