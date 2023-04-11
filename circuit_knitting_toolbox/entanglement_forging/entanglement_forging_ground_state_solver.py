@@ -317,7 +317,7 @@ class EntanglementForgingGroundStateSolver:
         if optimal_evaluation is None:
             raise RuntimeError("Unable to retrieve optimal evaluation.")
 
-        # Create the EntanglementForgingResult from the results from the 
+        # Create the EntanglementForgingResult from the results from the
         # results of eigenvalue minimization and other meta information
         min_eigsolver_result = MinimumEigensolverResult()
         min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
