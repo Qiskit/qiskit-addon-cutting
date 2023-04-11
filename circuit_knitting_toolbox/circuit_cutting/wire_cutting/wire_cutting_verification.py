@@ -11,8 +11,10 @@
 
 """File that contains the function to verify the results of the cut circuits."""
 
+from __future__ import annotations
+
 import psutil, copy
-from typing import Tuple, Sequence, Dict, Union, List
+from typing import Sequence
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -33,7 +35,7 @@ from circuit_knitting_toolbox.utils.metrics import (
 def verify(
     full_circuit: QuantumCircuit,
     reconstructed_output: np.ndarray,
-) -> Tuple[Dict[str, Dict[str, float]], Sequence[float]]:
+) -> tuple[dict[str, dict[str, float]], Sequence[float]]:
     """
     Compare the reconstructed probabilities to the ground truth.
 
@@ -81,7 +83,7 @@ def generate_reconstructed_output(
     subcircuits: Sequence[QuantumCircuit],
     unordered: np.ndarray,
     smart_order: Sequence[int],
-    complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]],
+    complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]],
 ) -> np.ndarray:
     """
     Reorder the probability distribution.
@@ -98,7 +100,7 @@ def generate_reconstructed_output(
         - (np.ndarray): the reordered and reconstructed probability distribution over the
             full circuit
     """
-    subcircuit_out_qubits: Dict[int, List[Qubit]] = {
+    subcircuit_out_qubits: dict[int, list[Qubit]] = {
         subcircuit_idx: [] for subcircuit_idx in smart_order
     }
     for input_qubit in complete_path_map:
@@ -118,7 +120,7 @@ def generate_reconstructed_output(
             x[1] for x in subcircuit_out_qubits[subcircuit_idx]
         ]
 
-    unordered_qubit: List[int] = []
+    unordered_qubit: list[int] = []
     for subcircuit_idx in smart_order:
         unordered_qubit += subcircuit_out_qubits[subcircuit_idx]
 

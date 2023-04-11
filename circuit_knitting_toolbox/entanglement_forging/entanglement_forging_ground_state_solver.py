@@ -11,18 +11,15 @@
 
 """File containing the entanglement forging ground state solver class and associated support methods."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from time import time
 from typing import (
     Callable,
-    Dict,
     Iterable,
-    List,
-    Optional,
     Sequence,
-    TypeVar,
     Union,
-    Tuple,
 )
 
 import scipy
@@ -59,11 +56,8 @@ MINIMIZER = Callable[
         OBJECTIVE,  # the objective function to minimize
         np.ndarray,  # the initial point for the optimization
     ],
-    RESULT,  # a result object (either SciPy's or Qiskit's)
+    Union[scipy.optimize.OptimizeResult, OptimizerResult],
 ]
-_T = TypeVar("_T")  # Pylint does not allow single character class names.
-
-ListOrDict = Union[List[Optional[_T]], Dict[str, _T]]
 
 
 @dataclass
@@ -79,8 +73,8 @@ class EntanglementForgingEvaluation:
 class EntanglementForgingHistory:
     """Entanglement Forging History."""
 
-    evaluations: List[EntanglementForgingEvaluation] = field(default_factory=list)
-    optimal_evaluation: Optional[EntanglementForgingEvaluation] = None
+    evaluations: list[EntanglementForgingEvaluation] = field(default_factory=list)
+    optimal_evaluation: EntanglementForgingEvaluation | None = None
 
     def store_evaluation(self, evaluation: EntanglementForgingEvaluation):
         """Store an evaluation iteration and update optimal values, as necessary."""
@@ -99,7 +93,7 @@ class EntanglementForgingResult(EigenstateResult):
         """Initialize `EigenstateResult` parent class and set class fields."""
         super().__init__()
         self._energy_shift: float = 0.0
-        self._history: List[EntanglementForgingEvaluation] = []
+        self._history: list[EntanglementForgingEvaluation] = []
 
     @property
     def history(self) -> List[EntanglementForgingEvaluation]:
@@ -107,7 +101,7 @@ class EntanglementForgingResult(EigenstateResult):
         return self._history
 
     @history.setter
-    def history(self, history: List[EntanglementForgingEvaluation]) -> None:
+    def history(self, history: list[EntanglementForgingEvaluation]) -> None:
         """Set optimizer history."""
         self._history = history
 
@@ -137,13 +131,13 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def __init__(
         self,
-        ansatz: Optional[EntanglementForgingAnsatz] = None,
-        service: Optional[QiskitRuntimeService] = None,
-        optimizer: Optional[Union[Optimizer, MINIMIZER]] = None,
-        initial_point: Optional[np.ndarray] = None,
-        orbitals_to_reduce: Optional[Sequence[int]] = None,
-        backend_names: Optional[Union[str, List[str]]] = None,
-        options: Optional[Union[Options, List[Options]]] = None,
+        ansatz: EntanglementForgingAnsatz | None = None,
+        service: QiskitRuntimeService | None = None,
+        optimizer: Optimizer | MINIMIZER | None = None,
+        initial_point: np.ndarray | None = None,
+        orbitals_to_reduce: Sequence[int] | None = None,
+        backend_names: str | list[str] | None = None,
+        options: Options | list[Options] | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -163,47 +157,47 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         """
         super().__init__(QubitConverter(JordanWignerMapper()))
         # These fields will be used when solve is called
-        self._knitter: Optional[EntanglementForgingKnitter] = None
+        self._knitter: EntanglementForgingKnitter | None = None
         self._history: EntanglementForgingHistory = EntanglementForgingHistory()
         self._energy_shift = 0.0
 
         # Set class fields
-        self._ansatz: Optional[EntanglementForgingAnsatz] = ansatz
-        self._service: Optional[QiskitRuntimeService] = service
-        self._initial_point: Optional[np.ndarray] = initial_point
+        self._ansatz: EntanglementForgingAnsatz | None = ansatz
+        self._service: QiskitRuntimeService | None = service
+        self._initial_point: np.ndarray | None = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
 
-        self._optimizer: Union[Optimizer, MINIMIZER] = optimizer or SPSA()
+        self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
-    def ansatz(self) -> Optional[EntanglementForgingAnsatz]:
+    def ansatz(self) -> EntanglementForgingAnsatz | None:
         """Return ansatz."""
         return self._ansatz
 
     @ansatz.setter
-    def ansatz(self, ansatz: Optional[EntanglementForgingAnsatz]) -> None:
+    def ansatz(self, ansatz: EntanglementForgingAnsatz | None) -> None:
         """Set the ansatz."""
         self._ansatz = ansatz
 
     @property
-    def service(self) -> Optional[QiskitRuntimeService]:
+    def service(self) -> QiskitRuntimeService | None:
         """Return service."""
         return self._service
 
     @service.setter
-    def service(self, service: Optional[QiskitRuntimeService]) -> None:
+    def service(self, service: QiskitRuntimeService | None) -> None:
         """Set the service."""
         self._service = service
 
     @property
-    def orbitals_to_reduce(self) -> Optional[Sequence[int]]:
+    def orbitals_to_reduce(self) -> Sequence[int] | None:
         """Return the orbitals to reduce."""
         return self._orbitals_to_reduce
 
     @orbitals_to_reduce.setter
-    def orbitals_to_reduce(self, orbitals_to_reduce: Optional[Sequence[int]]) -> None:
+    def orbitals_to_reduce(self, orbitals_to_reduce: Sequence[int] | None) -> None:
         """Set the orbitals to reduce."""
         self._orbitals_to_reduce = orbitals_to_reduce
 
@@ -218,22 +212,22 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         self._optimizer = optimizer
 
     @property
-    def initial_point(self) -> Optional[np.ndarray]:
+    def initial_point(self) -> np.ndarray | None:
         """Return the initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, initial_point: Optional[np.ndarray]) -> None:
+    def initial_point(self, initial_point: np.ndarray | None) -> None:
         """Set the initial point."""
         self._initial_point = initial_point
 
     @property
-    def backend_names(self) -> Optional[List[str]]:
+    def backend_names(self) -> list[str] | None:
         """Return the backend names."""
         return self._backend_names
 
     @backend_names.setter
-    def backend_names(self, backend_names: Union[str, List[str]]) -> None:
+    def backend_names(self, backend_names: str | list[str]) -> None:
         """Set the backend names."""
         if isinstance(backend_names, str):
             self._backend_names = [backend_names]
@@ -241,12 +235,12 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             self._backend_names = backend_names
 
     @property
-    def options(self) -> Optional[List[Options]]:
+    def options(self) -> list[Options] | None:
         """Return the options."""
         return self._options
 
     @options.setter
-    def options(self, options: Union[Options, List[Options]]) -> None:
+    def options(self, options: Options | list[Options]) -> None:
         """Set the options."""
         if isinstance(options, Options):
             self._options = [options]
@@ -341,7 +335,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
     def get_eigenvalue_evaluation(
         self, operator: EntanglementForgingOperator
-    ) -> Callable[[Sequence[float]], Union[float, Iterable[float]]]:
+    ) -> Callable[[Sequence[float]], float | Iterable[float]]:
         """Produce a callable function which provides an estimation of the minimum eigenvalue of the input operator.
 
         Args:
