@@ -35,7 +35,6 @@ from qiskit_nature.second_q.problems import (
     EigenstateResult,
     ElectronicBasis,
 )
-from qiskit_nature.second_q.operators import SparseLabelOp
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -256,13 +255,11 @@ class EntanglementForgingGroundStateSolver:
     def solve(
         self,
         problem: BaseProblem,
-        aux_operators: dict[str, SparseLabelOp | QubitOperator] | None = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
         Args:
             - problem: a class encoding a problem to be solved.
-            - aux_operators: Additional auxiliary operators to evaluate.
 
         Returns:
             - An interpreted :class:`~.EigenstateResult`. For more information see also
@@ -313,11 +310,11 @@ class EntanglementForgingGroundStateSolver:
         start_time = time()
 
         if callable(self._optimizer):
-            optimizer_result = self.optimizer(
+            self.optimizer(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
         else:
-            optimizer_result = self.optimizer.minimize(
+            self.optimizer.minimize(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
@@ -372,13 +369,11 @@ class EntanglementForgingGroundStateSolver:
     def get_qubit_operators(
         self,
         problem: BaseProblem,
-        aux_operators: dict[str, SparseLabelOp | QubitOperator] | None = None,
     ) -> ListOp:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
           - problem (BaseProblem): A class encoding a problem to be solved.
-          - aux_operators (dict[str, SparseLabelOp | QubitOperator] | None): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
