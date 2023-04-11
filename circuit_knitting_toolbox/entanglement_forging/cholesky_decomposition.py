@@ -51,9 +51,6 @@ def get_cholesky_op(
         - cholesky_operator: The converted operator
     """
     # This will suppress a warning about an upcoming change in Qiskit Nature
-    from qiskit_nature.settings import settings
-
-    settings.dict_aux_operators = True
     pt = PolynomialTensor({"+-": l_op[:, :, g]})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
     cholesky_op = converter.convert(fer_op)
@@ -64,7 +61,7 @@ def get_cholesky_op(
 
 def cholesky_decomposition(
     problem: ElectronicStructureProblem,
-    mo_coeffs: np.ndarray | None = None,
+    mo_coeff: np.ndarray | None = None,
     orbitals_to_reduce: Sequence[int] | None = None,
 ) -> tuple[ListOp, float]:
     """
@@ -73,7 +70,7 @@ def cholesky_decomposition(
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
-        - mo_coeffs (np.ndarray | None): The coefficients for mapping to the MO basis
+        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis
         - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -98,8 +95,8 @@ def cholesky_decomposition(
         )
 
     # If no mo coeffs are passed, we assume the integrals are with respect to MO basis
-    if mo_coeffs is None:
-        mo_coeffs = np.eye(eri.shape[0], eri.shape[0])
+    if mo_coeff is None:
+        mo_coeff = np.eye(eri.shape[0], eri.shape[0])
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
@@ -116,7 +113,7 @@ def cholesky_decomposition(
         nuclear_repulsion_energy = 0.0
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
-        mo_coeffs,
+        mo_coeff,
         hcore,
         eri,
         opname="H",

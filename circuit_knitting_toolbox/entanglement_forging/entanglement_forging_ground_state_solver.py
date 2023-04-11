@@ -27,7 +27,7 @@ import numpy as np
 
 from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
-from qiskit.opflow import PauliSumOp
+from qiskit.opflow import PauliSumOp, ListOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit_nature.second_q.problems import (
     BaseProblem,
@@ -35,10 +35,7 @@ from qiskit_nature.second_q.problems import (
     EigenstateResult,
     ElectronicBasis,
 )
-from qiskit_nature.second_q.algorithms import GroundStateSolver
-from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.operators import SparseLabelOp
-from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
+from qiskit_nature.second_q.operators import SparseLabelOp, Tensor
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -126,7 +123,7 @@ class EntanglementForgingResult(EigenstateResult):
         self._elapsed_time = value
 
 
-class EntanglementForgingGroundStateSolver(GroundStateSolver):
+class EntanglementForgingGroundStateSolver:
     """A class which estimates the ground state energy of a molecule."""
 
     def __init__(
@@ -138,6 +135,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         orbitals_to_reduce: Sequence[int] | None = None,
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
+        mo_coeff: np.ndarray | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -151,24 +149,22 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 decomposition.
             - backend_names: Backend name or list of backend names to use during parallel computation
             - options: Options or list of options to be applied to the backends
+            - mo_coeff: Coefficients for converting an input problem to MO basis
 
         Returns:
             - None
         """
-        super().__init__(QubitConverter(JordanWignerMapper()))
-        # These fields will be used when solve is called
+        # Set class fields
         self._knitter: EntanglementForgingKnitter | None = None
         self._history: EntanglementForgingHistory = EntanglementForgingHistory()
         self._energy_shift = 0.0
-
-        # Set class fields
         self._ansatz: EntanglementForgingAnsatz | None = ansatz
         self._service: QiskitRuntimeService | None = service
         self._initial_point: np.ndarray | None = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
-
+        self._mo_coeff = mo_coeff
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
@@ -247,6 +243,16 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         else:
             self._options = options
 
+    @property
+    def mo_coeff(self) -> np.ndarray | None:
+        """Return the coefficients for converting integrals to the MO basis."""
+        return self._mo_coeff
+
+    @mo_coeff.setter
+    def mo_coeff(self, mo_coeff: np.ndarray | None) -> None:
+        """Set the coefficients for converting integrals to the MO basis."""
+        self._mo_coeff = mo_coeff
+
     def solve(
         self,
         problem: BaseProblem,
@@ -261,18 +267,21 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         Returns:
             - An interpreted :class:`~.EigenstateResult`. For more information see also
             :meth:`~.BaseProblem.interpret`.
+
+        Raises:
+            - ValueError:
+                The `backend_names` and `options` lists are of incompatible lengths
+            - AttributeError:
+                Ansatz must be set before calling `solve` method
         """
-        if not isinstance(problem, ElectronicStructureProblem):
-            raise AttributeError(
-                "EntanglementForgingGroundStateSolver only accepts ElectronicStructureProblem as input to its solve method."
-            )
         if self._backend_names and self._options:
             if len(self._backend_names) != len(self._options):
                 if len(self._options) == 1:
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is "
+                        f"length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
                     )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
@@ -364,7 +373,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         self,
         problem: BaseProblem,
         aux_operators: dict[str, SparseLabelOp | QubitOperator] | None = None,
-    ) -> tuple[QubitOperator, dict[str, QubitOperator | None]]:
+    ) -> ListOp:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
@@ -373,36 +382,21 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
+
+        Raises:
+            - ValueError:
+                Input problem was not an instance of ``ElectronicStructureProblem``
+            - ValueError:
+                The input problem is not in MO basis, and mo_coeff is set to None
+            - ValueError:
+                The mo_coeff and input problem integrals are of incompatible shapes
+            - ValueError:
+                The input integrals are None
         """
-        if not isinstance(problem, ElectronicStructureProblem):
-            raise TypeError(
-                "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
-            )
-
-        if problem.molecule is None:
-            if problem.basis == ElectronicBasis.AO:
-                raise ValueError(
-                    "Cannot map integrals to MO basis. No molecule information found in input ElectronicStructuctureProblem, "
-                    "and the ElectronicStructureProblem is in the AO basis."
-                )
-            eri_aa = problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
-            if isinstance(eri_aa, (Sequence, np.ndarray)):
-                size = np.array(eri_aa).shape[0]
-            else:
-                raise ValueError(
-                    "The integrals could not be interpreted from the input ElectronicStructureProblem. "
-                    "Try specifying the integrals as lists or NumPy arrays."
-                )
-
-            mo_coeffs = np.eye(size, size)
-
-        else:
-            driver = PySCFDriver.from_molecule(problem.molecule)
-            driver.run()
-            mo_coeffs = driver._calc.mo_coeff
+        self._validate_problem_and_coeffs(problem, self.mo_coeff)
 
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
-            problem, mo_coeffs, self._orbitals_to_reduce
+            problem, self.mo_coeff, self._orbitals_to_reduce  # type: ignore
         )
         return hamiltonian_ops
 
@@ -433,3 +427,26 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def solver(self):
         """Not implemented."""
         raise NotImplementedError
+
+    @staticmethod
+    def _validate_problem_and_coeffs(problem: BaseProblem, mo_coeff: np.ndarray | None):
+        """Ensure the input problem can be translated to the MO basis."""
+        if not isinstance(problem, ElectronicStructureProblem):
+            raise TypeError(
+                "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
+            )
+        if (problem.basis != ElectronicBasis.MO) and (mo_coeff is None):
+            raise ValueError(
+                f"Cannot transform integrals to MO basis. The input problem is in the ({problem.basis}) basis, "
+                "and the mo_coeff class field is None."
+            )
+
+        h1 = Tensor(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
+        if h1 is None:
+            raise ValueError("There input integrals are None.")
+
+        if (problem.basis != ElectronicBasis.MO) and mo_coeff is None:
+            raise ValueError(
+                f"The mo_coeff class field has shape ({mo_coeff.shape}), but the input one body integral "
+                f"has shape ({h1.shape})."
+            )

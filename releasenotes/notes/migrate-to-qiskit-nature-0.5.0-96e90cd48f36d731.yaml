@@ -4,11 +4,10 @@ features:
     Full support for Qiskit Nature 0.5.0.
 deprecations:
   - |
-    As ``circuit-knitting-toolbox`` is in the alpha development stages, there
-    will be no deprecation period on entanglement forging workflows using 
-    deprecated Qiskit Nature API calls. Users will now be required to use the
-    new classes, such as ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
-    as inputs to the entanglement forging classes and functions.
+    Support for Qiskit Nature < 0.5.0 will be removed upon this release.
+
+    Users will now be required to use the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
+    as input to the entanglement forging, rather than the deprecated ``:class:~qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
 
     For more information on migrating to Qiskit Nature 0.5.0, check out the
     [Qiskit Nature migration guide](https://qiskit.org/documentation/nature/migration/00_Migration_Guide_to_v0.5.html).

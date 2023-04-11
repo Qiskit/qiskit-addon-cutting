@@ -12,7 +12,7 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
-import math
+import numpy as np
 
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
@@ -21,6 +21,10 @@ from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import (
     ElectronicBasis,
 )
+from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
+from qiskit_nature import settings
+
+settings.use_tensor_unwrapping = False
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -43,6 +47,8 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             spin=0,
             basis="sto3g",
         )
+        driver.run()
+        qcschema = driver.to_qcschema()
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -51,13 +57,13 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         )
 
         # Set up the entanglement forging vqe object
+        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
             optimizer=self.optimizer,
-            initial_point=[0.0, math.pi / 2],
+            initial_point=[0.0, np.pi / 2],
+            mo_coeff=mo_coeff,
         )
-
-        driver.run()
         problem = driver.to_problem(basis=ElectronicBasis.AO)
 
         # Solve for the ground state energy
