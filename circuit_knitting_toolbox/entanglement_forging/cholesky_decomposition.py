@@ -64,17 +64,17 @@ def get_cholesky_op(
 
 def cholesky_decomposition(
     problem: ElectronicStructureProblem,
-    mo_coeffs: Optional[np.ndarray] = None,
-    orbitals_to_reduce: Optional[Sequence[int]] = None,
-) -> Tuple[ListOp, float]:
+    mo_coeffs: np.ndarray | None = None,
+    orbitals_to_reduce: Sequence[int] | None = None,
+) -> tuple[ListOp, float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
-        - mo_coeffs (Optional[np.ndarray]): The coefficients for mapping to the MO basis
-        - orbitals_to_reduce (Optional[Sequence[int]]): A list of orbital indices to remove from the problem before decomposition.
+        - mo_coeffs (np.ndarray | None): The coefficients for mapping to the MO basis
+        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
         - Tuple containing

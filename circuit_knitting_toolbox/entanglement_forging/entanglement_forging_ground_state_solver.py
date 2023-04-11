@@ -96,7 +96,7 @@ class EntanglementForgingResult(EigenstateResult):
         self._history: list[EntanglementForgingEvaluation] = []
 
     @property
-    def history(self) -> List[EntanglementForgingEvaluation]:
+    def history(self) -> list[EntanglementForgingEvaluation]:
         """Return optimizer history."""
         return self._history
 
@@ -250,7 +250,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def solve(
         self,
         problem: BaseProblem,
-        aux_operators: Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]] = None,
+        aux_operators: dict[str, SparseLabelOp | QubitOperator] | None = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
@@ -363,13 +363,13 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def get_qubit_operators(
         self,
         problem: BaseProblem,
-        aux_operators: Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]] = None,
-    ) -> Tuple[QubitOperator, Dict[str, Optional[QubitOperator]]]:
+        aux_operators: dict[str, SparseLabelOp | QubitOperator] | None = None,
+    ) -> tuple[QubitOperator, dict[str, QubitOperator | None]]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
           - problem (BaseProblem): A class encoding a problem to be solved.
-          - aux_operators (Optional[Dict[str, Union[SparseLabelOp, QubitOperator]]]): Additional auxiliary operators to evaluate.
+          - aux_operators (dict[str, SparseLabelOp | QubitOperator] | None): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
