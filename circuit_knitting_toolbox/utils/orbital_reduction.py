@@ -38,4 +38,4 @@ def reduce_bitstrings(bitstrings, orbitals_to_reduce):
     reduced_bitstrings_list = np.delete(
         bitstrings, orbitals_to_reduce, axis=-1
     ).tolist()
-    return [tuple(l) for l in reduced_bitstrings_list]
+    return [tuple(bs) for bs in reduced_bitstrings_list]

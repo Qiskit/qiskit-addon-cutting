@@ -34,7 +34,6 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
-from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
 def get_cholesky_op(
