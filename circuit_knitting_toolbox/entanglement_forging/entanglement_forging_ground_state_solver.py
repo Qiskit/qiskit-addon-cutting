@@ -334,11 +334,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            optimizer_result = self.optimizer(
+            self.optimizer(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
         else:
-            optimizer_result = self.optimizer.minimize(
+            self.optimizer.minimize(
                 fun=evaluate_eigenvalue, x0=self._initial_point
             )
 
