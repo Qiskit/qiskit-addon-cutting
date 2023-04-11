@@ -76,7 +76,6 @@
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_operator</span> <span class="kn">import</span> <span class="n">EntanglementForgingOperator</span>
-<span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 
 
 <span class="k">def</span> <span class="nf">get_cholesky_op</span><span class="p">(</span>
@@ -366,13 +365,13 @@
 
     <span class="c1"># Do the cholesky decomposition</span>
     <span class="k">if</span> <span class="n">h2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">num_gammas</span><span class="p">,</span> <span class="n">l_op</span> <span class="o">=</span> <span class="n">_get_modified_cholesky</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">epsilon_cholesky</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">l_op</span> <span class="o">=</span> <span class="n">_get_modified_cholesky</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">epsilon_cholesky</span><span class="p">)</span>
 
         <span class="c1"># Obtain L_{pr,g} in the MO basis</span>
         <span class="n">l_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;prg,pi,rj-&gt;ijg&quot;</span><span class="p">,</span> <span class="n">l_op</span><span class="p">,</span> <span class="n">coeff_mo</span><span class="p">,</span> <span class="n">coeff_mo</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
-        <span class="n">num_gammas</span><span class="p">,</span> <span class="n">l_op</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">l_op</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">occupied_orbitals_to_reduce</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">orbitals_not_to_reduce_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
