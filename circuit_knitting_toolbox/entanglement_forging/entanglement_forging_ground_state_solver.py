@@ -45,7 +45,6 @@ from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
 from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
-from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 OBJECTIVE = Callable[[np.ndarray], float]
 MINIMIZER = Callable[
@@ -334,13 +333,9 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         start_time = time()
 
         if callable(self._optimizer):
-            optimizer_result = self.optimizer(
-                fun=evaluate_eigenvalue, x0=self._initial_point
-            )
+            self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
         else:
-            optimizer_result = self.optimizer.minimize(
-                fun=evaluate_eigenvalue, x0=self._initial_point
-            )
+            self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
 
         elapsed_time = time() - start_time
 

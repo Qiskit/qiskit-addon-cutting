@@ -13,7 +13,8 @@
 
 from __future__ import annotations
 
-import psutil, copy
+import copy
+import psutil
 from typing import Sequence
 
 import numpy as np
