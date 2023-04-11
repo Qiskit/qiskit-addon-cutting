@@ -70,6 +70,7 @@ docs = [
     "reno>=3.4.0",
 ]
 notebook-dependencies = [
+    "circuit-knitting-toolbox[cplex]",
     "quantum-serverless>=0.0.1",
     "pyscf>=2.0.1; sys_platform != 'win32'",
     "matplotlib",
