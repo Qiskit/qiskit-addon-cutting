@@ -43,4 +43,10 @@ jobs:
         shell: bash
         run: |
           pver=${{ matrix.python-version }}
-          tox -epy${pver/./},py${pver/./}-notebook
+          tox -epy${pver/./}
+          if [ "$pver" == "py311" ]; then
+            # Skip the tutorials that require cplex
+            tox -epy${pver/./}-notebook  -- --ignore=docs/tutorials/circuit_cutting/tutorial_1_automatic_cut_finding.ipynb --ignore=docs/tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.ipynb
+          else
+            tox -epy${pver/./}-notebook
+          fi
