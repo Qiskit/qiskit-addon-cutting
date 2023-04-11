@@ -22,9 +22,6 @@ from qiskit_nature.second_q.problems import (
     ElectronicBasis,
 )
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
-from qiskit_nature import settings
-
-settings.use_tensor_unwrapping = False
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,

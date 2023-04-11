@@ -27,8 +27,7 @@ import numpy as np
 
 from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
-from qiskit.opflow import PauliSumOp, ListOp
-from qiskit.quantum_info.operators.base_operator import BaseOperator
+from qiskit.opflow import ListOp
 from qiskit_nature.second_q.problems import (
     BaseProblem,
     ElectronicStructureProblem,
@@ -44,8 +43,6 @@ from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_ope
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
-QubitOperator = Union[BaseOperator, PauliSumOp]
-RESULT = Union[scipy.optimize.OptimizeResult, OptimizerResult]
 OBJECTIVE = Callable[[np.ndarray], float]
 MINIMIZER = Callable[
     [
@@ -287,7 +284,7 @@ class EntanglementForgingGroundStateSolver:
                 [0.0 for i in range(len(self._ansatz.circuit_u.parameters))]
             )
 
-        hamiltonian_terms = self.get_qubit_operators(problem)
+        hamiltonian_terms = self.get_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
         if self._service is not None:
@@ -362,7 +359,7 @@ class EntanglementForgingGroundStateSolver:
 
         return evaluate_eigenvalue
 
-    def get_qubit_operators(
+    def get_operators(
         self,
         problem: BaseProblem,
     ) -> ListOp:
@@ -391,34 +388,6 @@ class EntanglementForgingGroundStateSolver:
         )
         return hamiltonian_ops
 
-    def returns_groundstate(self) -> bool:
-        """Whether this class returns only the ground state energy or also the ground state itself.
-
-        Returns:
-            - True, if this class also returns the ground state in the results object.
-            False otherwise.
-        """
-        return True
-
-    def supports_aux_operators(self) -> bool:
-        """Whether this class supports evaluation of aux operators.
-
-        Returns:
-            - True, if this class supports aux operators.
-            False otherwise.
-        """
-        return False
-
-    @property
-    def qubit_converter(self):
-        """Not implemented."""
-        raise NotImplementedError
-
-    @property
-    def solver(self):
-        """Not implemented."""
-        raise NotImplementedError
-
     @staticmethod
     def _validate_problem_and_coeffs(problem: BaseProblem, mo_coeff: np.ndarray | None):
         """Ensure the input problem can be translated to the MO basis."""
@@ -434,7 +403,7 @@ class EntanglementForgingGroundStateSolver:
 
         h1 = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
         if h1.shape == ():
-            raise ValueError("There input integrals could not be read.")
+            raise ValueError("The input integrals are empty.")
 
         # First two lines of this conditional are already implied by passing above checks, but alas, mypy :)
         if (

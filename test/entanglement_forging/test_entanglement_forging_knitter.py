@@ -20,9 +20,6 @@ from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis
 from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
-from qiskit_nature import settings
-
-settings.use_tensor_unwrapping = False
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -96,7 +93,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         # Specify the decomposition method and get the forged operator
         mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem, mo_coeff)
+        hamiltonian_terms, energy_shift = cholesky_decomposition(
+            problem, mo_coeff=mo_coeff
+        )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
         # Hard-coded optimal ansatz parameters
@@ -170,7 +169,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Specify the decomposition method and get the forged operator
         mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
         hamiltonian_terms, energy_shift = cholesky_decomposition(
-            problem, mo_coeff, orbitals_to_reduce=orbitals_to_reduce
+            problem, mo_coeff=mo_coeff, orbitals_to_reduce=orbitals_to_reduce
         )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
@@ -213,7 +212,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         )
 
         # Specify the decomposition method and get the forged operator
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem, mo_coeff)
+        hamiltonian_terms, energy_shift = cholesky_decomposition(
+            problem, mo_coeff=mo_coeff
+        )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
         # Set up the forging knitter object
