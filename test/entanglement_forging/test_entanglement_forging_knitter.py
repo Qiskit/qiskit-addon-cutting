@@ -28,8 +28,6 @@ from circuit_knitting_toolbox.entanglement_forging import (
     convert_cholesky_operator,
 )
 
-settings.dict_aux_operators = True
-
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
     def setUp(self):
