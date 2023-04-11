@@ -445,7 +445,12 @@ class EntanglementForgingGroundStateSolver:
         if h1.shape == ():
             raise ValueError("There input integrals could not be read.")
 
-        if (problem.basis != ElectronicBasis.MO) and mo_coeff is None:
+        # First two lines of this conditional are already implied by passing above checks, but alas, mypy :)
+        if (
+            problem.basis != ElectronicBasis.MO
+            and mo_coeff is not None
+            and mo_coeff.shape != h1.shape
+        ):
             raise ValueError(
                 f"The mo_coeff class field has shape ({mo_coeff.shape}), but the input one body integral "
                 f"has shape ({h1.shape})."
