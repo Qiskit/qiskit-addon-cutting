@@ -47,6 +47,7 @@ test = [
 style = [
     "autoflake==1.7.6",
     "black[jupyter]==22.10.0",
+    "ruff>=0.0.246",
 ]
 lint = [
     "circuit-knitting-toolbox[style]",

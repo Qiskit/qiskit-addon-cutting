@@ -40,7 +40,6 @@ from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
 from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
-from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
 OBJECTIVE = Callable[[np.ndarray], float]
