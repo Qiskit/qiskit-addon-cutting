@@ -283,9 +283,11 @@ class EntanglementForgingGroundStateSolver:
                 [0.0 for i in range(len(self._ansatz.circuit_u.parameters))]
             )
 
+        # Get the decomposed hamiltonian
         hamiltonian_terms = self.get_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
+        # Set the knitter class field
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
@@ -300,22 +302,23 @@ class EntanglementForgingGroundStateSolver:
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
-
         evaluate_eigenvalue = self.get_eigenvalue_evaluation(ef_operator)
 
+        # Minimize the minimum eigenvalue with respect to the ansatz parameters
         start_time = time()
-
         if callable(self._optimizer):
             self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
         else:
             self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
-
         elapsed_time = time() - start_time
 
+        # Find the minimum eigenvalue found during optimization
         optimal_evaluation = self._history.optimal_evaluation
         if optimal_evaluation is None:
             raise RuntimeError("Unable to retrieve optimal evaluation.")
 
+        # Create the EntanglementForgingResult from the results from the 
+        # results of eigenvalue minimization and other meta information
         min_eigsolver_result = MinimumEigensolverResult()
         min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
         min_eigsolver_result.eigenstate = optimal_evaluation.eigenstate
