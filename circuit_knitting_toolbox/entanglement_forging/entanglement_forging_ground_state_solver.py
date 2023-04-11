@@ -35,7 +35,7 @@ from qiskit_nature.second_q.problems import (
     EigenstateResult,
     ElectronicBasis,
 )
-from qiskit_nature.second_q.operators import SparseLabelOp, Tensor
+from qiskit_nature.second_q.operators import SparseLabelOp
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -441,9 +441,9 @@ class EntanglementForgingGroundStateSolver:
                 "and the mo_coeff class field is None."
             )
 
-        h1 = Tensor(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
-        if h1 is None:
-            raise ValueError("There input integrals are None.")
+        h1 = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
+        if h1.shape == ():
+            raise ValueError("There input integrals could not be read.")
 
         if (problem.basis != ElectronicBasis.MO) and mo_coeff is None:
             raise ValueError(
