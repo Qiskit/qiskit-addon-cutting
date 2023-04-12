@@ -44,9 +44,10 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             spin=0,
             basis="sto3g",
         )
-        problem = driver.run()
-        problem.basis = ElectronicBasis.AO
+        driver.run()
+        problem = driver.to_problem(basis=ElectronicBasis.AO)
         qcschema = driver.to_qcschema()
+        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -55,7 +56,6 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         )
 
         # Set up the entanglement forging vqe object
-        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
             optimizer=self.optimizer,
