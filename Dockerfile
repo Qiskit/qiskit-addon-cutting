@@ -19,5 +19,4 @@ RUN mkdir docs && \
     cp -a .src/circuit-knitting-toolbox/docs docs/circuit-knitting-toolbox
 
 # Pip install everything
-RUN pip install ipywidgets pylatexenc matplotlib \
-        -e .src/circuit-knitting-toolbox
+RUN pip install -e '.src/circuit-knitting-toolbox[notebook-dependencies]'
