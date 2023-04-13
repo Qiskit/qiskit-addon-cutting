@@ -1,14 +1,6 @@
 name: Docker notebook tests
 
 on:
-  push:
-    branches:
-      - main
-      - 'stable/**'
-  pull_request:
-    branches:
-      - main
-      - 'stable/**'
   schedule:
     - cron: '0 20 * * 3'
 
