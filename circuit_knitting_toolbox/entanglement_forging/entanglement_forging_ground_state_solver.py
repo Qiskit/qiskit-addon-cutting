@@ -263,7 +263,7 @@ class EntanglementForgingGroundStateSolver:
 
         Raises:
             - ValueError:
-                The `backend_names` and `options` lists are of incompatible lengths
+                The ``backend_names`` and ``options`` lists are of incompatible lengths
             - AttributeError:
                 Ansatz must be set before calling `solve` method
         """
@@ -284,7 +284,7 @@ class EntanglementForgingGroundStateSolver:
             )
 
         # Get the decomposed hamiltonian
-        hamiltonian_terms = self.get_operators(problem)
+        hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
         # Set the knitter class field
@@ -361,7 +361,7 @@ class EntanglementForgingGroundStateSolver:
 
         return evaluate_eigenvalue
 
-    def get_operators(
+    def get_qubit_operators(
         self,
         problem: BaseProblem,
     ) -> ListOp:
@@ -377,11 +377,11 @@ class EntanglementForgingGroundStateSolver:
             - ValueError:
                 Input problem was not an instance of ``ElectronicStructureProblem``
             - ValueError:
-                The input problem is not in MO basis, and mo_coeff is set to None
+                The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``
             - ValueError:
-                The mo_coeff and input problem integrals are of incompatible shapes
+                The ``mo_coeff`` and input problem integrals are of incompatible shapes
             - ValueError:
-                The input integrals are None
+                The input integrals are ``None``
         """
         self._validate_problem_and_coeffs(problem, self.mo_coeff)
 

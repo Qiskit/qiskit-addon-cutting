@@ -2,11 +2,11 @@
 features:
   - |
     Full support for Qiskit Nature 0.5.0.
-deprecations:
+upgrade:
   - |
-    Support for Qiskit Nature < 0.5.0 will be removed upon this release.
+    Support for Qiskit Nature < 0.5.0 has been removed upon this release.
 
-    Users will now be required to use the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
+    Users are now be required to use the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
     as input to the entanglement forging, rather than the deprecated ``:class:~qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
 
     For more information on migrating to Qiskit Nature 0.5.0, check out the
@@ -18,6 +18,6 @@ deprecations:
     in the ``circuit-knitting-toolbox`` repository.
 
   - |
-    The ``:class:~circuit_knitting_toolbox.utils.IntegralDriver`` class will be removed, as the new Qiskit Nature
+    The ``:class:~circuit_knitting_toolbox.utils.IntegralDriver`` class is removed. The new Qiskit Nature
     API allows for a more flexible build-up of the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
     and this driver is no longer needed.

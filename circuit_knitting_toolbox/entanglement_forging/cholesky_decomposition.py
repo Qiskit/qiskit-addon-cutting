@@ -49,7 +49,6 @@ def get_cholesky_op(
     Returns:
         - cholesky_operator: The converted operator
     """
-    # This will suppress a warning about an upcoming change in Qiskit Nature
     pt = PolynomialTensor({"+-": l_op[:, :, g]})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
     cholesky_op = converter.convert(fer_op)
