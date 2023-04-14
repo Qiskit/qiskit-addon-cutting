@@ -68,7 +68,8 @@ def cholesky_decomposition(
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
-        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis
+        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis. If ``None``, the input integrals will be
+            assumed to be in the MO basis.
         - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -105,7 +106,6 @@ def cholesky_decomposition(
 
     # Hold fields used to calculate the final energy shift
     # Freeze shift will be calculated during decomposition
-    freeze_shift = 0.0
     nuclear_repulsion_energy = problem.nuclear_repulsion_energy
     if nuclear_repulsion_energy is None:
         nuclear_repulsion_energy = 0.0
@@ -123,9 +123,7 @@ def cholesky_decomposition(
     op_list = [h_1_op] + h_chol_ops
     operator = ListOp(op_list)
 
-    energy_shift = freeze_shift + nuclear_repulsion_energy
-
-    return operator, energy_shift
+    return operator, nuclear_repulsion_energy
 
 
 def convert_cholesky_operator(
