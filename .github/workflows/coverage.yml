@@ -36,7 +36,7 @@ jobs:
       - name: Convert to lcov
         run: coveragepy-lcov --output_file_path coveralls.info
       - name: Upload report to Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: coveralls.info
