@@ -28,7 +28,7 @@ Contents
   Installation Instructions <install>
   Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
   Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
-  Circuit Cutting Explanatory Material <entanglement_forging/explanation/index>
+  Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
   Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
   Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
