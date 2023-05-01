@@ -8,8 +8,8 @@ Each tool in the CKT partitions a user's problem into quantum and classical comp
 
 The toolbox currently contains the following tools:
 
-- Entanglement Forging
 - Circuit Cutting
+- Entanglement Forging
 
 The source code to the toolbox is available `on GitHub <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox>`_.
 
@@ -27,10 +27,11 @@ Contents
 
   Installation Instructions <install>
   Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
-  Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
-  Explanatory Material <explanation/index>
   Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
+  Circuit Cutting Explanatory Material <entanglement_forging/explanation/index>
+  Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
+  Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   API References <apidocs/index>
   Release Notes <release-notes>
 
