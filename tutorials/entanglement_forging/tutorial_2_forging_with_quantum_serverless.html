@@ -210,13 +210,13 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">Optimizer</span>
 <span class="kn">from</span> <span class="nn">qiskit.result</span> <span class="kn">import</span> <span class="n">Result</span>
-<span class="kn">from</span> <span class="nn">quantum_serverless</span> <span class="kn">import</span> <span class="n">run_qiskit_remote</span>
+<span class="kn">from</span> <span class="nn">quantum_serverless</span> <span class="kn">import</span> <span class="n">distribute_task</span>
 <span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.entanglement_forging</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">EntanglementForgingGroundStateSolver</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<span class="nd">@run_qiskit_remote</span><span class="p">()</span>
+<span class="nd">@distribute_task</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">solve_remote</span><span class="p">(</span>
     <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
@@ -291,7 +291,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 <span class="c1"># The Options class is not serializable, so we must convert it to a dictionary before passing to remote function</span>
 <span class="n">options_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">asdict</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">options</span><span class="p">]</span>
 
-<span class="k">with</span> <span class="n">serverless</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">serverless</span><span class="o">.</span><span class="n">context</span><span class="p">():</span>
     <span class="n">forging_result_future</span> <span class="o">=</span> <span class="n">solve_remote</span><span class="p">(</span>
         <span class="n">problem</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">,</span>
@@ -391,7 +391,7 @@ Parameters:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.8.16</td></tr><tr><td>Python compiler</td><td>Clang 14.0.6 </td></tr><tr><td>Python build</td><td>default, Mar  1 2023 21:19:10</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Sun Apr 09 14:14:07 2023 CDT</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.5.2</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.16</td></tr><tr><td>Python compiler</td><td>GCC 12.2.1 20221121 (Red Hat 12.2.1-4)</td></tr><tr><td>Python build</td><td>main, Dec  7 2022 00:00:00</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>6</td></tr><tr><td>Memory (Gb)</td><td>30.821285247802734</td></tr><tr><td colspan='2'>Tue May 02 09:04:57 2023 EDT</td></tr></table></div>
 </div>
 </section>
 <section id="This-code-is-a-Qiskit-project.">
