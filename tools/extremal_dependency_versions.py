@@ -21,7 +21,7 @@ def mapfunc_dev(dep):
     """Load the development version(s) of certain Qiskit-related packages"""
     # https://peps.python.org/pep-0440/#direct-references
     return re.sub(
-        r"^(qiskit-(?:terra|nature|ibm-runtime)).*$",
+        r"^(qiskit-(?:terra|ibm-runtime)).*$",
         r"\1 @ git+https://github.com/Qiskit/\1.git",
         dep,
     )

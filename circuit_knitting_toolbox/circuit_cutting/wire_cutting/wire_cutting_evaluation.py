@@ -13,7 +13,8 @@
 
 from __future__ import annotations
 
-import itertools, copy
+import itertools
+import copy
 from typing import Sequence, Any
 from multiprocessing.pool import ThreadPool
 

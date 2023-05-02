@@ -34,7 +34,6 @@ from qiskit_nature.properties.second_quantization.electronic.integrals import (
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
-from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 
 
 def get_cholesky_op(
@@ -324,13 +323,13 @@ def _get_fermionic_ops_with_cholesky(
 
     # Do the cholesky decomposition
     if h2 is not None:
-        num_gammas, l_op = _get_modified_cholesky(h2, epsilon_cholesky)
+        _, l_op = _get_modified_cholesky(h2, epsilon_cholesky)
 
         # Obtain L_{pr,g} in the MO basis
         l_op = np.einsum("prg,pi,rj->ijg", l_op, coeff_mo, coeff_mo)
     else:
         size = len(h1)
-        num_gammas, l_op = 0, np.zeros(shape=(size, size, 0))
+        l_op = np.zeros(shape=(size, size, 0))
 
     if len(occupied_orbitals_to_reduce) > 0:
         orbitals_not_to_reduce_array = np.array(

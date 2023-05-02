@@ -27,10 +27,10 @@ classifiers = [
 requires-python = ">=3.7"
 
 dependencies = [
-    "qiskit-aer>=0.11.0",
-    "qiskit-terra>=0.22.0",
-    "qiskit-nature>=0.4.4",
-    "qiskit-ibm-runtime>=0.7.0",
+    "qiskit-aer>=0.12.0",
+    "qiskit-terra>=0.23.3",
+    "qiskit-nature>=0.5.2",
+    "qiskit-ibm-runtime>=0.9.2",
 ]
 
 [project.optional-dependencies]
@@ -52,6 +52,7 @@ test = [
 style = [
     "autoflake==1.7.6",
     "black[jupyter]==22.10.0",
+    "ruff>=0.0.246",
 ]
 lint = [
     "circuit-knitting-toolbox[style]",
@@ -71,7 +72,7 @@ docs = [
 ]
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex]",
-    "quantum-serverless>=0.0.1",
+    "quantum-serverless>=0.0.7",
     "pyscf>=2.0.1; sys_platform != 'win32'",
     "matplotlib",
     "ipywidgets",
