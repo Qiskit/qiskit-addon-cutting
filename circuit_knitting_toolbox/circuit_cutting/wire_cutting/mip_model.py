@@ -515,7 +515,7 @@ class MIPModel(object):
         if self.model._has_solution:
             my_solve_details = self.model.solve_details
             self.subcircuits = []
-            self.optimal = self.model.get_solve_status() == "optimal"
+            self.optimal = my_solve_details.status == "optimal"
             self.runtime = my_solve_details.time
             self.node_count = my_solve_details.nb_nodes_processed
             self.mip_gap = my_solve_details.mip_relative_gap
