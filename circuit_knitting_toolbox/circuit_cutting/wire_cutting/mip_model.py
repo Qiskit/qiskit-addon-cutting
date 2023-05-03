@@ -493,7 +493,13 @@ class MIPModel(object):
             min_postprocessing_cost,
             str(type(min_postprocessing_cost)),
         )
-        self.model.export_as_lp(path="./docplex_cutter.lp")
+        try:
+            self.model.export_as_lp(path="./docplex_cutter.lp")
+        except RuntimeError:
+            print(
+                "The LP file export has failed.  This is known to happen sometimes "
+                "when cplex is not installed.  Now attempting to continue anyway."
+            )
         try:
             self.model.set_time_limit(300)
             if min_postprocessing_cost != float("inf"):
@@ -504,10 +510,10 @@ class MIPModel(object):
 
         except DOcplexException as e:
             print("Caught: " + e.message)
+            raise e
 
         if self.model._has_solution:
             my_solve_details = self.model.solve_details
-            self.objective = None
             self.subcircuits = []
             self.optimal = self.model.get_solve_status() == "optimal"
             self.runtime = my_solve_details.time
