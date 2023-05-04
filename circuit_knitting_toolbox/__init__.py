@@ -15,7 +15,7 @@ import sys
 import warnings
 
 
-if sys.version_info < (3, 8):
+if sys.version_info < (3, 8):  # pragma: no cover
     warnings.warn(
         "Using the Circuit Knitting Toolbox with Python 3.7 is deprecated."
         "Support for Python 3.7 will be removed in the near future, as soon as "
