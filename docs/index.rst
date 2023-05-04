@@ -26,11 +26,11 @@ Contents
   :maxdepth: 2
 
   Installation Instructions <install>
-  Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
   Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
+  Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
   Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
-  Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
+  Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
   API References <apidocs/index>
   Release Notes <release-notes>
