@@ -46,13 +46,13 @@
 <p>Each tool in the CKT partitions a user’s problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It is designed to work seamlessly with the <a class="reference external" href="https://qiskit-extensions.github.io/quantum-serverless/">Quantum Serverless</a> framework, which enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.</p>
 <p>The toolbox currently contains the following tools:</p>
 <ul class="simple">
-<li><p>Entanglement Forging</p></li>
 <li><p>Circuit Cutting</p></li>
+<li><p>Entanglement Forging</p></li>
 </ul>
 <p>The source code to the toolbox is available <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox">on GitHub</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <a class="reference external" href="https://qiskit-extensions.github.io/quantum-serverless/">Quantum Serverless</a> framework is documented separately, as it lives in its own repository.  Check out <a class="reference internal" href="tutorials/entanglement_forging/tutorial_2_forging_with_quantum_serverless.html"><span class="doc">Tutorial 2: Forging with Quantum Serverless</span></a>  and <a class="reference internal" href="tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.html"><span class="doc">Tutorial 3: Circuit Cutting with Quantum Serverless</span></a> for examples on how to integrate Quantum Serverless into circuit knitting workflows.</p>
+<p>The <a class="reference external" href="https://qiskit-extensions.github.io/quantum-serverless/">Quantum Serverless</a> framework is documented separately, as it lives in its own repository.  Check out <a class="reference internal" href="entanglement_forging/tutorials/tutorial_2_forging_with_quantum_serverless.html"><span class="doc">Tutorial 2: Forging with Quantum Serverless</span></a>  and <a class="reference internal" href="circuit_cutting/tutorials/tutorial_3_cutting_with_quantum_serverless.html"><span class="doc">Tutorial 3: Circuit Cutting with Quantum Serverless</span></a> for examples on how to integrate Quantum Serverless into circuit knitting workflows.</p>
 </div>
 <p>This project is meant to evolve rapidly and, as such, does not follow <a class="reference external" href="https://qiskit.org/documentation/contributing_to_qiskit.html#deprecation-policy">Qiskit’s deprecation policy</a>.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the release notes.</p>
 <section id="contents">
@@ -64,72 +64,41 @@
 <li class="toctree-l2"><a class="reference internal" href="install.html#option-2-use-within-docker">Option 2: Use within Docker</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/entanglement_forging/index.html">Entanglement Forging Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/entanglement_forging/tutorial_1_getting_started.html">Tutorial 1: Entanglement Forging for estimating the ground state energy of the H2 molecule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/entanglement_forging/tutorial_2_forging_with_quantum_serverless.html">Tutorial 2: Entanglement Forging with Quantum Serverless</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/tutorial_1_automatic_cut_finding.html">Tutorial 1: Circuit Cutting with Automatic Cut Finding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/tutorial_2_manual_cutting.html">Tutorial 2: Circuit Cutting with Manual Wire Cutting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/tutorial_3_cutting_with_quantum_serverless.html">Tutorial 3: Circuit Cutting with Quantum Serverless</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/circuit_cutting/index.html">Circuit Cutting Tutorials</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_1_automatic_cut_finding.html">Tutorial 1: Circuit Cutting with Automatic Cut Finding</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_2_manual_cutting.html">Tutorial 2: Circuit Cutting with Manual Wire Cutting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorials/circuit_cutting/tutorial_3_cutting_with_quantum_serverless.html">Tutorial 3: Circuit Cutting with Quantum Serverless</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/tutorials/tutorial_1_getting_started.html">Tutorial 1: Entanglement Forging for estimating the ground state energy of the H2 molecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/tutorials/tutorial_2_forging_with_quantum_serverless.html">Tutorial 2: Entanglement Forging with Quantum Serverless</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/explanation/index.html#overview-of-entanglement-forging">Overview of entanglement forging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/explanation/index.html#entanglement-forging-procedure">Entanglement Forging Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/explanation/index.html#scaling">Scaling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/explanation/index.html#current-limitations">⚠️ Current limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/explanation/index.html#references">References</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="explanation/entanglement_forging/index.html">Entanglement Forging Explanation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#overview-of-entanglement-forging">Overview of entanglement forging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#entanglement-forging-procedure">Entanglement Forging Procedure</a></li>
-<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#scaling">Scaling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#current-limitations">⚠️ Current limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="explanation/entanglement_forging/index.html#references">References</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="explanation/circuit_cutting/index.html">Circuit Cutting Explanation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="how-tos/entanglement_forging/index.html">Entanglement Forging How-To Guides</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="how-tos/entanglement_forging/specify-problem.html">How to specify the problem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="how-tos/entanglement_forging/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="how-tos/entanglement_forging/freeze-orbitals.html">How to freeze orbitals</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="how-tos/circuit_cutting/index.html">Circuit Cutting How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/specify-problem.html">How to specify the problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="apidocs/circuit_cutting.html">Circuit Cutting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.run_subcircuit_instances.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.run_subcircuit_instances</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.generate_summation_terms.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.generate_summation_terms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.build.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.build</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.verify.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.verify</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.evaluate_subcircuits.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.evaluate_subcircuits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.reconstruct_full_distribution.html">circuit_knitting_toolbox.circuit_cutting.wire_cutting.reconstruct_full_distribution</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs/entanglement_forging.html">Entanglement Forging</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="apidocs/entanglement_forging.html#classes">Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidocs/entanglement_forging.html#decomposition-functions">Decomposition Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="apidocs/utils.html">Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.html">circuit_knitting_toolbox.utils.conversion</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.html">circuit_knitting_toolbox.utils.metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.integral_driver.IntegralDriver.html">circuit_knitting_toolbox.utils.integral_driver.IntegralDriver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/circuit_cutting.html">Circuit Cutting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/entanglement_forging.html">Entanglement Forging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/utils.html">Utilities</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release-notes.html#release-notes-0-0-0-36">0.0.0-36</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="release-notes.html#deprecation-notes">Deprecation Notes</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="release-notes.html#release-notes-0-0-0-37">0.0.0-37</a></li>
 </ul>
 </li>
 </ul>
@@ -156,9 +125,12 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="explanation/index.html">Explanatory Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="how-tos/index.html">How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
 </ul>
