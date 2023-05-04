@@ -123,7 +123,7 @@ def cholesky_decomposition(
     op_list = [h_1_op] + h_chol_ops
     operator = ListOp(op_list)
 
-    return operator, nuclear_repulsion_energy
+    return operator, nuclear_repulsion_energy + freeze_shift
 
 
 def convert_cholesky_operator(
