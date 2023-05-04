@@ -19,7 +19,7 @@ from qiskit_nature.settings import settings
 # This will suppress a warning about an upcoming change in Qiskit Nature
 settings.dict_aux_operators = True
 
-if sys.version_info < (3, 8):
+if sys.version_info < (3, 8):  # pragma: no cover
     warnings.warn(
         "Using the Circuit Knitting Toolbox with Python 3.7 is deprecated."
         "Support for Python 3.7 will be removed in the near future, as soon as "
