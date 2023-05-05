@@ -19,17 +19,15 @@ from typing import Sequence
 import numpy as np
 from qiskit.opflow import ListOp, PauliSumOp
 from qiskit.quantum_info import Pauli
-from qiskit_nature.converters.second_quantization import QubitConverter
-from qiskit_nature.drivers.second_quantization import ElectronicStructureDriver
-from qiskit_nature.mappers.second_quantization import JordanWignerMapper
-from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
-from qiskit_nature.properties.second_quantization.electronic.bases import (
-    ElectronicBasis,
+from qiskit_nature.second_q.problems import ElectronicStructureProblem
+from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
+from qiskit_nature.second_q.operators import (
+    FermionicOp,
+    PolynomialTensor,
 )
-from qiskit_nature.properties.second_quantization.electronic.integrals import (
-    IntegralProperty,
-    OneBodyElectronicIntegrals,
-    TwoBodyElectronicIntegrals,
+from qiskit_nature.second_q.operators.tensor_ordering import (
+    to_chemist_ordering,
+    to_physicist_ordering,
 )
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
@@ -51,25 +49,17 @@ def get_cholesky_op(
     Returns:
         - cholesky_operator: The converted operator
     """
-    # This will suppress a warning about an upcoming change in Qiskit Nature
-    from qiskit_nature.settings import settings
-
-    settings.dict_aux_operators = True
-
-    cholesky_int = OneBodyElectronicIntegrals(
-        basis=ElectronicBasis.SO, matrices=l_op[:, :, g]
-    )
-    cholesky_property = IntegralProperty("cholesky_op", [cholesky_int])
-    if isinstance(cholesky_property.second_q_ops(), dict):
-        cholesky_op = converter.convert(cholesky_property.second_q_ops()["cholesky_op"])
-    else:
-        cholesky_op = converter.convert(cholesky_property.second_q_ops()[0])
+    pt = PolynomialTensor({"+-": l_op[:, :, g]})
+    fer_op = FermionicOp.from_polynomial_tensor(pt)
+    cholesky_op = converter.convert(fer_op)
     cholesky_op._name = opname + "_chol" + str(g)
+
     return cholesky_op
 
 
 def cholesky_decomposition(
     problem: ElectronicStructureProblem,
+    mo_coeff: np.ndarray | None = None,
     orbitals_to_reduce: Sequence[int] | None = None,
 ) -> tuple[ListOp, float]:
     """
@@ -78,6 +68,8 @@ def cholesky_decomposition(
     Args:
         - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
             calculated.
+        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis. If ``None``, the input integrals will be
+            assumed to be in the MO basis.
         - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
 
     Returns:
@@ -86,55 +78,24 @@ def cholesky_decomposition(
               shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
             - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
               calculating properties of the decomposed operator (i.e. ground state energy).
+
+    Raises:
+        - ValueError:
+            The input ElectronicStructureProblem contains no particle number information.
     """
-    # Store the ElectronicStructureProblem
-    problem.second_q_ops()
-
-    if problem.grouped_property_transformed is None:
-        raise AttributeError(
-            "There was a problem retrieving the grouped properties from the ElectronicStructureProblem."
-        )
-    if problem.driver is None:
-        raise AttributeError("The ElectronicStructureProblem has no driver.")
-
-    if not isinstance(problem.driver, ElectronicStructureDriver):
-        raise AttributeError(
-            "The ElectronicStructureProblem's driver should be an instance of ElectronicStructureDriver."
-        )
-
-    electronic_basis_transform = problem.grouped_property_transformed.get_property(
-        "ElectronicBasisTransform"
+    hcore = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
+    eri = to_chemist_ordering(
+        problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
     )
-    if electronic_basis_transform is None:
-        raise AttributeError(
-            "There was a problem retrieving the ElectronicBasisTransform property from the ElectronicStructureProblem."
+    num_alpha = problem.num_alpha
+    if num_alpha is None:
+        raise ValueError(
+            "The input ElectronicStructureProblem contains no particle number information."
         )
 
-    electronic_energy = problem.grouped_property_transformed.get_property(
-        "ElectronicEnergy"
-    )
-    if electronic_energy is None:
-        raise AttributeError(
-            "There was a problem retrieving the ElectronicEnergy property from the ElectronicStructureProblem."
-        )
-
-    particle_number = problem.grouped_property_transformed.get_property(
-        "ParticleNumber"
-    )
-    if particle_number is None:
-        raise AttributeError(
-            "There was a problem retrieving the ParticleNumber property from the ElectronicStructureProblem."
-        )
-
-    # Get data for generating the cholesky decomposition
-    mo_coeff: np.ndarray = electronic_basis_transform.coeff_alpha
-    hcore: np.ndarray = electronic_energy.get_electronic_integral(
-        ElectronicBasis.AO, 1
-    )._matrices[0]
-    eri: np.ndarray = electronic_energy.get_electronic_integral(
-        ElectronicBasis.AO, 2
-    )._matrices[0]
-    num_alpha = particle_number.num_alpha
+    # If no mo coeffs are passed, we assume the integrals are with respect to MO basis
+    if mo_coeff is None:
+        mo_coeff = np.eye(eri.shape[0], eri.shape[0])
 
     # Store the reduced orbitals as virtual and occupied lists
     if orbitals_to_reduce is None:
@@ -145,8 +106,9 @@ def cholesky_decomposition(
 
     # Hold fields used to calculate the final energy shift
     # Freeze shift will be calculated during decomposition
-    freeze_shift = 0.0
-    nuclear_repulsion_energy = electronic_energy.nuclear_repulsion_energy
+    nuclear_repulsion_energy = problem.nuclear_repulsion_energy
+    if nuclear_repulsion_energy is None:
+        nuclear_repulsion_energy = 0.0
 
     h_1_op, h_chol_ops, freeze_shift, _, _ = _get_fermionic_ops_with_cholesky(
         mo_coeff,
@@ -161,9 +123,7 @@ def cholesky_decomposition(
     op_list = [h_1_op] + h_chol_ops
     operator = ListOp(op_list)
 
-    energy_shift = freeze_shift + nuclear_repulsion_energy
-
-    return operator, energy_shift
+    return operator, nuclear_repulsion_energy + freeze_shift
 
 
 def convert_cholesky_operator(
@@ -383,16 +343,10 @@ def _get_fermionic_ops_with_cholesky(
 
     if halve_transformed_h2:
         h2 /= 2  # type: ignore
-    h1_int = OneBodyElectronicIntegrals(basis=ElectronicBasis.SO, matrices=h1)
-    h2_int = TwoBodyElectronicIntegrals(basis=ElectronicBasis.SO, matrices=h2)
-    int_property = IntegralProperty("fer_op", [h1_int, h2_int])
-
-    if isinstance(int_property.second_q_ops(), dict):
-        fer_op = int_property.second_q_ops()["fer_op"]
-    else:
-        fer_op = int_property.second_q_ops()[0]
 
     converter = QubitConverter(JordanWignerMapper())
+    pt = PolynomialTensor({"+-": h1, "++--": to_physicist_ordering(h2)})
+    fer_op = FermionicOp.from_polynomial_tensor(pt)
     qubit_op = converter.convert(fer_op)
 
     qubit_op._name = opname + "_onebodyop"

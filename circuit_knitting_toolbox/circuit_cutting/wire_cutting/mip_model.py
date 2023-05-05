@@ -15,9 +15,16 @@ from __future__ import annotations
 
 from typing import Sequence, Any
 
-from docplex.mp.model import Model
-from docplex.mp.utils import DOcplexException
 import numpy as np
+
+try:
+    from docplex.mp.model import Model
+    from docplex.mp.utils import DOcplexException
+except ModuleNotFoundError as ex:
+    raise ModuleNotFoundError(
+        "DOcplex is not installed.  For automatic cut finding to work, both "
+        "DOcplex and cplex must be available."
+    ) from ex
 
 
 class MIPModel(object):
