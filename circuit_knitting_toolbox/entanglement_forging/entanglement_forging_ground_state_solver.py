@@ -25,26 +25,22 @@ from typing import (
 import scipy
 import numpy as np
 
-from qiskit import QuantumCircuit
-from qiskit.circuit import Instruction
+from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
-from qiskit.opflow import PauliSumOp, OperatorBase
-from qiskit.quantum_info import Statevector
-from qiskit.result import Result
-from qiskit_nature import ListOrDictType
-from qiskit_nature.algorithms import GroundStateSolver
-from qiskit_nature.operators.second_quantization import SecondQuantizedOp
-from qiskit_nature.problems.second_quantization import (
+from qiskit.opflow import ListOp
+from qiskit_nature.second_q.problems import (
     BaseProblem,
     ElectronicStructureProblem,
+    EigenstateResult,
+    ElectronicBasis,
 )
-from qiskit_nature.results import EigenstateResult
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
 from .entanglement_forging_operator import EntanglementForgingOperator
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
+
 
 OBJECTIVE = Callable[[np.ndarray], float]
 MINIMIZER = Callable[
@@ -92,16 +88,6 @@ class EntanglementForgingResult(EigenstateResult):
         self._history: list[EntanglementForgingEvaluation] = []
 
     @property
-    def groundenergy(self) -> float | None:
-        """Return ground energy."""
-        return self._groundenergy
-
-    @groundenergy.setter
-    def groundenergy(self, energy: float | None) -> None:
-        """Set ground energy."""
-        self._groundenergy = energy
-
-    @property
     def history(self) -> list[EntanglementForgingEvaluation]:
         """Return optimizer history."""
         return self._history
@@ -110,30 +96,6 @@ class EntanglementForgingResult(EigenstateResult):
     def history(self, history: list[EntanglementForgingEvaluation]) -> None:
         """Set optimizer history."""
         self._history = history
-
-    @property
-    def groundstate(
-        self,
-    ) -> str | dict | Result | list | np.ndarray | Statevector | QuantumCircuit | Instruction | OperatorBase | None:
-        """Return ground state."""
-        return self._groundstate
-
-    @groundstate.setter
-    def groundstate(
-        self,
-        groundstate: str
-        | dict
-        | Result
-        | list
-        | np.ndarray
-        | Statevector
-        | QuantumCircuit
-        | Instruction
-        | OperatorBase
-        | None,
-    ) -> None:
-        """Set ground state."""
-        self._groundstate = groundstate
 
     @property
     def energy_shift(self) -> float:
@@ -156,7 +118,7 @@ class EntanglementForgingResult(EigenstateResult):
         self._elapsed_time = value
 
 
-class EntanglementForgingGroundStateSolver(GroundStateSolver):
+class EntanglementForgingGroundStateSolver:
     """A class which estimates the ground state energy of a molecule."""
 
     def __init__(
@@ -168,6 +130,7 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         orbitals_to_reduce: Sequence[int] | None = None,
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
+        mo_coeff: np.ndarray | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -181,23 +144,22 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 decomposition.
             - backend_names: Backend name or list of backend names to use during parallel computation
             - options: Options or list of options to be applied to the backends
+            - mo_coeff: Coefficients for converting an input problem to MO basis
 
         Returns:
             - None
         """
-        # These fields will be used when solve is called
+        # Set class fields
         self._knitter: EntanglementForgingKnitter | None = None
         self._history: EntanglementForgingHistory = EntanglementForgingHistory()
         self._energy_shift = 0.0
-
-        # Set class fields
         self._ansatz: EntanglementForgingAnsatz | None = ansatz
         self._service: QiskitRuntimeService | None = service
         self._initial_point: np.ndarray | None = initial_point
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
-
+        self._mo_coeff = mo_coeff
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
@@ -276,32 +238,43 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
         else:
             self._options = options
 
+    @property
+    def mo_coeff(self) -> np.ndarray | None:
+        """Return the coefficients for converting integrals to the MO basis."""
+        return self._mo_coeff
+
+    @mo_coeff.setter
+    def mo_coeff(self, mo_coeff: np.ndarray | None) -> None:
+        """Set the coefficients for converting integrals to the MO basis."""
+        self._mo_coeff = mo_coeff
+
     def solve(
         self,
         problem: BaseProblem,
-        aux_operators: ListOrDictType[SecondQuantizedOp | PauliSumOp] | None = None,
     ) -> EigenstateResult:
         """Compute Ground State properties.
 
         Args:
             - problem: a class encoding a problem to be solved.
-            - aux_operators: Additional auxiliary operators to evaluate.
 
         Returns:
             - An interpreted :class:`~.EigenstateResult`. For more information see also
             :meth:`~.BaseProblem.interpret`.
+
+        Raises:
+            - ValueError:
+                The ``backend_names`` and ``options`` lists are of incompatible lengths
+            - AttributeError:
+                Ansatz must be set before calling `solve` method
         """
-        if not isinstance(problem, ElectronicStructureProblem):
-            raise AttributeError(
-                "EntanglementForgingGroundStateSolver only accepts ElectronicStructureProblem as input to its solve method."
-            )
         if self._backend_names and self._options:
             if len(self._backend_names) != len(self._options):
                 if len(self._options) == 1:
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is "
+                        f"length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
                     )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
@@ -310,9 +283,11 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
                 [0.0 for i in range(len(self._ansatz.circuit_u.parameters))]
             )
 
+        # Get the decomposed hamiltonian
         hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
+        # Set the knitter class field
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
@@ -327,33 +302,29 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
-
         evaluate_eigenvalue = self.get_eigenvalue_evaluation(ef_operator)
 
+        # Minimize the minimum eigenvalue with respect to the ansatz parameters
         start_time = time()
-
         if callable(self._optimizer):
             self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
         else:
             self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
-
         elapsed_time = time() - start_time
 
+        # Find the minimum eigenvalue found during optimization
         optimal_evaluation = self._history.optimal_evaluation
         if optimal_evaluation is None:
             raise RuntimeError("Unable to retrieve optimal evaluation.")
 
-        result = EntanglementForgingResult()
-        result.eigenenergies = np.array(
-            [e.eigenvalue for e in self._history.evaluations]
+        # Create the EntanglementForgingResult from the results from the
+        # results of eigenvalue minimization and other meta information
+        min_eigsolver_result = MinimumEigensolverResult()
+        min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
+        min_eigsolver_result.eigenstate = optimal_evaluation.eigenstate
+        result = EntanglementForgingResult.from_minimum_eigensolver_result(
+            min_eigsolver_result
         )
-        result.eigenstates = np.array([e.eigenstate for e in self._history.evaluations])  # type: ignore
-        if self._history.optimal_evaluation is None:
-            raise ValueError(
-                "Something unexpected happened, and the solver was not able to find an optimal parametrization."
-            )
-        result.groundenergy = self._history.optimal_evaluation.eigenvalue
-        result.groundstate = self._history.optimal_evaluation.eigenstate
         result.energy_shift = self._energy_shift
         result.history = self._history.evaluations
         result.elapsed_time = elapsed_time
@@ -393,59 +364,56 @@ class EntanglementForgingGroundStateSolver(GroundStateSolver):
     def get_qubit_operators(
         self,
         problem: BaseProblem,
-        aux_operators: ListOrDictType[SecondQuantizedOp | PauliSumOp] | None = None,
-    ) -> tuple[PauliSumOp, ListOrDictType[PauliSumOp] | None]:
+    ) -> ListOp:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
           - problem (BaseProblem): A class encoding a problem to be solved.
-          - aux_operators (ListOrDictType[SecondQuantizedOp | PauliSumOp]): Additional auxiliary operators to evaluate.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
+
+        Raises:
+            - ValueError:
+                Input problem was not an instance of ``ElectronicStructureProblem``
+            - ValueError:
+                The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``
+            - ValueError:
+                The ``mo_coeff`` and input problem integrals are of incompatible shapes
+            - ValueError:
+                The input integrals are ``None``
         """
+        self._validate_problem_and_coeffs(problem, self.mo_coeff)
+
+        hamiltonian_ops, self._energy_shift = cholesky_decomposition(
+            problem, self.mo_coeff, self._orbitals_to_reduce  # type: ignore
+        )
+        return hamiltonian_ops
+
+    @staticmethod
+    def _validate_problem_and_coeffs(problem: BaseProblem, mo_coeff: np.ndarray | None):
+        """Ensure the input problem can be translated to the MO basis."""
         if not isinstance(problem, ElectronicStructureProblem):
             raise TypeError(
                 "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
             )
-        hamiltonian_ops, self._energy_shift = cholesky_decomposition(
-            problem, self._orbitals_to_reduce
-        )
-        return hamiltonian_ops
+        if (problem.basis != ElectronicBasis.MO) and (mo_coeff is None):
+            raise ValueError(
+                f"Cannot transform integrals to MO basis. The input problem is in the ({problem.basis}) basis, "
+                "and the mo_coeff class field is None."
+            )
 
-    def returns_groundstate(self) -> bool:
-        """Whether this class returns only the ground state energy or also the ground state itself.
+        h1 = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
+        if h1.shape == ():
+            raise ValueError("The input integrals are empty.")
 
-        Returns:
-            - True, if this class also returns the ground state in the results object.
-            False otherwise.
-        """
-        return True
-
-    @property
-    def qubit_converter(self):
-        """Not implemented."""
-        raise NotImplementedError
-
-    @property
-    def solver(self):
-        """Not implemented."""
-        raise NotImplementedError
-
-    def evaluate_operators(
-        self,
-        state: str
-        | dict
-        | Result
-        | list
-        | np.ndarray
-        | Statevector
-        | QuantumCircuit
-        | Instruction
-        | OperatorBase,
-        operators: PauliSumOp | OperatorBase | list | dict,
-    ) -> float | list[float] | dict[str, list[float]]:
-        """Not necessary to implement."""
-        raise NotImplementedError(
-            "This class method is not used by EntanglementForgingGroundStateSolver."
-        )
+        # First two lines of this conditional are already implied by passing above checks, but alas, mypy :)
+        if (
+            problem.basis != ElectronicBasis.MO
+            and mo_coeff is not None
+            and mo_coeff.shape != h1.shape
+        ):
+            raise ValueError(
+                f"The mo_coeff class field has shape ({mo_coeff.shape}), but the input one body integral "
+                f"has shape ({h1.shape})."
+            )

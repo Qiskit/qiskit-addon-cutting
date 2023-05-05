@@ -79,6 +79,7 @@ notebook-dependencies = [
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
+    "qiskit-nature<0.6.0",
 ]
 
 [project.urls]
