@@ -45,7 +45,7 @@
 <h1>circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver<a class="headerlink" href="#circuit-knitting-toolbox-entanglement-forging-entanglementforginggroundstatesolver" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EntanglementForgingGroundStateSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_ground_state_solver.html#EntanglementForgingGroundStateSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EntanglementForgingGroundStateSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mo_coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_ground_state_solver.html#EntanglementForgingGroundStateSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class which estimates the ground state energy of a molecule.</p>
 <p>Assign the necessary class variables and initialize any defaults.</p>
 <dl class="field-list simple">
@@ -59,6 +59,7 @@
 decomposition.</p></li>
 <li><p><strong>backend_names</strong> (<em>-</em>) – Backend name or list of backend names to use during parallel computation</p></li>
 <li><p><strong>options</strong> (<em>-</em>) – Options or list of options to be applied to the backends</p></li>
+<li><p><strong>mo_coeff</strong> (<em>-</em>) – Coefficients for converting an input problem to MO basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -70,7 +71,7 @@ decomposition.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_ground_state_solver.html#EntanglementForgingGroundStateSolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mo_coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/entanglement_forging_ground_state_solver.html#EntanglementForgingGroundStateSolver.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the necessary class variables and initialize any defaults.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -83,6 +84,7 @@ decomposition.</p></li>
 decomposition.</p></li>
 <li><p><strong>backend_names</strong> (<em>-</em>) – Backend name or list of backend names to use during parallel computation</p></li>
 <li><p><strong>options</strong> (<em>-</em>) – Options or list of options to be applied to the backends</p></li>
+<li><p><strong>mo_coeff</strong> (<em>-</em>) – Coefficients for converting an input problem to MO basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -100,19 +102,13 @@ decomposition.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.__init__" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([ansatz, service, optimizer, ...])</p></td>
 <td><p>Assign the necessary class variables and initialize any defaults.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_operators</span></code>(state, operators)</p></td>
-<td><p>Not necessary to implement.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_eigenvalue_evaluation</span></code>(operator)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_eigenvalue_evaluation</span></code>(operator)</p></td>
 <td><p>Produce a callable function which provides an estimation of the minimum eigenvalue of the input operator.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qubit_operators</span></code>(problem[, aux_operators])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_qubit_operators</span></code>(problem)</p></td>
 <td><p>Construct decomposed qubit operators from an <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">returns_groundstate</span></code>()</p></td>
-<td><p>Whether this class returns only the ground state energy or also the ground state itself.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code>(problem[, aux_operators])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code>(problem)</p></td>
 <td><p>Compute Ground State properties.</p></td>
 </tr>
 </tbody>
@@ -129,23 +125,20 @@ decomposition.</p></li>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">initial_point</span></code></p></td>
 <td><p>Return the initial point.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mo_coeff</span></code></p></td>
+<td><p>Return the coefficients for converting integrals to the MO basis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer</span></code></p></td>
 <td><p>Return the optimizer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code></p></td>
 <td><p>Return the options.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals_to_reduce</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals_to_reduce</span></code></p></td>
 <td><p>Return the orbitals to reduce.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">qubit_converter</span></code></p></td>
-<td><p>Not implemented.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">service</span></code></p></td>
 <td><p>Return service.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver</span></code></p></td>
-<td><p>Not implemented.</p></td>
 </tr>
 </tbody>
 </table>

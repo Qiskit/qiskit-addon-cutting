@@ -48,6 +48,7 @@
 <h1>Tutorial 2: Entanglement Forging with Quantum Serverless<a class="headerlink" href="#Tutorial-2:-Entanglement-Forging-with-Quantum-Serverless" title="Permalink to this heading">¶</a></h1>
 <p><strong>Entanglement forging</strong> is a method which allows us to represent expectation values of a 2n-qubit wavefunction as sums of multiple expectation values of n-qubit states, embedded in a classical optimization, thus doubling the size of the system that can be exactly simulated with a fixed number of qubits.</p>
 <p>See <a class="reference internal" href="tutorial_1_getting_started.html"><span class="doc">Tutorial 1</span></a> for a high-level breakdown of the entanglement forging algorithm, or check out the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a> for a more detailed explanation.</p>
+<p>Quantum Serverless does not support Qiskit Nature 0.6.0 yet. In order to use entanglement forging with quantum serverless, users should use 0.5.2 &lt; Qiskit Nature &lt; 0.6.0. There is an<a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless/issues/413">associated issue in the quantum-serverless repo</a>to address this.</p>
 <section id="Adapting-entanglement-forging-for-use-with-Quantum-Serverless">
 <h2>Adapting entanglement forging for use with <code class="docutils literal notranslate"><span class="pre">Quantum</span> <span class="pre">Serverless</span></code><a class="headerlink" href="#Adapting-entanglement-forging-for-use-with-Quantum-Serverless" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> is a platform built to enable distributed computing across a variety of classical and quantum backends.</p>
@@ -65,22 +66,19 @@
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
-<span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.utils</span> <span class="kn">import</span> <span class="n">IntegralDriver</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.hamiltonians</span> <span class="kn">import</span> <span class="n">ElectronicEnergy</span>
 
 <span class="n">system_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;reactant_2mo.npz&quot;</span><span class="p">)</span>
 <span class="n">num_molecular_orbitals</span> <span class="o">=</span> <span class="mi">2</span>
 
-<span class="n">driver</span> <span class="o">=</span> <span class="n">IntegralDriver</span><span class="p">(</span>
-    <span class="n">hcore</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;h1&quot;</span><span class="p">],</span>
-    <span class="n">mo_coeff</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;HF_mo_coeff&quot;</span><span class="p">],</span>
-    <span class="n">eri</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;Gamma_eri&quot;</span><span class="p">],</span>
-    <span class="n">num_alpha</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;na&quot;</span><span class="p">],</span>
-    <span class="n">num_beta</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;nb&quot;</span><span class="p">],</span>
-    <span class="n">nuclear_repulsion_energy</span><span class="o">=</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;h0&quot;</span><span class="p">],</span>
+<span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">ElectronicEnergy</span><span class="o">.</span><span class="n">from_raw_integrals</span><span class="p">(</span>
+    <span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;h1&quot;</span><span class="p">],</span> <span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;Gamma_eri&quot;</span><span class="p">]</span>
 <span class="p">)</span>
-
-<span class="n">problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+<span class="n">hamiltonian</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span> <span class="o">=</span> <span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;h0&quot;</span><span class="p">]</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
+<span class="n">problem</span><span class="o">.</span><span class="n">num_particles</span> <span class="o">=</span> <span class="p">(</span><span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;na&quot;</span><span class="p">],</span> <span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;nb&quot;</span><span class="p">])</span>
+<span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">system_data</span><span class="p">[</span><span class="s2">&quot;HF_mo_coeff&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -225,6 +223,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
     <span class="n">options_dicts</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">initial_point</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrapper function for running entanglement forging VQE on a remote resource.</span>
@@ -239,6 +238,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 <span class="sd">            - initial_point: Initial values for ansatz parameters</span>
 <span class="sd">            - orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
 <span class="sd">                decomposition.</span>
+<span class="sd">            - mo_coeff: Coefficients for converting an input problem to MO basis</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            - An interpreted EigenstateResult</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -259,6 +259,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
         <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
         <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">,</span>
         <span class="n">orbitals_to_reduce</span><span class="o">=</span><span class="n">orbitals_to_reduce</span><span class="p">,</span>
+        <span class="n">mo_coeff</span><span class="o">=</span><span class="n">mo_coeff</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
 
@@ -298,8 +299,17 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
         <span class="n">service_args</span><span class="o">=</span><span class="n">service_args</span><span class="p">,</span>
         <span class="n">backend_names</span><span class="o">=</span><span class="n">backend_names</span><span class="p">,</span>
         <span class="n">options_dicts</span><span class="o">=</span><span class="n">options_dicts</span><span class="p">,</span>
+        <span class="n">mo_coeff</span><span class="o">=</span><span class="n">mo_coeff</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">forging_result_future</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span>
 </pre></div>
 </div>
 </div>
@@ -308,7 +318,7 @@ q_1: ───────■──┤ X ├┤ Ry(-1.0*θ) ├┤ X ├──�
 <h2>Visualize the results<a class="headerlink" href="#Visualize-the-results" title="Permalink to this heading">¶</a></h2>
 <p>Visualize the convergence of the estimated ground state energy and the Schmidt coefficients as the ansatz parameters are optimized.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -343,7 +353,7 @@ Energy:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_1.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_1.png" />
+<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_1.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -358,7 +368,7 @@ Schmidt Coefficients:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_3.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_3.png" />
+<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_3.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -373,11 +383,11 @@ Parameters:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_5.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_16_5.png" />
+<img alt="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_5.png" src="../../_images/entanglement_forging_tutorials_tutorial_2_forging_with_quantum_serverless_17_5.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
@@ -390,7 +400,7 @@ Parameters:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.5.2</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.16</td></tr><tr><td>Python compiler</td><td>GCC 12.2.1 20221121 (Red Hat 12.2.1-4)</td></tr><tr><td>Python build</td><td>main, Dec  7 2022 00:00:00</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>6</td></tr><tr><td>Memory (Gb)</td><td>30.821285247802734</td></tr><tr><td colspan='2'>Tue May 02 09:04:57 2023 EDT</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.5.2</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.8.16</td></tr><tr><td>Python compiler</td><td>Clang 14.0.6 </td></tr><tr><td>Python build</td><td>default, Mar  1 2023 21:19:10</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Fri May 05 13:47:24 2023 CDT</td></tr></table></div>
 </div>
 </section>
 <section id="This-code-is-a-Qiskit-project.">

@@ -45,13 +45,15 @@
 <h1>circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition<a class="headerlink" href="#circuit-knitting-toolbox-entanglement-forging-cholesky-decomposition" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition">
-<span class="sig-name descname"><span class="pre">cholesky_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/cholesky_decomposition.html#cholesky_decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cholesky_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mo_coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/entanglement_forging/cholesky_decomposition.html#cholesky_decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the decomposed Hamiltonian from an input <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>problem</strong> (<em>-</em>) – An <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code> from which the decomposed Hamiltonian will be
 calculated.</p></li>
+<li><p><strong>mo_coeff</strong> (<em>-</em>) – The coefficients for mapping to the MO basis. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the input integrals will be
+assumed to be in the MO basis.</p></li>
 <li><p><strong>orbitals_to_reduce</strong> (<em>-</em>) – A list of orbital indices to remove from the problem before decomposition.</p></li>
 </ul>
 </dd>
@@ -72,6 +74,9 @@ calculating properties of the decomposed operator (i.e. ground state energy).</p
 </li>
 </ul>
 </p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>- ValueError</strong> – The input ElectronicStructureProblem contains no particle number information.</p>
 </dd>
 </dl>
 </dd></dl>

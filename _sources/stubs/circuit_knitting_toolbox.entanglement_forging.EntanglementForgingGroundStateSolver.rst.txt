@@ -14,10 +14,8 @@
    .. autosummary::
    
       ~EntanglementForgingGroundStateSolver.__init__
-      ~EntanglementForgingGroundStateSolver.evaluate_operators
       ~EntanglementForgingGroundStateSolver.get_eigenvalue_evaluation
       ~EntanglementForgingGroundStateSolver.get_qubit_operators
-      ~EntanglementForgingGroundStateSolver.returns_groundstate
       ~EntanglementForgingGroundStateSolver.solve
    
    
@@ -31,11 +29,10 @@
       ~EntanglementForgingGroundStateSolver.ansatz
       ~EntanglementForgingGroundStateSolver.backend_names
       ~EntanglementForgingGroundStateSolver.initial_point
+      ~EntanglementForgingGroundStateSolver.mo_coeff
       ~EntanglementForgingGroundStateSolver.optimizer
       ~EntanglementForgingGroundStateSolver.options
       ~EntanglementForgingGroundStateSolver.orbitals_to_reduce
-      ~EntanglementForgingGroundStateSolver.qubit_converter
       ~EntanglementForgingGroundStateSolver.service
-      ~EntanglementForgingGroundStateSolver.solver
    
    

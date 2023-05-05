@@ -60,17 +60,15 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span><span class="p">,</span> <span class="n">PauliSumOp</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.converters.second_quantization</span> <span class="kn">import</span> <span class="n">QubitConverter</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.drivers.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureDriver</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.mappers.second_quantization</span> <span class="kn">import</span> <span class="n">JordanWignerMapper</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.properties.second_quantization.electronic.bases</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ElectronicBasis</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.mappers</span> <span class="kn">import</span> <span class="n">QubitConverter</span><span class="p">,</span> <span class="n">JordanWignerMapper</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.operators</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FermionicOp</span><span class="p">,</span>
+    <span class="n">PolynomialTensor</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.properties.second_quantization.electronic.integrals</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">IntegralProperty</span><span class="p">,</span>
-    <span class="n">OneBodyElectronicIntegrals</span><span class="p">,</span>
-    <span class="n">TwoBodyElectronicIntegrals</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.operators.tensor_ordering</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_chemist_ordering</span><span class="p">,</span>
+    <span class="n">to_physicist_ordering</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
@@ -92,25 +90,17 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        - cholesky_operator: The converted operator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># This will suppress a warning about an upcoming change in Qiskit Nature</span>
-    <span class="kn">from</span> <span class="nn">qiskit_nature.settings</span> <span class="kn">import</span> <span class="n">settings</span>
-
-    <span class="n">settings</span><span class="o">.</span><span class="n">dict_aux_operators</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">cholesky_int</span> <span class="o">=</span> <span class="n">OneBodyElectronicIntegrals</span><span class="p">(</span>
-        <span class="n">basis</span><span class="o">=</span><span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">SO</span><span class="p">,</span> <span class="n">matrices</span><span class="o">=</span><span class="n">l_op</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]</span>
-    <span class="p">)</span>
-    <span class="n">cholesky_property</span> <span class="o">=</span> <span class="n">IntegralProperty</span><span class="p">(</span><span class="s2">&quot;cholesky_op&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">cholesky_int</span><span class="p">])</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cholesky_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">cholesky_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cholesky_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()[</span><span class="s2">&quot;cholesky_op&quot;</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cholesky_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cholesky_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">pt</span> <span class="o">=</span> <span class="n">PolynomialTensor</span><span class="p">({</span><span class="s2">&quot;+-&quot;</span><span class="p">:</span> <span class="n">l_op</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]})</span>
+    <span class="n">fer_op</span> <span class="o">=</span> <span class="n">FermionicOp</span><span class="o">.</span><span class="n">from_polynomial_tensor</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
+    <span class="n">cholesky_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">fer_op</span><span class="p">)</span>
     <span class="n">cholesky_op</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">opname</span> <span class="o">+</span> <span class="s2">&quot;_chol&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">cholesky_op</span>
 
 
 <div class="viewcode-block" id="cholesky_decomposition"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition.html#circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition">[docs]</a><span class="k">def</span> <span class="nf">cholesky_decomposition</span><span class="p">(</span>
     <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
+    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ListOp</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -119,6 +109,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be</span>
 <span class="sd">            calculated.</span>
+<span class="sd">        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis. If ``None``, the input integrals will be</span>
+<span class="sd">            assumed to be in the MO basis.</span>
 <span class="sd">        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.</span>
 
 <span class="sd">    Returns:</span>
@@ -127,55 +119,24 @@
 <span class="sd">              shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
 <span class="sd">            - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after</span>
 <span class="sd">              calculating properties of the decomposed operator (i.e. ground state energy).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        - ValueError:</span>
+<span class="sd">            The input ElectronicStructureProblem contains no particle number information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Store the ElectronicStructureProblem</span>
-    <span class="n">problem</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">problem</span><span class="o">.</span><span class="n">grouped_property_transformed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;There was a problem retrieving the grouped properties from the ElectronicStructureProblem.&quot;</span>
-        <span class="p">)</span>
-    <span class="k">if</span> <span class="n">problem</span><span class="o">.</span><span class="n">driver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;The ElectronicStructureProblem has no driver.&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">driver</span><span class="p">,</span> <span class="n">ElectronicStructureDriver</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;The ElectronicStructureProblem&#39;s driver should be an instance of ElectronicStructureDriver.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">electronic_basis_transform</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">grouped_property_transformed</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span>
-        <span class="s2">&quot;ElectronicBasisTransform&quot;</span>
+    <span class="n">hcore</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">electronic_integrals</span><span class="o">.</span><span class="n">one_body</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">])</span>
+    <span class="n">eri</span> <span class="o">=</span> <span class="n">to_chemist_ordering</span><span class="p">(</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">electronic_integrals</span><span class="o">.</span><span class="n">two_body</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;++--&quot;</span><span class="p">]</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">electronic_basis_transform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;There was a problem retrieving the ElectronicBasisTransform property from the ElectronicStructureProblem.&quot;</span>
+    <span class="n">num_alpha</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">num_alpha</span>
+    <span class="k">if</span> <span class="n">num_alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The input ElectronicStructureProblem contains no particle number information.&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">electronic_energy</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">grouped_property_transformed</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span>
-        <span class="s2">&quot;ElectronicEnergy&quot;</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">electronic_energy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;There was a problem retrieving the ElectronicEnergy property from the ElectronicStructureProblem.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">particle_number</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">grouped_property_transformed</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span>
-        <span class="s2">&quot;ParticleNumber&quot;</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">particle_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;There was a problem retrieving the ParticleNumber property from the ElectronicStructureProblem.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="c1"># Get data for generating the cholesky decomposition</span>
-    <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_basis_transform</span><span class="o">.</span><span class="n">coeff_alpha</span>
-    <span class="n">hcore</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
-        <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">AO</span><span class="p">,</span> <span class="mi">1</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">eri</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">get_electronic_integral</span><span class="p">(</span>
-        <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">AO</span><span class="p">,</span> <span class="mi">2</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">_matrices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">num_alpha</span> <span class="o">=</span> <span class="n">particle_number</span><span class="o">.</span><span class="n">num_alpha</span>
+    <span class="c1"># If no mo coeffs are passed, we assume the integrals are with respect to MO basis</span>
+    <span class="k">if</span> <span class="n">mo_coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">eri</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eri</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># Store the reduced orbitals as virtual and occupied lists</span>
     <span class="k">if</span> <span class="n">orbitals_to_reduce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -186,8 +147,9 @@
 
     <span class="c1"># Hold fields used to calculate the final energy shift</span>
     <span class="c1"># Freeze shift will be calculated during decomposition</span>
-    <span class="n">freeze_shift</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">nuclear_repulsion_energy</span> <span class="o">=</span> <span class="n">electronic_energy</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span>
+    <span class="n">nuclear_repulsion_energy</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">nuclear_repulsion_energy</span>
+    <span class="k">if</span> <span class="n">nuclear_repulsion_energy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nuclear_repulsion_energy</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="n">h_1_op</span><span class="p">,</span> <span class="n">h_chol_ops</span><span class="p">,</span> <span class="n">freeze_shift</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_fermionic_ops_with_cholesky</span><span class="p">(</span>
         <span class="n">mo_coeff</span><span class="p">,</span>
@@ -202,9 +164,7 @@
     <span class="n">op_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">h_1_op</span><span class="p">]</span> <span class="o">+</span> <span class="n">h_chol_ops</span>
     <span class="n">operator</span> <span class="o">=</span> <span class="n">ListOp</span><span class="p">(</span><span class="n">op_list</span><span class="p">)</span>
 
-    <span class="n">energy_shift</span> <span class="o">=</span> <span class="n">freeze_shift</span> <span class="o">+</span> <span class="n">nuclear_repulsion_energy</span>
-
-    <span class="k">return</span> <span class="n">operator</span><span class="p">,</span> <span class="n">energy_shift</span></div>
+    <span class="k">return</span> <span class="n">operator</span><span class="p">,</span> <span class="n">nuclear_repulsion_energy</span> <span class="o">+</span> <span class="n">freeze_shift</span></div>
 
 
 <div class="viewcode-block" id="convert_cholesky_operator"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html#circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator">[docs]</a><span class="k">def</span> <span class="nf">convert_cholesky_operator</span><span class="p">(</span>
@@ -424,16 +384,10 @@
 
     <span class="k">if</span> <span class="n">halve_transformed_h2</span><span class="p">:</span>
         <span class="n">h2</span> <span class="o">/=</span> <span class="mi">2</span>  <span class="c1"># type: ignore</span>
-    <span class="n">h1_int</span> <span class="o">=</span> <span class="n">OneBodyElectronicIntegrals</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">SO</span><span class="p">,</span> <span class="n">matrices</span><span class="o">=</span><span class="n">h1</span><span class="p">)</span>
-    <span class="n">h2_int</span> <span class="o">=</span> <span class="n">TwoBodyElectronicIntegrals</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">SO</span><span class="p">,</span> <span class="n">matrices</span><span class="o">=</span><span class="n">h2</span><span class="p">)</span>
-    <span class="n">int_property</span> <span class="o">=</span> <span class="n">IntegralProperty</span><span class="p">(</span><span class="s2">&quot;fer_op&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">h1_int</span><span class="p">,</span> <span class="n">h2_int</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">int_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">fer_op</span> <span class="o">=</span> <span class="n">int_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()[</span><span class="s2">&quot;fer_op&quot;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fer_op</span> <span class="o">=</span> <span class="n">int_property</span><span class="o">.</span><span class="n">second_q_ops</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">converter</span> <span class="o">=</span> <span class="n">QubitConverter</span><span class="p">(</span><span class="n">JordanWignerMapper</span><span class="p">())</span>
+    <span class="n">pt</span> <span class="o">=</span> <span class="n">PolynomialTensor</span><span class="p">({</span><span class="s2">&quot;+-&quot;</span><span class="p">:</span> <span class="n">h1</span><span class="p">,</span> <span class="s2">&quot;++--&quot;</span><span class="p">:</span> <span class="n">to_physicist_ordering</span><span class="p">(</span><span class="n">h2</span><span class="p">)})</span>
+    <span class="n">fer_op</span> <span class="o">=</span> <span class="n">FermionicOp</span><span class="o">.</span><span class="n">from_polynomial_tensor</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
     <span class="n">qubit_op</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">fer_op</span><span class="p">)</span>
 
     <span class="n">qubit_op</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">opname</span> <span class="o">+</span> <span class="s2">&quot;_onebodyop&quot;</span>

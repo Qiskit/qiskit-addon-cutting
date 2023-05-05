@@ -69,25 +69,21 @@
 </ol>
 <section id="Instantiate-the-ElectronicStructureProblem">
 <h2>Instantiate the <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code><a class="headerlink" href="#Instantiate-the-ElectronicStructureProblem" title="Permalink to this heading">¶</a></h2>
-<p>First, we set up the <span class="math notranslate nohighlight">\(\mathrm{H}_2\)</span> molecule, specify the driver and converter, and instantiate an <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>, just like is done in the <a class="reference external" href="https://github.com/Qiskit/qiskit-nature/blob/stable/0.4/docs/tutorials/03_ground_state_solvers.ipynb">Qiskit Nature VQE tutorial</a>.</p>
+<p>First, we set up the <span class="math notranslate nohighlight">\(\mathrm{H}_2\)</span> molecule, specify the driver and converter, and instantiate an <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>. We also get the coefficients for translating to MO basis, since entanglement forging needs to transform the inputs.</p>
+<p>If the input <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code> is already defined in the MO basis, the coefficients don’t need to be calculated or accounted for.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.drivers</span> <span class="kn">import</span> <span class="n">Molecule</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.drivers.second_quantization</span> <span class="kn">import</span> <span class="n">PySCFDriver</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.problems.second_quantization</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.second_q.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.formats</span> <span class="kn">import</span> <span class="n">get_ao_to_mo_from_qcschema</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span> <span class="n">ElectronicBasis</span>
 
-<span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>
-        <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.735</span><span class="p">]),</span>
-    <span class="p">],</span>
-    <span class="n">charge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">multiplicity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">driver</span> <span class="o">=</span> <span class="n">PySCFDriver</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;sto3g&quot;</span><span class="p">)</span>
-<span class="n">problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="s2">&quot;H 0.0 0.0 0.0; H 0.0 0.0 0.735&quot;</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">to_problem</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">AO</span><span class="p">)</span>
+<span class="n">qcschema</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">to_qcschema</span><span class="p">()</span>
+<span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">get_ao_to_mo_from_qcschema</span><span class="p">(</span><span class="n">qcschema</span><span class="p">)</span><span class="o">.</span><span class="n">coefficients</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -156,6 +152,7 @@ q_1: ┤1                     ├
 <li><p>If multiple backend names are passed, the expectation value calculations at each iteration will be divided evenly among them and calculated in parallel.</p></li>
 <li><p>If a single options argument is passed, it will be used for all backends. If a list of options is passed, they will be synchronized with the backends 1:1</p></li>
 <li><p>If the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> field is not set, it will be initialized to all 0’s.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">mo_coeff</span></code> is not passed, the input problem will be assumed to be in the MO basis</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -176,6 +173,7 @@ q_1: ┤1                     ├
     <span class="n">backend_names</span><span class="o">=</span><span class="n">backend_names</span><span class="p">,</span>
     <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
     <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="n">mo_coeff</span><span class="o">=</span><span class="n">mo_coeff</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -281,7 +279,7 @@ Parameters:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.22.1</td></tr><tr><td><code>qiskit-aer</code></td><td>0.11.1</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.19.2</td></tr><tr><td><code>qiskit</code></td><td>0.39.1</td></tr><tr><td><code>qiskit-nature</code></td><td>0.4.5</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.9.13</td></tr><tr><td>Python compiler</td><td>Clang 12.0.0 </td></tr><tr><td>Python build</td><td>main, Aug 25 2022 18:29:29</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Thu Nov 03 18:09:29 2022 CDT</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.23.3</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.0</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.5.2</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.8.16</td></tr><tr><td>Python compiler</td><td>Clang 14.0.6 </td></tr><tr><td>Python build</td><td>default, Mar  1 2023 21:19:10</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Tue Apr 11 19:11:37 2023 CDT</td></tr></table></div>
 </div>
 </section>
 <section id="This-code-is-a-Qiskit-project.">
