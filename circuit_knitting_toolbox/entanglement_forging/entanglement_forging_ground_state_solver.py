@@ -29,7 +29,6 @@ from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import ListOp
 from qiskit_nature.second_q.problems import (
-    BaseProblem,
     ElectronicStructureProblem,
     EigenstateResult,
     ElectronicBasis,
@@ -250,16 +249,15 @@ class EntanglementForgingGroundStateSolver:
 
     def solve(
         self,
-        problem: BaseProblem,
-    ) -> EigenstateResult:
+        problem: ElectronicStructureProblem,
+    ) -> EntanglementForgingResult:
         """Compute Ground State properties.
 
         Args:
-            - problem: a class encoding a problem to be solved.
+            - problem: a class encoding a problem to be solved
 
         Returns:
-            - An interpreted :class:`~.EigenstateResult`. For more information see also
-            :meth:`~.BaseProblem.interpret`.
+            - A result object
 
         Raises:
             - ValueError:
@@ -363,19 +361,17 @@ class EntanglementForgingGroundStateSolver:
 
     def get_qubit_operators(
         self,
-        problem: BaseProblem,
+        problem: ElectronicStructureProblem,
     ) -> ListOp:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
-          - problem (BaseProblem): A class encoding a problem to be solved.
+          - problem (ElectronicStructureProblem): A class encoding a problem to be solved.
 
         Returns:
           - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.
 
         Raises:
-            - ValueError:
-                Input problem was not an instance of ``ElectronicStructureProblem``
             - ValueError:
                 The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``
             - ValueError:
@@ -391,12 +387,10 @@ class EntanglementForgingGroundStateSolver:
         return hamiltonian_ops
 
     @staticmethod
-    def _validate_problem_and_coeffs(problem: BaseProblem, mo_coeff: np.ndarray | None):
+    def _validate_problem_and_coeffs(
+        problem: ElectronicStructureProblem, mo_coeff: np.ndarray | None
+    ):
         """Ensure the input problem can be translated to the MO basis."""
-        if not isinstance(problem, ElectronicStructureProblem):
-            raise TypeError(
-                "EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem."
-            )
         if (problem.basis != ElectronicBasis.MO) and (mo_coeff is None):
             raise ValueError(
                 f"Cannot transform integrals to MO basis. The input problem is in the ({problem.basis}) basis, "
