@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Release Notes &#8212; Circuit Knitting Toolbox 0.0.0 documentation</title>
+    <title>Release Notes &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
@@ -42,31 +42,40 @@
             
   <section id="release-notes">
 <span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
-<section id="release-notes-0-0-0-47">
-<span id="id2"></span><h2>0.0.0-47<a class="headerlink" href="#release-notes-0-0-0-47" title="Permalink to this heading">¶</a></h2>
+<section id="release-notes-0-0-0-48">
+<span id="id2"></span><h2>0.0.0-48<a class="headerlink" href="#release-notes-0-0-0-48" title="Permalink to this heading">¶</a></h2>
 <section id="new-features">
-<span id="release-notes-0-0-0-47-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
+<span id="release-notes-0-0-0-48-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Support for Python 3.11.</p></li>
+</ul>
 <ul class="simple">
 <li><p>Support for Qiskit Nature 0.5.</p></li>
 </ul>
 </section>
 <section id="upgrade-notes">
-<span id="release-notes-0-0-0-47-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">¶</a></h3>
+<span id="release-notes-0-0-0-48-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The minimum supported version of each Qiskit dependency has been
+updated.  This release depends on <code class="docutils literal notranslate"><span class="pre">qiskit-terra&gt;=0.23.3</span></code>,
+<code class="docutils literal notranslate"><span class="pre">qiskit-aer&gt;=0.12.0</span></code>, <code class="docutils literal notranslate"><span class="pre">qiskit-nature&gt;=0.5.2</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">qiskit-ibm-runtime&gt;=0.9.2</span></code>.  <code class="docutils literal notranslate"><span class="pre">qiskit-ibmq-provider</span></code> is now
+deprecated and is no longer required by the Circuit Knitting
+Toolbox.</p></li>
+</ul>
 <ul>
 <li><p>Support for Qiskit Nature &lt; 0.5 has been removed upon this release.</p>
-<p>Users are now be required to use the <code class="docutils literal notranslate"><span class="pre">:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem</span></code>,
-as input to the <code class="docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code>, rather than the deprecated <code class="docutils literal notranslate"><span class="pre">:class:~qiskit_nature.problems.second_quantization.ElectronicStructureProblem</span></code>.</p>
-<p>For more information on migrating to Qiskit Nature 0.5.0, check out the
-[Qiskit Nature migration guide](<a class="reference external" href="https://qiskit.org/documentation/nature/migration/00_Migration_Guide_to_v0.5.html">https://qiskit.org/documentation/nature/migration/00_Migration_Guide_to_v0.5.html</a>).</p>
+<p>Users are now be required to use the <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>,
+as input to the <code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code>, rather than the deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>.</p>
+<p>For more information on migrating to Qiskit Nature 0.5, check out the
+<a class="reference external" href="https://qiskit.org/ecosystem/nature/migration/0.5_a_intro.html">Qiskit Nature migration guide</a>.</p>
 <p>For more information on adapting your entanglement forging workflows, check
-out the [tutorials](<a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/tutorials/">https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/tutorials/</a>)
-and [how-to’s](<a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/how-tos/">https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/how-tos/</a>)
-in the <code class="docutils literal notranslate"><span class="pre">circuit-knitting-toolbox</span></code> repository.</p>
+out the <a class="reference internal" href="entanglement_forging/tutorials/index.html#forging-tutorials"><span class="std std-ref">tutorials</span></a> and <a class="reference internal" href="entanglement_forging/how-tos/index.html#forging-how-tos"><span class="std std-ref">how-to guides</span></a>.</p>
 </li>
 </ul>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">:class:~circuit_knitting_toolbox.utils.IntegralDriver</span></code> class is removed. The new Qiskit Nature
-API allows for a more flexible build-up of the <code class="docutils literal notranslate"><span class="pre">:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem</span></code>,
+<li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">IntegralDriver</span></code> class has been removed. The new Qiskit Nature
+API allows for a more flexible build-up of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>,
 and this driver is no longer needed.</p></li>
 </ul>
 <ul class="simple">
@@ -75,7 +84,7 @@ installed for automatic wire cut finding to work.</p></li>
 </ul>
 </section>
 <section id="deprecation-notes">
-<span id="release-notes-0-0-0-47-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">¶</a></h3>
+<span id="release-notes-0-0-0-48-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been deprecated.  Future
 versions of the Circuit Knitting Toolbox will require Python 3.8
@@ -112,7 +121,7 @@ or higher.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidocs/index.html">API References</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#release-notes-0-0-0-47">0.0.0-47</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-notes-0-0-0-48">0.0.0-48</a></li>
 </ul>
 </li>
 </ul>
@@ -148,7 +157,7 @@ or higher.</p></li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2022.
+      &copy;2023.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
