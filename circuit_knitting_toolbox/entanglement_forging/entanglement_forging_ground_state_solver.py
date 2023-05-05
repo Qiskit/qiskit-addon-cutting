@@ -387,7 +387,9 @@ class EntanglementForgingGroundStateSolver:
         return hamiltonian_ops
 
     @staticmethod
-    def _validate_problem_and_coeffs(problem: ElectronicStructureProblem, mo_coeff: np.ndarray | None):
+    def _validate_problem_and_coeffs(
+        problem: ElectronicStructureProblem, mo_coeff: np.ndarray | None
+    ):
         """Ensure the input problem can be translated to the MO basis."""
         if (problem.basis != ElectronicBasis.MO) and (mo_coeff is None):
             raise ValueError(
