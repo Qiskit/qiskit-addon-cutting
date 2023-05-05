@@ -21,8 +21,6 @@ from qiskit_nature.drivers import Molecule
 from qiskit_nature.drivers.second_quantization import PySCFDriver
 from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
 
-settings.dict_aux_operators = True
-
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
     EntanglementForgingKnitter,
@@ -30,6 +28,8 @@ from circuit_knitting_toolbox.entanglement_forging import (
     convert_cholesky_operator,
 )
 from circuit_knitting_toolbox.utils import IntegralDriver
+
+settings.dict_aux_operators = True
 
 
 class TestEntanglementForgingKnitter(unittest.TestCase):

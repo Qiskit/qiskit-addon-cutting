@@ -10,20 +10,22 @@
 # that they have been altered from the originals.
 
 """File containing the knitter class and associated functions."""
+
+from __future__ import annotations
+
 import time
 import logging
-from typing import List, Optional, Sequence, Tuple, Union, Any, Dict
+from typing import Sequence, Any
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
-from nptyping import Float, Int, NDArray, Shape
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
 from qiskit.primitives import Estimator as TestEstimator
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Options, Estimator
 
-from .entanglement_forging_ansatz import Bitstring, EntanglementForgingAnsatz
+from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
 
 logger = logging.getLogger(__name__)
@@ -55,16 +57,16 @@ class EntanglementForgingKnitter:
             - fix_first_bitstring: Flag for setting the HF bitstring values
             - hf_energy: Value to assign to the HF bitstring circuit experiments
             - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs
-            - backend_names (List[str]): Names of the backends to use for calculating expectation values
-            - options (List[Options]): Options to use with the backends
+            - backend_names (list[str]): Names of the backends to use for calculating expectation values
+            - options (list[Options]): Options to use with the backends
 
         Returns:
             - None
         """
         # Call backend_names setter to update the session_ids hidden class field
-        self._session_ids: Optional[List[Union[str, None]]] = None
-        self._backend_names: Optional[List[str]] = None
-        self._options: Optional[List[Options]] = None
+        self._session_ids: list[str | None] | None = None
+        self._backend_names: list[str] | None = None
+        self._options: list[Options] | None = None
         # Call constructors
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -174,17 +176,17 @@ class EntanglementForgingKnitter:
         List of backend names to be used.
 
         Returns:
-            - (List[str]): the backend_names member variable
+            - (list[str]): the backend_names member variable
         """
         return self._backend_names
 
     @backend_names.setter
-    def backend_names(self, backend_names: Optional[Union[str, List[str]]]) -> None:
+    def backend_names(self, backend_names: str | list[str] | None) -> None:
         """
         Change the backend_names class field.
 
         Args:
-            - backend_names (List[str]): the list of backends to use
+            - backend_names (list[str]): the list of backends to use
 
         Returns:
             - None
@@ -197,22 +199,22 @@ class EntanglementForgingKnitter:
             self._session_ids = [None] * len(backend_names)
 
     @property
-    def options(self) -> Optional[List[Options]]:
+    def options(self) -> list[Options] | None:
         """
         List of options to be used.
 
         Returns:
-            - (List[Options]): the options member variable
+            - (list[Options]): the options member variable
         """
         return self._options
 
     @options.setter
-    def options(self, options: Optional[Union[Options, List[Options]]]) -> None:
+    def options(self, options: Options | list[Options] | None) -> None:
         """
         Change the options class field.
 
         Args:
-            - options (List[Options]): the list of options to use
+            - options (list[Options]): the list of options to use
 
         Returns:
             - None
@@ -223,7 +225,7 @@ class EntanglementForgingKnitter:
             self._options = options
 
     @property
-    def service(self) -> Optional[QiskitRuntimeService]:
+    def service(self) -> QiskitRuntimeService | None:
         """
         Property function for service class field.
 
@@ -233,7 +235,7 @@ class EntanglementForgingKnitter:
         return QiskitRuntimeService(**self._service)
 
     @service.setter
-    def service(self, service: Optional[QiskitRuntimeService]) -> None:
+    def service(self, service: QiskitRuntimeService | None) -> None:
         """
         Change the service class field.
 
@@ -249,9 +251,7 @@ class EntanglementForgingKnitter:
         self,
         ansatz_parameters: Sequence[float],
         forged_operator: EntanglementForgingOperator,
-    ) -> Tuple[
-        float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]
-    ]:  # noqa: D301, D202
+    ) -> tuple[float, np.ndarray, np.ndarray]:
         r"""Calculate the energy.
 
         Computes ⟨H⟩ - the energy value and the Schmidt matrix, $h_{n, m}$, given
@@ -277,7 +277,7 @@ class EntanglementForgingKnitter:
                 value from
 
         Returns:
-            - (Tuple[float, NDArray[Shape["*"], Float], NDArray[Shape["*, *"], Float]]): a tuple
+            - (tuple[float, np.ndarray, np.ndarray]): a tuple
                 containing the energy (i.e. forged expectation value), the Schmidt coefficients,
                 and the full Schmidt decomposition matrix
         """
@@ -337,7 +337,7 @@ class EntanglementForgingKnitter:
         if self._service:
             service_args = self._service
 
-        session_ids: Optional[List[Union[str, None]]] = None
+        session_ids: list[str | None] | None = None
         if self._session_ids is None:
             session_ids = [None] * num_partitions
         else:
@@ -435,24 +435,23 @@ class EntanglementForgingKnitter:
     def _compute_h_schmidt(
         self,
         forged_operator: EntanglementForgingOperator,
-        tensor_expvals: NDArray[Shape["*, *"], Float],
-        superpos_expvals: NDArray[Shape["*, *"], Float],
-    ) -> NDArray[Shape["*, *"], Float]:  # noqa: D202
+        tensor_expvals: np.ndarray,
+        superpos_expvals: np.ndarray,
+    ) -> np.ndarray:
         """
         Compute the Schmidt decomposition of the Hamiltonian.
 
         Args:
             - forged_operator (EntanglementForgingOperator): the operator that the
                 forged expectation values are computed with
-            - tensor_expvals (NDArray[Shape["*, *"], Float]): the expectation values
+            - tensor_expvals (np.ndarray): the expectation values
                 for the tensor circuits (i.e. same Schmidt coefficients)
-            - superpos_expvals (NDArray[Shape["*, *"], Float]): the expectation values
+            - superpos_expvals (np.ndarray): the expectation values
                 for the superposition circuits (i.e. different Schmidt coefficients)
 
         Returns:
-           - (NDArray[Shape["*, *"], Float]): the Schmidt matrix
+           - (np.ndarray): the Schmidt matrix
         """
-
         # Calculate the diagonal entries of the Schmidt matrix by
         # summing the expectation values associated with the tensor terms
         # h𝑛𝑛 = Σ_ab 𝑤𝑎𝑏•[ 𝜆𝑛^2•⟨b𝑛|U^t•P𝑎•U|b𝑛⟩⟨b𝑛|V^t•P𝑏•V|b𝑛⟩ ]
@@ -545,9 +544,9 @@ class EntanglementForgingKnitter:
 
 
 def _construct_stateprep_circuits(
-    bitstrings: List[Bitstring],
-    subsystem_id: Optional[str] = None,
-) -> Tuple[List[QuantumCircuit], List[QuantumCircuit]]:  # noqa: D301
+    bitstrings: list[tuple[int, ...]],
+    subsystem_id: str | None = None,
+) -> tuple[list[QuantumCircuit], list[QuantumCircuit]]:
     r"""Prepare all circuits.
 
     Function to make the state preparation circuits. This constructs a set
@@ -601,11 +600,11 @@ def _construct_stateprep_circuits(
          └───┘     └───┘
 
     Args:
-        - bitstrings (List[Bitstring]): the input list of bitstrings used to generate the state preparation circuits
-        - subsystem_id (Optional[str]): the subsystem the bitstring reflects ("u" or "v")
+        - bitstrings (list[tuple[int, ...]]): the input list of bitstrings used to generate the state preparation circuits
+        - subsystem_id (str | None): the subsystem the bitstring reflects ("u" or "v")
 
     Returns:
-        - (Tuple[List[QuantumCircuit], List[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition
+        - (tuple[list[QuantumCircuit], list[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition
             or bitstring) circuits in the first index (length = len(bitstrings)) and the super-position circuits
             as the second element
     """
@@ -672,8 +671,8 @@ def _construct_stateprep_circuits(
 
 
 def _prepare_bitstring(
-    bitstring: Union[NDArray[Shape["*"], Int], Bitstring],
-    name: Optional[str] = None,
+    bitstring: np.ndarray | tuple[int, ...],
+    name: str | None = None,
 ) -> QuantumCircuit:
     """Prepare the bitstring circuits.
 
@@ -681,7 +680,7 @@ def _prepare_bitstring(
     every qubit that has a 1 in the bitstring.
 
     Args:
-        - bitstring (Union[NDArray[Shape["*"], Int], Bitstring]): the container for the
+        - bitstring (np.ndarray | tuple[int, ...]): the container for the
             bitstring information. Must contain 0s and 1s and the 1s are used to determine
             where to put the X gates
         - name (str, optional): the name of the circuit
@@ -734,13 +733,13 @@ def _estimate_expvals(
     process).
 
     Args:
-        - tensor_ansatze (List[QuantumCircuit]): the circuits that have the same
+        - tensor_ansatze (list[QuantumCircuit]): the circuits that have the same
             Schmidt coefficient
-        - tensor_paulis (List[Pauli]): the pauli operators to measure and calculate
+        - tensor_paulis (list[Pauli]): the pauli operators to measure and calculate
             the expectation values from for the circuits with the same Schmidt coefficient
-        - superposition_ansatze (List[QuantumCircuit]): the circuits with different
+        - superposition_ansatze (list[QuantumCircuit]): the circuits with different
             Schmidt coefficients
-        - superposition_paulis (List[Pauli]): the pauli operators to measure and calculate
+        - superposition_paulis (list[Pauli]): the pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt
             coefficients
         - fix_first_bitstring (bool): flag for determining whether to hard-code the values
@@ -751,7 +750,7 @@ def _estimate_expvals(
         - session_id (str): The session id to use when calling primitive programs
 
     Returns:
-        - (Tuple[List[NDArray], List[NDArray], Optional[str]]): the expectation values for the
+        - (tuple[list[np.ndarray], list[np.ndarray], str | None]): the expectation values for the
             tensor circuits and superposition circuits
     """
     if fix_first_bitstring:
@@ -765,8 +764,8 @@ def _estimate_expvals(
         ansatz_t += [circuit] * len(tensor_paulis)
         observables_t += tensor_paulis
 
-    ansatz_s: List[QuantumCircuit] = []
-    observables_s: List[Pauli] = []
+    ansatz_s: list[QuantumCircuit] = []
+    observables_s: list[Pauli] = []
     for i, circuit in enumerate(superposition_ansatze):
         ansatz_s += [circuit] * len(superposition_paulis)
         observables_s += superposition_paulis
@@ -775,7 +774,7 @@ def _estimate_expvals(
     all_observables_for_estimator = observables_t + observables_s
 
     # ID for this job. If it is the first job for the knitter, it will become the session ID
-    job_id: Optional[str] = None
+    job_id: str | None = None
     if service_args is not None:
         # Set the backend. Default to runtime qasm simulator
         if backend_name is None:
@@ -812,10 +811,7 @@ def _estimate_expvals(
         job_id = job.job_id
 
     else:
-        estimator = TestEstimator(
-            circuits=all_circuits,
-            observables=all_observables,
-        )
+        estimator = TestEstimator()
         results = (
             estimator.run(
                 circuits=all_ansatze_for_estimator,

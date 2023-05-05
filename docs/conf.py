@@ -32,7 +32,7 @@ sys.path.insert(0, str(_rootdir))
 # The full version, including alpha/beta/rc tags
 release = metadata_version("circuit_knitting_toolbox")
 # The short X.Y version
-version = version = ".".join(release.split(".")[:2])
+version = ".".join(release.split(".")[:2])
 
 extensions = [
     "sphinx.ext.napoleon",
@@ -44,7 +44,7 @@ extensions = [
     # "sphinx.ext.autosectionlabel",
     "jupyter_sphinx",
     "sphinx_autodoc_typehints",
-    # "reno.sphinxext",
+    "reno.sphinxext",
     "nbsphinx",
     "sphinx_copybutton",
 ]

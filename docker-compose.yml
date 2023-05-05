@@ -3,6 +3,7 @@ version: "3.4"
 services:
   notebook:
     build: .
+    platform: linux/amd64
     restart: unless-stopped
     # The following line allows Ray to use /dev/shm rather than warn
     # about using /tmp

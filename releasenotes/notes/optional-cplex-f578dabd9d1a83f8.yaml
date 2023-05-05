@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    DOcplex and cplex are now optional dependencies.  They must be
+    installed for automatic wire cut finding to work.

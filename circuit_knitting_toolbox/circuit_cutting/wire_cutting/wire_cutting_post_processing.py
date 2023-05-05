@@ -10,20 +10,21 @@
 # that they have been altered from the originals.
 
 """File containing all cutting post processing functionality."""
+
+from __future__ import annotations
+
 import itertools
 import multiprocessing as mp
-from typing import Dict, Sequence, Union, Tuple, List, Optional, Any
-
+from typing import Sequence, Any
 
 import numpy as np
-from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 
 
 def get_cut_qubit_pairs(
-    complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]]
-) -> List[Tuple[Dict[str, Union[int, Any]], Dict[str, Union[int, Any]]]]:
+    complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]]
+) -> list[tuple[dict[str, Any], dict[str, Any]]]:
     """
     Get O-rho cut qubit pairs.
 
@@ -71,9 +72,9 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
 
 def attribute_label(
     label: Sequence[str],
-    O_rho_pairs: List[Tuple[Dict[str, Union[int, Any]], Dict[str, Union[int, Any]]]],
+    O_rho_pairs: list[tuple[dict[str, Any], dict[str, Any]]],
     num_subcircuits: int,
-) -> Dict[int, Dict[str, str]]:
+) -> dict[int, dict[str, str]]:
     """
     Get the label attributed to each subcircuit.
 
@@ -100,7 +101,7 @@ def attribute_label(
                 "O_rho_pairs should only contain sequences of length 2: {pair}"
             )
         O_qubit = pair[0]
-        rho_qubit: Dict[str, Union[int, Qubit]] = pair[-1]
+        rho_qubit: dict[str, int | Qubit] = pair[-1]
         subcircuit_label[O_qubit["subcircuit_idx"]]["meas"] += c
         subcircuit_label[rho_qubit["subcircuit_idx"]]["init"] += c
     return subcircuit_label
@@ -109,9 +110,9 @@ def attribute_label(
 def fill_label(
     subcircuit_idx: int,
     subcircuit: QuantumCircuit,
-    subcircuit_label: Dict[str, str],
-    O_rho_pairs: List[Tuple[Dict[str, Union[int, Any]], Dict[str, Union[int, Any]]]],
-) -> Tuple[List[str], List[str]]:
+    subcircuit_label: dict[str, str],
+    O_rho_pairs: list[tuple[dict[str, Any], dict[str, Any]]],
+) -> tuple[list[str], list[str]]:
     """
     Given a subcircuit, its label and O-rho cut qubit pairs fill the full init, meas strings.
 
@@ -133,7 +134,7 @@ def fill_label(
         if len(pair) != 2:
             raise ValueError(f"O_rho_pairs should be length 2: {O_rho_pairs}")
         O_qubit = pair[0]
-        rho_qubit: Dict[str, Union[int, Qubit]] = pair[-1]
+        rho_qubit: dict[str, int | Qubit] = pair[-1]
         if O_qubit["subcircuit_idx"] == subcircuit_idx:
             qubit_idx = subcircuit.qubits.index(O_qubit["subcircuit_qubit"])
             meas[qubit_idx] = subcircuit_label["meas"][subcircuit_meas_label_counter]
@@ -147,7 +148,7 @@ def fill_label(
 
 def get_init_meas(
     init_label: Sequence[str], meas_label: Sequence[str]
-) -> List[Tuple[Tuple[str, ...], Tuple[str, ...]]]:
+) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
     """
     Generate the initial measurements.
 
@@ -186,7 +187,7 @@ def get_init_meas(
     return subcircuit_init_meas
 
 
-def convert_to_physical_init(init: List[str]) -> Tuple[int, Tuple[str, ...]]:
+def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     """
     Convert the initial measurements to the physical representations.
 
@@ -224,12 +225,12 @@ def convert_to_physical_init(init: List[str]) -> Tuple[int, Tuple[str, ...]]:
 
 def generate_summation_terms(
     subcircuits: Sequence[QuantumCircuit],
-    complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]],
+    complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]],
     num_cuts: int,
-) -> Tuple[
-    List[Dict[int, int]],
-    Dict[int, Dict[Tuple[str, str], Tuple[int, Sequence[Tuple[int, int]]]]],
-    Dict[int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]],
+) -> tuple[
+    list[dict[int, int]],
+    dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]],
+    dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
 ]:
     """
     Generate all summation terms for the final reconstructions.
@@ -261,11 +262,11 @@ def generate_summation_terms(
         - (dict): dictionary containing subcircuit instances
     """
     summation_terms = []
-    subcircuit_entries: Dict[
-        int, Dict[Tuple[str, str], Tuple[int, Sequence[Tuple[int, int]]]]
+    subcircuit_entries: dict[
+        int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]
     ] = {subcircuit_idx: {} for subcircuit_idx in range(len(subcircuits))}
-    subcircuit_instances: Dict[
-        int, Dict[Tuple[Tuple[str, ...], Tuple[Any, ...]], int]
+    subcircuit_instances: dict[
+        int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]
     ] = {subcircuit_idx: {} for subcircuit_idx in range(len(subcircuits))}
     O_rho_pairs = get_cut_qubit_pairs(complete_path_map=complete_path_map)
     for summation_term_idx in range(4**num_cuts):
@@ -308,8 +309,8 @@ def generate_summation_terms(
                         raise ValueError(
                             f"init_meas variable should be a length-2 tuple: {init_meas}"
                         )
-                    init: Tuple[str, ...] = init_meas[0]
-                    meas: Tuple[str, ...] = init_meas[-1]
+                    init: tuple[str, ...] = init_meas[0]
+                    meas: tuple[str, ...] = init_meas[-1]
                     coefficient, init = convert_to_physical_init(
                         init=list(init_meas[0])
                     )
@@ -339,9 +340,9 @@ def generate_summation_terms(
 
 def naive_compute(
     subcircuit_order: Sequence[int],
-    summation_terms: Sequence[Dict[int, int]],
-    subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
-) -> Tuple[Optional[NDArray], Dict[str, int]]:
+    summation_terms: Sequence[dict[int, int]],
+    subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
+) -> tuple[np.ndarray | None, dict[str, int]]:
     """
     Reconstruct the full probability distribution from the subcircuits.
 
@@ -356,7 +357,7 @@ def naive_compute(
             the subcircuit executions
 
     Returns:
-        - (NDArray): the reconstructed probability distribution
+        - (np.ndarray): the reconstructed probability distribution
         - (dict): the approximate computational overhead of the function
     """
     reconstructed_prob = None
@@ -384,11 +385,11 @@ def naive_compute(
 
 
 def build(
-    summation_terms: Sequence[Dict[int, int]],
-    subcircuit_entry_probs: Dict[int, Dict[int, NDArray]],
+    summation_terms: Sequence[dict[int, int]],
+    subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
     num_cuts: int,
     num_threads: int,
-) -> Tuple[NDArray, List[int], Dict[str, int]]:
+) -> tuple[np.ndarray, list[int], dict[str, int]]:
     """
     Reconstruct the full probability distribution from the subcircuits.
 
@@ -404,7 +405,7 @@ def build(
         a tuple
         containing:
 
-        - (NDArray): the reconstructed probability distribution of the full
+        - (np.ndarray): the reconstructed probability distribution of the full
           circuit
         - (list): the ordering of the distribution
         - (dict): the computational post-processing overhead
@@ -444,8 +445,8 @@ def build(
 
 
 def _find_process_jobs(
-    jobs: Sequence[Dict[int, int]], rank: int, num_workers: int
-) -> Sequence[Dict[int, int]]:
+    jobs: Sequence[dict[int, int]], rank: int, num_workers: int
+) -> Sequence[dict[int, int]]:
     """
     Split up the total jobs into subjobs to be multithreaded.
 

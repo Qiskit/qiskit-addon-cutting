@@ -11,11 +11,13 @@
 
 """File that contains the function to verify the results of the cut circuits."""
 
-import psutil, copy
-from typing import Tuple, Sequence, Dict, Union, List
+from __future__ import annotations
+
+import copy
+import psutil
+from typing import Sequence
 
 import numpy as np
-from nptyping import NDArray
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
@@ -33,8 +35,8 @@ from circuit_knitting_toolbox.utils.metrics import (
 
 def verify(
     full_circuit: QuantumCircuit,
-    reconstructed_output: NDArray,
-) -> Tuple[Dict[str, Dict[str, float]], Sequence[float]]:
+    reconstructed_output: np.ndarray,
+) -> tuple[dict[str, dict[str, float]], Sequence[float]]:
     """
     Compare the reconstructed probabilities to the ground truth.
 
@@ -44,7 +46,7 @@ def verify(
 
     Args:
         - full_circuit (QuantumCircuit): the original quantum circuit that was cut
-        - reconstructed_output (NDArray): the reconstructed probability distribution from the
+        - reconstructed_output (np.ndarray): the reconstructed probability distribution from the
             execution of the subcircuits
 
     Returns:
@@ -80,26 +82,26 @@ def verify(
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
     subcircuits: Sequence[QuantumCircuit],
-    unordered: NDArray,
+    unordered: np.ndarray,
     smart_order: Sequence[int],
-    complete_path_map: Dict[Qubit, Sequence[Dict[str, Union[int, Qubit]]]],
-) -> NDArray:
+    complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]],
+) -> np.ndarray:
     """
     Reorder the probability distribution.
 
     Args:
         - full_circuit (QuantumCircuit): the original uncut circuit
         - subcircuits (list): the cut subcircuits
-        - unordered (NDArray): the unordered results of the subcircuits
+        - unordered (np.ndarray): the unordered results of the subcircuits
         - smart_order (list): the correct ordering of the subcircuits
         - complete_path_map (dict): the path map of the cuts, as defined from the
             cutting function
 
     Returns:
-        - (NDArray): the reordered and reconstructed probability distribution over the
+        - (np.ndarray): the reordered and reconstructed probability distribution over the
             full circuit
     """
-    subcircuit_out_qubits: Dict[int, List[Qubit]] = {
+    subcircuit_out_qubits: dict[int, list[Qubit]] = {
         subcircuit_idx: [] for subcircuit_idx in smart_order
     }
     for input_qubit in complete_path_map:
@@ -119,7 +121,7 @@ def generate_reconstructed_output(
             x[1] for x in subcircuit_out_qubits[subcircuit_idx]
         ]
 
-    unordered_qubit: List[int] = []
+    unordered_qubit: list[int] = []
     for subcircuit_idx in smart_order:
         unordered_qubit += subcircuit_out_qubits[subcircuit_idx]
 
