@@ -1,3 +1,5 @@
+.. _Forging tutorials:
+
 ##############################
 Entanglement Forging Tutorials
 ##############################

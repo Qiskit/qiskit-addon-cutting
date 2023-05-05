@@ -23,7 +23,7 @@ import sys
 from importlib_metadata import version as metadata_version
 
 project = "Circuit Knitting Toolbox"
-copyright = "2022"  # pylint: disable=redefined-builtin
+copyright = "2023"  # pylint: disable=redefined-builtin
 author = "IBM Quantum"
 
 _rootdir = Path(__file__).parent.parent

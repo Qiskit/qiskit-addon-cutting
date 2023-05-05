@@ -1,0 +1,12 @@
+---
+features:
+  - |
+    Support for Python 3.11.
+upgrade:
+  - |
+    The minimum supported version of each Qiskit dependency has been
+    updated.  This release depends on ``qiskit-terra>=0.23.3``,
+    ``qiskit-aer>=0.12.0``, ``qiskit-nature>=0.5.2``, and
+    ``qiskit-ibm-runtime>=0.9.2``.  ``qiskit-ibmq-provider`` is now
+    deprecated and is no longer required by the Circuit Knitting
+    Toolbox.
