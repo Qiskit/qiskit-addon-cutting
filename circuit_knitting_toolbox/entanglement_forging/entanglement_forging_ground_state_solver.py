@@ -29,7 +29,6 @@ from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit.opflow import ListOp
 from qiskit_nature.second_q.problems import (
-    BaseProblem,
     ElectronicStructureProblem,
     EigenstateResult,
     ElectronicBasis,
@@ -250,16 +249,15 @@ class EntanglementForgingGroundStateSolver:
 
     def solve(
         self,
-        problem: BaseProblem,
-    ) -> EigenstateResult:
+        problem: ElectronicStructureProblem,
+    ) -> EntanglementForgingResult:
         """Compute Ground State properties.
 
         Args:
-            - problem: a class encoding a problem to be solved.
+            - problem: a class encoding a problem to be solved
 
         Returns:
-            - An interpreted :class:`~.EigenstateResult`. For more information see also
-            :meth:`~.BaseProblem.interpret`.
+            - A result object
 
         Raises:
             - ValueError:
