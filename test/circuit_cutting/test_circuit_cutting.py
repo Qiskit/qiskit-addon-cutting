@@ -12,7 +12,7 @@
 """Tests for circuit_cutting package."""
 
 import unittest
-import importlib
+import importlib.util
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -24,7 +24,7 @@ from circuit_knitting_toolbox.circuit_cutting.wire_cutting import (
     verify,
 )
 
-cplex_available = importlib.find_loader("cplex") is not None
+cplex_available = importlib.util.find_spec("cplex") is not None
 
 
 class TestCircuitCutting(unittest.TestCase):
