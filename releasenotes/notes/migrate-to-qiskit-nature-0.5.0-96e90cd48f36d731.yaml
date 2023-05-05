@@ -1,20 +1,20 @@
 ---
 features:
   - |
-    Full support for Qiskit Nature 0.5.0.
+    Support for Qiskit Nature 0.5.
 upgrade:
   - |
-    Support for Qiskit Nature < 0.5.0 has been removed upon this release.
+    Support for Qiskit Nature < 0.5 has been removed upon this release.
 
     Users are now be required to use the ``:class:~qiskit_nature.second_q.problems.ElectronicStructureProblem``,
-    as input to the entanglement forging, rather than the deprecated ``:class:~qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
+    as input to the ``EntanglementForgingGroundStateSolver``, rather than the deprecated ``:class:~qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
 
     For more information on migrating to Qiskit Nature 0.5.0, check out the
     [Qiskit Nature migration guide](https://qiskit.org/documentation/nature/migration/00_Migration_Guide_to_v0.5.html).
 
     For more information on adapting your entanglement forging workflows, check
-    out the [tutorials](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/tutorials/entanglement_forging)
-    and [how-to's](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/how-tos/entanglement_forging)
+    out the [tutorials](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/tutorials/)
+    and [how-to's](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/entanglement_forging/how-tos/)
     in the ``circuit-knitting-toolbox`` repository.
 
   - |
