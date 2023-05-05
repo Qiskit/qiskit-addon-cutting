@@ -1,7 +1,7 @@
 ---
 features:
   - |
-    Python 3.11 is now supported.
+    Support for Python 3.11.
 upgrade:
   - |
     The minimum supported version of each Qiskit dependency has been
