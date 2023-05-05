@@ -66,7 +66,6 @@
 <span class="kn">from</span> <span class="nn">.wire_cutting_evaluation</span> <span class="kn">import</span> <span class="n">run_subcircuit_instances</span>
 <span class="kn">from</span> <span class="nn">.wire_cutting_post_processing</span> <span class="kn">import</span> <span class="n">generate_summation_terms</span><span class="p">,</span> <span class="n">build</span>
 <span class="kn">from</span> <span class="nn">.wire_cutting_verification</span> <span class="kn">import</span> <span class="n">generate_reconstructed_output</span>
-<span class="kn">from</span> <span class="nn">.mip_model</span> <span class="kn">import</span> <span class="n">MIPModel</span>
 
 
 <div class="viewcode-block" id="cut_circuit_wires"><a class="viewcode-back" href="../../../../stubs/circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires.html#circuit_knitting_toolbox.circuit_cutting.wire_cutting.cut_circuit_wires">[docs]</a><span class="k">def</span> <span class="nf">cut_circuit_wires</span><span class="p">(</span>
@@ -404,6 +403,8 @@
             <span class="n">num_qubits</span><span class="o">=</span><span class="n">num_qubits</span><span class="p">,</span>
             <span class="n">max_cuts</span><span class="o">=</span><span class="n">max_cuts</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">.mip_model</span> <span class="kn">import</span> <span class="n">MIPModel</span>
 
         <span class="n">mip_model</span> <span class="o">=</span> <span class="n">MIPModel</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">feasible</span> <span class="o">=</span> <span class="n">mip_model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">min_postprocessing_cost</span><span class="o">=</span><span class="n">min_cost</span><span class="p">)</span>
