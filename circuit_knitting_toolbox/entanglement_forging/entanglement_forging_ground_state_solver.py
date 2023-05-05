@@ -136,7 +136,7 @@ class EntanglementForgingGroundStateSolver:
         Assign the necessary class variables and initialize any defaults.
 
         Args:
-            - ansatz: Class which holes the ansatz circuit and bitstrings
+            - ansatz: Class which holds the ansatz circuit and bitstrings
             - service: The service used to spawn Qiskit primitives
             - optimizer: Optimizer to use to optimize the ansatz circuit parameters
             - initial_point: Initial values for ansatz parameters
