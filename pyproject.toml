@@ -40,12 +40,15 @@ cplex = [
     "docplex>=2.23.222; python_version < '3.11' and platform_machine != 'arm64'",
     "cplex>=22.1.0.0; python_version < '3.11' and platform_machine != 'arm64'",
 ]
+pyscf = [
+    "pyscf>=2.0.1; sys_platform != 'win32'",
+]
 dev = [
     "circuit-knitting-toolbox[test,lint]",
     "nbmake",
 ]
 test = [
-    "pyscf>=2.0.1; sys_platform != 'win32'",
+    "circuit-knitting-toolbox[pyscf]",
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
 ]
@@ -71,9 +74,8 @@ docs = [
     "reno>=3.4.0",
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex]",
+    "circuit-knitting-toolbox[cplex,pyscf]",
     "quantum-serverless>=0.0.7",
-    "pyscf>=2.0.1; sys_platform != 'win32'",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
