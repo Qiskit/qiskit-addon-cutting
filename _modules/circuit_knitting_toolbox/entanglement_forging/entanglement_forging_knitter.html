@@ -80,20 +80,6 @@
 <span class="sd">    ansatz parameters and Schmidt coefficients.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Attributes:</span>
-    <span class="c1">#     - _ansatz (EntanglementForgingAnsatz): the ansatz containing the</span>
-    <span class="c1">#         information for the circuit structure and bitstrings to be used</span>
-    <span class="c1">#     - _backend_names (list[str]): the names of the backends to use</span>
-    <span class="c1">#     - _service (QiskitRuntimeService): the service used to access backends</span>
-    <span class="c1">#     - _tensor_circuits_u (list[QuantumCircuit]): the set of circuits used for the first</span>
-    <span class="c1">#         operator that have the same Schmidt values</span>
-    <span class="c1">#     - _superposition_circuits_u (list[QuantumCircuit]): the set of circuits used for</span>
-    <span class="c1">#         the first operator that have different Schmidt values</span>
-    <span class="c1">#     - _tensor_circuits_v (list[QuantumCircuit]): the set of circuits used for the second</span>
-    <span class="c1">#         operator that have the same Schmidt values</span>
-    <span class="c1">#     - _superposition_circuits_v (list[QuantumCircuit]): the set of circuits used for</span>
-    <span class="c1">#         the second operator that have different Schmidt values</span>
-
 <div class="viewcode-block" id="EntanglementForgingKnitter.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>

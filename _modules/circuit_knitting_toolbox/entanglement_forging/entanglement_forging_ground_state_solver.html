@@ -70,7 +70,6 @@
 <span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerResult</span>
 <span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">BaseProblem</span><span class="p">,</span>
     <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="n">EigenstateResult</span><span class="p">,</span>
     <span class="n">ElectronicBasis</span><span class="p">,</span>
@@ -291,16 +290,15 @@
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">problem</span><span class="p">:</span> <span class="n">BaseProblem</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EigenstateResult</span><span class="p">:</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntanglementForgingResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute Ground State properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - problem: a class encoding a problem to be solved.</span>
+<span class="sd">            - problem: a class encoding a problem to be solved</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - An interpreted :class:`~.EigenstateResult`. For more information see also</span>
-<span class="sd">            :meth:`~.BaseProblem.interpret`.</span>
+<span class="sd">            - A result object</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            - ValueError:</span>
@@ -404,19 +402,17 @@
 
     <span class="k">def</span> <span class="nf">get_qubit_operators</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">problem</span><span class="p">:</span> <span class="n">BaseProblem</span><span class="p">,</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ListOp</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct decomposed qubit operators from an ``ElectronicStructureProblem``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">          - problem (BaseProblem): A class encoding a problem to be solved.</span>
+<span class="sd">          - problem (ElectronicStructureProblem): A class encoding a problem to be solved.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">          - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError:</span>
-<span class="sd">                Input problem was not an instance of ``ElectronicStructureProblem``</span>
 <span class="sd">            - ValueError:</span>
 <span class="sd">                The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``</span>
 <span class="sd">            - ValueError:</span>
@@ -432,12 +428,10 @@
         <span class="k">return</span> <span class="n">hamiltonian_ops</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_validate_problem_and_coeffs</span><span class="p">(</span><span class="n">problem</span><span class="p">:</span> <span class="n">BaseProblem</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_problem_and_coeffs</span><span class="p">(</span>
+        <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span> <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the input problem can be translated to the MO basis.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="n">ElectronicStructureProblem</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;EntanglementForgingGroundStateSolver only supports ElectronicStructureProblem.&quot;</span>
-            <span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span> <span class="o">!=</span> <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">MO</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mo_coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cannot transform integrals to MO basis. The input problem is in the (</span><span class="si">{</span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span><span class="si">}</span><span class="s2">) basis, &quot;</span>
