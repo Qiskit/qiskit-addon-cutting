@@ -1,10 +1,9 @@
-.. include:: README.rst
-
 .. nbgallery::
     :glob:
 
     *
 
+  CutQC Tutorials <cutqc/index>
 
 .. Hiding - Indices and tables
    :ref:`genindex`
