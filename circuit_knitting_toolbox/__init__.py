@@ -10,16 +10,3 @@
 # that they have been altered from the originals.
 
 """Main Circuit Knitting Toolbox public functionality."""
-
-import sys
-import warnings
-
-
-if sys.version_info < (3, 8):  # pragma: no cover
-    warnings.warn(
-        "Using the Circuit Knitting Toolbox with Python 3.7 is deprecated."
-        "Support for Python 3.7 will be removed in the near future, as soon as "
-        "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/pull/80 "
-        "is merged.",
-        DeprecationWarning,
-    )
