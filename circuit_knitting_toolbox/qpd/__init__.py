@@ -18,10 +18,10 @@ Main quasiprobability decomposition functionality.
 
    QPDBasis
 
-Instructions (:mod:`qpd.instructions`)
+Instructions (:mod:`circuit_knitting_toolbox.qpd.instructions`)
 ======================================
 
-.. automodule:: qpd.instructions
+.. automodule:: circuit_knitting_toolbox.qpd.instructions
 """
 
 from .qpd_basis import QPDBasis
