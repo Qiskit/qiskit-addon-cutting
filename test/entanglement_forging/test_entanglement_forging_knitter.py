@@ -72,7 +72,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         return ansatz
 
-    @pytest.mark.slow
     def test_entanglement_forging_H2(self):
         """
         Test to apply Entanglement Forging to compute the energy of a H2 molecule,
@@ -187,7 +186,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -75.68366174497027)
 
-    @pytest.mark.slow
     def test_entanglement_forging_driver_H2(self):
         """Test for entanglement forging driver."""
         hcore = np.array([[-1.12421758, -0.9652574], [-0.9652574, -1.12421758]])
