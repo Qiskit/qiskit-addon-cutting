@@ -12,7 +12,6 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
-import pytest
 import numpy as np
 
 from qiskit.algorithms.optimizers import SPSA
