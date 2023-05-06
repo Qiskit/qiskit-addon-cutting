@@ -1,7 +1,9 @@
-.. nbgallery::
-    :glob:
+#########################
+Circuit Cutting Tutorials
+#########################
 
-    *
+.. toctree::
+  :maxdepth: 2
 
   CutQC Tutorials <cutqc/index>
 
