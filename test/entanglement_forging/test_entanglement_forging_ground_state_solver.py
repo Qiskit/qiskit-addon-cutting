@@ -12,6 +12,7 @@
 """Tests for EntanglementForgingVQE module."""
 
 import unittest
+import pytest
 import numpy as np
 
 from qiskit.algorithms.optimizers import SPSA
@@ -34,6 +35,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         # Hard-code some ansatz params/lambdas
         self.optimizer = SPSA(maxiter=0)
 
+    @pytest.mark.slow
     def test_entanglement_forging_vqe_hydrogen(self):
         """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""
         # Set up the ElectronicStructureProblem
