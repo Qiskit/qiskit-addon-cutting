@@ -1,0 +1,16 @@
+---
+deprecations:
+  - |
+    The ``circuit_knitting_toolbox.circuit_cutting.wire_cutting`` package
+    is replaced by the ``circuit_knitting_toolbox.circuit_cutting.cutqc``
+    package.
+
+    Both gate and wire cutting will be implemented directly into the
+    ``circuit_cutting`` package, and the ``circuit_cutting.cutqc``
+    package will remain available for users of the automatic cut
+    finding capability and the full probability reconstruction.
+
+    To migrate your workflows, simply replace
+    ``from circuit_knitting_toolbox.circuit_cutting.wire_cutting import ...``
+    with
+    ``from circuit_knitting_toolbox.circuit_cutting.cutqc import ...``
