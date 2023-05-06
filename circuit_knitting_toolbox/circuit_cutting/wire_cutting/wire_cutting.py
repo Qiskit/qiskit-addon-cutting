@@ -32,7 +32,7 @@ from .wire_cutting_verification import generate_reconstructed_output
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -103,7 +103,7 @@ def cut_circuit_wires(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -167,7 +167,7 @@ def evaluate_subcircuits(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -336,7 +336,7 @@ def _attribute_shots(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -461,7 +461,7 @@ def find_wire_cuts(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )

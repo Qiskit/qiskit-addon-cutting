@@ -27,7 +27,7 @@ from qiskit.utils.deprecation import deprecate_func
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -62,7 +62,7 @@ def get_cut_qubit_pairs(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -91,7 +91,7 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -136,7 +136,7 @@ def attribute_label(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -183,7 +183,7 @@ def fill_label(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -232,7 +232,7 @@ def get_init_meas(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -276,7 +276,7 @@ def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -399,7 +399,7 @@ def generate_summation_terms(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -453,7 +453,7 @@ def naive_compute(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )

@@ -32,7 +32,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -113,7 +113,7 @@ def run_subcircuit_instances(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -148,7 +148,7 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -236,7 +236,7 @@ def modify_subcircuit_instance(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -276,7 +276,7 @@ def run_subcircuits_using_sampler(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -311,7 +311,7 @@ def run_subcircuits(
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
@@ -342,7 +342,7 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
     since="0.2.0",
     additional_msg=(
         "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than 1 month after its release. "
+        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
         "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
     ),
 )
