@@ -19,7 +19,6 @@ import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
-from qiskit.utils.deprecation import deprecate_func
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit_ibm_runtime import Options, QiskitRuntimeService
 
@@ -28,14 +27,6 @@ from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import generate_reconstructed_output
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def cut_circuit_wires(
     circuit: QuantumCircuit,
     method: str,
@@ -99,14 +90,6 @@ def cut_circuit_wires(
     return cuts
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def evaluate_subcircuits(
     cuts: dict[str, Any],
     service: QiskitRuntimeService | None = None,
@@ -163,14 +146,6 @@ def evaluate_subcircuits(
     return subcircuit_instance_probabilities
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
@@ -332,14 +307,6 @@ def _attribute_shots(
 
 
 @no_type_check
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def find_wire_cuts(
     circuit: QuantumCircuit,
     max_subcircuit_width: int,
@@ -457,14 +424,6 @@ def find_wire_cuts(
     return cut_solution
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def cut_circuit_wire(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]], verbose: bool
 ) -> dict[str, Any]:

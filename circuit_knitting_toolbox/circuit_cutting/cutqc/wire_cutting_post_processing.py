@@ -20,17 +20,8 @@ from typing import Sequence, Any
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
-from qiskit.utils.deprecation import deprecate_func
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def get_cut_qubit_pairs(
     complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]]
 ) -> list[tuple[dict[str, Any], dict[str, Any]]]:
@@ -58,14 +49,6 @@ def get_cut_qubit_pairs(
     return O_rho_pairs
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
     """
     Get the basis label for each cut point.
@@ -87,14 +70,6 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
     return label
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def attribute_label(
     label: Sequence[str],
     O_rho_pairs: list[tuple[dict[str, Any], dict[str, Any]]],
@@ -132,14 +107,6 @@ def attribute_label(
     return subcircuit_label
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def fill_label(
     subcircuit_idx: int,
     subcircuit: QuantumCircuit,
@@ -179,14 +146,6 @@ def fill_label(
     return init, meas
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def get_init_meas(
     init_label: Sequence[str], meas_label: Sequence[str]
 ) -> list[tuple[tuple[str, ...], tuple[str, ...]]]:
@@ -228,14 +187,6 @@ def get_init_meas(
     return subcircuit_init_meas
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     """
     Convert the initial measurements to the physical representations.
@@ -272,14 +223,6 @@ def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     return coefficient, tuple(init)
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def generate_summation_terms(
     subcircuits: Sequence[QuantumCircuit],
     complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]],
@@ -395,14 +338,6 @@ def generate_summation_terms(
     return summation_terms, subcircuit_entries, subcircuit_instances
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def naive_compute(
     subcircuit_order: Sequence[int],
     summation_terms: Sequence[dict[int, int]],
@@ -449,14 +384,6 @@ def naive_compute(
     return reconstructed_prob, overhead
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def build(
     summation_terms: Sequence[dict[int, int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],

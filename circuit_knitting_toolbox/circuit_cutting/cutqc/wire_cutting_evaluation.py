@@ -24,18 +24,9 @@ from qiskit import QuantumCircuit
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 from qiskit.primitives import BaseSampler, Sampler as TestSampler
-from qiskit.utils.deprecation import deprecate_func
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
@@ -109,14 +100,6 @@ def run_subcircuit_instances(
     return subcircuit_instance_probs
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     """
     Change of basis for all identity measurements.
@@ -144,14 +127,6 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
         return mutated_meas_out
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def modify_subcircuit_instance(
     subcircuit: QuantumCircuit, init: tuple[str, ...], meas: tuple[str, ...]
 ) -> QuantumCircuit:
@@ -232,14 +207,6 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def run_subcircuits_using_sampler(
     subcircuits: Sequence[QuantumCircuit],
     sampler: BaseSampler,
@@ -272,14 +239,6 @@ def run_subcircuits_using_sampler(
     return all_probabilities_out
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
     service: QiskitRuntimeService | None = None,
@@ -307,14 +266,6 @@ def run_subcircuits(
     return run_subcircuits_using_sampler(subcircuits, sampler)
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarray:
     """
     Compute the effective probability distribution from the subcircuit distribution.
@@ -338,14 +289,6 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
         return measured_prob
 
 
-@deprecate_func(
-    since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
-)
 def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     """
     Compute the corresponding effective_state for the given full_state.
