@@ -13,7 +13,7 @@
 
 import unittest
 
-from qpd import QPDMeasure
+from circuit_knitting_toolbox.qpd import QPDMeasure
 
 
 class TestQPDMeasure(unittest.TestCase):
