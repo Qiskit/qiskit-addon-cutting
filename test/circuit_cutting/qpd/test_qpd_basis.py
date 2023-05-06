@@ -19,7 +19,7 @@ import pytest
 from qiskit.circuit import Parameter
 from qiskit.circuit.library.standard_gates import *
 
-from circuit_knitting_toolbox.qpd import QPDBasis, QPDMeasure
+from circuit_knitting_toolbox.circuit_cutting.qpd import QPDBasis, QPDMeasure
 
 
 class TestQPDBasis(unittest.TestCase):

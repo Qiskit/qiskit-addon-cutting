@@ -39,7 +39,7 @@ from qiskit.circuit.library.standard_gates import (
 
 from .qpd_basis import QPDBasis
 from .instructions import QPDMeasure
-from ..utils.iteration import unique_by_id
+from ...utils.iteration import unique_by_id
 
 
 _qpdbasis_from_gate_funcs: dict[str, Callable[[Gate], QPDBasis]] = {}

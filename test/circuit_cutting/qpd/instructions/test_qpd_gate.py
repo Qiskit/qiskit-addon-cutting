@@ -17,7 +17,11 @@ import copy
 import pytest
 from qiskit.circuit.library.standard_gates import XGate, YGate, ZGate
 
-from circuit_knitting_toolbox.qpd import QPDBasis, TwoQubitQPDGate, SingleQubitQPDGate
+from circuit_knitting_toolbox.circuit_cutting.qpd import (
+    QPDBasis,
+    TwoQubitQPDGate,
+    SingleQubitQPDGate,
+)
 
 
 class TestTwoQubitQPDGate(unittest.TestCase):

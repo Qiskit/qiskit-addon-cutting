@@ -27,7 +27,7 @@ from qiskit.circuit.library import (
 )
 
 from circuit_knitting_toolbox.utils.iteration import unique_by_eq
-from circuit_knitting_toolbox.qpd.qpd import qpdbasis_from_gate
+from circuit_knitting_toolbox.circuit_cutting.qpd.qpd import qpdbasis_from_gate
 
 
 @ddt
