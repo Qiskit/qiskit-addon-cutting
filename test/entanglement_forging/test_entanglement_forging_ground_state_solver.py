@@ -13,11 +13,15 @@
 
 import unittest
 import numpy as np
+
 from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
-from qiskit_nature.drivers import Molecule
-from qiskit_nature.drivers.second_quantization import PySCFDriver
-from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
+from qiskit_nature.units import DistanceUnit
+from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.second_q.problems import (
+    ElectronicBasis,
+)
+from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -32,17 +36,18 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
 
     def test_entanglement_forging_vqe_hydrogen(self):
         """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""
-
-        # Specify molecule
-        molecule = Molecule(
-            geometry=[("H", [0.0, 0.0, 0.0]), ("H", [0.0, 0.0, 0.735])],
-            charge=0,
-            multiplicity=1,
-        )
-
         # Set up the ElectronicStructureProblem
-        driver = PySCFDriver.from_molecule(molecule)
-        problem = ElectronicStructureProblem(driver)
+        driver = PySCFDriver(
+            atom="H .0 .0 .0; H .0 .0 0.735",
+            unit=DistanceUnit.ANGSTROM,
+            charge=0,
+            spin=0,
+            basis="sto3g",
+        )
+        driver.run()
+        problem = driver.to_problem(basis=ElectronicBasis.AO)
+        qcschema = driver.to_qcschema()
+        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -55,6 +60,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             ansatz=ansatz,
             optimizer=self.optimizer,
             initial_point=[0.0, np.pi / 2],
+            mo_coeff=mo_coeff,
         )
 
         # Solve for the ground state energy

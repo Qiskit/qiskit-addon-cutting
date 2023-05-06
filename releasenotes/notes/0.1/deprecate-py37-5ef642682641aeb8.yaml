@@ -1,0 +1,6 @@
+---
+deprecations:
+  - |
+    Support for running with Python 3.7 has been deprecated.  Future
+    versions of the Circuit Knitting Toolbox will require Python 3.8
+    or higher.

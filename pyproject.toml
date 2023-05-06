@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.0.0"
+version = "0.1.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -19,34 +19,42 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering :: Physics",
 ]
 
 requires-python = ">=3.8"
 
 dependencies = [
-    "qiskit-aer>=0.11.0",
-    "qiskit-terra>=0.22.0",
-    "qiskit-nature>=0.4.4",
-    "qiskit-ibm-runtime>=0.7.0",
-    "nptyping>=2.1.1",
-    "docplex>=2.23.222",
-    "cplex>=22.1.0.0; platform_machine != 'arm64'",
+    "qiskit-aer>=0.12.0",
+    "qiskit-terra>=0.23.3",
+    "qiskit-nature>=0.5.2",
+    "qiskit-ibm-runtime>=0.9.2",
 ]
 
 [project.optional-dependencies]
+cplex = [
+    # We use the same restrictions in both of the following lines, as there
+    # is no reason for us to install docplex without cplex.
+    "docplex>=2.23.222; python_version < '3.11' and platform_machine != 'arm64'",
+    "cplex>=22.1.0.0; python_version < '3.11' and platform_machine != 'arm64'",
+]
+pyscf = [
+    "pyscf>=2.0.1; sys_platform != 'win32'",
+]
 dev = [
     "circuit-knitting-toolbox[test,lint]",
     "nbmake",
 ]
 test = [
-    "pyscf>=2.0.1; sys_platform != 'win32'",
+    "circuit-knitting-toolbox[pyscf]",
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
 ]
 style = [
     "autoflake==1.7.6",
     "black[jupyter]==22.10.0",
+    "ruff>=0.0.246",
 ]
 lint = [
     "circuit-knitting-toolbox[style]",
@@ -65,11 +73,12 @@ docs = [
     "reno>=3.4.0",
 ]
 notebook-dependencies = [
-    "quantum-serverless>=0.0.1",
-    "pyscf>=2.0.1; sys_platform != 'win32'",
+    "circuit-knitting-toolbox[cplex,pyscf]",
+    "quantum-serverless>=0.0.7",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
+    "qiskit-nature<0.6.0",
 ]
 
 [project.urls]

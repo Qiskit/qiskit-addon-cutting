@@ -10,11 +10,21 @@
 # that they have been altered from the originals.
 
 """File containing the tools to find and manage the cuts."""
-from typing import Sequence, Dict, Tuple, Any, List
 
-from docplex.mp.model import Model
-from docplex.mp.utils import DOcplexException
+from __future__ import annotations
+
+from typing import Sequence, Any
+
 import numpy as np
+
+try:
+    from docplex.mp.model import Model
+    from docplex.mp.utils import DOcplexException
+except ModuleNotFoundError as ex:
+    raise ModuleNotFoundError(
+        "DOcplex is not installed.  For automatic cut finding to work, both "
+        "DOcplex and cplex must be available."
+    ) from ex
 
 
 class MIPModel(object):
@@ -51,9 +61,9 @@ class MIPModel(object):
     def __init__(
         self,
         n_vertices: int,
-        edges: Sequence[Tuple[int]],
-        vertex_ids: Dict[str, int],
-        id_vertices: Dict[int, str],
+        edges: Sequence[tuple[int]],
+        vertex_ids: dict[str, int],
+        id_vertices: dict[int, str],
         num_subcircuit: int,
         max_subcircuit_width: int,
         max_subcircuit_cuts: int,
@@ -95,7 +105,7 @@ class MIPModel(object):
         self.num_qubits = num_qubits
         self.max_cuts = max_cuts
 
-        self.subcircuit_counter: Dict[int, Dict[str, Any]] = {}
+        self.subcircuit_counter: dict[int, dict[str, Any]] = {}
 
         """
         Count the number of input qubits directly connected to each node
@@ -410,7 +420,7 @@ class MIPModel(object):
 
     def pwl_exp(
         self, lb: int, ub: int, base: int, coefficient: int, integer_only: bool
-    ) -> Tuple[List[int], List[int]]:
+    ) -> tuple[list[int], list[int]]:
         """
         Approximate a nonlinear exponential function via a piecewise linear function.
 
@@ -437,7 +447,7 @@ class MIPModel(object):
             ptf.append(y)
         return ptx, ptf
 
-    def check_graph(self, n_vertices: int, edges: Sequence[Tuple[int]]) -> None:
+    def check_graph(self, n_vertices: int, edges: Sequence[tuple[int]]) -> None:
         """
         Ensure circuit DAG is viable.
 
@@ -490,7 +500,13 @@ class MIPModel(object):
             min_postprocessing_cost,
             str(type(min_postprocessing_cost)),
         )
-        self.model.export_as_lp(path="./docplex_cutter.lp")
+        try:
+            self.model.export_as_lp(path="./docplex_cutter.lp")
+        except RuntimeError:
+            print(
+                "The LP file export has failed.  This is known to happen sometimes "
+                "when cplex is not installed.  Now attempting to continue anyway."
+            )
         try:
             self.model.set_time_limit(300)
             if min_postprocessing_cost != float("inf"):
@@ -501,12 +517,12 @@ class MIPModel(object):
 
         except DOcplexException as e:
             print("Caught: " + e.message)
+            raise e
 
         if self.model._has_solution:
             my_solve_details = self.model.solve_details
-            self.objective = None
             self.subcircuits = []
-            self.optimal = self.model.get_solve_status() == "optimal"
+            self.optimal = my_solve_details.status == "optimal"
             self.runtime = my_solve_details.time
             self.node_count = my_solve_details.nb_nodes_processed
             self.mip_gap = my_solve_details.mip_relative_gap

@@ -9,8 +9,17 @@ container.
   new M1 or M2 chips), everything should work natively, so we
   recommend the first option.
 - All users on ARM chips, as well as all Windows users, will have to
-  use the toolbox within Docker (the second option) for everything to
+  use the toolbox within Docker (the second option) for all features to
   work as designed.
+
+Specifically, the following features are unavailable on the
+aforementioned platforms:
+
+- The automatic wire cut search in the circuit cutting module
+  depends on cplex, which is only available on Intel chips and is not
+  yet available for Python 3.11.
+- The entanglement forging notebooks require pyscf, which does not
+  support Windows.
 
 Option 1: Local installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

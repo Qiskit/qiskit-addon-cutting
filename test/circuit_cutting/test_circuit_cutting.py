@@ -12,6 +12,7 @@
 """Tests for circuit_cutting package."""
 
 import unittest
+import importlib.util
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -22,6 +23,8 @@ from circuit_knitting_toolbox.circuit_cutting.wire_cutting import (
     reconstruct_full_distribution,
     verify,
 )
+
+cplex_available = importlib.util.find_spec("cplex") is not None
 
 
 class TestCircuitCutting(unittest.TestCase):
@@ -46,6 +49,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.circuit = qc
 
+    @unittest.skipIf(not cplex_available, "cplex is not installed")
     def test_circuit_cutting_automatic(self):
         qc = self.circuit
         cuts = cut_circuit_wires(
