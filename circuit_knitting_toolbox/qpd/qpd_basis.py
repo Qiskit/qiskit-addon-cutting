@@ -50,7 +50,7 @@ class QPDBasis:
     def maps(
         self,
     ) -> Sequence[tuple[Sequence[Instruction], ...]]:
-        """The mappings for each qubit in the decomposition."""
+        """Get mappings for each qubit in the decomposition."""
         return self._maps
 
     def _set_maps(
@@ -73,7 +73,7 @@ class QPDBasis:
 
     @property
     def num_qubits(self) -> int:
-        """Number of qubits that this decomposition acts on."""
+        """Get number of qubits that this decomposition acts on."""
         return len(self._maps[0])
 
     @property
@@ -98,7 +98,7 @@ class QPDBasis:
     @property
     def probabilities(self) -> Sequence[float]:
         """
-        The probabilities on which the maps will be sampled.
+        Get the probabilities on which the maps will be sampled.
 
         Returns:
             - (Sequence[float]): The probabilities member variable
@@ -108,7 +108,7 @@ class QPDBasis:
     @property
     def kappa(self) -> float:
         """
-        The sampling overhead.
+        Get the sampling overhead.
 
         The sampling overhead is calculated by summing the magnitude of the coefficients.
 
