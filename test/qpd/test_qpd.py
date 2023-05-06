@@ -26,7 +26,7 @@ from qiskit.circuit.library import (
     RZZGate,
 )
 
-from circuit_knitting_toolbox.qpd.utils.iteration import unique_by_eq
+from circuit_knitting_toolbox.utils.iteration import unique_by_eq
 from circuit_knitting_toolbox.qpd.qpd import qpdbasis_from_gate
 
 
