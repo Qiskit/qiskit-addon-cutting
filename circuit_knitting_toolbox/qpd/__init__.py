@@ -33,6 +33,7 @@ from .instructions import (
 )
 
 __all__ = [
+    "qpdbasis_from_gate",
     "QPDBasis",
     "BaseQPDGate",
     "TwoQubitQPDGate",
