@@ -47,6 +47,7 @@ dev = [
     "nbmake",
 ]
 test = [
+    "ddt>=1.4.4",
     "circuit-knitting-toolbox[pyscf]",
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
