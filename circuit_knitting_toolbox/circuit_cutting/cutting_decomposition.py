@@ -67,7 +67,6 @@ def partition_circuit_qubits(
         if (
             len(qubit_indices) <= 1
             or len(partitions_spanned) == 1
-            or isinstance(gate.operation, Barrier)
         ):
             continue
 
