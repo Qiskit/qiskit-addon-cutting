@@ -20,10 +20,10 @@ import pytest
 # pylint: disable=missing-function-docstring
 def pytest_addoption(parser):
     parser.addoption(
-        "--skip-slow",
+        "--run-slow",
         action="store_true",
         default=False,
-        help="skip slow tests",
+        help="run slow tests",
     )
 
 
@@ -32,9 +32,9 @@ def pytest_configure(config):
 
 
 def pytest_collection_modifyitems(config, items):
-    if config.getoption("--skip-slow"):
+    if not config.getoption("--run-slow"):
         skip_slow = pytest.mark.skip(
-            reason="skipping slow test, as --skip-slow was provided"
+            reason="skipping slow test, as --run-slow was not provided"
         )
         for item in items:
             if "slow" in item.keywords:
