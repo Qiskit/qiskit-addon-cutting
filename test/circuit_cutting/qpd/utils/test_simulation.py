@@ -14,7 +14,9 @@ import pytest
 
 import numpy as np
 from qiskit import QuantumCircuit
-from circuit_knitting_toolbox.circuit_cutting.qpd.utils import simulate_statevector_outcomes
+from circuit_knitting_toolbox.circuit_cutting.qpd.utils import (
+    simulate_statevector_outcomes,
+)
 
 
 class TestSimulationFunctions(unittest.TestCase):
