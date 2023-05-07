@@ -108,7 +108,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.121936544469326)
 
-    @pytest.mark.slow
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
         Test to apply Entanglement Forging to compute the energy of a H20 molecule,
