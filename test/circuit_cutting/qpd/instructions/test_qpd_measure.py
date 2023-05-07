@@ -1,6 +1,6 @@
 # This code is a Qiskit project.
 
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2023.
 
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -9,17 +9,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
+"""Tests for QPDMeasure class."""
 
-.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+import unittest
 
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
+from circuit_knitting_toolbox.circuit_cutting.qpd import QPDMeasure
 
-    partition_circuit_qubits
-"""
-from .cutting_decomposition import partition_circuit_qubits
 
-__all__ = ["partition_circuit_qubits"]
+class TestQPDMeasure(unittest.TestCase):
+    def test_qpd_measure(self):
+        qpd_meas = QPDMeasure()
+        self.assertEqual(qpd_meas.name, "qpd_measure")

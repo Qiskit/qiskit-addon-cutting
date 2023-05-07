@@ -1,6 +1,6 @@
 # This code is a Qiskit project.
 
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2023.
 
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -9,17 +9,25 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
-
-.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+r"""
+Quantum circuit :class:`~qiskit.Instruction`\ s for repesenting quasiprobability decompositions.
 
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
 
-    partition_circuit_qubits
+   BaseQPDGate
+   SingleQubitQPDGate
+   TwoQubitQPDGate
+   QPDMeasure
 """
-from .cutting_decomposition import partition_circuit_qubits
 
-__all__ = ["partition_circuit_qubits"]
+from .qpd_gate import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
+from .qpd_measure import QPDMeasure
+
+__all__ = [
+    "BaseQPDGate",
+    "TwoQubitQPDGate",
+    "SingleQubitQPDGate",
+    "QPDMeasure",
+]
