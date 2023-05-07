@@ -64,10 +64,7 @@ def partition_circuit_qubits(
         qubit_indices = [new_qc.find_bit(qubit).index for qubit in gate.qubits]
         partitions_spanned = {partition_labels[idx] for idx in qubit_indices}
         # Ignore local gates and gates that span only one partition
-        if (
-            len(qubit_indices) <= 1
-            or len(partitions_spanned) == 1
-        ):
+        if len(qubit_indices) <= 1 or len(partitions_spanned) == 1:
             continue
 
         if len(qubit_indices) > 2:
