@@ -29,7 +29,7 @@ from circuit_knitting_toolbox.circuit_cutting.qpd import (
     TwoQubitQPDGate,
 )
 from circuit_knitting_toolbox.utils.transforms import separate_circuit
-from circuit_knitting_toolbox.circuit_cutting.qpd.utils.iteration import strict_zip
+from circuit_knitting_toolbox.utils.iteration import strict_zip
 
 
 def prepare_hwea():
