@@ -13,7 +13,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Sequence, Callable
+from enum import Enum
 
 import numpy as np
 from qiskit.circuit import Gate
@@ -40,6 +41,62 @@ from qiskit.circuit.library.standard_gates import (
 from .qpd_basis import QPDBasis
 from .instructions import QPDMeasure
 from ...utils.iteration import unique_by_id
+
+
+class WeightType(Enum):
+    """Type of weight."""
+
+    #: A weight given in proportion to its exact weight
+    EXACT = 1
+
+    #: A weight that was determined through some sampling procedure
+    SAMPLED = 2
+
+
+def generate_qpd_samples(
+    qpd_bases: Sequence[QPDBasis], num_samples: int = 1000
+) -> dict[tuple[int, ...], tuple[int, WeightType]]:
+    """
+    Generate random quasiprobability decompositions.
+    Args:
+        qpd_bases: The :class:`QPDBasis` objects from which to sample
+        num_samples: Number of random samples to generate
+    Returns:
+        (dict): A mapping from a given decomposition to its weight.
+            Keys are tuples of indices -- one index per decomposition in the circuit. The indices
+            correspond to a specific decomposition mapping which will be applied to each gate in
+            the decomposition.
+            Values are tuples.  The first element is a number corresponding to the
+            weight of the contribution.  The second element is the :class:`WeightType`,
+            either ``EXACT`` or ``SAMPLED``.
+    """
+    if num_samples <= 0:
+        raise ValueError("num_samples must be positive.")
+
+    if len(qpd_bases) == 0:
+        # This case must be handled explicitly, as it is not handled correctly
+        # by the `zip()` call below.
+        return {(): (num_samples, WeightType.EXACT)}
+
+    # Loop through each gate and sample from its distribution num_samples times
+    samples_by_decomp = []
+    for basis in qpd_bases:
+        # All gates in a decomp should have same QPDBasis, so we sample from gate_0 object
+        samples_by_decomp.append(
+            np.random.choice(
+                range(len(basis.probabilities)),
+                num_samples,
+                p=basis.probabilities,
+            )
+        )
+
+    # Form the joint samples, collecting them into a dict with counts for each
+    random_samples: dict[tuple[int, ...], int] = {}
+    for decomp_ids in zip(*samples_by_decomp):
+        # Increment the counter for this basis selection
+        random_samples[decomp_ids] = random_samples.setdefault(decomp_ids, 0) + 1
+
+    return {k: (v, WeightType.SAMPLED) for k, v in random_samples.items()}
 
 
 _qpdbasis_from_gate_funcs: dict[str, Callable[[Gate], QPDBasis]] = {}
