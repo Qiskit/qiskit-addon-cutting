@@ -18,7 +18,6 @@ from collections.abc import Sequence, Hashable
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
-    Barrier,
 )
 
 from .qpd.qpd_basis import QPDBasis
