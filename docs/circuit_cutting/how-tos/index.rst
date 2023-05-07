@@ -2,4 +2,12 @@
 Circuit Cutting How-To Guides
 #############################
 
-[none yet]
+.. toctree::
+  :maxdepth: 2
+
+  CutQC How-Tos <cutqc/index>
+
+.. Hiding - Indices and tables
+   :ref:`genindex`
+   :ref:`modindex`
+   :ref:`search`

@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for circuit_cutting package."""
+"""Tests for circuit_cutting.cutqc package."""
 
 import unittest
 import importlib.util
@@ -17,7 +17,7 @@ import importlib.util
 import numpy as np
 from qiskit import QuantumCircuit
 
-from circuit_knitting_toolbox.circuit_cutting.wire_cutting import (
+from circuit_knitting_toolbox.circuit_cutting.cutqc import (
     cut_circuit_wires,
     evaluate_subcircuits,
     reconstruct_full_distribution,
