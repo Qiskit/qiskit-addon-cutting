@@ -13,6 +13,8 @@
 
 import os
 import unittest
+import pytest
+
 import numpy as np
 from qiskit.circuit import Parameter, QuantumCircuit
 from qiskit.circuit.library import TwoLocal
@@ -108,7 +110,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
-        Test to apply Entanglement Forging to compute the energy of a H20 molecule,
+        Test to apply Entanglement Forging to compute the energy of a H2O molecule,
         given optimal ansatz parameters.
         """
         # setup problem
@@ -226,6 +228,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.1219365445030705)
 
+    @pytest.mark.slow
     def test_asymmetric_bitstrings_O2(self):
         """Test for entanglement forging driver."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_o2, self.eri_o2)
@@ -300,6 +303,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -39.09031477502881)
 
+    @pytest.mark.slow
     def test_asymmetric_bitstrings_CN(self):
         """Test for asymmetric bitstrings with hybrid cross terms."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_cn, self.eri_cn)

@@ -41,4 +41,5 @@ jobs:
         shell: bash
         run: |
           pver=${{ matrix.python-version }}
-          tox -epy${pver/./},py${pver/./}-notebook
+          tox -epy${pver/./} -- --run-slow
+          tox -epy${pver/./}-notebook
