@@ -55,3 +55,6 @@ ENV/
 # Sphinx documentation
 docs/_build/
 docs/stubs/
+
+# Algorithm artifacts
+docplex_cutter.lp
