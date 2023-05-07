@@ -13,10 +13,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Sequence, Callable
+from enum import Enum
 
 import numpy as np
-from qiskit.circuit import Gate
+from qiskit.circuit import (
+    QuantumCircuit,
+    Gate,
+    ClassicalRegister,
+    CircuitInstruction,
+    Measure,
+)
 from qiskit.circuit.library.standard_gates import (
     XGate,
     YGate,
@@ -38,8 +45,116 @@ from qiskit.circuit.library.standard_gates import (
 )
 
 from .qpd_basis import QPDBasis
-from .instructions import QPDMeasure
+from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
 from ...utils.iteration import unique_by_id
+
+
+class WeightType(Enum):
+    """Type of weight."""
+
+    #: A weight given in proportion to its exact weight
+    EXACT = 1
+
+    #: A weight that was determined through some sampling procedure
+    SAMPLED = 2
+
+
+def generate_qpd_samples(
+    qpd_bases: Sequence[QPDBasis], num_samples: int = 1000
+) -> dict[tuple[int, ...], tuple[int, WeightType]]:
+    """
+    Generate random quasiprobability decompositions.
+
+    Args:
+        qpd_bases: The :class:`QPDBasis` objects from which to sample
+        num_samples: Number of random samples to generate
+    Returns:
+        (dict): A mapping from a given decomposition to its sampled weight.
+            Keys are tuples of indices -- one index per decomposition in the circuit. The indices
+            correspond to a specific decomposition mapping which will be applied to each gate in
+            the decomposition.
+            Values are tuples.  The first element is a number corresponding to the
+            weight of the contribution.  The second element is the :class:`WeightType`,
+            either ``EXACT`` or ``SAMPLED``.
+    """
+    if num_samples <= 0:
+        raise ValueError("num_samples must be positive.")
+
+    if len(qpd_bases) == 0:
+        # This case must be handled explicitly, as it is not handled correctly
+        # by the `zip()` call below.
+        return {(): (num_samples, WeightType.EXACT)}
+
+    # Loop through each gate and sample from its distribution num_samples times
+    samples_by_decomp = []
+    for basis in qpd_bases:
+        # All gates in a decomp should have same QPDBasis, so we sample from gate_0 object
+        samples_by_decomp.append(
+            np.random.choice(
+                range(len(basis.probabilities)),
+                num_samples,
+                p=basis.probabilities,
+            )
+        )
+
+    # Form the joint samples, collecting them into a dict with counts for each
+    random_samples: dict[tuple[int, ...], int] = {}
+    for decomp_ids in zip(*samples_by_decomp):
+        # Increment the counter for this basis selection
+        random_samples[decomp_ids] = random_samples.setdefault(decomp_ids, 0) + 1
+
+    return {k: (v, WeightType.SAMPLED) for k, v in random_samples.items()}
+
+
+def decompose_qpd_instructions(
+    circuit: QuantumCircuit,
+    instruction_ids: Sequence[Sequence[int]],
+    map_ids: Sequence[int] | None = None,
+) -> QuantumCircuit:
+    r"""
+    Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
+
+    Args:
+        circuit: The circuit containing QPD instructions
+        instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices of instructions comprising
+            one decomposition in the circuit. The elements within a common sequence belong to a common decomposition
+            and should be sampled together.
+        map_ids: Indices to a specific linear mapping to be applied to the decompositions
+            in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
+            according to the decompositions' joint probability distribution.
+
+    Returns:
+        (:class:`~qiskit.QuantumCircuit`): Circuit which has had all its QPDGates decomposed into local operations.
+        The circuit will contain a new, final classical register to contain the QPD measurement
+        outcomes (accessible at ``retval.cregs[-1]``).
+
+    Raises:
+        ValueError:
+            An index in ``instruction_ids`` corresponds to a gate which is not a :class:`QPDGate`
+        ValueError:
+            The total number of indices in ``instruction_ids`` does not equal the number of :class:`QPDGate`\ s in the circuit
+        ValueError:
+            Gates within the same decomposition hold different QPD bases
+        ValueError:
+            Length of ``map_ids`` does not equal the number of decompositions in the circuit
+    """
+    _validate_qpd_instructions(circuit, instruction_ids)
+    new_qc = circuit.copy()
+
+    if map_ids is not None:
+        if len(instruction_ids) != len(map_ids):
+            raise ValueError(
+                f"The number of map IDs ({len(map_ids)}) must equal the number of decompositions in the circuit ({len(instruction_ids)})."
+            )
+        # If mapping is specified, set each gate's mapping
+        for i, decomp_gate_ids in enumerate(instruction_ids):
+            for gate_id in decomp_gate_ids:
+                new_qc.data[gate_id].operation.basis_id = map_ids[i]
+
+    # Convert all instances of BaseQPDGate in the circuit to Qiskit instructions
+    _decompose_qpd_instructions(new_qc, instruction_ids)
+
+    return new_qc
 
 
 _qpdbasis_from_gate_funcs: dict[str, Callable[[Gate], QPDBasis]] = {}
@@ -195,3 +310,150 @@ def _generate_coefficients(theta: float):
     ]
 
     return coeffs
+
+
+def _validate_qpd_instructions(
+    circuit: QuantumCircuit, instruction_ids: Sequence[Sequence[int]]
+):
+    """Ensure the indices in instruction_ids correctly describe all the decompositions in the circuit."""
+    # Make sure all instruction_ids correspond to QPDGates, and make sure each QPDGate in a given decomposition has
+    # an equivalent QPDBasis to its sibling QPDGates
+    for decomp_ids in instruction_ids:
+        if len(decomp_ids) not in [1, 2]:
+            raise ValueError(
+                f"Each decomposition must contain either one or two elements. Found a decomposition with ({len(decomp_ids)}) elements."
+            )
+        if not isinstance(circuit.data[decomp_ids[0]].operation, BaseQPDGate):
+            raise ValueError(
+                f"A circuit data index ({decomp_ids[0]}) corresponds to a non-QPDGate ({circuit.data[decomp_ids[0]].operation.name})."
+            )
+        compare_basis = circuit.data[decomp_ids[0]].operation.basis
+        for gate_id in decomp_ids:
+            if not isinstance(circuit.data[gate_id].operation, BaseQPDGate):
+                raise ValueError(
+                    f"A circuit data index ({gate_id}) corresponds to a non-QPDGate ({circuit.data[gate_id].operation.name})."
+                )
+            tmp_basis = circuit.data[gate_id].operation.basis
+            if compare_basis != tmp_basis:
+                raise ValueError(
+                    "Gates within the same decomposition must share an equivalent QPDBasis."
+                )
+
+    # Make sure the total number of QPD gate indices equals the number of QPDGates in the circuit
+    num_qpd_gates = sum(len(x) for x in instruction_ids)
+    qpd_gate_total = 0
+    for inst in circuit.data:
+        if isinstance(inst.operation, BaseQPDGate):
+            qpd_gate_total += 1
+    if qpd_gate_total != num_qpd_gates:
+        raise ValueError(
+            f"The total number of QPDGates specified in instruction_ids ({num_qpd_gates}) does not equal the number of QPDGates in the circuit ({qpd_gate_total})."
+        )
+
+
+def _decompose_qpd_measurements(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
+    """
+    Create mid-circuit measurements.
+
+    Convert all QPDMeasure instances to Measure instructions. Add any newly created
+    classical bits to a new "qpd_measurements" register.
+    """
+    if not inplace:
+        circuit = circuit.copy()  # pragma: no cover
+
+    # Loop through the decomposed circuit to find QPDMeasure markers so we can
+    # replace them with measurement instructions.  We can't use `_ids`
+    # here because it refers to old indices, before the decomposition.
+    qpd_measure_ids = [
+        i
+        for i, gate in enumerate(circuit.data)
+        if gate.operation.name.lower() == "qpd_measure"
+    ]
+
+    # Create a classical register for the qpd measurement results.  This is
+    # partly for convenience, partly to work around
+    # https://github.com/Qiskit/qiskit-aer/issues/1660.
+    reg = ClassicalRegister(len(qpd_measure_ids), name="qpd_measurements")
+    circuit.add_register(reg)
+
+    # Place the measurement instructions
+    for idx, i in enumerate(qpd_measure_ids):
+        gate = circuit.data[i]
+        inst = CircuitInstruction(
+            operation=Measure(), qubits=[gate.qubits], clbits=[reg[idx]]
+        )
+        circuit.data[i] = inst
+
+    # If the user wants to access the qpd register, it will be the final
+    # classical register of the returned circuit.
+    assert circuit.cregs[-1] is reg
+
+    return circuit
+
+
+def _decompose_qpd_instructions(
+    circuit: QuantumCircuit,
+    instruction_ids: Sequence[Sequence[int]],
+    inplace: bool = True,
+) -> QuantumCircuit:
+    """Decompose all BaseQPDGate instances, ignoring QPDMeasure()."""
+    if not inplace:
+        circuit = circuit.copy()  # pragma: no cover
+
+    # Decompose any 2q QPDGates into single qubit QPDGates
+    qpdgate_ids_2q = []
+    for decomp in instruction_ids:
+        if len(decomp) != 1:
+            continue  # pragma: no cover
+        if isinstance(circuit.data[decomp[0]].operation, TwoQubitQPDGate):
+            qpdgate_ids_2q.append(decomp[0])
+    data_id_offset = 0
+    for i in qpdgate_ids_2q:
+        inst = circuit.data[i + data_id_offset]
+        qpdcirc_2q_decomp = inst.operation.definition
+        inst1 = CircuitInstruction(
+            qpdcirc_2q_decomp.data[0].operation, qubits=[inst.qubits[0]]
+        )
+        inst2 = CircuitInstruction(
+            qpdcirc_2q_decomp.data[1].operation, qubits=[inst.qubits[1]]
+        )
+        circuit.data[i + data_id_offset] = inst1
+        data_id_offset += 1
+        circuit.data.insert(i + data_id_offset, inst2)
+
+    # Decompose all the QPDGates (should all be single qubit now) into Qiskit operations
+    new_instruction_ids = []
+    for i, inst in enumerate(circuit.data):
+        if isinstance(inst.operation, BaseQPDGate):
+            new_instruction_ids.append(i)
+    data_id_offset = 0
+    for i in new_instruction_ids:
+        inst = circuit.data[i + data_id_offset]
+        qubits = inst.qubits
+        # All gates in decomposition should be local
+        assert len(qubits) == 1
+        # Gather instructions with which we will replace the QPDGate
+        tmp_data = []
+        for data in inst.operation.definition.data:
+            # Can ignore clbits here, as QPDGates don't use clbits directly
+            assert data.clbits == ()
+            tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
+        # Replace QPDGate with local operations
+        if tmp_data:
+            # Overwrite the QPDGate with first instruction
+            circuit.data[i + data_id_offset] = tmp_data[0]
+            # Append remaining instructions immediately after original QPDGate position
+            for data in tmp_data[1:]:
+                data_id_offset += 1
+                circuit.data.insert(i + data_id_offset, data)
+
+        # If QPDGate decomposes to an identity operation, just delete it
+        else:
+            del circuit.data[i + data_id_offset]
+            data_id_offset -= 1
+
+    _decompose_qpd_measurements(circuit)
+
+    return circuit
