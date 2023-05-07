@@ -36,11 +36,9 @@ from circuit_knitting_toolbox.utils.metrics import (
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def verify(
     full_circuit: QuantumCircuit,
@@ -90,11 +88,9 @@ def verify(
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,

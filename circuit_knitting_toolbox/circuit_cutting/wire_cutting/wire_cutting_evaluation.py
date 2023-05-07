@@ -30,11 +30,9 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
@@ -111,11 +109,9 @@ def run_subcircuit_instances(
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     """
@@ -146,11 +142,9 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def modify_subcircuit_instance(
     subcircuit: QuantumCircuit, init: tuple[str, ...], meas: tuple[str, ...]
@@ -234,11 +228,9 @@ def modify_subcircuit_instance(
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def run_subcircuits_using_sampler(
     subcircuits: Sequence[QuantumCircuit],
@@ -274,11 +266,9 @@ def run_subcircuits_using_sampler(
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
@@ -309,11 +299,9 @@ def run_subcircuits(
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarray:
     """
@@ -340,11 +328,9 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
 
 @deprecate_func(
     since="0.2.0",
-    additional_msg=(
-        "The circuit_knitting_toolbox.circuit_cutting.wire_cutting package is"
-        " deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.3.0. "
-        "Users should import from circuit_knitting_toolbox.circuit_cutting.cutqc instead."
-    ),
+    additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
 )
 def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     """
