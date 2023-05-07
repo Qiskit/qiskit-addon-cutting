@@ -63,7 +63,7 @@ def generate_qpd_samples(
         qpd_bases: The :class:`QPDBasis` objects from which to sample
         num_samples: Number of random samples to generate
     Returns:
-        (dict): A mapping from a given decomposition to its weight.
+        (dict): A mapping from a given decomposition to its sampled weight.
             Keys are tuples of indices -- one index per decomposition in the circuit. The indices
             correspond to a specific decomposition mapping which will be applied to each gate in
             the decomposition.
