@@ -58,6 +58,7 @@ def generate_qpd_samples(
 ) -> dict[tuple[int, ...], tuple[int, WeightType]]:
     """
     Generate random quasiprobability decompositions.
+
     Args:
         qpd_bases: The :class:`QPDBasis` objects from which to sample
         num_samples: Number of random samples to generate
