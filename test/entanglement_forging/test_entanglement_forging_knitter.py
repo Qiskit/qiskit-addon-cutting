@@ -110,7 +110,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
-        Test to apply Entanglement Forging to compute the energy of a H20 molecule,
+        Test to apply Entanglement Forging to compute the energy of a H2O molecule,
         given optimal ansatz parameters.
         """
         # setup problem
