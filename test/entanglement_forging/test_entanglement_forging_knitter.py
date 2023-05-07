@@ -265,7 +265,6 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -147.63645235088566)
 
-    @pytest.mark.slow
     def test_asymmetric_bitstrings_CH3(self):
         """Test for entanglement forging driver."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_ch3, self.eri_ch3)
