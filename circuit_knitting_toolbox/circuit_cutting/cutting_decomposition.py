@@ -23,6 +23,7 @@ from qiskit.circuit import (
 
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
+from ..utils.transforms import separate_circuit
 
 
 def partition_circuit_qubits(
