@@ -20,11 +20,9 @@ from qiskit.circuit import (
     CircuitInstruction,
     Barrier,
 )
-from qiskit.quantum_info import PauliList
 
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
-from ..utils.transforms import separate_circuit
 
 
 def partition_circuit_qubits(
