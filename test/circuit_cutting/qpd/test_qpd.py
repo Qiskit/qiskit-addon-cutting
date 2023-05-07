@@ -32,6 +32,7 @@ from qiskit.circuit.library import (
 from circuit_knitting_toolbox.utils.iteration import unique_by_eq
 from circuit_knitting_toolbox.circuit_cutting.qpd import (
     QPDBasis,
+    SingleQubitQPDGate,
     TwoQubitQPDGate,
     generate_qpd_samples,
 )
@@ -88,6 +89,115 @@ class TestQPDFunctions(unittest.TestCase):
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
+
+    def test_decompose_qpd_instructions(self):
+        with self.subTest("Empty circuit"):
+            circ = QuantumCircuit()
+            new_circ = decompose_qpd_instructions(QuantumCircuit(), [])
+            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            self.assertEqual(circ, new_circ)
+        with self.subTest("No QPD circuit"):
+            circ = QuantumCircuit(2, 1)
+            circ.h(0)
+            circ.cx(0, 1)
+            circ.measure(1, 0)
+            new_circ = decompose_qpd_instructions(circ, [])
+            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            self.assertEqual(circ, new_circ)
+        with self.subTest("Single QPD gate"):
+            circ = QuantumCircuit(2)
+            circ_compare = circ.copy()
+            qpd_basis = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_gate = TwoQubitQPDGate(qpd_basis)
+            circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
+            decomp_circ = decompose_qpd_instructions(circ, [[0]], map_ids=[0])
+            circ_compare.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            self.assertEqual(decomp_circ, circ_compare)
+        with self.subTest("Incorrect map index size"):
+            with pytest.raises(ValueError) as e_info:
+                decomp_circ = decompose_qpd_instructions(
+                    self.qpd_circuit, [[9], [20]], map_ids=[0]
+                )
+            assert (
+                e_info.value.args[0]
+                == "The number of map IDs (1) must equal the number of decompositions in the circuit (2)."
+            )
+        with self.subTest("Test measurement"):
+            qpd_circ = QuantumCircuit(2)
+            qpd_inst = CircuitInstruction(self.qpd_gate1, qubits=[0, 1])
+            qpd_circ.data.append(qpd_inst)
+            dx_circ_truth = QuantumCircuit(2)
+            creg = ClassicalRegister(1, name="qpd_measurements")
+            dx_circ_truth.add_register(creg)
+            dx_circ_truth.h(0)
+            dx_circ_truth.rx(np.pi / 2, 1)
+            dx_circ_truth.measure(0, 0)
+            dx_circ_truth.h(0)
+            dx_circ = decompose_qpd_instructions(qpd_circ, [[0]], [2])
+            self.assertEqual(dx_circ_truth, dx_circ)
+        with self.subTest("test_invalid_map_ids"):
+            qc = QuantumCircuit()
+            qpd_map_ids = ((),)
+            with pytest.raises(ValueError) as e_info:
+                decompose_qpd_instructions(qc, qpd_map_ids)
+            assert (
+                e_info.value.args[0]
+                == "Each decomposition must contain either one or two elements. Found a decomposition with (0) elements."
+            )
+
+        with self.subTest("test_mismatching_qpd_ids"):
+            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_gate = TwoQubitQPDGate(basis=decomp)
+            qc = QuantumCircuit(2)
+            qc.h(0)
+            qc.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
+            with pytest.raises(ValueError) as e_info:
+                decompose_qpd_instructions(qc, [[0]])
+            assert (
+                e_info.value.args[0]
+                == "A circuit data index (0) corresponds to a non-QPDGate (h)."
+            )
+            qpd_gate1 = SingleQubitQPDGate(basis=decomp, qubit_id=0)
+            qpd_gate2 = SingleQubitQPDGate(basis=decomp, qubit_id=1)
+            qc.append(CircuitInstruction(qpd_gate1, qubits=[0]))
+            qc.h(1)
+            qc.append(CircuitInstruction(qpd_gate2, qubits=[1]))
+            with pytest.raises(ValueError) as e_info:
+                decompose_qpd_instructions(qc, [[1], [2, 3]])
+            assert (
+                e_info.value.args[0]
+                == "A circuit data index (3) corresponds to a non-QPDGate (h)."
+            )
+        with self.subTest("test_mismatching_qpd_bases"):
+            decomp1 = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            decomp2 = QPDBasis.from_gate(RXXGate(np.pi / 4))
+            qpd_gate1 = SingleQubitQPDGate(basis=decomp1, qubit_id=0)
+            qpd_gate2 = SingleQubitQPDGate(basis=decomp2, qubit_id=1)
+            qc = QuantumCircuit(2)
+            qc.append(CircuitInstruction(qpd_gate1, qubits=[0]))
+            qc.append(CircuitInstruction(qpd_gate2, qubits=[1]))
+            with pytest.raises(ValueError) as e_info:
+                decompose_qpd_instructions(qc, [[0, 1]])
+            assert (
+                e_info.value.args[0]
+                == "Gates within the same decomposition must share an equivalent QPDBasis."
+            )
+        with self.subTest("test_unspecified_qpd_gates"):
+            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_gate = TwoQubitQPDGate(basis=decomp)
+            qpd_gate1 = SingleQubitQPDGate(basis=decomp, qubit_id=0)
+            qpd_gate2 = SingleQubitQPDGate(basis=decomp, qubit_id=1)
+
+            qc = QuantumCircuit(2)
+            qc.append(CircuitInstruction(qpd_gate1, qubits=[0]))
+            qc.append(CircuitInstruction(qpd_gate2, qubits=[1]))
+            qc.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
+            with pytest.raises(ValueError) as e_info:
+                decompose_qpd_instructions(qc, [[0, 1]])
+            assert (
+                e_info.value.args[0]
+                == "The total number of QPDGates specified in instruction_ids (2) does not equal the number of QPDGates in the circuit (3)."
+            )
 
     # Optimal values from https://arxiv.org/abs/2205.00016v2 Corollary 4.4 (page 10)
     @data(
