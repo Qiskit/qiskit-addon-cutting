@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for conducting circuit cutting."""
+"""Functions for decomposing circuits and observables for cutting."""
 
 from __future__ import annotations
 

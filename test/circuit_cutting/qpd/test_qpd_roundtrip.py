@@ -39,12 +39,18 @@ from circuit_knitting_toolbox.circuit_cutting.qpd import (
     TwoQubitQPDGate,
     decompose_qpd_instructions,
 )
-from circuit_knitting_toolbox.circuit_cutting.qpd.utils.observable_estimation import (
+from circuit_knitting_toolbox.utils.observable_grouping import (
     observables_restricted_to_subsystem,
     ObservableCollection,
+)
+
+from circuit_knitting_toolbox.circuit_cutting.cutting_evaluation import (
     append_measurement_circuit,
+)
+from circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction import (
     process_outcome,
 )
+
 from circuit_knitting_toolbox.utils.bitwise import bit_count
 from circuit_knitting_toolbox.utils.transforms import separate_circuit
 from circuit_knitting_toolbox.utils.iteration import strict_zip

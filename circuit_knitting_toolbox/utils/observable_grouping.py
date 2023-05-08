@@ -10,7 +10,7 @@
 # that they have been altered from the originals.
 
 """
-Code related to estimation of observables via quasi-probabilty decomposition.
+Module for conducting Pauli observable grouping.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -20,8 +20,6 @@ Code related to estimation of observables via quasi-probabilty decomposition.
    most_general_observable
    CommutingObservableGroup
    ObservableCollection
-   append_measurement_circuit
-   process_outcome
 """
 
 from __future__ import annotations
@@ -32,9 +30,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
-from circuit_knitting_toolbox.utils.bitwise import bit_count
 from circuit_knitting_toolbox.utils.iteration import strict_zip
 
 
@@ -278,117 +274,3 @@ class ObservableCollection:
 
         """
         return self._lookup
-
-
-def append_measurement_circuit(
-    qc: QuantumCircuit,
-    cog: CommutingObservableGroup,
-    /,
-    *,
-    qubit_locations: Sequence[int] | None = None,
-    inplace: bool = False,
-) -> QuantumCircuit:
-    """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
-
-    The new register will be named ``"observable_measurements"`` and will be
-    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
-
-    Args:
-        - qc (QuantumCircuit): The quantum circuit.
-        - cog (CommutingObservableGroup): The commuting observable set for
-            which to construct measurements.
-        - qubit_locations (Sequence[int]): A ``Sequence`` whose length is the
-            number of qubits in the observables, where each element holds that
-            qubit's corresponding index in the circuit.  By default, the
-            circuit and observables are assumed to have the same number of
-            qubits, and the idenity map (i.e., ``range(qc.num_qubits)``) is
-            used.
-        - inplace (bool): Whether to operate on the circuit in place (default: False).
-
-    Returns:
-        - (QuantumCircuit): The new or modified circuit.
-
-    """
-    if qubit_locations is None:
-        # By default, the identity map.
-        if qc.num_qubits != cog.general_observable.num_qubits:
-            raise ValueError(
-                f"Quantum circuit qubit count ({qc.num_qubits}) does not match qubit "
-                f"count of observable(s) ({cog.general_observable.num_qubits}).  "
-                f"Try providing `qubit_locations` explicitly."
-            )
-        qubit_locations = range(cog.general_observable.num_qubits)
-    else:
-        if len(qubit_locations) != cog.general_observable.num_qubits:
-            raise ValueError(
-                f"qubit_locations has {len(qubit_locations)} element(s) but the "
-                f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
-            )
-    if not inplace:
-        qc = qc.copy()
-
-    # Append the appropriate measurements to qc
-    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
-    qc.add_register(obs_creg)
-    # Implement the necessary basis rotations and measurements, as
-    # in BackendEstimator._measurement_circuit().
-    genobs_x = cog.general_observable.x
-    genobs_z = cog.general_observable.z
-    for clbit, subqubit in enumerate(cog.pauli_indices):
-        # subqubit is the index of the qubit in the subsystem.
-        # actual_qubit is its index in the system of interest (if different).
-        actual_qubit = qubit_locations[subqubit]
-        if genobs_x[subqubit]:
-            if genobs_z[subqubit]:
-                qc.sdg(actual_qubit)
-            qc.h(actual_qubit)
-        qc.measure(actual_qubit, obs_creg[clbit])
-
-    return qc
-
-
-def _outcome_to_int(outcome: int | str) -> int:
-    if isinstance(outcome, int):
-        return outcome
-    outcome = outcome.replace(" ", "")
-    if len(outcome) < 2 or outcome[1] in ("0", "1"):
-        outcome = outcome.replace(" ", "")
-        return int(f"0b{outcome}", 0)
-    return int(outcome, 0)
-
-
-def process_outcome(
-    num_qpd_bits: int, cog: CommutingObservableGroup, outcome: int | str, /
-) -> np.typing.NDArray[np.float64]:
-    """
-    Process a single outcome of a QPD experiment with observables.
-
-    Args:
-        - num_qpd_bits: The number of QPD measurements in the circuit. It is
-            assumed that the second to last creg in the generating circuit
-            is the creg  containing the QPD measurements, and the last
-            creg is associated with the observable measurements.
-        - cog: The observable set being measured by the current experiment.
-        - outcome: The outcome of the classical bits.
-
-    Returns:
-        - (np.ndarray): A 1D array of the observable measurements.  The elements of
-            this vector correspond to the elements of ``cog.commuting_observables``,
-            and each result will be either +1 or -1.
-    """
-    outcome = _outcome_to_int(outcome)
-    qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
-    meas_outcomes = outcome >> num_qpd_bits
-
-    # qpd_factor will be -1 or +1, depending on the overall parity of qpd
-    # measurements.
-    qpd_factor = 1 - 2 * (bit_count(qpd_outcomes) & 1)
-
-    rv = np.zeros(len(cog.pauli_bitmasks))
-    for i, mask in enumerate(cog.pauli_bitmasks):
-        # meas will be -1 or +1, depending on the measurement
-        # of the current operator.
-        meas = 1 - 2 * (bit_count(meas_outcomes & mask) & 1)
-        rv[i] = qpd_factor * meas
-
-    return rv
