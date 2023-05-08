@@ -352,20 +352,22 @@ def _outcome_to_int(outcome: int | str) -> int:
         return outcome
     outcome = outcome.replace(" ", "")
     if len(outcome) < 2 or outcome[1] in ("0", "1"):
+        outcome = outcome.replace(" ", "")
         return int(f"0b{outcome}", 0)
     return int(outcome, 0)
 
 
 def process_outcome(
-    qc: QuantumCircuit, cog: CommutingObservableGroup, outcome: int | str, /
+    num_qpd_bits: int, cog: CommutingObservableGroup, outcome: int | str, /
 ) -> np.typing.NDArray[np.float64]:
     """
     Process a single outcome of a QPD experiment with observables.
 
     Args:
-        - qc: The circuit whose outcome to process.  This circuit should have two
-            registers: the first corresponds to the qpd measurements, while the
-            contains the results of the observable measurements.
+        - num_qpd_bits: The number of QPD measurements in the circuit. It is
+            assumed that the second to last creg in the generating circuit
+            is the creg  containing the QPD measurements, and the last
+            creg is associated with the observable measurements.
         - cog: The observable set being measured by the current experiment.
         - outcome: The outcome of the classical bits.
 
@@ -374,16 +376,6 @@ def process_outcome(
             this vector correspond to the elements of ``cog.commuting_observables``,
             and each result will be either +1 or -1.
     """
-    if len(qc.cregs) < 1 or qc.cregs[0].name != "qpd_measurements":
-        raise ValueError(
-            "Circuit's first register is expected to be named 'qpd_measurements'."
-        )
-    if len(qc.cregs) < 2 or qc.cregs[1].name != "observable_measurements":
-        raise ValueError(
-            "Circuit's second register is expected to be named 'observable_measurements'."
-        )
-
-    num_qpd_bits = len(qc.cregs[0])
     outcome = _outcome_to_int(outcome)
     qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
     meas_outcomes = outcome >> num_qpd_bits

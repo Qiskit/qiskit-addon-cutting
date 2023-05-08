@@ -117,22 +117,6 @@ class TestEstimatorUtilities(unittest.TestCase):
                 == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
 
-    def test_process_outcome_exceptions(self):
-        with self.subTest("Invalid or missing first register"):
-            with pytest.raises(ValueError) as e_info:
-                process_outcome(self.qc0, self.cog, 0)
-            assert (
-                e_info.value.args[0]
-                == "Circuit's first register is expected to be named 'qpd_measurements'."
-            )
-        with self.subTest("Invalid or missing second register"):
-            with pytest.raises(ValueError) as e_info:
-                process_outcome(self.qc1, self.cog, 0)
-            assert (
-                e_info.value.args[0]
-                == "Circuit's second register is expected to be named 'observable_measurements'."
-            )
-
     @data(
         ("000", [1, 1, 1]),
         ("001", [-1, -1, -1]),
@@ -145,13 +129,14 @@ class TestEstimatorUtilities(unittest.TestCase):
     )
     @unpack
     def test_process_outcome(self, outcome, expected):
+        num_qpd_bits = len(self.qc2.cregs[-2])
         for o in (
             outcome,
             f"0b{outcome}",
             int(f"0b{outcome}", 0),
             hex(int(f"0b{outcome}", 0)),
         ):
-            assert np.all(process_outcome(self.qc2, self.cog, o) == expected)
+            assert np.all(process_outcome(num_qpd_bits, self.cog, o) == expected)
 
     def test_cog_with_nontrivial_phase(self):
         with pytest.raises(ValueError) as e_info:
