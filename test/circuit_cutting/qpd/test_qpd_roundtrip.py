@@ -54,9 +54,7 @@ from circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction import (
 from circuit_knitting_toolbox.utils.bitwise import bit_count
 from circuit_knitting_toolbox.utils.transforms import separate_circuit
 from circuit_knitting_toolbox.utils.iteration import strict_zip
-from circuit_knitting_toolbox.circuit_cutting.qpd.utils.simulation import (
-    simulate_statevector_outcomes,
-)
+from circuit_knitting_toolbox.utils.simulation import simulate_statevector_outcomes
 
 logger = logging.getLogger(__name__)
 
