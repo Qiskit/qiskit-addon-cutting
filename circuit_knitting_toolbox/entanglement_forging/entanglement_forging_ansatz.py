@@ -154,12 +154,15 @@ class EntanglementForgingAnsatz:
         Returns:
             - (str): printable repesentation of class
         """
-        repr = "EntanglementForgingAnsatz\nCircuit:\n"
-        repr += str(self._circuit_u.draw())
-        repr += "\nBitstrings U:\n"
-        repr += str(self.bitstrings_u)
-        repr += "\nBitstrings V:\n"
-        repr += str(self._bitstrings_v)
-        repr += f"\nBitstring are symmetric: {self.bitstrings_are_symmetric}\n"
-        repr += f"Subspace dimension: {self.subspace_dimension}"
-        return repr
+        return "".join(
+            (
+                "EntanglementForgingAnsatz\nCircuit:\n",
+                str(self._circuit_u.draw()),
+                "\nBitstrings U:\n",
+                str(self.bitstrings_u),
+                "\nBitstrings V:\n",
+                str(self._bitstrings_v),
+                f"\nBitstring are symmetric: {self.bitstrings_are_symmetric}\n",
+                f"Subspace dimension: {self.subspace_dimension}",
+            )
+        )
