@@ -10,6 +10,13 @@
 # that they have been altered from the originals.
 
 """Code to initialize the wire cutting imports."""
+from warnings import warn
+
+warn(
+    f"The module namespace {__name__} is deprecated. It has been renamed circuit_knitting_toolbox.circuit_cutting.cutqc",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build

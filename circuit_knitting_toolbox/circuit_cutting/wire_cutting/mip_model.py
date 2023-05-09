@@ -16,7 +16,6 @@ from __future__ import annotations
 from typing import Sequence, Any
 
 import numpy as np
-from qiskit.utils.deprecation import deprecate_func
 
 try:
     from docplex.mp.model import Model
@@ -59,12 +58,6 @@ class MIPModel(object):
         - model (docplex model): the model interface for CPLEX
     """
 
-    @deprecate_func(
-        since="0.2.0",
-        additional_msg="Import from circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
-        package_name="circuit-knitting-toolbox",
-        removal_timeline="no sooner than Circuit Knitting Toolbox 0.3.0",
-    )
     def __init__(
         self,
         n_vertices: int,
