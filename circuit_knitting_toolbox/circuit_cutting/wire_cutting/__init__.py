@@ -15,7 +15,6 @@ from warnings import warn
 warn(
     f"The package namespace {__name__} is deprecated. It has been renamed circuit_knitting_toolbox.circuit_cutting.cutqc",
     DeprecationWarning,
-    stacklevel=2,
 )
 
 from .wire_cutting_evaluation import run_subcircuit_instances
