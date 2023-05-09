@@ -13,7 +13,7 @@
 from warnings import warn
 
 warn(
-    f"The module namespace {__name__} is deprecated. It has been renamed circuit_knitting_toolbox.circuit_cutting.cutqc",
+    f"The package namespace {__name__} is deprecated. It has been renamed circuit_knitting_toolbox.circuit_cutting.cutqc",
     DeprecationWarning,
     stacklevel=2,
 )
