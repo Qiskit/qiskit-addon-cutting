@@ -44,7 +44,7 @@ from ...utils.iteration import unique_by_id
 
 
 class WeightType(Enum):
-    """Type of weight."""
+    """Type of weight associated with a QPD sample."""
 
     #: A weight given in proportion to its exact weight
     EXACT = 1
