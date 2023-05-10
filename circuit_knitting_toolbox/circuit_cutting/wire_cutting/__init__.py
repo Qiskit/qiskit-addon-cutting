@@ -22,7 +22,7 @@ from .wire_cutting import (
 from warnings import warn
 
 warn(
-    f"The package namespace {__name__} is deprecated. It has been renamed circuit_knitting_toolbox.circuit_cutting.cutqc",
+    f"The package namespace {__name__} is deprecated and will be removed in Circuit Knitting Toolbox 0.3.0. Use namespace circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
     DeprecationWarning,
 )
 
