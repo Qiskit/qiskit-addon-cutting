@@ -21,4 +21,4 @@ warn(
     "circuit_knitting_toolbox.circuit_cutting.cutqc instead.",
     DeprecationWarning,
     stacklevel=2,
-)  # pragma: no cover
+)
