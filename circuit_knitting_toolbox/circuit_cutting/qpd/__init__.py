@@ -18,6 +18,7 @@ Main quasiprobability decomposition functionality.
 
    QPDBasis
    generate_qpd_samples
+   decompose_qpd_instructions
 
 Instructions (:mod:`circuit_knitting_toolbox.qpd.instructions`)
 ======================================
@@ -26,7 +27,7 @@ Instructions (:mod:`circuit_knitting_toolbox.qpd.instructions`)
 """
 
 from .qpd_basis import QPDBasis
-from .qpd import generate_qpd_samples
+from .qpd import generate_qpd_samples, decompose_qpd_instructions
 from .instructions import (
     BaseQPDGate,
     SingleQubitQPDGate,
@@ -37,6 +38,7 @@ from .instructions import (
 __all__ = [
     "qpdbasis_from_gate",
     "generate_qpd_samples",
+    "decompose_qpd_instructions",
     "QPDBasis",
     "BaseQPDGate",
     "TwoQubitQPDGate",
