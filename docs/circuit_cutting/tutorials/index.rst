@@ -1,6 +1,7 @@
 .. include:: README.rst
 
-.. nbgallery::
+.. this line is a comment that should be removed once there are tutorials
+   nbgallery::
     :glob:
 
     *

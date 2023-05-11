@@ -90,5 +90,11 @@ notebook-dependencies = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
+[tool.coverage.run]
+omit = [
+    # deprecated import location(s)
+    "circuit_knitting_toolbox/circuit_cutting/wire_cutting.py",
+]
+
 [tool.flit.module]
 name = "circuit_knitting_toolbox"

@@ -46,7 +46,7 @@ jobs:
           tox -epy${pver/./} -- --run-slow
           if [ "$pver" = "3.11" ]; then
             echo Skipping tutorials that require cplex
-            tox -epy${pver/./}-notebook  -- --ignore=docs/circuit_cutting/tutorials/tutorial_1_automatic_cut_finding.ipynb --ignore=docs/circuit_cutting/tutorials/tutorial_3_cutting_with_quantum_serverless.ipynb
+            tox -epy${pver/./}-notebook  -- --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_1_automatic_cut_finding.ipynb --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_3_cutting_with_quantum_serverless.ipynb
           else
             tox -epy${pver/./}-notebook
           fi
