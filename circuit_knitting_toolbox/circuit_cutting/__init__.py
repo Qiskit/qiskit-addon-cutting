@@ -26,9 +26,23 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
     cutqc.evaluate_subcircuits
     cutqc.reconstruct_full_distribution
     partition_circuit_qubits
+    partition_problem
+    decompose_gates
+    execute_experiments
+    reconstruct_expectation_values
 """
-from .cutting_decomposition import partition_circuit_qubits
+from .cutting_decomposition import (
+    partition_circuit_qubits,
+    partition_problem,
+    decompose_gates,
+)
+from .cutting_evaluation import execute_experiments
+from .cutting_reconstruction import reconstruct_expectation_values
 
 __all__ = [
     "partition_circuit_qubits",
+    "partition_problem",
+    "decompose_gates",
+    "execute_experiments",
+    "reconstruct_expectation_values",
 ]

@@ -13,10 +13,78 @@
 
 from __future__ import annotations
 
-import numpy as np
+from collections.abc import Sequence
 
-from ..utils.observable_grouping import CommutingObservableGroup
+import numpy as np
+from qiskit.quantum_info import PauliList
+
+from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
+from .cutting_decomposition import decompose_observables
+
+
+def reconstruct_expectation_values(
+    counts: Sequence[Sequence[Sequence[tuple[dict[str, int], int]]]],
+    coefficients: Sequence[float],
+    observables: PauliList | dict[str | int, PauliList],
+) -> list[float]:
+    r"""
+    Reconstruct an expectation value from the results of the sub-experiments.
+
+    Args:
+        counts: A 3D sequence of length-2 tuples containing the counts and QPD bit information
+            from each sub-experiment
+        coefficients: A sequence of coefficients, such that each coefficient is associated
+            with one unique sample. The length of ``coefficients`` should equal
+            the length of ``counts``
+        observables: The observable(s) for which the expectation values will be calculated.
+            This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
+            was not separated into subcircuits. If the decomposed circuit was separated, this
+            should be a dictionary mapping from partition label to subobservables.
+
+    Returns:
+        A ``list`` of ``float``\ s, such that each float is a simulated expectation
+        value corresponding to the observable in the same position
+    """
+    # Create the commuting observable groups
+    if isinstance(observables, PauliList):
+        subobservables, subsystem_observables = decompose_observables(
+            observables, "A" * len(observables[0])
+        )
+        expvals = np.zeros(len(observables))
+    else:
+        subobservables = observables
+        subsystem_observables = {
+            label: ObservableCollection(so) for label, so in observables.items()
+        }
+        expvals = np.zeros(len(list(observables.values())[0]))
+
+    # Assign each weight's sign and calculate the expectation values for each observable
+    for i, _ in enumerate(counts):
+        sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
+        coeff = coefficients[i]
+        current_expvals = np.ones((len(expvals),))
+        for j, label in enumerate(sorted_subsystems):
+            so = subsystem_observables[label]
+            subsystem_expvals = [
+                np.zeros(len(cog.commuting_observables)) for cog in so.groups
+            ]
+            for k, cog in enumerate(so.groups):
+                outcomes = counts[i][j][k][0]
+                shots = sum(outcomes.values())
+                for outcome, count in outcomes.items():
+                    subsystem_expvals[k] += (count / shots) * process_outcome(
+                        counts[i][j][k][1], cog, outcome
+                    )
+
+            for k, subobservable in enumerate(subobservables[label]):
+                current_expvals[k] *= np.mean(
+                    [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
+                )
+
+        expvals += coeff * current_expvals
+
+    return list(expvals)
 
 
 def process_outcome(

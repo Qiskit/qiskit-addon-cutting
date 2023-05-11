@@ -282,9 +282,12 @@ class EntanglementForgingKnitter:
 
         partitioned_expval_futures = []
         with ThreadPoolExecutor() as executor:
-            for partition_index, (
-                tensor_ansatze_partition,
-                superposition_ansatze_partition,
+            for (
+                partition_index,
+                (
+                    tensor_ansatze_partition,
+                    superposition_ansatze_partition,
+                ),
             ) in enumerate(
                 zip(partitioned_tensor_ansatze, partitioned_superposition_ansatze)
             ):
