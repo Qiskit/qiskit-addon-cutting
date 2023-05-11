@@ -132,6 +132,8 @@ def decompose_qpd_instructions(
         ValueError:
             An index in ``instruction_ids`` corresponds to a gate which is not a :class:`QPDGate`
         ValueError:
+            A list within instruction_ids is not length 1 or 2
+        ValueError:
             The total number of indices in ``instruction_ids`` does not equal the number of :class:`QPDGate`\ s in the circuit
         ValueError:
             Gates within the same decomposition hold different QPD bases
@@ -347,7 +349,8 @@ def _validate_qpd_instructions(
             qpd_gate_total += 1
     if qpd_gate_total != num_qpd_gates:
         raise ValueError(
-            f"The total number of QPDGates specified in instruction_ids ({num_qpd_gates}) does not equal the number of QPDGates in the circuit ({qpd_gate_total})."
+            f"The total number of QPDGates specified in instruction_ids ({num_qpd_gates}) does not equal the number "
+            f"of QPDGates in the circuit ({qpd_gate_total})."
         )
 
 
