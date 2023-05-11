@@ -23,7 +23,7 @@ Glossary of commonly used terms
 * **subexperiments**: A term used to describe the unique circuit samples associated with a subcircuit. These are the circuits sent to the backend for execution.
 * **partition**:
     * (noun): A set of qubits to be separated from the circuit by cutting gates and/or wires.
-    * (verb): Create mutually exclusive sets of qubits by replacing nonlocal gates spanning more than one partition with `TwoQubitQPDGate`\ s.
+    * (verb): Create mutually exclusive sets of qubits by replacing nonlocal gates spanning more than one set with `TwoQubitQPDGate`\ s.
 
 Scaling
 -------
