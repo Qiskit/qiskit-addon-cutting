@@ -22,7 +22,7 @@ from circuit_knitting_toolbox.circuit_cutting import partition_circuit_qubits
 from circuit_knitting_toolbox.circuit_cutting.qpd import QPDBasis, TwoQubitQPDGate
 
 
-class TestCuttingFunctions(unittest.TestCase):
+class TestCuttingDecomposition(unittest.TestCase):
     def setUp(self):
         # Use HWEA for simplicity and easy visualization
         circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
