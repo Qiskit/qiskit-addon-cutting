@@ -40,21 +40,19 @@ def partition_circuit_qubits(
 
     :class:`TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
 
-    Args:
-        circuit: The circuit to partition
-        partition_labels: A sequence containing a partition label for each qubit in the
-            input circuit. Nonlocal gates belonging to more than one partition
-            will be replaced with QPDGates.
+    :param circuit: The circuit to partition
+    :type circuit: QuantumCircuit
+    :param partition_labels: A sequence containing a partition label for each qubit in the
+        input circuit. Nonlocal gates belonging to more than one partition
+        will be replaced with QPDGates.
+    :type partition_labels: Sequence[Hashable]
 
-    Returns:
-        (:class:`~qiskit.QuantumCircuit`): The output circuit with each nonlocal gate spanning
-            two partitions replaced by a :class:`TwoQubitQPDGate`.
+    :return: The output circuit with each nonlocal gate spanning two partitions replaced by a
+        :class:`TwoQubitQPDGate`.
+    :rtype: QuantumCircuit
 
-    Raises:
-        ValueError:
-            Length of partition_labels does not equal the number of qubits in the circuit
-        ValueError:
-            Cannot decompose gate which acts on more than 2 qubits
+    :raises ValueError: Length of partition_labels does not equal the number of qubits in the circuit
+    :raises ValueError: Cannot decompose gate which acts on more than 2 qubits
     """
     if len(partition_labels) != len(circuit.qubits):
         raise ValueError(
@@ -100,12 +98,13 @@ def decompose_gates(circuit: QuantumCircuit, gate_ids: Sequence[int]) -> Quantum
     r"""
     Transform specified gates into :class:`QPDGate`\ s.
 
-    Args:
-        circuit: The circuit containing gates to be decomposed
-        gate_ids: The indices of the gates to decompose
+    :param circuit: The circuit containing gates to be decomposed
+    :type circuit: QuantumCircuit
+    :param gate_ids: The indices of the gates to decompose
+    :type gate_ids: Sequence[int]
 
-    Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
+    :return: A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
+    :rtype: QuantumCircuit
     """
     # Replace specified gates with TwoQubitQPDGates
     new_qc = circuit.copy()
@@ -130,24 +129,24 @@ def partition_problem(
     Circuit qubits with matching partition labels will be grouped together, and nonlocal
     operations spanning more than one partition will be decomposed and replaced with
     probabilistic local operations.
+
     If provided, the observables will be separated along the boundaries specified by
     ``partition_labels``.
 
-    Args:
-        circuit: The circuit to separate
-        partition_labels: A sequence of labels, such that each label corresponds
-            to the circuit qubit with the same index
-        observables: The observables to separate
+    :param circuit: The circuit to separate
+    :type circuit: QuantumCircuit
+    :param partition_labels: A sequence of labels, such that each label corresponds
+        to the circuit qubit with the same index
+    :type partition_labels: Sequence[str | int]
+    :param observables: The observables to separate
+    :type observables: PauliList | None
 
-    Returns:
-        subcircuits: A dictionary mapping a partition label to a subcircuit
-        subobservables: A dictionary mapping a partition label to a list of Pauli observables
+    :return: A tuple containing a dictionary mapping a partition label to a subcircuit
+        and a dictionary mapping a partition label to a list of Pauli observables
+    :rtype: tuple[dict, dict]
 
-    Raises:
-        ValueError:
-            The number of partition labels does not equal the number of qubits in the circuit
-        ValueError:
-            An input observable acts on a different number of qubits than the input circuit
+    :raises ValueError: The number of partition labels does not equal the number of qubits in the circuit
+    :raises ValueError: An input observable acts on a different number of qubits than the input circuit
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -190,14 +189,15 @@ def decompose_observables(
     """
     Decompose a list of observables with respect to some qubit partition labels.
 
-    Args:
-        observables: A list of observables to decompose
-        partition_labels: A sequence of partition labels, such that each label
-            corresponds to the qubit in the same index
+    :param observables: A list of observables to decompose
+    :type observables: PauliList
+    :param partition_labels: A sequence of partition labels, such that each label
+        corresponds to the qubit in the same index
+    :type partition_labels: Sequence[str | int]
 
-    Returns:
-        - A dictionary mapping a partition to its associated sub-observables
-        - A dictionary mapping a partition to an ``ObservableCollection``
+    :return: A tuple containing a dictionary mapping a partition to its associated sub-observables
+        and a dictionary mapping a partition to an ``ObservableCollection``
+    :rtype: tuple[dict, dict]
     """
     qubits_by_subsystem = defaultdict(list)
     for i, label in enumerate(partition_labels):

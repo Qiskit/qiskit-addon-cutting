@@ -45,30 +45,29 @@ def execute_experiments(
     """
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
-    Args:
-        circuits: The circuit(s) resulting from decomposing nonlocal gates
-        observables: The observable(s) corresponding to the circuit(s). If a
-            :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
-            a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
-            from partition label to subobservables is expected.
-        num_samples: The number of samples to draw from the quasiprobability distribution
-        backends: Backend(s) on which to run the sub-experiments. If no backend is selected,
-            the ``AerSimulator`` from ``Qiskit Aer`` will be used. Experiments corresponding
-            to the same qubit partition will be run on the same backend.
-        shots: The number of shots to run for each experiment
+    :param circuits: The circuit(s) resulting from decomposing nonlocal gates
+    :type circuits: QuantumCircuit | dict
+    :param observables: The observable(s) corresponding to the circuit(s). If
+        a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
+        a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
+        from partition label to subobservables is expected.
+    :type observables: PauliList | dict
+    :param num_samples: The number of samples to draw from the quasiprobability distribution
+    :type num_samples: int
+    :param backends: Backend(s) on which to run the sub-experiments. If no backend is selected,
+        the ``AerSimulator`` from ``Qiskit Aer`` will be used. Experiments corresponding
+        to the same qubit partition will be run on the same backend.
+    :type backends: Backend | Sequence[Backend]
+    :param shots: The number of shots to run for each experiment
+    :type shots: int
 
-    Returns:
-        counts: A 3D list of length-2 tuples holding the counts and QPD bit information for
-            each sub-experiment
-        coefficients: The coefficients corresponding to each unique sample
+    :return: A tuple containing a 3D list of length-2 tuples holding the counts and QPD bit
+        information for each sub-experiment as well as the coefficients corresponding to each unique sample
+    :rtype: tuple[list, Sequence[int]]
 
-    Raises:
-        ValueError:
-            The number of requested samples must be positive.
-        ValueError:
-            The types of ``circuits`` and ``observables`` arguments are incompatible
-        ValueError:
-            SingleQubitQPDGates are not supported in unseparable circuits
+    :raises ValueError: The number of requested samples must be positive.
+    :raises ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible
+    :raises ValueError: SingleQubitQPDGates are not supported in unseparable circuits
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
@@ -138,21 +137,23 @@ def append_measurement_circuit(
     The new register will be named ``"observable_measurements"`` and will be
     the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
 
-    Args:
-        - qc (QuantumCircuit): The quantum circuit.
-        - cog (CommutingObservableGroup): The commuting observable set for
-            which to construct measurements.
-        - qubit_locations (Sequence[int]): A ``Sequence`` whose length is the
-            number of qubits in the observables, where each element holds that
-            qubit's corresponding index in the circuit.  By default, the
-            circuit and observables are assumed to have the same number of
-            qubits, and the idenity map (i.e., ``range(qc.num_qubits)``) is
-            used.
-        - inplace (bool): Whether to operate on the circuit in place (default: False).
+    :param qc: The quantum circuit.
+    :type qc: QuantumCircuit
+    :param cog: The commuting observable set for
+        which to construct measurements.
+    :type cog: CommutingObservableGroup
+    :param qubit_locations: A ``Sequence`` whose length is the
+        number of qubits in the observables, where each element holds that
+        qubit's corresponding index in the circuit.  By default, the
+        circuit and observables are assumed to have the same number of
+        qubits, and the idenity map (i.e., ``range(qc.num_qubits)``) is
+        used.
+    :type qubit_locations: Sequence[int] | None
+    :param inplace: Whether to operate on the circuit in place (default: False).
+    :type inplace: bool
 
-    Returns:
-        - (QuantumCircuit): The new or modified circuit.
-
+    :return: The new or modified circuit.
+    :rtype: QuantumCircuit
     """
     if qubit_locations is None:
         # By default, the identity map.
