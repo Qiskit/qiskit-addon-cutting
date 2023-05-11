@@ -1,0 +1,11 @@
+---
+deprecations:
+  - |
+    The ``circuit_knitting_toolbox.circuit_cutting.wire_cutting`` namespace
+    is now deprecated. It has been renamed to
+    ``circuit_knitting_toolbox.circuit_cutting.cutqc``.
+    Both gate and wire cutting for simulating expectation values will be
+    implemented directly into the ``circuit_cutting`` package, and the
+    ``circuit_cutting.cutqc`` package will remain available for users of
+    the automatic cut finding and/or the full probability distribution
+    reconstruction.
