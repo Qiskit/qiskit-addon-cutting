@@ -52,6 +52,19 @@ Circuit Knitting Toolbox, you now need Python version 3.8 or
 higher.</p></li>
 </ul>
 </section>
+<section id="deprecation-notes">
+<span id="release-notes-upcoming-release-main-branch-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.wire_cutting</span></code> namespace
+is now deprecated. It has been renamed to
+<code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.cutqc</span></code>.
+Both gate and wire cutting for simulating expectation values will be
+implemented directly into the <code class="docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package, and the
+<code class="docutils literal notranslate"><span class="pre">circuit_cutting.cutqc</span></code> package will remain available for users of
+the automatic cut finding and/or the full probability distribution
+reconstruction.</p></li>
+</ul>
+</section>
 </section>
 <section id="release-notes-0-1-0">
 <span id="id2"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">¶</a></h2>
@@ -94,8 +107,8 @@ and this driver is no longer needed.</p></li>
 installed for automatic wire cut finding to work.</p></li>
 </ul>
 </section>
-<section id="deprecation-notes">
-<span id="release-notes-0-1-0-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">¶</a></h3>
+<section id="release-notes-0-1-0-deprecation-notes">
+<span id="id4"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-1-0-deprecation-notes" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been deprecated.  Future
 versions of the Circuit Knitting Toolbox will require Python 3.8
@@ -127,6 +140,7 @@ or higher.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
 <li class="toctree-l1"><a class="reference internal" href="circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="circuit_cutting/cutqc/index.html">CutQC (legacy circuit cutting implementation)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a></li>
 <li class="toctree-l1"><a class="reference internal" href="entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a></li>

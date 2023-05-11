@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.cutqc.evaluate\_subcircuits
+=======================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.cutqc
+
+.. autofunction:: evaluate_subcircuits

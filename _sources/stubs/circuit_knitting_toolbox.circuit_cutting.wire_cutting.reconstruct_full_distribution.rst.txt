@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.circuit\_cutting.wire\_cutting.reconstruct\_full\_distribution
-=========================================================================================
-
-.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.wire_cutting
-
-.. autofunction:: reconstruct_full_distribution

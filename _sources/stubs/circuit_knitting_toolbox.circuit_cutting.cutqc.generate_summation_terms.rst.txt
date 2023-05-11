@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.cutqc.generate\_summation\_terms
+============================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.cutqc
+
+.. autofunction:: generate_summation_terms

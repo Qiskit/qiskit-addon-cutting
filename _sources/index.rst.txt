@@ -29,6 +29,7 @@ Contents
   Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
   Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
   Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
+  CutQC (legacy circuit cutting implementation) <circuit_cutting/cutqc/index>
   Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
   Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
