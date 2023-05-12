@@ -9,7 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for circuit_cutting package."""
+"""Tests for cutting_decomposition package."""
+
 import unittest
 
 import pytest
