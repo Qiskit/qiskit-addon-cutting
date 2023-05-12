@@ -202,6 +202,8 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
 def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
+    # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
+    # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     if gate.name in ("rxx", "crx"):
         pauli = XGate()
         r_plus = RXGate(0.5 * np.pi)
@@ -257,7 +259,22 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         for operations in unique_by_id(m[1] for m in maps):
             operations.append(rot)
 
-    coeffs = _generate_coefficients(theta)
+    # Generate QPD coefficients for gates specified by Mitarai et al -
+    # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pd
+    theta_prime = -theta / 2  # theta as defined by Mitarai and Fujii
+    cs_theta_prime = np.cos(theta_prime) * np.sin(theta_prime)
+    coeffs = [
+        np.cos(theta_prime) ** 2,
+        np.sin(theta_prime) ** 2,
+        # Qiskit defines RZ(theta) = exp(-i*Z*theta/2), i.e., with a minus
+        # sign in the exponential; hence r_plus really represents
+        # exp(-i*Z*pi/4), and similar for RX and RY.  Following Mitarai and
+        # Fujii Eq. (6), the correct signs are therefore given by
+        -cs_theta_prime,
+        cs_theta_prime,
+        -cs_theta_prime,
+        cs_theta_prime,
+    ]
 
     return QPDBasis(maps, coeffs)
 
@@ -291,27 +308,6 @@ def _(gate: CZGate | CXGate):
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
     return QPDBasis(maps, coeffs)
-
-
-def _generate_coefficients(theta: float):
-    # Generate QPD coefficients for gates specified by Mitarai et al -
-    # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pd
-    theta_prime = -theta / 2  # theta as defined by Mitarai and Fujii
-    cs_theta_prime = np.cos(theta_prime) * np.sin(theta_prime)
-    coeffs = [
-        np.cos(theta_prime) ** 2,
-        np.sin(theta_prime) ** 2,
-        # Qiskit defines RZ(theta) = exp(-i*Z*theta/2), i.e., with a minus
-        # sign in the exponential; hence r_plus really represents
-        # exp(-i*Z*pi/4), and similar for RX and RY.  Following Mitarai and
-        # Fujii Eq. (6), the correct signs are therefore given by
-        -cs_theta_prime,
-        cs_theta_prime,
-        -cs_theta_prime,
-        cs_theta_prime,
-    ]
-
-    return coeffs
 
 
 def _validate_qpd_instructions(
