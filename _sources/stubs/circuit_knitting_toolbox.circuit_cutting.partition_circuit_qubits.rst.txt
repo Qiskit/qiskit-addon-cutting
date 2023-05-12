@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.partition\_circuit\_qubits
+======================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+
+.. autofunction:: partition_circuit_qubits
