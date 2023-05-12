@@ -216,7 +216,7 @@ class ObservableCollection:
         # important case, evaluating the "expectation value" of the identity of
         # the current subsystem (which really just involves keeping track of
         # QPD measurements only).
-        # https://github.ibm.com/IBM-Q-Software/prototype-qpd-library/issues/85
+        # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/155
 
         # For each mutually commuting group of observables, we put together a
         # CommutingObservableGroup data structure.
