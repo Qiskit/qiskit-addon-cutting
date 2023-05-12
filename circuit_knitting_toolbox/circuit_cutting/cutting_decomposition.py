@@ -58,30 +58,32 @@ def partition_circuit_qubits(
     new_qc = circuit.copy()
 
     # Find 2-qubit gates spanning more than one partition and replace it with a QPDGate.
-    for i, gate in enumerate(new_qc.data):
-        if gate.operation.name == "barrier":
+    for i, instruction in enumerate(new_qc.data):
+        if instruction.operation.name == "barrier":
             continue
-        qubit_indices = [new_qc.find_bit(qubit).index for qubit in gate.qubits]
+        qubit_indices = [new_qc.find_bit(qubit).index for qubit in instruction.qubits]
         partitions_spanned = {partition_labels[idx] for idx in qubit_indices}
         # Ignore local gates and gates that span only one partition
         if (
             len(qubit_indices) <= 1
             or len(partitions_spanned) == 1
-            or isinstance(gate.operation, Barrier)
+            or isinstance(instruction.operation, Barrier)
         ):
             continue
 
         if len(qubit_indices) > 2:
             raise ValueError(
-                f"Decomposition is only supported for two-qubit gates. Cannot decompose ({gate.operation.name})."
+                f"Decomposition is only supported for two-qubit gates. Cannot decompose ({instruction.operation.name})."
             )
 
         # Nonlocal gate exists in two separate partitions
-        if isinstance(gate.operation, TwoQubitQPDGate):
+        if isinstance(instruction.operation, TwoQubitQPDGate):
             continue
 
-        decomposition = QPDBasis.from_gate(gate.operation)
-        qpd_gate = TwoQubitQPDGate(decomposition, label=f"qpd_{gate.operation.name}")
+        decomposition = QPDBasis.from_gate(instruction.operation)
+        qpd_gate = TwoQubitQPDGate(
+            decomposition, label=f"qpd_{instruction.operation.name}"
+        )
         new_qc.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return new_qc
