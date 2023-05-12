@@ -392,7 +392,7 @@ class MIPModel(object):
     def pwl_exp(
         self, lb: int, ub: int, base: int, coefficient: int, integer_only: bool
     ) -> tuple[list[int], list[int]]:
-        """
+        r"""
         Approximate a nonlinear exponential function via a piecewise linear function.
 
         Args:
