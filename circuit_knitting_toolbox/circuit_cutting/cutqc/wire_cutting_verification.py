@@ -45,17 +45,12 @@ def verify(
     Provides a variety of metrics to evaluate the differences in the distributions.
 
     Args:
-        - full_circuit (QuantumCircuit): the original quantum circuit that was cut
-        - reconstructed_output (np.ndarray): the reconstructed probability distribution from the
-            execution of the subcircuits
+        full_circuit: The original quantum circuit that was cut
+        reconstructed_outpu: The reconstructed probability distribution from the
+          execution of the subcircuits
 
     Returns:
-        a tuple
-        containing:
-
-        - a dictionary containing a variety of distributional difference
-          metrics for the ground truth and reconstructed distributions; and,
-        - the true probability distribution of the full circuit
+        A tuple containing metrics for the ground truth and reconstructed distributions
     """
     ground_truth = _evaluate_circuit(circuit=full_circuit)
     metrics = {}
@@ -90,16 +85,16 @@ def generate_reconstructed_output(
     Reorder the probability distribution.
 
     Args:
-        - full_circuit (QuantumCircuit): the original uncut circuit
-        - subcircuits (list): the cut subcircuits
-        - unordered (np.ndarray): the unordered results of the subcircuits
-        - smart_order (list): the correct ordering of the subcircuits
-        - complete_path_map (dict): the path map of the cuts, as defined from the
-            cutting function
+        full_circuit: The original uncut circuit
+        subcircuits: The cut subcircuits
+        unordered: The unordered results of the subcircuits
+        smart_order: The correct ordering of the subcircuits
+        complete_path_map: The path map of the cuts, as defined from the
+          cutting function
 
     Returns:
-        - (np.ndarray): the reordered and reconstructed probability distribution over the
-            full circuit
+        The reordered and reconstructed probability distribution over the
+        full circuit
     """
     subcircuit_out_qubits: dict[int, list[Qubit]] = {
         subcircuit_idx: [] for subcircuit_idx in smart_order
@@ -144,10 +139,10 @@ def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     Compute exact probability vector of given circuit.
 
     Args:
-        - circuit (QuantumCircuit): the circuit to simulate
+        circuit: The circuit to simulate
 
     Returns:
-        - (Sequence[float]): the final probability vector of the circuit
+        The final probability vector of the circuit
     """
     max_memory_mb = psutil.virtual_memory().total >> 20
     max_memory_mb = int(max_memory_mb / 4 * 3)
