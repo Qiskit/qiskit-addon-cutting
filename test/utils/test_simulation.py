@@ -43,17 +43,14 @@ class TestSimulationFunctions(unittest.TestCase):
             assert r.keys() == {0}
             assert r[0] == pytest.approx(1.0)
 
-        with self.subTest("Error when overwriting clbits"):
+        with self.subTest("Overwriting clbits"):
             qc = QuantumCircuit(2, 1)
             qc.h(0)
             qc.measure(0, 0)
             qc.measure(1, 0)
-            with pytest.raises(ValueError) as e_info:
-                simulate_statevector_outcomes(qc)
-            assert (
-                e_info.value.args[0]
-                == "Circuits that overwrite a classical bit are not supported."
-            )
+            r = simulate_statevector_outcomes(qc)
+            assert r.keys() == {0}
+            assert r[0] == pytest.approx(1.0)
 
         with self.subTest("Bit has probability 1 of being set"):
             qc = QuantumCircuit(1, 1)
@@ -61,3 +58,14 @@ class TestSimulationFunctions(unittest.TestCase):
             qc.measure(0, 0)
             r = simulate_statevector_outcomes(qc)
             assert r.keys() == {1}
+
+        with self.subTest("Circuit with reset operation"):
+            qc = QuantumCircuit(1, 2)
+            qc.h(0)
+            qc.measure(0, 0)
+            qc.reset(0)
+            qc.measure(0, 1)
+            r = simulate_statevector_outcomes(qc)
+            assert r.keys() == {0, 1}
+            assert r[0] == pytest.approx(0.5)
+            assert r[1] == pytest.approx(0.5)
