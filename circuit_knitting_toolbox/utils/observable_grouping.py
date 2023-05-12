@@ -31,7 +31,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
 
-from circuit_knitting_toolbox.utils.iteration import strict_zip
+from .iteration import strict_zip
 
 
 _I = Pauli("I")
