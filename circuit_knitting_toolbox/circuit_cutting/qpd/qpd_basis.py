@@ -138,7 +138,7 @@ class QPDBasis:
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
 
         Returns:
-            The newly-instantiated QPDBasis object
+            The newly-instantiated :class:`QPDBasis` object
         """
         # pylint: disable=cyclic-import
         from .qpd import qpdbasis_from_gate
