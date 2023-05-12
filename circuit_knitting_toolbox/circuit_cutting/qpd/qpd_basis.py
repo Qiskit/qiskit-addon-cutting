@@ -82,7 +82,7 @@ class QPDBasis:
         Quasiprobability decomposition coefficients.
 
         Returns:
-            The coeffs member variable
+            The ``coeffs`` member variable
         """
         return self._coeffs
 
