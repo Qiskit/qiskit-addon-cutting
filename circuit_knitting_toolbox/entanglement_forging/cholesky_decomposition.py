@@ -41,13 +41,13 @@ def get_cholesky_op(
     Convert a two-body term into a cholesky operator.
 
     Args:
-        - l_op: Two body integrals
-        - g: integral index
-        - converter: Qubit converter to be used
-        - opname: Prefix for output cholesky operator name
+        l_op: Two body integrals
+        g: integral index
+        converter: Qubit converter to be used
+        opname: Prefix for output cholesky operator name
 
     Returns:
-        - cholesky_operator: The converted operator
+        The converted Cholesky operator
     """
     pt = PolynomialTensor({"+-": l_op[:, :, g]})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
@@ -66,22 +66,18 @@ def cholesky_decomposition(
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
-        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be
-            calculated.
-        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis. If ``None``, the input integrals will be
-            assumed to be in the MO basis.
-        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.
+        problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian
+          will be calculated.
+        mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input
+          integrals will be assumed to be in the MO basis.
+        orbitals_to_reduce: A list of orbital indices to remove from the problem
+          before decomposition.
 
     Returns:
-        - Tuple containing
-            - cholesky_operator (ListOp): A list of operators representing the decomposed Hamiltonian.
-              shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
-            - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after
-              calculating properties of the decomposed operator (i.e. ground state energy).
+        Tuple containing the cholesky operator and the energy shift resulting from decomposition
 
     Raises:
-        - ValueError:
-            The input ElectronicStructureProblem contains no particle number information.
+        ValueError: The input ElectronicStructureProblem contains no particle number information.
     """
     hcore = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
     eri = to_chemist_ordering(
@@ -134,16 +130,15 @@ def convert_cholesky_operator(
     Convert the Cholesky operator (ListOp) into the entanglement forging format.
 
     Args:
-        - operator: A `ListOp` containing the single-body Hamiltonian followed
-            by the Cholesky operators.
-            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
-        - ansatz:
-            The ansatz for which to compute expectation values of operator. The
-            `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem..
+        operator: A `ListOp` containing the single-body Hamiltonian followed
+          by the Cholesky operators.
+          shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
+        ansatz: The ansatz for which to compute expectation values of operator. The
+          `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem..
 
     Returns:
-        - forged_operator: An `EntanglementForgingOperator` object describing the
-            decomposed operator.
+        An `EntanglementForgingOperator` object describing the
+        decomposed operator.
     """
     calculate_hybrid_cross_terms = len(set(ansatz.bitstrings_u)) < len(
         ansatz.bitstrings_u
@@ -251,25 +246,20 @@ def _get_fermionic_ops_with_cholesky(
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
     Args:
-        - mo_coeff (np.ndarray): 2D array representing coefficients for converting from AO to MO basis.
-        - h1 (np.ndarray): 2D array representing operator
-            coefficients of one-body integrals in the AO basis.
-        - h2 (np.ndarray): 4D array representing operator coefficients
-            of two-body integrals in the AO basis.
-        - halve_transformed_h2 (bool | None): Should be set to True for Hamiltonian
-            operator to agree with Qiskit conventions.
-        - occupied_orbitals_to_reduce (np.ndarray | None): A list of occupied orbitals that will be removed.
-        - virtual_orbitals_to_reduce (np.ndarray | None): A list of virtual orbitals that will be removed.
-        - epsilon_cholesky (float | None): The threshold for the decomposition (typically a number close to 0).
+        mo_coeff: 2D array representing coefficients for converting from AO to MO basis.
+        h1: 2D array representing operator
+          coefficients of one-body integrals in the AO basis.
+        h2: 4D array representing operator coefficients
+          of two-body integrals in the AO basis.
+        halve_transformed_h2: Should be set to True for Hamiltonian
+          operator to agree with Qiskit conventions.
+        occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed.
+        virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed.
+        epsilon_cholesky: The threshold for the decomposition (typically a number close to 0).
 
     Returns:
-        - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.
-        - cholesky_ops (list[PauliSumOp]): L_\\gamma in the Cholesky decomposition
-        - freeze_shift (float): Energy shift due to freezing.
-        - h1 (np.ndarray): 2D array representing operator coefficients of one-body
-            integrals in the MO basis.
-        - h2 (np.ndarray): 4D array representing operator coefficients of
-            two-body integrals in the MO basis.
+        A tuple containing the single and two-body integrals, the energy shift, and the
+        one and two body integrals in the MO basis.
     """
     if virtual_orbitals_to_reduce is None:
         virtual_orbitals_to_reduce = np.array([])

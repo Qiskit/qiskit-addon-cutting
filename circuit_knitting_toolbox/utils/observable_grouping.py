@@ -9,18 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Module for conducting Pauli observable grouping.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   observables_restricted_to_subsystem
-   most_general_observable
-   CommutingObservableGroup
-   ObservableCollection
-"""
+"""Module for conducting Pauli observable grouping."""
 
 from __future__ import annotations
 
@@ -45,8 +34,12 @@ def observables_restricted_to_subsystem(
     A ``PauliList`` will be returned if a ``PauliList`` is provided; otherwise,
     a ``list[Pauli]`` will be returned.
 
+    Args:
+        qubits: The qubits in a subsystem
+        global_observables: The list of observables
+
     Returns:
-        - (list[Pauli] | PauliList): Each Pauli restricted to the subsystem.
+        Each Pauli restricted to the subsystem.
 
     >>> observables_restricted_to_subsystem([1, 3], PauliList(["IXYZ", "ZZXX"]))
     PauliList(['IY', 'ZX'])
@@ -70,17 +63,15 @@ def most_general_observable(
     of interest.
 
     Args:
-        - commuting_observables (PauliList | Sequence[Pauli]): Input sequence of
-            mutually qubit-wise commuting observables.
-        - num_qubits (int): Number of qubits.  If ``None``, it is inferred from
-            ``commuting_observables`` (default: ``None``)
+        commuting_observables: Input sequence of mutually qubit-wise commuting observables.
+        num_qubits: Number of qubits.  If ``None``, it is inferred from
+          ``commuting_observables`` (default: ``None``)
 
     Raises:
-        - ValueError
-            - If the input sequence is empty (in which case, no experiment is even needed
-                to measure the observables).
-            - If the input sequence is _not_ mutually qubit-wise commuting.
-            - If an observable has an unexpected ``num_qubits``.
+        ValueError: The input sequence is empty (in which case, no experiment is even needed
+          to measure the observables)
+        ValueError: The input sequence is _not_ mutually qubit-wise commuting
+        ValueError: An observable has an unexpected ``num_qubits``
 
     >>> most_general_observable(PauliList(["IIIZ", "IIZZ", "XIII"]))
     Pauli('XIZZ')
@@ -126,18 +117,14 @@ class CommutingObservableGroup:
     r"""Set of mutually qubit-wise commuting observables.
 
     Contains the following fields:
-        - commuting_observables (list[Pauli]): those that can be measured
-            simultaneously.
-        - general_observable (Pauli): a single Pauli string that contains all
-            qubit-wise measurements needed to measure everything in
-            ``commuting_observables``.
-        - pauli_indices (list[int]): the indices of non-identity ``Pauli``\ s in
-            ``general_observable``
-        - pauli_bitmasks (list[int]): a bitmask for each observable in
-            ``commuting_observables``.  Given an element, each bit corresponds to
-            whether the corresponding entry in ``pauli_indices`` is relevant to
-            that observable.
-
+        commuting_observables: Those that can be measured simultaneously
+        general_observable: A single Pauli string that contains all
+            qubit-wise measurements needed to measure everything in ``commuting_observables``.
+        pauli_indices: The indices of non-identity ``Pauli``\ s in ``general_observable``
+        pauli_bitmasks: A bitmask for each observable in
+          ``commuting_observables``.  Given an element, each bit corresponds to
+          whether the corresponding entry in ``pauli_indices`` is relevant to
+          that observable.
     """
 
     general_observable: Pauli
