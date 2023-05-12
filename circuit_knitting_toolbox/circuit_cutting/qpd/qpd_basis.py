@@ -108,14 +108,26 @@ class QPDBasis:
     @property
     def kappa(self) -> float:
         """
-        Get the sampling overhead.
+        Get the square root of the sampling overhead.
 
-        The sampling overhead is calculated by summing the magnitude of the coefficients.
+        This quantity is the sum of the magnitude of the coefficients.
 
         Returns:
-            - (float): The kappa member variable
+            - (float): The square root of the sampling overhead
         """
         return self._kappa
+
+    @property
+    def overhead(self) -> float:
+        """
+        Get the sampling overhead.
+
+        The sampling overhead is the square of the sum of the magnitude of the coefficients.
+
+        Returns:
+            - (float): The sampling overhead
+        """
+        return self._kappa**2
 
     @staticmethod
     def from_gate(gate: Gate) -> "QPDBasis":
