@@ -110,7 +110,7 @@ class QPDBasis:
         """
         Get the square root of the sampling overhead.
 
-        The sampling overhead is the square of the sum of the magnitude of the coefficients.
+        This quantity is the sum of the magnitude of the coefficients.
 
         Returns:
             - (float): The square root of the sampling overhead
