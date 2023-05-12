@@ -403,7 +403,7 @@ class MIPModel(object):
             integer_only: whether the input x's are only integers
 
         Returns:
-            A tuple containing the x's and f(x)'s of the piecewise approximation
+            A tuple containing the :math:`x`\ s and :math:`f(x)`\ s of the piecewise approximation
         """
         # Piecewise linear approximation of coefficient*base**x
         ptx = []
