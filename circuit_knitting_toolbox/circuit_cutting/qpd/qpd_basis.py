@@ -101,7 +101,7 @@ class QPDBasis:
         Get the probabilities on which the maps will be sampled.
 
         Returns:
-            The probabilities member variable
+            The ``probabilities`` member variable
         """
         return self._probabilities
 
