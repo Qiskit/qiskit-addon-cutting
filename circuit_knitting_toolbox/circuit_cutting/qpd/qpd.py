@@ -367,8 +367,8 @@ def _decompose_qpd_measurements(
     # here because it refers to old indices, before the decomposition.
     qpd_measure_ids = [
         i
-        for i, gate in enumerate(circuit.data)
-        if gate.operation.name.lower() == "qpd_measure"
+        for i, instruction in enumerate(circuit.data)
+        if instruction.operation.name.lower() == "qpd_measure"
     ]
 
     # Create a classical register for the qpd measurement results.  This is
