@@ -54,7 +54,7 @@ test = [
 ]
 style = [
     "autoflake==2.1.1",
-    "black[jupyter]==22.10.0",
+    "black[jupyter]==23.3.0",
     "ruff>=0.0.246",
 ]
 lint = [
