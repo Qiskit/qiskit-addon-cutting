@@ -25,4 +25,10 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
     cutqc.cut_circuit_wires
     cutqc.evaluate_subcircuits
     cutqc.reconstruct_full_distribution
+    partition_circuit_qubits
 """
+from .cutting_decomposition import partition_circuit_qubits
+
+__all__ = [
+    "partition_circuit_qubits",
+]
