@@ -127,7 +127,7 @@ class QPDBasis:
         Returns:
             - (float): The sampling overhead
         """
-        return self._kappa ** 2
+        return self._kappa**2
 
     @staticmethod
     def from_gate(gate: Gate) -> "QPDBasis":
