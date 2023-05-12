@@ -155,6 +155,7 @@ class TestQPDBasis(unittest.TestCase):
 
         self.assertTrue(all(new_qpd.probabilities == new_qpd2.probabilities))
         self.assertTrue(new_qpd.kappa == new_qpd2.kappa)
+        self.assertTrue(new_qpd.overhead == new_qpd2.kappa ** 2)
 
     def test_mismatching_indices(self):
         maps = [(None, "M")]
