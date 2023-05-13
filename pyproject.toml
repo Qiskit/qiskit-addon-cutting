@@ -77,7 +77,6 @@ notebook-dependencies = [
     "circuit-knitting-toolbox[cplex,pyscf]",
     "quantum-serverless>=0.0.7",
     "qiskit-nature<0.6.0",
-    "qiskit-ibm-provider",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
