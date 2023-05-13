@@ -19,10 +19,11 @@ from enum import Enum
 import numpy as np
 from qiskit.circuit import (
     QuantumCircuit,
-    Gate,
+    Instruction,
     ClassicalRegister,
     CircuitInstruction,
     Measure,
+    Reset,
 )
 from qiskit.circuit.library.standard_gates import (
     XGate,
@@ -45,7 +46,12 @@ from qiskit.circuit.library.standard_gates import (
 )
 
 from .qpd_basis import QPDBasis
-from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
+from .instructions import (
+    BaseQPDGate,
+    TwoQubitQPDGate,
+    QPDMeasure,
+    Move,
+)
 from ...utils.iteration import unique_by_id
 
 
@@ -159,7 +165,7 @@ def decompose_qpd_instructions(
     return new_qc
 
 
-_qpdbasis_from_gate_funcs: dict[str, Callable[[Gate], QPDBasis]] = {}
+_qpdbasis_from_gate_funcs: dict[str, Callable[[Instruction], QPDBasis]] = {}
 
 
 def _register_qpdbasis_from_gate(*args):
@@ -171,11 +177,11 @@ def _register_qpdbasis_from_gate(*args):
     return g
 
 
-def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
+def qpdbasis_from_gate(gate: Instruction, /) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 8 operations:
+    This method currently supports 9 operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -184,6 +190,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CRZGate`
         - :class:`~qiskit.circuit.library.CXGate`
         - :class:`~qiskit.circuit.library.CZGate`
+        - :class:`Move`
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -306,6 +313,35 @@ def _(gate: CZGate | CXGate):
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
+    return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("move")
+def _(gate: Move):
+    i_measurement = [Reset()]
+    x_measurement = [HGate(), QPDMeasure(), Reset()]
+    y_measurement = [SdgGate(), HGate(), QPDMeasure(), Reset()]
+    z_measurement = [QPDMeasure(), Reset()]
+
+    prep_0 = [Reset()]
+    prep_1 = [Reset(), XGate()]
+    prep_plus = [Reset(), HGate()]
+    prep_minus = [Reset(), XGate(), HGate()]
+    prep_iplus = [Reset(), HGate(), SGate()]
+    prep_iminus = [Reset(), XGate(), HGate(), SGate()]
+
+    # https://arxiv.org/abs/1904.00102v2 Eqs. (12)-(19)
+    maps1, maps2, coeffs = zip(
+        (i_measurement, prep_0, 0.5),
+        (i_measurement, prep_1, 0.5),
+        (x_measurement, prep_plus, 0.5),
+        (x_measurement, prep_minus, -0.5),
+        (y_measurement, prep_iplus, 0.5),
+        (y_measurement, prep_iminus, -0.5),
+        (z_measurement, prep_0, 0.5),
+        (z_measurement, prep_1, -0.5),
+    )
+    maps = list(zip(maps1, maps2))
     return QPDBasis(maps, coeffs)
 
 

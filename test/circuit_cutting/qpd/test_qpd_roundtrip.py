@@ -39,6 +39,9 @@ from circuit_knitting_toolbox.circuit_cutting.qpd import (
     TwoQubitQPDGate,
     decompose_qpd_instructions,
 )
+from circuit_knitting_toolbox.circuit_cutting.qpd.instructions import (
+    Move,
+)
 from circuit_knitting_toolbox.utils.observable_grouping import (
     observables_restricted_to_subsystem,
     ObservableCollection,
@@ -79,6 +82,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CRYGate(np.pi / 7)],
         [CRZGate(np.pi / 11)],
         [RXXGate(np.pi / 3), CRYGate(np.pi / 7)],
+        [Move()],
+        [Move(), Move()],
     ]
 )
 def example_circuit_pair(
@@ -95,10 +100,20 @@ def example_circuit_pair(
     qc = QuantumCircuit(3)
     cut_indices = []
     for instruction in request.param:
-        append_random_unitary(qc, [0, 1])
+        if instruction.name == "move" and len(cut_indices) % 2 == 1:
+            # We should not entangle qubit 1 with the remainder of the system.
+            # In fact, we're also assuming that the previous operation here was
+            # a move.
+            append_random_unitary(qc, [0])
+            append_random_unitary(qc, [1])
+        else:
+            append_random_unitary(qc, [0, 1])
         append_random_unitary(qc, [2])
         cut_indices.append(len(qc.data))
-        qc.append(CircuitInstruction(instruction, [np.random.choice([0, 1]), 2]))
+        qubits = [1, 2]
+        if len(cut_indices) % 2 == 0:
+            qubits.reverse()
+        qc.append(CircuitInstruction(instruction, qubits))
     qc.barrier()
     append_random_unitary(qc, [0, 1])
     qc.barrier()

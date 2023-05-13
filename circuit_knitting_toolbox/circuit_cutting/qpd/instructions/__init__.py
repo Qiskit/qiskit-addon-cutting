@@ -20,14 +20,17 @@ Quantum circuit :class:`~qiskit.Instruction`\ s for repesenting quasiprobability
    SingleQubitQPDGate
    TwoQubitQPDGate
    QPDMeasure
+   Move
 """
 
 from .qpd_gate import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
 from .qpd_measure import QPDMeasure
+from .move import Move
 
 __all__ = [
     "BaseQPDGate",
     "TwoQubitQPDGate",
     "SingleQubitQPDGate",
     "QPDMeasure",
+    "Move",
 ]
