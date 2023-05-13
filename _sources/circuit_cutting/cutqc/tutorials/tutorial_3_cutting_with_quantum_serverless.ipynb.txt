@@ -129,7 +129,6 @@
     "from circuit_knitting_toolbox.circuit_cutting.cutqc import cut_circuit_wires\n",
     "from quantum_serverless import distribute_task, get\n",
     "\n",
-    "\n",
     "# Create a wrapper function to be sent to remote cluster\n",
     "@distribute_task()\n",
     "def cut_circuit_wires_remote(\n",
@@ -303,7 +302,6 @@
    "source": [
     "from qiskit_ibm_runtime import Options\n",
     "from circuit_knitting_toolbox.circuit_cutting.cutqc import evaluate_subcircuits\n",
-    "\n",
     "\n",
     "# Create a wrapper function to be sent to remote cluster\n",
     "@distribute_task()\n",
