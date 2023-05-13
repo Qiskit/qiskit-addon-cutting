@@ -46,7 +46,7 @@ def verify(
 
     Args:
         full_circuit: The original quantum circuit that was cut
-        reconstructed_outpu: The reconstructed probability distribution from the
+        reconstructed_output: The reconstructed probability distribution from the
           execution of the subcircuits
 
     Returns:

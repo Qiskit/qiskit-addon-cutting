@@ -33,10 +33,10 @@ def append_measurement_circuit(
     the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
 
     Args:
-        qc (QuantumCircuit): The quantum circuit
-        cog (CommutingObservableGroup): The commuting observable set for
+        qc: The quantum circuit
+        cog: The commuting observable set for
           which to construct measurements
-          qubit_locations: A ``Sequence`` whose length is the number of qubits
+        qubit_locations: A ``Sequence`` whose length is the number of qubits
           in the observables, where each element holds that qubit's corresponding
           index in the circuit.  By default, the circuit and observables are assumed
           to have the same number of qubits, and the idenity map

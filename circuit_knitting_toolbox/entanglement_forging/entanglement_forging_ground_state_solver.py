@@ -270,8 +270,9 @@ class EntanglementForgingGroundStateSolver:
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is "
-                        f"length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), "
+                        f"but the list of options is length ({len(self._options)}). It is "
+                        "ambiguous how to combine the options with the backends."
                     )
         if self._ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
@@ -390,8 +391,8 @@ class EntanglementForgingGroundStateSolver:
         """Ensure the input problem can be translated to the MO basis."""
         if (problem.basis != ElectronicBasis.MO) and (mo_coeff is None):
             raise ValueError(
-                f"Cannot transform integrals to MO basis. The input problem is in the ({problem.basis}) basis, "
-                "and the mo_coeff class field is None."
+                "Cannot transform integrals to MO basis. The input problem is "
+                f"in the ({problem.basis}) basis, and the mo_coeff class field is None."
             )
 
         h1 = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
@@ -405,6 +406,6 @@ class EntanglementForgingGroundStateSolver:
             and mo_coeff.shape != h1.shape
         ):
             raise ValueError(
-                f"The mo_coeff class field has shape ({mo_coeff.shape}), but the input one body integral "
-                f"has shape ({h1.shape})."
+                f"The mo_coeff class field has shape ({mo_coeff.shape}), but "
+                f"the input one body integral has shape ({h1.shape})."
             )

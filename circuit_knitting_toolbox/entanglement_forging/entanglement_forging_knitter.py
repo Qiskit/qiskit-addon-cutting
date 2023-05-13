@@ -560,6 +560,7 @@ def _partition(a, n):
     Args:
         a: An object with length and indexing to be partitioned
         n: The number of partitions
+
     Returns:
         The generator containing the paritions
     """

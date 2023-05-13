@@ -41,7 +41,7 @@ def partition_circuit_qubits(
 
     Returns:
         The output circuit with each nonlocal gate spanning two partitions replaced by a
-        :class:`TwoQubitQPDGate`.
+        :class:`TwoQubitQPDGate`
 
     Raises:
         ValueError: Length of partition_labels does not equal the number of qubits in the circuit
@@ -71,7 +71,8 @@ def partition_circuit_qubits(
 
         if len(qubit_indices) > 2:
             raise ValueError(
-                f"Decomposition is only supported for two-qubit gates. Cannot decompose ({instruction.operation.name})."
+                "Decomposition is only supported for two-qubit gates. Cannot "
+                f"decompose ({instruction.operation.name})."
             )
 
         # Nonlocal gate exists in two separate partitions

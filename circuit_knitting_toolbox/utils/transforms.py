@@ -111,8 +111,8 @@ def _circuit_from_instructions(
     """
     Create a circuit from instructions.
 
-    This pipeline is designed to pass all the classical register(s) from the uncut circuit to each subcircuit,
-    so we add them here.
+    This pipeline is designed to pass all the classical register(s) from the
+    uncut circuit to each subcircuit, so we add them here.
     """
     circuit = QuantumCircuit()
     for register in cregs:

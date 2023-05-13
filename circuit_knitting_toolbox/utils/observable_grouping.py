@@ -63,9 +63,9 @@ def most_general_observable(
     of interest.
 
     Args:
-        commuting_observables: Input sequence of mutually qubit-wise commuting observables.
+        commuting_observables: Input sequence of mutually qubit-wise commuting observables
         num_qubits: Number of qubits.  If ``None``, it is inferred from
-          ``commuting_observables`` (default: ``None``)
+          ``commuting_observables`` (default: ``None``).
 
     Raises:
         ValueError: The input sequence is empty (in which case, no experiment is even needed
@@ -164,14 +164,13 @@ class ObservableCollection:
     The observables are automatically organized into sets of mutually
     qubit-wise commuting observables, each represented by a
     ``CommutingObservableGroup``.
-
     """
 
     def __init__(self, observables: PauliList | Iterable[Pauli], /):
         """Assign member variables.
 
         Args:
-            - observables (PauliList | Iterable[Pauli]): Observables of interest.
+            observables: Observables of interest
         """
         # From here forward, we only need to process *unique* observables.
         if isinstance(observables, PauliList):

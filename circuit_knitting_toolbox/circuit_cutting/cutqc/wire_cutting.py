@@ -131,7 +131,9 @@ def evaluate_subcircuits(
     if backend_names:
         if len(backends_list) != len(options_list):
             raise AttributeError(
-                f"The list of backend names is length ({len(backends_list)}), but the list of options is length ({len(options_list)}). It is ambiguous how these options should be applied."
+                f"The list of backend names is length ({len(backends_list)}), "
+                f"but the list of options is length ({len(options_list)}). "
+                "It is ambiguous how these options should be applied."
             )
 
     _, _, subcircuit_instances = _generate_metadata(cuts)
@@ -802,8 +804,7 @@ def _get_counter(
 
     Args:
         subcircuits: The list of subcircuits
-        O_rho_pairs: The pairs for each qubit path as generated in the _get_pairs
-            function
+        O_rho_pairs: The pairs for each qubit path as generated in the _get_pairs function
 
     Returns:
         The resulting dictionary with all parameter information
@@ -834,8 +835,7 @@ def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
     Estimate the cost of processing the subcircuits.
 
     Args:
-        counter: Dictionary containing information for each of the
-          subcircuits
+        counter: Dictionary containing information for each of the subcircuits
 
     Returns:
         The estimated cost for classical processing

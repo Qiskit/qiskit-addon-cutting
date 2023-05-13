@@ -55,7 +55,9 @@ def run_subcircuit_instances(
     if backend_names and options:
         if len(backend_names) != len(options):
             raise AttributeError(
-                f"The list of backend names is length ({len(backend_names)}), but the list of options is length ({len(options)}). It is ambiguous how these options should be applied."
+                f"The list of backend names is length ({len(backend_names)}), "
+                f"but the list of options is length ({len(options)}). It is ambiguous "
+                "how these options should be applied."
             )
     if service:
         if backend_names:
@@ -108,7 +110,7 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     I and Z measurement basis correspond to the same logical circuit.
 
     Args:
-        - meas: The current measurement bases
+        meas: The current measurement bases
 
     Returns:
         The update measurement bases
@@ -143,7 +145,7 @@ def modify_subcircuit_instance(
         and measurement operators are all in the standard computational basis
 
     Raises:
-        Exeption: One of the init's or meas's are not an acceptable string
+        Exeption: One of the inits or meas's are not an acceptable string
     """
     subcircuit_dag = circuit_to_dag(subcircuit)
     subcircuit_instance_dag = copy.deepcopy(subcircuit_dag)
