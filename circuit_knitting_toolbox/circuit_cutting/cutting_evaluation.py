@@ -42,7 +42,7 @@ def execute_experiments(
     backends: Backend | Sequence[Backend] | None = None,
     shots: int = 1000,
 ) -> tuple[list[list[list[tuple[dict[str, int], int]]]], Sequence[float]]:
-    """
+    r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
     circuits: The circuit(s) resulting from decomposing nonlocal gates
