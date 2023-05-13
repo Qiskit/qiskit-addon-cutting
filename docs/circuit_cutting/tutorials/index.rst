@@ -3,7 +3,7 @@ Circuit Cutting Tutorials
 #########################
 .. include:: README.rst
 
-   nbgallery::
+.. nbgallery::
     :glob:
 
     *
