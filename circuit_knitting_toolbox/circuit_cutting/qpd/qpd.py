@@ -68,14 +68,16 @@ def generate_qpd_samples(
     Args:
         qpd_bases: The :class:`QPDBasis` objects from which to sample
         num_samples: Number of random samples to generate
+
     Returns:
-        (dict): A mapping from a given decomposition to its sampled weight.
-            Keys are tuples of indices -- one index per decomposition in the circuit. The indices
-            correspond to a specific decomposition mapping which will be applied to each gate in
-            the decomposition.
-            Values are tuples.  The first element is a number corresponding to the
-            weight of the contribution.  The second element is the :class:`WeightType`,
-            either ``EXACT`` or ``SAMPLED``.
+        A mapping from a given decomposition to its sampled weight.
+        Keys are tuples of indices -- one index per decomposition in the circuit. The indices
+        correspond to a specific decomposition mapping which will be applied to each gate in
+        the decomposition.
+
+        Values are tuples.  The first element is a number corresponding to the
+        weight of the contribution.  The second element is the :class:`WeightType`,
+        either ``EXACT`` or ``SAMPLED``.
     """
     if num_samples <= 0:
         raise ValueError("num_samples must be positive.")
@@ -116,29 +118,27 @@ def decompose_qpd_instructions(
 
     Args:
         circuit: The circuit containing QPD instructions
-        instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices of instructions comprising
-            one decomposition in the circuit. The elements within a common sequence belong to a common decomposition
-            and should be sampled together.
+        instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices
+          of instructions comprising one decomposition in the circuit. The elements within a
+          common sequence belong to a common decomposition and should be sampled together.
         map_ids: Indices to a specific linear mapping to be applied to the decompositions
-            in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
-            according to the decompositions' joint probability distribution.
+          in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
+          according to the decompositions' joint probability distribution.
 
     Returns:
-        (:class:`~qiskit.QuantumCircuit`): Circuit which has had all its QPDGates decomposed into local operations.
+        Circuit which has had all its QPDGates decomposed into local operations.
+
         The circuit will contain a new, final classical register to contain the QPD measurement
         outcomes (accessible at ``retval.cregs[-1]``).
 
     Raises:
-        ValueError:
-            An index in ``instruction_ids`` corresponds to a gate which is not a :class:`QPDGate`
-        ValueError:
-            A list within instruction_ids is not length 1 or 2
-        ValueError:
-            The total number of indices in ``instruction_ids`` does not equal the number of :class:`QPDGate`\ s in the circuit
-        ValueError:
-            Gates within the same decomposition hold different QPD bases
-        ValueError:
-            Length of ``map_ids`` does not equal the number of decompositions in the circuit
+        ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
+          :class:`QPDGate`
+        ValueError: A list within instruction_ids is not length 1 or 2
+        ValueError: The total number of indices in ``instruction_ids`` does not equal the number
+          of :class:`QPDGate`\ s in the circuit
+        ValueError: Gates within the same decomposition hold different QPD bases
+        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
     """
     _validate_qpd_instructions(circuit, instruction_ids)
     new_qc = circuit.copy()
@@ -189,8 +189,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
-        ValueError:
-            Cannot decompose gate with unbound parameters
+        ValueError: Cannot decompose gate with unbound parameters
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]

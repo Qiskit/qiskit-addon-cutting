@@ -26,13 +26,11 @@ def reduce_bitstrings(bitstrings, orbitals_to_reduce):
     [(0, 1, 0), (0, 0, 1), (1, 1, 0)]
 
     Args:
-        - bitstrings (List[List[Int]]): the list of bitstrings to be
-            reduced
-        - orbitals_to_reduce (List[Int]): the positions/orbitals to
-            remove from the bitstrings
+        bitstrings: The list of bitstrings to be reduced
+        orbitals_to_reduce: The positions/orbitals to remove from the bitstrings
 
     Returns:
-        - (List[Tuple]): the list of reduced bitstrings
+        The list of reduced bitstrings
 
     """
     reduced_bitstrings_list = np.delete(

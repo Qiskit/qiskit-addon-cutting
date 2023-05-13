@@ -37,25 +37,6 @@ class MIPModel(object):
     solvers, but they come with substantial slowdowns (often many orders of magnitude).
     By representing the original circuit as a Directed Acyclic Graph (DAG), this class
     can find the optimal wire cuts in the circuit.
-
-    Attributes:
-        - n_vertices (int): the number of vertices in the circuit DAG
-        - edges (list): the list of edges of the circuit DAG
-        - n_edges (int): the number of edges
-        - vertex_ids (dict): dictionary mapping vertices (i.e. two qubit gates) to the vertex
-            id (i.e. a number)
-        - id_vertices (dict): the inverse dictionary of vertex_ids, which has keys of vertex ids
-            and values of the vertices
-        - num_subcircuit (int): the number of subcircuits
-        - max_subcircuit_width (int): maximum number of qubits per subcircuit
-        - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
-        - max_subcircuit_size (int): maximum number of gates in a subcircuit
-        - num_qubits (int): the number of qubits in the circuit
-        - max_cuts (int): the maximum total number of cuts
-        - subcircuit_counter (dict): a tracker for the information regarding subcircuits
-        - vertex_weight (dict): keep track of the number of input qubits directly connected
-            to each node
-        - model (docplex model): the model interface for CPLEX
     """
 
     def __init__(
@@ -75,22 +56,22 @@ class MIPModel(object):
         Initialize member variables.
 
         Args:
-            - n_vertices (int): the number of vertices in the circuit DAG
-            - edges (list): the list of edges of the circuit DAG
-            - n_edges (int): the number of edges
-            - vertex_ids (dict): dictionary mapping vertices (i.e. two qubit gates) to the vertex
-                id (i.e. a number)
-            - id_vertices (dict): the inverse dictionary of vertex_ids, which has keys of vertex ids
-                and values of the vertices
-            - num_subcircuit (int): the number of subcircuits
-            - max_subcircuit_width (int): maximum number of qubits per subcircuit
-            - max_subcircuit_cuts (int): maximum number of cuts in each subcircuit
-            - max_subcircuit_size (int): maximum number of gates in a subcircuit
-            - num_qubits (int): the number of qubits in the circuit
-            - max_cuts (int): the maximum total number of cuts
+            n_vertices: The number of vertices in the circuit DAG
+            edges: The list of edges of the circuit DAG
+            n_edges: The number of edges
+            vertex_ids: Dictionary mapping vertices (i.e. two qubit gates) to the vertex
+              id (i.e. a number)
+            id_vertices: The inverse dictionary of vertex_ids, which has keys of vertex ids
+              and values of the vertices
+            num_subcircuit: The number of subcircuits
+            max_subcircuit_width: Maximum number of qubits per subcircuit
+            max_subcircuit_cuts: Maximum number of cuts in each subcircuit
+            max_subcircuit_size: Maximum number of gates in a subcircuit
+            num_qubits: The number of qubits in the circuit
+            max_cuts: The maximum total number of cuts
 
         Returns:
-            - None
+            None
         """
         self.check_graph(n_vertices, edges)
         self.n_vertices = n_vertices
@@ -125,12 +106,7 @@ class MIPModel(object):
         self._add_constraints()
 
     def _add_variables(self) -> None:
-        """
-        Add the necessary variables to the CPLEX model.
-
-        Returns:
-            - None
-        """
+        """Add the necessary variables to the CPLEX model."""
         """
         Indicate if a vertex is in some subcircuit
         """
@@ -221,12 +197,7 @@ class MIPModel(object):
                 )
 
     def _add_constraints(self) -> None:
-        """
-        Add all contraints and objectives to MIP model.
-
-        Returns:
-            - None
-        """
+        """Add all contraints and objectives to MIP model."""
         """
         each vertex in exactly one subcircuit
         """
@@ -421,19 +392,18 @@ class MIPModel(object):
     def pwl_exp(
         self, lb: int, ub: int, base: int, coefficient: int, integer_only: bool
     ) -> tuple[list[int], list[int]]:
-        """
+        r"""
         Approximate a nonlinear exponential function via a piecewise linear function.
 
         Args:
-            - lb (int): lower bound
-            - ub (int): upper bound
-            - base (int): the base of the input exponential
-            - coefficient (int): the coefficient of the original exponential
-            - integer_only (bool): whether the input x's are only integers
+            lb: Lower bound
+            ub: Upper bound
+            base: The base of the input exponential
+            coefficient: The coefficient of the original exponential
+            integer_only: Whether the input x's are only integers
 
         Returns:
-            - (list): the x's of the piecewise approximation
-            - (list): the f(x)'s of the piecewise approximation
+            A tuple containing the :math:`x`\ s and :math:`f(x)`\ s of the piecewise approximation
         """
         # Piecewise linear approximation of coefficient*base**x
         ptx = []
@@ -455,14 +425,14 @@ class MIPModel(object):
         and that the graph is otherwise a valid graph.
 
         Args:
-            - n_vertices (int): the number of vertices
-            - edges (list): the edge list
+            n_vertices: The number of vertices
+            edges: The edge list
 
         Returns:
-            - None
+            None
 
         Raises:
-            - ValueError: if the graph is invalid
+            ValueError: The graph is invalid
         """
         # 1. edges must include all vertices
         # 2. all u,v must be ordered and smaller than n_vertices
@@ -486,11 +456,11 @@ class MIPModel(object):
         Solve the MIP model.
 
         Args:
-            - min_post_processing_cost (float): the predicted minimum post-processing cost,
-                often is inf
+            min_post_processing_cost: The predicted minimum post-processing cost,
+              often is inf
 
         Returns:
-            - (bool): whether or not the model found a solution
+            Flag denoting whether or not the model found a solution
         """
         # print('solving for %d subcircuits'%self.num_subcircuit)
         # print('model has %d variables, %d linear constraints,%d quadratic constraints, %d general constraints'

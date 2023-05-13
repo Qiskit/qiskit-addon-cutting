@@ -50,14 +50,14 @@ class EntanglementForgingKnitter:
         Assign the necessary member variables.
 
         Args:
-            - ansatz (EntanglementForgingAnsatz): The container for the circuit structure and bitstrings
-                to be used (and generate the stateprep circuits)
-            - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs
-            - backend_names (list[str]): Names of the backends to use for calculating expectation values
-            - options (list[Options]): Options to use with the backends
+            ansatz: The container for the circuit structure and bitstrings to be used
+              (and generate the stateprep circuits)
+            service: The service used to spawn Qiskit primitives and runtime jobs
+            backend_names: Names of the backends to use for calculating expectation values
+            options: Options to use with the backends
 
         Returns:
-            - None
+            None
         """
         # Call backend_names setter to update the session_ids hidden class field
         self._session_ids: list[str | None] | None = None
@@ -104,35 +104,17 @@ class EntanglementForgingKnitter:
 
     @property
     def ansatz(self) -> EntanglementForgingAnsatz:
-        """
-        Property function for the ansatz.
-
-        Returns:
-            - (EntanglementForgingAnsatz): the ansatz member variable
-        """
+        """Property function for the ansatz."""
         return self._ansatz
 
     @property
     def backend_names(self) -> list[str] | None:
-        """
-        List of backend names to be used.
-
-        Returns:
-            - (list[str]): the backend_names member variable
-        """
+        """List of backend names to be used."""
         return self._backend_names
 
     @backend_names.setter
     def backend_names(self, backend_names: str | list[str] | None) -> None:
-        """
-        Change the backend_names class field.
-
-        Args:
-            - backend_names (list[str]): the list of backends to use
-
-        Returns:
-            - None
-        """
+        """Change the backend_names class field."""
         if isinstance(backend_names, str):
             self._backend_names = [backend_names]
         else:
@@ -142,25 +124,12 @@ class EntanglementForgingKnitter:
 
     @property
     def options(self) -> list[Options] | None:
-        """
-        List of options to be used.
-
-        Returns:
-            - (list[Options]): the options member variable
-        """
+        """List of options to be used."""
         return self._options
 
     @options.setter
     def options(self, options: Options | list[Options] | None) -> None:
-        """
-        Change the options class field.
-
-        Args:
-            - options (list[Options]): the list of options to use
-
-        Returns:
-            - None
-        """
+        """Change the options class field."""
         if isinstance(options, Options):
             self._options = [options]
         else:
@@ -168,25 +137,12 @@ class EntanglementForgingKnitter:
 
     @property
     def service(self) -> QiskitRuntimeService | None:
-        """
-        Property function for service class field.
-
-        Returns:
-            - (QiskitRuntimeService): the service member variable
-        """
+        """Property function for service class field."""
         return QiskitRuntimeService(**self._service)
 
     @service.setter
     def service(self, service: QiskitRuntimeService | None) -> None:
-        """
-        Change the service class field.
-
-        Args:
-            - service (QiskitRuntimeService): the service used to spawn Qiskit primitives
-
-        Returns:
-            - None
-        """
+        """Change the service class field."""
         self._service = service.active_account() if service is not None else service
 
     def __call__(
@@ -212,16 +168,13 @@ class EntanglementForgingKnitter:
         Additionally, U = V is currently required, but may change in future versions.
 
         Args:
-            - self
-            - ansatz_parameters (Sequence[float]): the parameters to be used by the ansatz circuit,
-                must be the same length as the circuit's parameters
-            - forged_operator (EntanglementForgingOperator): the operator to forge the expectation
-                value from
+            ansatz_parameters: the parameters to be used by the ansatz circuit,
+              must be the same length as the circuit's parameters
+            forged_operator: the operator from which to forge the expectation value
 
         Returns:
-            - (tuple[float, np.ndarray, np.ndarray]): a tuple
-                containing the energy (i.e. forged expectation value), the Schmidt coefficients,
-                and the full Schmidt decomposition matrix
+            A tuple containing the energy (i.e. forged expectation value), the Schmidt
+            coefficients, and the full Schmidt decomposition matrix
         """
         if self._backend_names and self._options:
             if len(self._backend_names) != len(self._options):
@@ -229,7 +182,9 @@ class EntanglementForgingKnitter:
                     self._options = [self._options[0]] * len(self._backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), but the list of options is length ({len(self._options)}). It is ambiguous how to combine the options with the backends."
+                        f"The list of backend names is length ({len(self._backend_names)}), "
+                        f"but the list of options is length ({len(self._options)}). It is "
+                        "ambiguous how to combine the options with the backends."
                     )
         # For now, we only assign the parameters to a copy of the ansatz
         circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
@@ -326,7 +281,8 @@ class EntanglementForgingKnitter:
             if job_id and (session_ids[i] is None):
                 if self._session_ids is None:
                     raise ValueError(
-                        "Something unexpected happened. The session_ids field must be set when a job_id is present."
+                        "Something unexpected happened. The session_ids field must "
+                        "be set when a job_id is present."
                     )
                 self._session_ids[i] = job_id
 
@@ -350,15 +306,15 @@ class EntanglementForgingKnitter:
         Compute the Schmidt decomposition of the Hamiltonian.
 
         Args:
-            - forged_operator (EntanglementForgingOperator): the operator that the
-                forged expectation values are computed with
-            - tensor_expvals (np.ndarray): the expectation values
-                for the tensor circuits (i.e. same Schmidt coefficients)
-            - superpos_expvals (np.ndarray): the expectation values
-                for the superposition circuits (i.e. different Schmidt coefficients)
+            forged_operator: The operator with which the forged expectation values are
+              computed
+            tensor_expvals: The expectation values for the tensor circuits
+              (i.e. same Schmidt coefficients)
+            superpos_expvals: The expectation values for the superposition circuits
+              (i.e. different Schmidt coefficients)
 
         Returns:
-           - (np.ndarray): the Schmidt matrix
+           The Schmidt matrix
         """
         # Calculate the diagonal entries of the Schmidt matrix by
         # summing the expectation values associated with the tensor terms
@@ -427,22 +383,15 @@ class EntanglementForgingKnitter:
         return h_schmidt
 
     def close_sessions(self) -> None:
-        """
-        Close all the sessions opened by this object.
-
-        Args:
-            - None
-
-        Returns:
-            - None
-        """
+        """Close all the sessions opened by this object."""
         if self._session_ids is None:
             return
         else:
             for i, session_id in enumerate(self._session_ids):
                 if self._backend_names is None:
                     raise ValueError(
-                        f"There was a problem closing session id ({session_id}). No backend to associate with session."
+                        f"There was a problem closing session id ({session_id}). "
+                        "No backend to associate with session."
                     )
                 session = Session(service=self.service, backend=self._backend_names[i])
                 session._session_id = session_id
@@ -508,13 +457,12 @@ def _construct_stateprep_circuits(
          └───┘     └───┘
 
     Args:
-        - bitstrings (list[tuple[int, ...]]): the input list of bitstrings used to generate the state preparation circuits
-        - subsystem_id (str | None): the subsystem the bitstring reflects ("u" or "v")
+        bitstrings: The input list of bitstrings used to generate the state preparation circuits
+        subsystem_id: The subsystem the bitstring reflects ("u" or "v")
 
     Returns:
-        - (tuple[list[QuantumCircuit], list[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition
-            or bitstring) circuits in the first index (length = len(bitstrings)) and the super-position circuits
-            as the second element
+        A tuple containing the tensor (i.e., non-superposition or bitstring) circuits in the first
+        index (length = len(bitstrings)) and the super-position circuits as the second element
     """
     # If empty, just return
     if not bitstrings:
@@ -587,13 +535,12 @@ def _prepare_bitstring(
     every qubit that has a 1 in the bitstring.
 
     Args:
-        - bitstring (np.ndarray | tuple[int, ...]): the container for the
-            bitstring information. Must contain 0s and 1s and the 1s are used to determine
-            where to put the X gates
-        - name (str, optional): the name of the circuit
+        bitstring: The container for the bitstring information. Must contain 0s and 1s, and
+          the 1s are used to determine where to put the X gates
+        name: The name of the circuit
 
     Returns:
-        - (QuantumCircuit): the prepared circuit
+        The prepared circuit
     """
     qcirc = QuantumCircuit(len(bitstring), name=name)
     for qb_idx, bit in enumerate(bitstring):
@@ -611,10 +558,11 @@ def _partition(a, n):
     _partition([1, 2, 3], 2) -> (i for i in [[1, 2], [3]])
 
     Args:
-        - a (iterable): an object with length and indexing to be partitioned
-        - n (int): the number of partitions
+        a: An object with length and indexing to be partitioned
+        n: The number of partitions
+
     Returns:
-        - (generator): the generator containing the paritions
+        The generator containing the paritions
     """
     k, m = divmod(len(a), n)
     return (a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n))
@@ -639,23 +587,19 @@ def _estimate_expvals(
     process).
 
     Args:
-        - tensor_ansatze (list[QuantumCircuit]): the circuits that have the same
-            Schmidt coefficient
-        - tensor_paulis (list[Pauli]): the pauli operators to measure and calculate
-            the expectation values from for the circuits with the same Schmidt coefficient
-        - superposition_ansatze (list[QuantumCircuit]): the circuits with different
-            Schmidt coefficients
-        - superposition_paulis (list[Pauli]): the pauli operators to measure and calculate
-            the expectation values from for the circuits with different Schmidt
-            coefficients
-        - service_args (dict[str, Any]): The service account used to spawn Qiskit primitives
-        - backend_name (str): The backend to use to evaluate the grouped experiments
-        - options (Options): The options to use with the backend
-        - session_id (str): The session id to use when calling primitive programs
+        tensor_ansatze: The circuits that have the same Schmidt coefficient
+        tensor_paulis: The pauli operators to measure and calculate
+          the expectation values from for the circuits with the same Schmidt coefficient
+        superposition_ansatze: The circuits with different Schmidt coefficients
+        superposition_paulis: The pauli operators to measure and calculate
+          the expectation values from for the circuits with different Schmidt coefficients
+        service_args: The service account used to spawn Qiskit primitives
+        backend_name: The backend to use to evaluate the grouped experiments
+        options: The options to use with the backend
+        session_id: The session id to use when calling primitive programs
 
     Returns:
-        - (tuple[list[np.ndarray], list[np.ndarray], str | None]): the expectation values for the
-            tensor circuits and superposition circuits
+        The expectation values for the tensor circuits and superposition circuits
     """
     ansatz_t: list[QuantumCircuit] = []
     observables_t: list[Pauli] = []

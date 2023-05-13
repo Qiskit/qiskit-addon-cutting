@@ -36,18 +36,16 @@ def partition_circuit_qubits(
     Args:
         circuit: The circuit to partition
         partition_labels: A sequence containing a partition label for each qubit in the
-            input circuit. Nonlocal gates belonging to more than one partition
-            will be replaced with QPDGates.
+          input circuit. Nonlocal gates belonging to more than one partition
+          will be replaced with QPDGates.
 
     Returns:
-        (:class:`~qiskit.QuantumCircuit`): The output circuit with each nonlocal gate spanning
-            two partitions replaced by a :class:`TwoQubitQPDGate`.
+        The output circuit with each nonlocal gate spanning two partitions replaced by a
+        :class:`TwoQubitQPDGate`
 
     Raises:
-        ValueError:
-            Length of partition_labels does not equal the number of qubits in the circuit
-        ValueError:
-            Cannot decompose gate which acts on more than 2 qubits
+        ValueError: Length of partition_labels does not equal the number of qubits in the circuit
+        ValueError: Cannot decompose gate which acts on more than 2 qubits
     """
     if len(partition_labels) != len(circuit.qubits):
         raise ValueError(
@@ -73,7 +71,8 @@ def partition_circuit_qubits(
 
         if len(qubit_indices) > 2:
             raise ValueError(
-                f"Decomposition is only supported for two-qubit gates. Cannot decompose ({instruction.operation.name})."
+                "Decomposition is only supported for two-qubit gates. Cannot "
+                f"decompose ({instruction.operation.name})."
             )
 
         # Nonlocal gate exists in two separate partitions

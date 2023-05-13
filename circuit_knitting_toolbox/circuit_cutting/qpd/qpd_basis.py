@@ -36,9 +36,9 @@ class QPDBasis:
 
         Args:
             maps: A sequence of tuples describing the noisy operations probabilistically
-                used to simulate an ideal quantum operation.
+              used to simulate an ideal quantum operation.
             coeffs: Coefficients for quasiprobability representation. Each coefficient
-                can be any real number.
+              can be any real number.
 
         Returns:
             None
@@ -82,7 +82,7 @@ class QPDBasis:
         Quasiprobability decomposition coefficients.
 
         Returns:
-            - (Sequence[float]): The coeffs member variable
+            The ``coeffs`` member variable
         """
         return self._coeffs
 
@@ -101,7 +101,7 @@ class QPDBasis:
         Get the probabilities on which the maps will be sampled.
 
         Returns:
-            - (Sequence[float]): The probabilities member variable
+            The ``probabilities`` member variable
         """
         return self._probabilities
 
@@ -113,7 +113,7 @@ class QPDBasis:
         This quantity is the sum of the magnitude of the coefficients.
 
         Returns:
-            - (float): The square root of the sampling overhead
+            The square root of the sampling overhead
         """
         return self._kappa
 
@@ -125,7 +125,7 @@ class QPDBasis:
         The sampling overhead is the square of the sum of the magnitude of the coefficients.
 
         Returns:
-            - (float): The sampling overhead
+            The sampling overhead
         """
         return self._kappa**2
 
@@ -138,7 +138,7 @@ class QPDBasis:
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
 
         Returns:
-            - (QPDBasis): The newly-instantiated QPDBasis object
+            The newly-instantiated :class:`QPDBasis` object
         """
         # pylint: disable=cyclic-import
         from .qpd import qpdbasis_from_gate
