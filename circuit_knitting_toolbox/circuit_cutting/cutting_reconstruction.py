@@ -94,17 +94,17 @@ def process_outcome(
     Process a single outcome of a QPD experiment with observables.
 
     Args:
-        - num_qpd_bits: The number of QPD measurements in the circuit. It is
-            assumed that the second to last creg in the generating circuit
-            is the creg  containing the QPD measurements, and the last
-            creg is associated with the observable measurements.
-        - cog: The observable set being measured by the current experiment.
-        - outcome: The outcome of the classical bits.
+        num_qpd_bits: The number of QPD measurements in the circuit. It is
+          assumed that the second to last creg in the generating circuit
+          is the creg  containing the QPD measurements, and the last
+          creg is associated with the observable measurements.
+        cog: The observable set being measured by the current experiment
+        outcome: The outcome of the classical bits
 
     Returns:
-        - (np.ndarray): A 1D array of the observable measurements.  The elements of
-            this vector correspond to the elements of ``cog.commuting_observables``,
-            and each result will be either +1 or -1.
+        A 1D array of the observable measurements.  The elements of
+        this vector correspond to the elements of ``cog.commuting_observables``,
+        and each result will be either +1 or -1.
     """
     outcome = _outcome_to_int(outcome)
     qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)

@@ -19,12 +19,11 @@ def quasi_to_real(quasiprobability, mode):
     Convert a quasi probability to a valid probability distribution.
 
     Args:
-        - quasiprobability (NDArray): the array of quasiprobabilities
-        - mode (str): how to compute the new distribution, either 'nearest'
-            or 'naive'
+        quasiprobability: The array of quasiprobabilities
+        mode: How to compute the new distribution, either 'nearest' or 'naive'
 
     Returns:
-        - (NDArray) the converted probability distribution
+        The converted probability distribution
     """
     if mode == "nearest":
         return nearest_probability_distribution(quasiprobability=quasiprobability)
@@ -45,10 +44,10 @@ def nearest_probability_distribution(quasiprobability):
     Method from Smolin et al., Phys. Rev. Lett. 108, 070502 (2012).
 
     Args:
-        - quasiprobability (NDArray): the input quasiprobabilities
+        quasiprobability: The input quasiprobabilities
 
     Returns:
-        - (NDArray): the converted probability distribution
+        The converted probability distribution
     """
     sorted_probs, states = zip(
         *sorted(zip(quasiprobability, range(len(quasiprobability))))
@@ -78,10 +77,10 @@ def naive_probability_distribution(quasiprobability):
     2. Normalize
 
     Args:
-        - quasiprobability (NDArray): the input quasiprobabilities
+        quasiprobability: The input quasiprobabilities
 
     Returns:
-        - (NDArray): the converted probability distribution
+        The converted probability distribution
     """
     new_probs = np.where(quasiprobability < 0, 0, quasiprobability)
     new_probs /= np.sum(new_probs)
@@ -93,12 +92,12 @@ def dict_to_array(distribution_dict, force_prob):
     Convert dictionary of shot results to array of distribution.
 
     Args:
-        - distribution_dict (dict): the dictionary containing the shot information
+        distribution_dict: The dictionary containing the shot information
             from circuit execution
-        - force_prob (bool): whether to force the distribution to be normalized
+        force_prob: Whether to force the distribution to be normalized
 
     Returns:
-        - (NDarray): the resulting probability information
+        The resulting probability information
     """
     state = list(distribution_dict.keys())[0]
     num_qubits = len(state)

@@ -36,18 +36,14 @@ def separate_circuit(
     """Separate the circuit into its disconnected components.
 
     Args:
-        - circuit: The circuit to separate into disconnected subcircuits
+        circuit: The circuit to separate into disconnected subcircuits
+
     Returns:
-        - (SeparatedCircuits): A named tuple containing:
-            - subcircuits: list[QuantumCircuit, ...]
-                - List of decomposed subcircuits
-            - qubit_map: list[tuple[Hashable, int]]
-                - A mapping from input circuit qubit index to a tuple
-                  containing the corresponding subcircuit index and subcircuit
-                  qubit index.
+        A named tuple containing the subcircuits and qubit map
+
     Raises:
-        ValueError:
-            - The number of partition labels does not equal the number of qubits in the input circuit.
+        ValueError: The number of partition labels does not equal the number of
+          qubits in the input circuit.
     """
     # Split barriers into single-qubit barriers before separating
     new_qc = circuit.copy()
@@ -115,8 +111,8 @@ def _circuit_from_instructions(
     """
     Create a circuit from instructions.
 
-    This pipeline is designed to pass all the classical register(s) from the uncut circuit to each subcircuit,
-    so we add them here.
+    This pipeline is designed to pass all the classical register(s) from the
+    uncut circuit to each subcircuit, so we add them here.
     """
     circuit = QuantumCircuit()
     for register in cregs:

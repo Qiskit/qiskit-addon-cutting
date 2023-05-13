@@ -42,22 +42,23 @@ def cut_circuit_wires(
     Decompose the circuit into a collection of subcircuits.
 
     Args:
-        - method (str): whether to have the cuts be 'automatically' found, in a
-            provably optimal way, or whether to 'manually' specify the cuts
-        - subcircuit_vertices (Sequence[Sequence[int]]): the vertices to be used in
-            the subcircuits. Note that these are not the indices of the qubits, but
-            the nodes in the circuit DAG
-        - max_subcircuit_width (int): max number of qubits in each subcircuit
-        - max_cuts (int): max total number of cuts allowed
-        - num_subcircuits (Sequence[int]): list of number of subcircuits to try
-        - max_subcircuit_cuts (int, optional): max number of cuts for a subcircuit
-        - max_subcircuit_size (int, optional): max number of gates in a subcircuit
-        - verbose (bool, optional): flag for printing output of cutting
+        method: Whether to have the cuts be 'automatically' found, in a
+          provably optimal way, or whether to 'manually' specify the cuts
+        subcircuit_vertices: The vertices to be used in the subcircuits. Note
+          that these are not the indices of the qubits, but the nodes in the circuit DAG
+        max_subcircuit_width: Max number of qubits in each subcircuit
+        max_cuts: Max total number of cuts allowed
+        num_subcircuits: List of number of subcircuits to try
+        max_subcircuit_cuts: Max number of cuts for a subcircuit
+        max_subcircuit_size: Max number of gates in a subcircuit
+        verbose: Flag for printing output of cutting
+
     Returns:
-        (dict[str, Any]): A dictionary containing information on the cuts,
-        including the subcircuits themselves (key: 'subcircuits')
+        A dictionary containing information on the cuts, including the subcircuits
+        themselves (key: 'subcircuits')
+
     Raises:
-        - ValueError: if the input method does not match the other provided arguments
+        ValueError: The input method does not match the other provided arguments
     """
     cuts = {}
     if method == "automatic":
@@ -100,13 +101,13 @@ def evaluate_subcircuits(
     Evaluate the subcircuits.
 
     Args:
-        - cuts (dict): the results of cutting
-        - service (QiskitRuntimeService | None): A service for connecting to Qiskit Runtime Service
-        - options (Options | Sequence[Options] | None): Options to use on each backend
-        - backend_names (str | Sequence[str] | None): The name(s) of the backend(s) to be used
+        cuts: The results of cutting
+        service: A service for connecting to Qiskit Runtime Service
+        options: Options to use on each backend
+        backend_names: The name(s) of the backend(s) to be used
+
     Returns:
-        (dict): the dictionary containing the results from running
-        each of the subcircuits
+        The dictionary containing the results from running each of the subcircuits
     """
     # Put backend_names and options in lists to ensure it is unambiguous how to sync them
     backends_list: Sequence[str] = []
@@ -130,7 +131,9 @@ def evaluate_subcircuits(
     if backend_names:
         if len(backends_list) != len(options_list):
             raise AttributeError(
-                f"The list of backend names is length ({len(backends_list)}), but the list of options is length ({len(options_list)}). It is ambiguous how these options should be applied."
+                f"The list of backend names is length ({len(backends_list)}), "
+                f"but the list of options is length ({len(options_list)}). "
+                "It is ambiguous how these options should be applied."
             )
 
     _, _, subcircuit_instances = _generate_metadata(cuts)
@@ -156,12 +159,13 @@ def reconstruct_full_distribution(
     Reconstruct the full probabilities from the subcircuit evaluations.
 
     Args:
-        - circuit (QuantumCircuit): the original full circuit
-        - subcircuit_instance_probabilities (dict): the probability vectors from each
-            of the subcircuit instances, as output by the _run_subcircuits function
-        - num_threads (int): the number of threads to use to parallelize the recomposing
+        circuit: The original full circuit
+        subcircuit_instance_probabilities: The probability vectors from each
+          of the subcircuit instances, as output by the _run_subcircuits function
+        num_threads: The number of threads to use to parallelize the recomposing
+
     Returns:
-        - (np.ndarray): the reconstructed probability vector
+        The reconstructed probability vector
     """
     summation_terms, subcircuit_entries, _ = _generate_metadata(cuts)
 
@@ -198,11 +202,12 @@ def _generate_metadata(
     Generate metadata used to execute subcircuits and reconstruct probabilities of original circuit.
 
     Args:
-        - cuts (dict[str, Any]): results from the cutting step
+        cuts: Results from the cutting step
+
     Returns:
-        - (tuple): information about the 4^(num cuts) summation terms used to reconstruct original
-            probabilities, a dictionary with information on each of the subcircuits, and a dictionary
-            containing indexes for each of the subcircuits
+        Information about the 4^(num cuts) summation terms used to reconstruct original
+        probabilities, a dictionary with information on each of the subcircuits, and a dictionary
+        containing indexes for each of the subcircuits
     """
     (
         summation_terms,
@@ -229,14 +234,15 @@ def _run_subcircuits(
     task['subcircuit_instance_probs'][subcircuit_idx][subcircuit_instance_idx] = measured prob
 
     Args:
-        - cuts (dict[str, Any]): results from the cutting step
-        - subcircuit_instances (dict): the dictionary containing the index information for each
-            of the subcircuit instances
-        - service (QiskitRuntimeService | None): the arguments for the runtime service
-        - backend_names (Sequence[str] | None): the backend(s) used to run the subcircuits
-        - options (Options | None): options for the runtime execution of subcircuits
+        cuts: Results from the cutting step
+        subcircuit_instances: The dictionary containing the index information for each
+          of the subcircuit instances
+        service: The arguments for the runtime service
+        backend_names: The backend(s) used to run the subcircuits
+        options: Options for the runtime execution of subcircuits
+
     Returns:
-        - (dict): the resulting probabilities from each of the subcircuit instances
+        The resulting probabilities from each of the subcircuit instances
     """
     subcircuit_instance_probs = run_subcircuit_instances(
         subcircuits=cuts["subcircuits"],
@@ -261,15 +267,17 @@ def _attribute_shots(
     task['subcircuit_entry_probs'][subcircuit_idx][subcircuit_entry_idx] = prob
 
     Args:
-        - subcircuit_entries (dict): dictionary containing information about each of the
-            subcircuit instances
-        - subcircuit_instance_probs (dict): the probability vectors from each of the subcircuit
-            instances, as output by the _run_subcircuits function
+        subcircuit_entries: Dictionary containing information about each of the
+          subcircuit instances
+        subcircuit_instance_probs: The probability vectors from each of the subcircuit
+          instances, as output by the _run_subcircuits function
+
     Returns:
-        - (dict): a dictionary containing the probability results to each of the appropriate subcircuits
+        A dictionary containing the probability results to each of the appropriate subcircuits
+
     Raises:
-        - ValueError: if each of the kronecker terms are not of size two or if there are no subcircuit
-            probs provided
+        ValueError: A kronecker term is not size two
+        ValueError: There are no subcircuit probs provided
     """
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]] = {}
     for subcircuit_idx in subcircuit_entries:
@@ -323,16 +331,17 @@ def find_wire_cuts(
     the found solution is optimal or not.
 
     Args:
-        - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
-        - max_subcircuit_width (int): max number of qubits in each subcircuit
-        - max_cuts (int, optional): max total number of cuts allowed
-        - num_subcircuits (list, optional): list of number of subcircuits to try
-        - max_subcircuit_cuts (int, optional): max number of cuts for a subcircuit
-        - max_subcircuit_size (int, optional): the maximum number of two qubit gates in each
-            subcircuit
-        - verbose (bool): whether to print information about the cut finding or not
+        circuit: Original quantum circuit to be cut into subcircuits
+        max_subcircuit_width: Max number of qubits in each subcircuit
+        max_cuts: Max total number of cuts allowed
+        num_subcircuits: List of number of subcircuits to try
+        max_subcircuit_cuts: Max number of cuts for a subcircuit
+        max_subcircuit_size: The maximum number of two qubit gates in each
+          subcircuit
+        verbose: Whether to print information about the cut finding or not
+
     Returns:
-        - (dict): the solution found for the cuts
+        The solution found for the cuts
     """
     stripped_circ = _circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = _read_circuit(circuit=stripped_circ)
@@ -433,11 +442,12 @@ def cut_circuit_wire(
     Used when cut locations are chosen manually.
 
     Args:
-        - circuit (QuantumCircuit): original quantum circuit to be cut into subcircuits
-        - subcircuit_vertices (list): the list of vertices to apply the cuts to
-        - verbose (bool): whether to print the details of cutting or not
+        circuit: Original quantum circuit to be cut into subcircuits
+        subcircuit_vertices: The list of vertices to apply the cuts to
+        verbose: Whether to print the details of cutting or not
+
     Returns:
-        - (dict): the solution calculated from the provided cuts
+        The solution calculated from the provided cuts
     """
     stripped_circ = _circuit_stripping(circuit=circuit)
     n_vertices, edges, vertex_ids, id_vertices = _read_circuit(circuit=stripped_circ)
@@ -497,14 +507,15 @@ def _print_cutter_result(
     Pretty print the results.
 
     Args:
-        - num_subciruit (int): the number of subcircuits
-        - num_cuts (int): the number of cuts
-        - subcircuits (list): the list of subcircuits
-        - counter (dict): the dictionary containing all meta information regarding
-            each of the subcircuits
-        - classical_cost (float): the estimated processing cost
+        num_subciruit: The number of subcircuits
+        num_cuts: The number of cuts
+        subcircuits: The list of subcircuits
+        counter: The dictionary containing all meta information regarding
+          each of the subcircuits
+        classical_cost: The estimated processing cost
+
     Returns:
-        - None
+        None
     """
     for subcircuit_idx in range(num_subcircuit):
         print("subcircuit %d" % subcircuit_idx)
@@ -530,11 +541,12 @@ def _cuts_parser(
     Convert cuts to wires.
 
     Args:
-        - cuts (list): the cuts found by the model (or provided by the user)
-        - circ (QuantumCircuit): the quantum circuit the cuts are from
+        cuts: The cuts found by the model (or provided by the user)
+        circ: The quantum circuit the cuts are from
+
     Returns:
-        - (list): the list containing the wires that were cut and the gates
-            that are affected by these cuts
+        The list containing the wires that were cut and the gates
+        that are affected by these cuts
     """
     dag = circuit_to_dag(circ)
     positions = []
@@ -602,11 +614,11 @@ def _subcircuits_parser(
     Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.
 
     Args:
-        - subcircuit_gates (list): the gates in the subcircuits
-        - circuit (QuantumCircuit): the original circuit
+        subcircuit_gates: The gates in the subcircuits
+        circuit: The original circuit
+
     Returns:
-        - (list): the subcircuits
-        - (dict): the paths in the quantum circuit DAGs
+        A tuple containing he subcircuits and the paths in the quantum circuit DAGs
     """
     """
     Assign the single qubit gates to the closest two-qubit gates
@@ -742,12 +754,13 @@ def _generate_subcircuits(
     into actual quantum circuit objects.
 
     Args:
-        - subcircuit_op_nodes (dict): the nodes of each of the subcircuits
-        - complete_path_map (dict): the complete path through the subcircuits
-        - subcircuit_sizes (list): the number of qubits in each of the subcircuits
-        - dag (DAGCircuit): the dag representation of the input quantum circuit
+        subcircuit_op_nodes: The nodes of each of the subcircuits
+        complete_path_map: The complete path through the subcircuits
+        subcircuit_sizes: The number of qubits in each of the subcircuits
+        dag: The dag representation of the input quantum circuit
+
     Returns:
-        - (list): the subcircuits
+        The subcircuits
     """
     qubit_pointers = {x: 0 for x in complete_path_map}
     subcircuits = [QuantumCircuit(x, name="q") for x in subcircuit_sizes]
@@ -790,11 +803,11 @@ def _get_counter(
     Create information regarding each of the subcircuit parameters (qubits, width, etc.).
 
     Args:
-        - subcircuits (list): the list of subcircuits
-        - O_rho_pairs (list): the pairs for each qubit path as generated in the _get_pairs
-            function
+        subcircuits: The list of subcircuits
+        O_rho_pairs: The pairs for each qubit path as generated in the _get_pairs function
+
     Returns:
-        - (dict): the resulting dictionary with all parameter information
+        The resulting dictionary with all parameter information
     """
     counter = {}
     for subcircuit_idx, subcircuit in enumerate(subcircuits):
@@ -822,10 +835,10 @@ def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
     Estimate the cost of processing the subcircuits.
 
     Args:
-        - counter (dict): dictionary containing information for each of the
-            subcircuits
+        counter: Dictionary containing information for each of the subcircuits
+
     Returns:
-        - (float): the estimated cost for classical processing
+        The estimated cost for classical processing
     """
     num_cuts = sum([counter[subcircuit_idx]["rho"] for subcircuit_idx in counter])
     subcircuit_indices = list(counter.keys())
@@ -854,9 +867,10 @@ def _get_pairs(
     each pair of neigbors.
 
     Args:
-        - complete_path_map (dict): the dictionary containing all path information
+        complete_path_map: The dictionary containing all path information
+
     Returns:
-        - (list): all pairs for each of the qubit paths
+        All pairs for each of the qubit paths
     """
     O_rho_pairs = []
     for input_qubit in complete_path_map:
@@ -874,9 +888,10 @@ def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
     Remove all single qubit and barrier type gates.
 
     Args:
-        - circuit (QuantumCircuit): the circuit to strip
+        circuit: The circuit to strip
+
     Returns:
-        - (QuantumCircuit): the stripped circuit
+        The stripped circuit
     """
     # Remove all single qubit gates and barriers in the circuit
     dag = circuit_to_dag(circuit)
@@ -895,13 +910,11 @@ def _read_circuit(
     Read the input circuit to a graph based representation for the MIP model.
 
     Args:
-        - circuit (QuantumCircuit): a stripped circuit to be converted into a
-            DAG like representation
+        circuit: A stripped circuit to be converted into a DAG like representation
+
     Returns:
-        - (int): number of vertices
-        - (list): edge list
-        - (dict): the dictionary mapping vertices to vertex numbers
-        - (dict): the dictionary mapping vertex numbers to vertex information
+        A tuple containing the number of vertices, edge list, vertex to vertex id mapping,
+        and vertex id to vertex mapping.
     """
     dag = circuit_to_dag(circuit)
     edges = []
