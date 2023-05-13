@@ -45,29 +45,25 @@ def execute_experiments(
     """
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
-    :param circuits: The circuit(s) resulting from decomposing nonlocal gates
-    :type circuits: QuantumCircuit | dict
-    :param observables: The observable(s) corresponding to the circuit(s). If
-        a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
-        a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
-        from partition label to subobservables is expected.
-    :type observables: PauliList | dict
-    :param num_samples: The number of samples to draw from the quasiprobability distribution
-    :type num_samples: int
-    :param backends: Backend(s) on which to run the sub-experiments. If no backend is selected,
-        the ``AerSimulator`` from ``Qiskit Aer`` will be used. Experiments corresponding
-        to the same qubit partition will be run on the same backend.
-    :type backends: Backend | Sequence[Backend]
-    :param shots: The number of shots to run for each experiment
-    :type shots: int
+    circuits: The circuit(s) resulting from decomposing nonlocal gates
+    observables: The observable(s) corresponding to the circuit(s). If
+      a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
+      a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
+      from partition label to subobservables is expected.
+    num_samples: The number of samples to draw from the quasiprobability distribution
+    backends: Backend(s) on which to run the sub-experiments. If no backend is selected,
+      the ``AerSimulator`` from ``Qiskit Aer`` will be used. Experiments corresponding
+      to the same qubit partition will be run on the same backend.
+    shots: The number of shots to run for each experiment
 
-    :return: A tuple containing a 3D list of length-2 tuples holding the counts and QPD bit
+    Returns:
+        A tuple containing a 3D list of length-2 tuples holding the counts and QPD bit
         information for each sub-experiment as well as the coefficients corresponding to each unique sample
-    :rtype: tuple[list, Sequence[int]]
 
-    :raises ValueError: The number of requested samples must be positive.
-    :raises ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible
-    :raises ValueError: SingleQubitQPDGates are not supported in unseparable circuits
+    Raises:
+    ValueError: The number of requested samples must be positive.
+    ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible
+    ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
