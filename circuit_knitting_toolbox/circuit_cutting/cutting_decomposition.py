@@ -104,7 +104,7 @@ def decompose_gates(circuit: QuantumCircuit, gate_ids: Sequence[int]) -> Quantum
         gate_ids: The indices of the gates to decompose
 
     Returns:
-    A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
+        A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
     """
     # Replace specified gates with TwoQubitQPDGates
     new_qc = circuit.copy()
