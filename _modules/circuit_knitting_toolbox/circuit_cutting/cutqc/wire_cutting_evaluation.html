@@ -83,20 +83,22 @@
 <span class="sd">    subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuits (Sequence[QuantumCircuit]): the list of subcircuits to execute</span>
-<span class="sd">        - subcircuit_instances (dict): dictionary containing information about each of the</span>
-<span class="sd">            subcircuit instances</span>
-<span class="sd">        - service (QiskitRuntimeService | None): the runtime service</span>
-<span class="sd">        - backend_names (Sequence[str] | None): the backend(s) used to execute the subcircuits</span>
-<span class="sd">        - options (Sequence[Options] | None): options for the runtime execution of subcircuits</span>
+<span class="sd">        subcircuits: The list of subcircuits to execute</span>
+<span class="sd">        subcircuit_instances: Dictionary containing information about each of the</span>
+<span class="sd">          subcircuit instances</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_names: The backend(s) used to execute the subcircuits</span>
+<span class="sd">        options: Options for the runtime execution of subcircuits</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (dict): the probability vectors from each of the subcircuit instances</span>
+<span class="sd">        The probability vectors from each of the subcircuit instances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">backend_names</span> <span class="ow">and</span> <span class="n">options</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous how these options should be applied.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous &quot;</span>
+                <span class="s2">&quot;how these options should be applied.&quot;</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="n">service</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">backend_names</span><span class="p">:</span>
@@ -149,10 +151,10 @@
 <span class="sd">    I and Z measurement basis correspond to the same logical circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - meas (tuple): the current measurement bases</span>
+<span class="sd">        meas: The current measurement bases</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (tuple): the update measurement bases</span>
+<span class="sd">        The update measurement bases</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;I&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">meas</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">meas</span><span class="p">]</span>
@@ -175,16 +177,16 @@
 <span class="sd">    Modify the initialization and measurement bases for a given subcircuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit (QuantumCircuit): the subcircuit to be modified</span>
-<span class="sd">        - init (tuple): the current initializations</span>
-<span class="sd">        - meas (tuple): the current measement bases</span>
+<span class="sd">        subcircuit: The subcircuit to be modified</span>
+<span class="sd">        init: The current initializations</span>
+<span class="sd">        meas: The current measement bases</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (QuantumCircuit): the updated circuit, modified so the initialziation</span>
-<span class="sd">            and measurement operators are all in the standard computational basis</span>
+<span class="sd">        The updated circuit, modified so the initialziation</span>
+<span class="sd">        and measurement operators are all in the standard computational basis</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - Exeption: if one of the init&#39;s or meas&#39;s are not an acceptable string</span>
+<span class="sd">        Exeption: One of the inits or meas&#39;s are not an acceptable string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_dag</span> <span class="o">=</span> <span class="n">circuit_to_dag</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">)</span>
     <span class="n">subcircuit_instance_dag</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">subcircuit_dag</span><span class="p">)</span>
@@ -256,11 +258,11 @@
 <span class="sd">    Execute the subcircuit(s).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit (QuantumCircuit): the subcircuits to be executed</span>
-<span class="sd">        - sampler (BaseSampler): the Sampler to use for executions</span>
+<span class="sd">        subcircuit: The subcircuits to be executed</span>
+<span class="sd">        sampler: The Sampler to use for executions</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (np.ndarray): the probability distributions</span>
+<span class="sd">        The probability distributions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">subcircuits</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">num_clbits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -290,13 +292,13 @@
 <span class="sd">    Execute the subcircuit(s).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit (QuantumCircuit): the subcircuits to be executed</span>
-<span class="sd">        - service (QiskitRuntimeService | None): the runtime service</span>
-<span class="sd">        - backend_name (str | None): the backend used to execute the subcircuits</span>
-<span class="sd">        - options (Options | None): options for the runtime execution of subcircuits</span>
+<span class="sd">        subcircuit: The subcircuits to be executed</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_name: The backend used to execute the subcircuits</span>
+<span class="sd">        options: Options for the runtime execution of subcircuits</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (np.ndarray): the probability distributions</span>
+<span class="sd">        The probability distributions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend_name</span><span class="p">)</span>
@@ -312,11 +314,11 @@
 <span class="sd">    Compute the effective probability distribution from the subcircuit distribution.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - unmeasured_prob (Sequence[float]): the outputs of the subcircuit execution</span>
-<span class="sd">        - meas (tuple): the measurement bases</span>
+<span class="sd">        unmeasured_prob: The outputs of the subcircuit execution</span>
+<span class="sd">        meas: The measurement bases</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (np.ndarray): the updated measured probability distribution</span>
+<span class="sd">        The updated measured probability distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">meas</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;comp&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">meas</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">unmeasured_prob</span><span class="p">)</span>
@@ -337,12 +339,12 @@
 <span class="sd">    Measured in basis `meas`. Returns sigma (int), effective_state (int) where sigma = +-1</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_state (int): the current state (in decimal form)</span>
-<span class="sd">        - meas (tuple): the measurement bases</span>
+<span class="sd">        full_state: The current state (in decimal form)</span>
+<span class="sd">        meas: The measurement bases</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (tuple): sigma (defined by the parity of non computational basis 1 measurements) and</span>
-<span class="sd">            the effective state (defined by the measurements in the computational basis)</span>
+<span class="sd">        Sigma (defined by the parity of non computational basis 1 measurements) and</span>
+<span class="sd">        the effective state (defined by the measurements in the computational basis)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bin_full_state</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">full_state</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">meas</span><span class="p">))</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
@@ -368,16 +370,16 @@
 <span class="sd">    Execute a circuit using qiskit runtime.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_instances (dict): dictionary containing information about each of the</span>
+<span class="sd">        subcircuit_instances: Dictionary containing information about each of the</span>
 <span class="sd">            subcircuit instances</span>
-<span class="sd">        - subcircuit (QuantumCircuit): the subcircuit to execute</span>
-<span class="sd">        - service (QiskitRuntimeService): the runtime service</span>
-<span class="sd">        - backend_name (str): the backends used to execute the subcircuit</span>
-<span class="sd">        - options (Options): options for the runtime execution of subcircuit</span>
+<span class="sd">        subcircuit: The subcircuit to execute</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_name: The backends used to execute the subcircuit</span>
+<span class="sd">        options: Options for the runtime execution of subcircuit</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (dict): the measurement probabilities for the subcircuit batch, as calculated from the</span>
-<span class="sd">            runtime execution</span>
+<span class="sd">        The measurement probabilities for the subcircuit batch, as calculated from the</span>
+<span class="sd">        runtime execution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_instance_probs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">circuits_to_run</span> <span class="o">=</span> <span class="p">[]</span>
@@ -500,7 +502,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

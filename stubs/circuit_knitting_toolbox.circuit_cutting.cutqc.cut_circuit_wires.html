@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -50,28 +50,27 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>-</em>) – whether to have the cuts be ‘automatically’ found, in a
+<li><p><strong>method</strong> (<em>str</em>) – Whether to have the cuts be ‘automatically’ found, in a
 provably optimal way, or whether to ‘manually’ specify the cuts</p></li>
-<li><p><strong>subcircuit_vertices</strong> (<em>-</em>) – the vertices to be used in
-the subcircuits. Note that these are not the indices of the qubits, but
-the nodes in the circuit DAG</p></li>
-<li><p><strong>max_subcircuit_width</strong> (<em>-</em>) – max number of qubits in each subcircuit</p></li>
-<li><p><strong>max_cuts</strong> (<em>-</em>) – max total number of cuts allowed</p></li>
-<li><p><strong>num_subcircuits</strong> (<em>-</em>) – list of number of subcircuits to try</p></li>
-<li><p><strong>max_subcircuit_cuts</strong> (<em>-</em>) – max number of cuts for a subcircuit</p></li>
-<li><p><strong>max_subcircuit_size</strong> (<em>-</em>) – max number of gates in a subcircuit</p></li>
-<li><p><strong>verbose</strong> (<em>-</em>) – flag for printing output of cutting</p></li>
+<li><p><strong>subcircuit_vertices</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>] </em><em>| </em><em>None</em>) – The vertices to be used in the subcircuits. Note
+that these are not the indices of the qubits, but the nodes in the circuit DAG</p></li>
+<li><p><strong>max_subcircuit_width</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of qubits in each subcircuit</p></li>
+<li><p><strong>max_cuts</strong> (<em>int</em><em> | </em><em>None</em>) – Max total number of cuts allowed</p></li>
+<li><p><strong>num_subcircuits</strong> (<em>Sequence</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – List of number of subcircuits to try</p></li>
+<li><p><strong>max_subcircuit_cuts</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of cuts for a subcircuit</p></li>
+<li><p><strong>max_subcircuit_size</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of gates in a subcircuit</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Flag for printing output of cutting</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary containing information on the cuts,
-including the subcircuits themselves (key: ‘subcircuits’)</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, Any]</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(dict[str, Any])</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing information on the cuts, including the subcircuits
+themselves (key: ‘subcircuits’)</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>- ValueError</strong> – if the input method does not match the other provided arguments</p>
+<dd class="field-even"><p><strong>ValueError</strong> – The input method does not match the other provided arguments</p>
 </dd>
 </dl>
 </dd></dl>
@@ -152,7 +151,7 @@ including the subcircuits themselves (key: ‘subcircuits’)</p>
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

@@ -77,18 +77,16 @@
 <span class="sd">    Args:</span>
 <span class="sd">        circuit: The circuit to partition</span>
 <span class="sd">        partition_labels: A sequence containing a partition label for each qubit in the</span>
-<span class="sd">            input circuit. Nonlocal gates belonging to more than one partition</span>
-<span class="sd">            will be replaced with QPDGates.</span>
+<span class="sd">          input circuit. Nonlocal gates belonging to more than one partition</span>
+<span class="sd">          will be replaced with QPDGates.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        (:class:`~qiskit.QuantumCircuit`): The output circuit with each nonlocal gate spanning</span>
-<span class="sd">            two partitions replaced by a :class:`TwoQubitQPDGate`.</span>
+<span class="sd">        The output circuit with each nonlocal gate spanning two partitions replaced by a</span>
+<span class="sd">        :class:`TwoQubitQPDGate`</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError:</span>
-<span class="sd">            Length of partition_labels does not equal the number of qubits in the circuit</span>
-<span class="sd">        ValueError:</span>
-<span class="sd">            Cannot decompose gate which acts on more than 2 qubits</span>
+<span class="sd">        ValueError: Length of partition_labels does not equal the number of qubits in the circuit</span>
+<span class="sd">        ValueError: Cannot decompose gate which acts on more than 2 qubits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">partition_labels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">qubits</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -114,7 +112,8 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qubit_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Decomposition is only supported for two-qubit gates. Cannot decompose (</span><span class="si">{</span><span class="n">instruction</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="s2">&quot;Decomposition is only supported for two-qubit gates. Cannot &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;decompose (</span><span class="si">{</span><span class="n">instruction</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Nonlocal gate exists in two separate partitions</span>
@@ -194,7 +193,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

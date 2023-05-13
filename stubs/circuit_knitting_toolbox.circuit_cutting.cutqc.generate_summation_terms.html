@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -62,23 +62,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>subcircuits</strong> (<em>-</em>) – the list of subcircuits</p></li>
-<li><p><strong>complete_path_map</strong> (<em>-</em>) – the paths of all the qubits through the circuit DAGs</p></li>
-<li><p><strong>num_cuts</strong> (<em>-</em>) – the number of cuts</p></li>
+<li><p><strong>subcircuits</strong> (<em>Sequence</em><em>[</em><em>QuantumCircuit</em><em>]</em>) – The list of subcircuits</p></li>
+<li><p><strong>complete_path_map</strong> (<em>dict</em><em>[</em><em>Qubit</em><em>, </em><em>Sequence</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em> | </em><em>Qubit</em><em>]</em><em>]</em><em>]</em>) – The paths of all the qubits through the circuit DAGs</p></li>
+<li><p><strong>num_cuts</strong> (<em>int</em>) – The number of cuts</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>tuple[list[dict[int, int]], dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]], dict[int, dict[tuple[tuple[str, …], tuple[Any, …]], int]]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>a tuple
-containing:</p>
-<ul class="simple">
-<li><p>(dict): dictionary containing information on the summation terms</p></li>
-<li><p>(dict): dictionary containing the subcircuits entry information</p></li>
-<li><p>(dict): dictionary containing subcircuit instances</p></li>
-</ul>
-</p>
+<dd class="field-odd"><p>A tuple containing a summation term dict, a subcircuit entry dict,
+and a subcircuit instances dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -159,7 +153,7 @@ containing:</p>
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

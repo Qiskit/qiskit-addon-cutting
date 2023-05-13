@@ -82,13 +82,13 @@
 <span class="sd">    Convert a two-body term into a cholesky operator.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - l_op: Two body integrals</span>
-<span class="sd">        - g: integral index</span>
-<span class="sd">        - converter: Qubit converter to be used</span>
-<span class="sd">        - opname: Prefix for output cholesky operator name</span>
+<span class="sd">        l_op: Two body integrals</span>
+<span class="sd">        g: Integral index</span>
+<span class="sd">        converter: Qubit converter to be used</span>
+<span class="sd">        opname: Prefix for output cholesky operator name</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - cholesky_operator: The converted operator</span>
+<span class="sd">        The converted Cholesky operator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pt</span> <span class="o">=</span> <span class="n">PolynomialTensor</span><span class="p">({</span><span class="s2">&quot;+-&quot;</span><span class="p">:</span> <span class="n">l_op</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">g</span><span class="p">]})</span>
     <span class="n">fer_op</span> <span class="o">=</span> <span class="n">FermionicOp</span><span class="o">.</span><span class="n">from_polynomial_tensor</span><span class="p">(</span><span class="n">pt</span><span class="p">)</span>
@@ -107,22 +107,18 @@
 <span class="sd">    Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - problem (ElectronicStructureProblem): An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian will be</span>
-<span class="sd">            calculated.</span>
-<span class="sd">        - mo_coeff (np.ndarray | None): The coefficients for mapping to the MO basis. If ``None``, the input integrals will be</span>
-<span class="sd">            assumed to be in the MO basis.</span>
-<span class="sd">        - orbitals_to_reduce (Sequence[int] | None): A list of orbital indices to remove from the problem before decomposition.</span>
+<span class="sd">        problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian</span>
+<span class="sd">          will be calculated</span>
+<span class="sd">        mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input</span>
+<span class="sd">          integrals will be assumed to be in the MO basis</span>
+<span class="sd">        orbitals_to_reduce: A list of orbital indices to remove from the problem</span>
+<span class="sd">          before decomposition</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - Tuple containing</span>
-<span class="sd">            - cholesky_operator (ListOp): A list of operators representing the decomposed Hamiltonian.</span>
-<span class="sd">              shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
-<span class="sd">            - freeze_shift (float): An energy shift resulting from the decomposition. This shift should be re-applied after</span>
-<span class="sd">              calculating properties of the decomposed operator (i.e. ground state energy).</span>
+<span class="sd">        Tuple containing the cholesky operator and the energy shift resulting from decomposition</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - ValueError:</span>
-<span class="sd">            The input ElectronicStructureProblem contains no particle number information.</span>
+<span class="sd">        ValueError: The input ElectronicStructureProblem contains no particle number information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hcore</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">electronic_integrals</span><span class="o">.</span><span class="n">one_body</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">])</span>
     <span class="n">eri</span> <span class="o">=</span> <span class="n">to_chemist_ordering</span><span class="p">(</span>
@@ -175,16 +171,15 @@
 <span class="sd">    Convert the Cholesky operator (ListOp) into the entanglement forging format.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - operator: A `ListOp` containing the single-body Hamiltonian followed</span>
-<span class="sd">            by the Cholesky operators.</span>
-<span class="sd">            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
-<span class="sd">        - ansatz:</span>
-<span class="sd">            The ansatz for which to compute expectation values of operator. The</span>
-<span class="sd">            `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem..</span>
+<span class="sd">        operator: A `ListOp` containing the single-body Hamiltonian followed</span>
+<span class="sd">          by the Cholesky operators</span>
+<span class="sd">          shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
+<span class="sd">        ansatz: The ansatz for which to compute expectation values of operator. The</span>
+<span class="sd">          `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - forged_operator: An `EntanglementForgingOperator` object describing the</span>
-<span class="sd">            decomposed operator.</span>
+<span class="sd">        An `EntanglementForgingOperator` object describing the</span>
+<span class="sd">        decomposed operator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">calculate_hybrid_cross_terms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">bitstrings_u</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span>
         <span class="n">ansatz</span><span class="o">.</span><span class="n">bitstrings_u</span>
@@ -292,25 +287,20 @@
 <span class="sd">    Decompose the Hamiltonian operators into a form appropriate for entanglement forging.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - mo_coeff (np.ndarray): 2D array representing coefficients for converting from AO to MO basis.</span>
-<span class="sd">        - h1 (np.ndarray): 2D array representing operator</span>
-<span class="sd">            coefficients of one-body integrals in the AO basis.</span>
-<span class="sd">        - h2 (np.ndarray): 4D array representing operator coefficients</span>
-<span class="sd">            of two-body integrals in the AO basis.</span>
-<span class="sd">        - halve_transformed_h2 (bool | None): Should be set to True for Hamiltonian</span>
-<span class="sd">            operator to agree with Qiskit conventions.</span>
-<span class="sd">        - occupied_orbitals_to_reduce (np.ndarray | None): A list of occupied orbitals that will be removed.</span>
-<span class="sd">        - virtual_orbitals_to_reduce (np.ndarray | None): A list of virtual orbitals that will be removed.</span>
-<span class="sd">        - epsilon_cholesky (float | None): The threshold for the decomposition (typically a number close to 0).</span>
+<span class="sd">        mo_coeff: 2D array representing coefficients for converting from AO to MO basis</span>
+<span class="sd">        h1: 2D array representing operator</span>
+<span class="sd">          coefficients of one-body integrals in the AO basis</span>
+<span class="sd">        h2: 4D array representing operator coefficients</span>
+<span class="sd">          of two-body integrals in the AO basis</span>
+<span class="sd">        halve_transformed_h2: Should be set to True for Hamiltonian</span>
+<span class="sd">          operator to agree with Qiskit conventions</span>
+<span class="sd">        occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed</span>
+<span class="sd">        virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed</span>
+<span class="sd">        epsilon_cholesky: The threshold for the decomposition (typically a number close to 0)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - qubit_op (PauliSumOp): H_1 in the Cholesky decomposition.</span>
-<span class="sd">        - cholesky_ops (list[PauliSumOp]): L_\\gamma in the Cholesky decomposition</span>
-<span class="sd">        - freeze_shift (float): Energy shift due to freezing.</span>
-<span class="sd">        - h1 (np.ndarray): 2D array representing operator coefficients of one-body</span>
-<span class="sd">            integrals in the MO basis.</span>
-<span class="sd">        - h2 (np.ndarray): 4D array representing operator coefficients of</span>
-<span class="sd">            two-body integrals in the MO basis.</span>
+<span class="sd">        A tuple containing the single and two-body integrals, the energy shift, and the</span>
+<span class="sd">        one and two body integrals in the MO basis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">virtual_orbitals_to_reduce</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">virtual_orbitals_to_reduce</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
@@ -513,7 +503,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

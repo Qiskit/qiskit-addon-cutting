@@ -71,20 +71,6 @@
 <span class="sd">    For a 2N-qubit operator, the circuit should act on N qubits and the bitstrings</span>
 <span class="sd">    should be of length N. This class functions as a container for information about</span>
 <span class="sd">    the circuit and bitstrings, and is required for the EntanglementForgingGroundStateSolver.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to</span>
-<span class="sd">            find the minimum energy of the original problem. It represents the</span>
-<span class="sd">            unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
-<span class="sd">        - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit</span>
-<span class="sd">            subsystem. The bitstrings represent the computational basis states</span>
-<span class="sd">            contributing to the Schmidt decomposition. List must contain less than</span>
-<span class="sd">            or equal to 2^N elements and each bitstring must have length N. These</span>
-<span class="sd">            bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
-<span class="sd">        - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be</span>
-<span class="sd">            used for the second subsystem in the Schmidt decomposition. Must be the</span>
-<span class="sd">            same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
-<span class="sd">            for both subsystems.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="EntanglementForgingAnsatz.__init__"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -97,24 +83,24 @@
 <span class="sd">        Assign the necessary member variables and check for shaping errors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to</span>
-<span class="sd">                find the minimum energy of the original problem. It represents the</span>
-<span class="sd">                unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
-<span class="sd">            - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit</span>
-<span class="sd">                subsystem. The bitstrings represent the computational basis states</span>
-<span class="sd">                contributing to the Schmidt decomposition. List must contain less than</span>
-<span class="sd">                or equal to 2^N elements and each bitstring must have length N. These</span>
-<span class="sd">                bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
-<span class="sd">            - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be</span>
-<span class="sd">                used for the second subsystem in the Schmidt decomposition. Must be the</span>
-<span class="sd">                same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
-<span class="sd">                for both subsystems.</span>
+<span class="sd">            circuit_u: the parameterized circuit that is optimized to</span>
+<span class="sd">              find the minimum energy of the original problem. It represents the</span>
+<span class="sd">              unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
+<span class="sd">            bitstrings_u: the input bitstrings for each N-qubit</span>
+<span class="sd">              subsystem. The bitstrings represent the computational basis states</span>
+<span class="sd">              contributing to the Schmidt decomposition. List must contain less than</span>
+<span class="sd">              or equal to 2^N elements and each bitstring must have length N. These</span>
+<span class="sd">              bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
+<span class="sd">            bitstrings_v: specifies the bitstrings to be</span>
+<span class="sd">              used for the second subsystem in the Schmidt decomposition. Must be the</span>
+<span class="sd">              same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
+<span class="sd">              for both subsystems.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
+<span class="sd">            None</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError: If the input bitstrings are of incorrect shapes (as defined above).</span>
+<span class="sd">            ValueError: The input bitstrings are of incorrect shapes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bitstring</span><span class="p">)</span> <span class="o">!=</span> <span class="n">circuit_u</span><span class="o">.</span><span class="n">num_qubits</span> <span class="k">for</span> <span class="n">bitstring</span> <span class="ow">in</span> <span class="n">bitstrings_u</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -140,61 +126,31 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">circuit_u</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the circuit.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (QuantumCircuit): the _circuit_u member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the circuit.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_u</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bitstrings_u</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the first bitstrings.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (list[tuple[int, ...]]): the _bitstrings_u member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the first bitstrings.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bitstrings_v</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the second bitstrings.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (list[tuple[int, ...]]): the _bitstrings_v member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the second bitstrings.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_v</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bitstrings_are_symmetric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the symmetry of bitstrings.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (bool): whether the first and second set of bitstrings are the same</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the symmetry of bitstrings.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">subspace_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the length of bitstrings.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (int): the number of bitstrings</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the length of bitstrings.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bitstrings_u</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Representation function for EntanglementForgingAnsatz.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (str): printable repesentation of class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Representation function for EntanglementForgingAnsatz.&quot;&quot;&quot;</span>
         <span class="nb">repr</span> <span class="o">=</span> <span class="s2">&quot;EntanglementForgingAnsatz</span><span class="se">\n</span><span class="s2">Circuit:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="nb">repr</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuit_u</span><span class="o">.</span><span class="n">draw</span><span class="p">())</span>
         <span class="nb">repr</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bitstrings U:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -270,7 +226,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

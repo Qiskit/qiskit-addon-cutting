@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,69 +52,17 @@
 <p>A class that contains the <span class="math notranslate nohighlight">\(2N\)</span> qubit Pauli operator <span class="math notranslate nohighlight">\(\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b} \hat{S}_{a, b}\)</span>
 and associated weights. These operators are knitted by the <a class="reference internal" href="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingKnitter</span></code></a> to provide esimates of the
 energy for the <code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingVQE</span></code>.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">tensor_paulis</span></span></dt>
-<dd><p>The operators acting on the subsystems that have the same
-Schmidt coefficients</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Sequence[PauliOp]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">superposition_paulis</span></span></dt>
-<dd><p>The operators acting on subsystems that have different
-Schmidt coefficients</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Sequence[PauliOp]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">w_ij</span></span></dt>
-<dd><p>The weight matrix associated with the tensor paulis</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">-</span> <span class="pre">w_ab</span></span></dt>
-<dd><p>The weight matrix associated with the superposition paulis</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
 <p>Assign the necessary member variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tensor_paulis</strong> (<em>-</em>) – The operators acting on the subsystems that have the same
-Schmidt coefficients</p></li>
-<li><p><strong>superposition_paulis</strong> (<em>-</em>) – The operators acting on subsystems that have different
-Schmidt coefficients</p></li>
-<li><p><strong>w_ij</strong> (<em>-</em>) – The weight matrix associated with the tensor paulis</p></li>
-<li><p><strong>w_ab</strong> (<em>-</em>) – The weight matrix associated with the superposition paulis</p></li>
+<li><p><strong>tensor_paulis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code>]) – The operators acting on the subsystems that have the
+same Schmidt coefficients</p></li>
+<li><p><strong>superposition_paulis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code>]) – The operators acting on subsystems that have
+different Schmidt coefficients</p></li>
+<li><p><strong>w_ij</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The weight matrix associated with the tensor paulis</p></li>
+<li><p><strong>w_ab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The weight matrix associated with the superposition paulis</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>None</p></li>
-</ul>
-</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -124,19 +72,13 @@ Schmidt coefficients</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tensor_paulis</strong> (<em>-</em>) – The operators acting on the subsystems that have the same
-Schmidt coefficients</p></li>
-<li><p><strong>superposition_paulis</strong> (<em>-</em>) – The operators acting on subsystems that have different
-Schmidt coefficients</p></li>
-<li><p><strong>w_ij</strong> (<em>-</em>) – The weight matrix associated with the tensor paulis</p></li>
-<li><p><strong>w_ab</strong> (<em>-</em>) – The weight matrix associated with the superposition paulis</p></li>
+<li><p><strong>tensor_paulis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code>]) – The operators acting on the subsystems that have the
+same Schmidt coefficients</p></li>
+<li><p><strong>superposition_paulis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code>]) – The operators acting on subsystems that have
+different Schmidt coefficients</p></li>
+<li><p><strong>w_ij</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The weight matrix associated with the tensor paulis</p></li>
+<li><p><strong>w_ab</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The weight matrix associated with the superposition paulis</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>None</p></li>
-</ul>
-</p>
 </dd>
 </dl>
 </dd></dl>
@@ -227,7 +169,7 @@ Schmidt coefficients</p></li>
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

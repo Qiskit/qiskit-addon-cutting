@@ -176,18 +176,18 @@
 <span class="sd">        Assign the necessary class variables and initialize any defaults.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - ansatz: Class which holds the ansatz circuit and bitstrings</span>
-<span class="sd">            - service: The service used to spawn Qiskit primitives</span>
-<span class="sd">            - optimizer: Optimizer to use to optimize the ansatz circuit parameters</span>
-<span class="sd">            - initial_point: Initial values for ansatz parameters</span>
-<span class="sd">            - orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
-<span class="sd">                decomposition.</span>
-<span class="sd">            - backend_names: Backend name or list of backend names to use during parallel computation</span>
-<span class="sd">            - options: Options or list of options to be applied to the backends</span>
-<span class="sd">            - mo_coeff: Coefficients for converting an input problem to MO basis</span>
+<span class="sd">            ansatz: Class which holds the ansatz circuit and bitstrings</span>
+<span class="sd">            service: The service used to spawn Qiskit primitives</span>
+<span class="sd">            optimizer: Optimizer to use to optimize the ansatz circuit parameters</span>
+<span class="sd">            initial_point: Initial values for ansatz parameters</span>
+<span class="sd">            orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
+<span class="sd">              decomposition.</span>
+<span class="sd">            backend_names: Backend name or list of backend names to use during parallel computation</span>
+<span class="sd">            options: Options or list of options to be applied to the backends</span>
+<span class="sd">            mo_coeff: Coefficients for converting an input problem to MO basis</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
+<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Set class fields</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_knitter</span><span class="p">:</span> <span class="n">EntanglementForgingKnitter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -292,19 +292,18 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntanglementForgingResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute Ground State properties.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute ground state properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - problem: a class encoding a problem to be solved</span>
+<span class="sd">            problem: A class encoding a problem to be solved</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - A result object</span>
+<span class="sd">            A result object</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError:</span>
-<span class="sd">                The ``backend_names`` and ``options`` lists are of incompatible lengths</span>
-<span class="sd">            - AttributeError:</span>
-<span class="sd">                Ansatz must be set before calling `solve` method</span>
+<span class="sd">            ValueError: The ``backend_names`` and ``options`` lists are of</span>
+<span class="sd">              incompatible lengths</span>
+<span class="sd">            AttributeError: Ansatz must be set before calling `solve` method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">):</span>
@@ -312,8 +311,9 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), but the list of options is &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous how to combine the options with the backends.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is &quot;</span>
+                        <span class="s2">&quot;ambiguous how to combine the options with the backends.&quot;</span>
                     <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Ansatz must be set before calling solve.&quot;</span><span class="p">)</span>
@@ -376,13 +376,14 @@
     <span class="k">def</span> <span class="nf">get_eigenvalue_evaluation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">:</span> <span class="n">EntanglementForgingOperator</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produce a callable function which provides an estimation of the minimum eigenvalue of the input operator.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce a callable which provides an estimation of the min eigenvalue of an operator.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">          - operator (EntanglementForgingOperator): The decomposed Hamiltonian in entanglement forging format</span>
+<span class="sd">            operator: The decomposed Hamiltonian in entanglement forging format</span>
 <span class="sd">        Returns:</span>
-<span class="sd">          - callable (Callable):  Callable function which provides an estimation of the mihnimum eigenvalue</span>
-<span class="sd">              of the input operator given some ansatz circuit parameters.</span>
+<span class="sd">            Callable function which provides an estimation of the mihnimum eigenvalue</span>
+<span class="sd">            of the input operator given some ansatz circuit parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">evaluate_eigenvalue</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -407,18 +408,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct decomposed qubit operators from an ``ElectronicStructureProblem``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">          - problem (ElectronicStructureProblem): A class encoding a problem to be solved.</span>
+<span class="sd">            problem: A class encoding a problem to be solved</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">          - hamiltonian_ops: qubit operator representing the decomposed Hamiltonian.</span>
+<span class="sd">            hamiltonian_ops: Qubit operator representing the decomposed Hamiltonian</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError:</span>
-<span class="sd">                The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``</span>
-<span class="sd">            - ValueError:</span>
-<span class="sd">                The ``mo_coeff`` and input problem integrals are of incompatible shapes</span>
-<span class="sd">            - ValueError:</span>
-<span class="sd">                The input integrals are ``None``</span>
+<span class="sd">            ValueError: The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``</span>
+<span class="sd">            ValueError: The ``mo_coeff`` and input problem integrals are of incompatible shapes</span>
+<span class="sd">            ValueError: The input integrals are ``None``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_problem_and_coeffs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
 
@@ -434,8 +432,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the input problem can be translated to the MO basis.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span> <span class="o">!=</span> <span class="n">ElectronicBasis</span><span class="o">.</span><span class="n">MO</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">mo_coeff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot transform integrals to MO basis. The input problem is in the (</span><span class="si">{</span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span><span class="si">}</span><span class="s2">) basis, &quot;</span>
-                <span class="s2">&quot;and the mo_coeff class field is None.&quot;</span>
+                <span class="s2">&quot;Cannot transform integrals to MO basis. The input problem is &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;in the (</span><span class="si">{</span><span class="n">problem</span><span class="o">.</span><span class="n">basis</span><span class="si">}</span><span class="s2">) basis, and the mo_coeff class field is None.&quot;</span>
             <span class="p">)</span>
 
         <span class="n">h1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">electronic_integrals</span><span class="o">.</span><span class="n">one_body</span><span class="o">.</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">])</span>
@@ -449,8 +447,8 @@
             <span class="ow">and</span> <span class="n">mo_coeff</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">h1</span><span class="o">.</span><span class="n">shape</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The mo_coeff class field has shape (</span><span class="si">{</span><span class="n">mo_coeff</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">), but the input one body integral &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;has shape (</span><span class="si">{</span><span class="n">h1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;The mo_coeff class field has shape (</span><span class="si">{</span><span class="n">mo_coeff</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">), but &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;the input one body integral has shape (</span><span class="si">{</span><span class="n">h1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span></div>
 </pre></div>
 
@@ -518,7 +516,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

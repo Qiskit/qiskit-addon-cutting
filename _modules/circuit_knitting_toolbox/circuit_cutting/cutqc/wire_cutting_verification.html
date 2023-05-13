@@ -86,17 +86,12 @@
 <span class="sd">    Provides a variety of metrics to evaluate the differences in the distributions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_circuit (QuantumCircuit): the original quantum circuit that was cut</span>
-<span class="sd">        - reconstructed_output (np.ndarray): the reconstructed probability distribution from the</span>
-<span class="sd">            execution of the subcircuits</span>
+<span class="sd">        full_circuit: The original quantum circuit that was cut</span>
+<span class="sd">        reconstructed_output: The reconstructed probability distribution from the</span>
+<span class="sd">          execution of the subcircuits</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        a tuple</span>
-<span class="sd">        containing:</span>
-
-<span class="sd">        - a dictionary containing a variety of distributional difference</span>
-<span class="sd">          metrics for the ground truth and reconstructed distributions; and,</span>
-<span class="sd">        - the true probability distribution of the full circuit</span>
+<span class="sd">        A tuple containing metrics for the ground truth and reconstructed distributions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">_evaluate_circuit</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">full_circuit</span><span class="p">)</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="p">{}</span>
@@ -131,16 +126,16 @@
 <span class="sd">    Reorder the probability distribution.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_circuit (QuantumCircuit): the original uncut circuit</span>
-<span class="sd">        - subcircuits (list): the cut subcircuits</span>
-<span class="sd">        - unordered (np.ndarray): the unordered results of the subcircuits</span>
-<span class="sd">        - smart_order (list): the correct ordering of the subcircuits</span>
-<span class="sd">        - complete_path_map (dict): the path map of the cuts, as defined from the</span>
-<span class="sd">            cutting function</span>
+<span class="sd">        full_circuit: The original uncut circuit</span>
+<span class="sd">        subcircuits: The cut subcircuits</span>
+<span class="sd">        unordered: The unordered results of the subcircuits</span>
+<span class="sd">        smart_order: The correct ordering of the subcircuits</span>
+<span class="sd">        complete_path_map: The path map of the cuts, as defined from the</span>
+<span class="sd">          cutting function</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (np.ndarray): the reordered and reconstructed probability distribution over the</span>
-<span class="sd">            full circuit</span>
+<span class="sd">        The reordered and reconstructed probability distribution over the</span>
+<span class="sd">        full circuit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_out_qubits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">subcircuit_idx</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">subcircuit_idx</span> <span class="ow">in</span> <span class="n">smart_order</span>
@@ -185,10 +180,10 @@
 <span class="sd">    Compute exact probability vector of given circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit (QuantumCircuit): the circuit to simulate</span>
+<span class="sd">        circuit: The circuit to simulate</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (Sequence[float]): the final probability vector of the circuit</span>
+<span class="sd">        The final probability vector of the circuit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">max_memory_mb</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span> <span class="o">&gt;&gt;</span> <span class="mi">20</span>
     <span class="n">max_memory_mb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_memory_mb</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
@@ -268,7 +263,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

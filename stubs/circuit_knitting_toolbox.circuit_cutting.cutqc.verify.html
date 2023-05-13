@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>circuit_knitting_toolbox.circuit_cutting.cutqc.verify &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -53,8 +53,8 @@ Provides a variety of metrics to evaluate the differences in the distributions.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>full_circuit</strong> (<em>-</em>) – the original quantum circuit that was cut</p></li>
-<li><p><strong>reconstructed_output</strong> (<em>-</em>) – the reconstructed probability distribution from the
+<li><p><strong>full_circuit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code>) – The original quantum circuit that was cut</p></li>
+<li><p><strong>reconstructed_output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The reconstructed probability distribution from the
 execution of the subcircuits</p></li>
 </ul>
 </dd>
@@ -62,14 +62,7 @@ execution of the subcircuits</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>a tuple
-containing:</p>
-<ul class="simple">
-<li><p>a dictionary containing a variety of distributional difference
-metrics for the ground truth and reconstructed distributions; and,</p></li>
-<li><p>the true probability distribution of the full circuit</p></li>
-</ul>
-</p>
+<dd class="field-odd"><p>A tuple containing metrics for the ground truth and reconstructed distributions</p>
 </dd>
 </dl>
 </dd></dl>
@@ -150,7 +143,7 @@ metrics for the ground truth and reconstructed distributions; and,</p></li>
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |

@@ -91,14 +91,14 @@
 <span class="sd">        Assign the necessary member variables.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - ansatz (EntanglementForgingAnsatz): The container for the circuit structure and bitstrings</span>
-<span class="sd">                to be used (and generate the stateprep circuits)</span>
-<span class="sd">            - service (QiskitRuntimeService): The service used to spawn Qiskit primitives and runtime jobs</span>
-<span class="sd">            - backend_names (list[str]): Names of the backends to use for calculating expectation values</span>
-<span class="sd">            - options (list[Options]): Options to use with the backends</span>
+<span class="sd">            ansatz: The container for the circuit structure and bitstrings to be used</span>
+<span class="sd">              (and generate the stateprep circuits)</span>
+<span class="sd">            service: The service used to spawn Qiskit primitives and runtime jobs</span>
+<span class="sd">            backend_names: Names of the backends to use for calculating expectation values</span>
+<span class="sd">            options: Options to use with the backends</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
+<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Call backend_names setter to update the session_ids hidden class field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -145,35 +145,17 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ansatz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for the ansatz.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (EntanglementForgingAnsatz): the ansatz member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for the ansatz.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List of backend names to be used.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (list[str]): the backend_names member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of backend names to be used.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span>
 
     <span class="nd">@backend_names</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">backend_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_names</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Change the backend_names class field.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            - backend_names (list[str]): the list of backends to use</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the backend_names class field.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">backend_names</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -183,25 +165,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List of options to be used.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (list[Options]): the options member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of options to be used.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span>
 
     <span class="nd">@options</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Options</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Change the options class field.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            - options (list[Options]): the list of options to use</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the options class field.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">Options</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -209,25 +178,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Property function for service class field.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - (QiskitRuntimeService): the service member variable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property function for service class field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">QiskitRuntimeService</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">)</span>
 
     <span class="nd">@service</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">QiskitRuntimeService</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Change the service class field.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            - service (QiskitRuntimeService): the service used to spawn Qiskit primitives</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the service class field.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">active_account</span><span class="p">()</span> <span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">service</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
@@ -253,16 +209,13 @@
 <span class="sd">        Additionally, U = V is currently required, but may change in future versions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - self</span>
-<span class="sd">            - ansatz_parameters (Sequence[float]): the parameters to be used by the ansatz circuit,</span>
-<span class="sd">                must be the same length as the circuit&#39;s parameters</span>
-<span class="sd">            - forged_operator (EntanglementForgingOperator): the operator to forge the expectation</span>
-<span class="sd">                value from</span>
+<span class="sd">            ansatz_parameters: the parameters to be used by the ansatz circuit,</span>
+<span class="sd">              must be the same length as the circuit&#39;s parameters</span>
+<span class="sd">            forged_operator: the operator from which to forge the expectation value</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            - (tuple[float, np.ndarray, np.ndarray]): a tuple</span>
-<span class="sd">                containing the energy (i.e. forged expectation value), the Schmidt coefficients,</span>
-<span class="sd">                and the full Schmidt decomposition matrix</span>
+<span class="sd">            A tuple containing the energy (i.e. forged expectation value), the Schmidt</span>
+<span class="sd">            coefficients, and the full Schmidt decomposition matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">):</span>
@@ -270,7 +223,9 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is ambiguous how to combine the options with the backends.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;The list of backend names is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span><span class="si">}</span><span class="s2">), &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;but the list of options is length (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">)</span><span class="si">}</span><span class="s2">). It is &quot;</span>
+                        <span class="s2">&quot;ambiguous how to combine the options with the backends.&quot;</span>
                     <span class="p">)</span>
         <span class="c1"># For now, we only assign the parameters to a copy of the ansatz</span>
         <span class="n">circuit_u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="o">.</span><span class="n">circuit_u</span><span class="o">.</span><span class="n">bind_parameters</span><span class="p">(</span><span class="n">ansatz_parameters</span><span class="p">)</span>
@@ -367,7 +322,8 @@
             <span class="k">if</span> <span class="n">job_id</span> <span class="ow">and</span> <span class="p">(</span><span class="n">session_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Something unexpected happened. The session_ids field must be set when a job_id is present.&quot;</span>
+                        <span class="s2">&quot;Something unexpected happened. The session_ids field must &quot;</span>
+                        <span class="s2">&quot;be set when a job_id is present.&quot;</span>
                     <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_id</span>
 
@@ -391,15 +347,15 @@
 <span class="sd">        Compute the Schmidt decomposition of the Hamiltonian.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - forged_operator (EntanglementForgingOperator): the operator that the</span>
-<span class="sd">                forged expectation values are computed with</span>
-<span class="sd">            - tensor_expvals (np.ndarray): the expectation values</span>
-<span class="sd">                for the tensor circuits (i.e. same Schmidt coefficients)</span>
-<span class="sd">            - superpos_expvals (np.ndarray): the expectation values</span>
-<span class="sd">                for the superposition circuits (i.e. different Schmidt coefficients)</span>
+<span class="sd">            forged_operator: The operator with which the forged expectation values are</span>
+<span class="sd">              computed</span>
+<span class="sd">            tensor_expvals: The expectation values for the tensor circuits</span>
+<span class="sd">              (i.e. same Schmidt coefficients)</span>
+<span class="sd">            superpos_expvals: The expectation values for the superposition circuits</span>
+<span class="sd">              (i.e. different Schmidt coefficients)</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">           - (np.ndarray): the Schmidt matrix</span>
+<span class="sd">           The Schmidt matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Calculate the diagonal entries of the Schmidt matrix by</span>
         <span class="c1"># summing the expectation values associated with the tensor terms</span>
@@ -468,22 +424,15 @@
         <span class="k">return</span> <span class="n">h_schmidt</span>
 
     <span class="k">def</span> <span class="nf">close_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Close all the sessions opened by this object.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            - None</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            - None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close all the sessions opened by this object.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">session_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_session_ids</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;There was a problem closing session id (</span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">). No backend to associate with session.&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;There was a problem closing session id (</span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">). &quot;</span>
+                        <span class="s2">&quot;No backend to associate with session.&quot;</span>
                     <span class="p">)</span>
                 <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">session</span><span class="o">.</span><span class="n">_session_id</span> <span class="o">=</span> <span class="n">session_id</span>
@@ -549,13 +498,12 @@
 <span class="sd">         └───┘     └───┘</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - bitstrings (list[tuple[int, ...]]): the input list of bitstrings used to generate the state preparation circuits</span>
-<span class="sd">        - subsystem_id (str | None): the subsystem the bitstring reflects (&quot;u&quot; or &quot;v&quot;)</span>
+<span class="sd">        bitstrings: The input list of bitstrings used to generate the state preparation circuits</span>
+<span class="sd">        subsystem_id: The subsystem the bitstring reflects (&quot;u&quot; or &quot;v&quot;)</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (tuple[list[QuantumCircuit], list[QuantumCircuit]]): A tuple containing the tensor (i.e., non-superposition</span>
-<span class="sd">            or bitstring) circuits in the first index (length = len(bitstrings)) and the super-position circuits</span>
-<span class="sd">            as the second element</span>
+<span class="sd">        A tuple containing the tensor (i.e., non-superposition or bitstring) circuits in the first</span>
+<span class="sd">        index (length = len(bitstrings)) and the super-position circuits as the second element</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If empty, just return</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">bitstrings</span><span class="p">:</span>
@@ -628,13 +576,12 @@
 <span class="sd">    every qubit that has a 1 in the bitstring.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - bitstring (np.ndarray | tuple[int, ...]): the container for the</span>
-<span class="sd">            bitstring information. Must contain 0s and 1s and the 1s are used to determine</span>
-<span class="sd">            where to put the X gates</span>
-<span class="sd">        - name (str, optional): the name of the circuit</span>
+<span class="sd">        bitstring: The container for the bitstring information. Must contain 0s and 1s, and</span>
+<span class="sd">          the 1s are used to determine where to put the X gates</span>
+<span class="sd">        name: The name of the circuit</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (QuantumCircuit): the prepared circuit</span>
+<span class="sd">        The prepared circuit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">qcirc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bitstring</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">qb_idx</span><span class="p">,</span> <span class="n">bit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bitstring</span><span class="p">):</span>
@@ -652,10 +599,11 @@
 <span class="sd">    _partition([1, 2, 3], 2) -&gt; (i for i in [[1, 2], [3]])</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - a (iterable): an object with length and indexing to be partitioned</span>
-<span class="sd">        - n (int): the number of partitions</span>
+<span class="sd">        a: An object with length and indexing to be partitioned</span>
+<span class="sd">        n: The number of partitions</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        - (generator): the generator containing the paritions</span>
+<span class="sd">        The generator containing the paritions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
@@ -680,23 +628,19 @@
 <span class="sd">    process).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - tensor_ansatze (list[QuantumCircuit]): the circuits that have the same</span>
-<span class="sd">            Schmidt coefficient</span>
-<span class="sd">        - tensor_paulis (list[Pauli]): the pauli operators to measure and calculate</span>
-<span class="sd">            the expectation values from for the circuits with the same Schmidt coefficient</span>
-<span class="sd">        - superposition_ansatze (list[QuantumCircuit]): the circuits with different</span>
-<span class="sd">            Schmidt coefficients</span>
-<span class="sd">        - superposition_paulis (list[Pauli]): the pauli operators to measure and calculate</span>
-<span class="sd">            the expectation values from for the circuits with different Schmidt</span>
-<span class="sd">            coefficients</span>
-<span class="sd">        - service_args (dict[str, Any]): The service account used to spawn Qiskit primitives</span>
-<span class="sd">        - backend_name (str): The backend to use to evaluate the grouped experiments</span>
-<span class="sd">        - options (Options): The options to use with the backend</span>
-<span class="sd">        - session_id (str): The session id to use when calling primitive programs</span>
+<span class="sd">        tensor_ansatze: The circuits that have the same Schmidt coefficient</span>
+<span class="sd">        tensor_paulis: The pauli operators to measure and calculate</span>
+<span class="sd">          the expectation values from for the circuits with the same Schmidt coefficient</span>
+<span class="sd">        superposition_ansatze: The circuits with different Schmidt coefficients</span>
+<span class="sd">        superposition_paulis: The pauli operators to measure and calculate</span>
+<span class="sd">          the expectation values from for the circuits with different Schmidt coefficients</span>
+<span class="sd">        service_args: The service account used to spawn Qiskit primitives</span>
+<span class="sd">        backend_name: The backend to use to evaluate the grouped experiments</span>
+<span class="sd">        options: The options to use with the backend</span>
+<span class="sd">        session_id: The session id to use when calling primitive programs</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        - (tuple[list[np.ndarray], list[np.ndarray], str | None]): the expectation values for the</span>
-<span class="sd">            tensor circuits and superposition circuits</span>
+<span class="sd">        The expectation values for the tensor circuits and superposition circuits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ansatz_t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">observables_t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -852,7 +796,7 @@
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
     </div>

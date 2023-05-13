@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -54,18 +54,15 @@ ansatz parameters and Schmidt coefficients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ansatz</strong> (<em>-</em>) – The container for the circuit structure and bitstrings
-to be used (and generate the stateprep circuits)</p></li>
-<li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
-<li><p><strong>backend_names</strong> (<em>-</em>) – Names of the backends to use for calculating expectation values</p></li>
-<li><p><strong>options</strong> (<em>-</em>) – Options to use with the backends</p></li>
+<li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a>) – The container for the circuit structure and bitstrings to be used
+(and generate the stateprep circuits)</p></li>
+<li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
+<li><p><strong>backend_names</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><em>list</em><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>None</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -75,18 +72,15 @@ to be used (and generate the stateprep circuits)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ansatz</strong> (<em>-</em>) – The container for the circuit structure and bitstrings
-to be used (and generate the stateprep circuits)</p></li>
-<li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
-<li><p><strong>backend_names</strong> (<em>-</em>) – Names of the backends to use for calculating expectation values</p></li>
-<li><p><strong>options</strong> (<em>-</em>) – Options to use with the backends</p></li>
+<li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a>) – The container for the circuit structure and bitstrings to be used
+(and generate the stateprep circuits)</p></li>
+<li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
+<li><p><strong>backend_names</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><em>list</em><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>None</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -197,7 +191,7 @@ to be used (and generate the stateprep circuits)</p></li>
       &copy;2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
