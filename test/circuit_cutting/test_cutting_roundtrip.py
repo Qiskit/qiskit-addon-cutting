@@ -119,7 +119,7 @@ def example_circuit_pair(
     return qc0, qc, qpd_gate_ids
 
 
-def test_qpd_exact_reconstruction(example_circuit_pair):
+def test_cutting_exact_reconstruction(example_circuit_pair):
     """Test gate-cut circuit vs original circuit on statevector simulator
 
     This test uses a statevector simulator to consider the expectation value of
@@ -163,7 +163,7 @@ def test_qpd_exact_reconstruction(example_circuit_pair):
     assert np.allclose(probs0, estimated_probs, atol=1e-8)
 
 
-def test_qpd_exact_expectation_values(example_circuit_pair):
+def test_cutting_exact_expectation_values(example_circuit_pair):
     qc0, qpd_qc, qpd_gate_ids = example_circuit_pair
     qc = qpd_qc.copy()
 
