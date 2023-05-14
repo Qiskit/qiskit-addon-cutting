@@ -19,6 +19,14 @@ The source code to the toolbox is available `on GitHub <https://github.com/Qiski
 
 This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://qiskit.org/documentation/contributing_to_qiskit.html#deprecation-policy>`_.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
 
+Citing this project
+-------------------
+
+If you use the Circuit Knitting Toolbox in your research, please cite it according to ``CITATON.bib`` file included in this repository:
+
+.. literalinclude:: ../CITATION.bib
+   :language: bibtex
+
 Contents
 --------
 

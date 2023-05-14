@@ -236,7 +236,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     # If theta is a bound ParameterExpression, convert to float, else raise error.
     try:
         theta = float(gate.params[0])
-    except (TypeError) as err:
+    except TypeError as err:
         raise ValueError(
             f"Cannot decompose ({gate.name}) gate with unbound parameters."
         ) from err
