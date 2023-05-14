@@ -50,11 +50,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>problem</strong> (<em>ElectronicStructureProblem</em>) – An <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code> from which the decomposed Hamiltonian
+<li><p><strong>problem</strong> (<em>-</em>) – An <code class="docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code> from which the decomposed Hamiltonian
 will be calculated</p></li>
-<li><p><strong>mo_coeff</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – The coefficients for mapping to the MO basis. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the input
+<li><p><strong>mo_coeff</strong> (<em>-</em>) – The coefficients for mapping to the MO basis. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the input
 integrals will be assumed to be in the MO basis</p></li>
-<li><p><strong>orbitals_to_reduce</strong> (<em>Sequence</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – A list of orbital indices to remove from the problem
+<li><p><strong>orbitals_to_reduce</strong> (<em>-</em>) – A list of orbital indices to remove from the problem
 before decomposition</p></li>
 </ul>
 </dd>
@@ -65,7 +65,7 @@ before decomposition</p></li>
 <dd class="field-odd"><p>Tuple containing the cholesky operator and the energy shift resulting from decomposition</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – The input ElectronicStructureProblem contains no particle number information.</p>
+<dd class="field-even"><p><strong>- ValueError</strong> – The input ElectronicStructureProblem contains no particle number information.</p>
 </dd>
 </dl>
 </dd></dl>
