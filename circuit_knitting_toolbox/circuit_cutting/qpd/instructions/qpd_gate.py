@@ -37,12 +37,12 @@ class BaseQPDGate(Instruction, ABC):
         Initialize the instruction, and assign member variables.
 
         Args:
-            - name: Name of the QPDGate.
-            - basis: A probabilistic basis to which the gate should be decomposed
-            - num_qubits: The number of qubits on which the QPDGate acts
-            - basis_id: An index to the basis to which the gate should be decomposed.
-                This index is to basis.maps.
-            - label: An optional label for the gate.
+            name: Name of the QPDGate.
+            basis: A probabilistic basis to which the gate should be decomposed
+            num_qubits: The number of qubits on which the QPDGate acts
+            basis_id: An index to the basis to which the gate should be decomposed.
+              This index is to basis.maps.
+            label: An optional label for the gate.
         """
         super().__init__(name, num_qubits, num_clbits=0, params=[], label=label)
 
@@ -84,7 +84,7 @@ class BaseQPDGate(Instruction, ABC):
         The index corresponds to self.basis.maps.
 
         Raises:
-            - ValueError: basis_id is out of range
+            ValueError: basis_id is out of range
         """
         if basis_id is not None and basis_id not in range(0, len(self._basis.maps)):
             raise ValueError("Basis ID out of range")
@@ -121,13 +121,13 @@ class TwoQubitQPDGate(BaseQPDGate):
         Initialize the two qubit QPDGate.
 
         Args:
-            - basis: A probabilistic basis to which the gate should be decomposed
-            - basis_id: An index to the basis to which the gate should be decomposed.
-                This index is to basis.maps.
-            - label: An optional label for the gate.
+            basis: A probabilistic basis to which the gate should be decomposed
+            basis_id: An index to the basis to which the gate should be decomposed.
+              This index is to basis.maps.
+            label: An optional label for the gate.
 
         Raises:
-            - ValueError: The :class:`QPDBasis` acts on a number of qubits not equal to 2.
+            ValueError: The :class:`QPDBasis` acts on a number of qubits not equal to 2.
         """
         if basis.num_qubits != 2:
             raise ValueError(
@@ -171,16 +171,16 @@ class SingleQubitQPDGate(BaseQPDGate):
         Initialize the single qubit QPDGate, and assign member variables.
 
         Args:
-            - basis: A probabilistic basis to which the gate should be decomposed
-            - qubit_id: This gate's relative index to the decomposition which it belongs.
-                Single qubit QPDGates should have qubit_id 0 if they describe a local
-                decomposition, such as a wire cut.
-            - basis_id: An index to the basis to which the gate should be decomposed.
-                This index is to basis.maps.
-            - label: An optional label for the gate.
+            basis: A probabilistic basis to which the gate should be decomposed
+            qubit_id: This gate's relative index to the decomposition which it belongs.
+              Single qubit QPDGates should have qubit_id 0 if they describe a local
+              decomposition, such as a wire cut.
+            basis_id: An index to the basis to which the gate should be decomposed.
+              This index is to basis.maps.
+            label: An optional label for the gate.
 
         Raises:
-            - ValueError: qubit_id is out of range
+            ValueError: qubit_id is out of range
         """
         super().__init__(
             name="qpd_1q", basis=basis, num_qubits=1, basis_id=basis_id, label=label

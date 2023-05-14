@@ -42,24 +42,24 @@ class EntanglementForgingAnsatz:
         Assign the necessary member variables and check for shaping errors.
 
         Args:
-            - circuit_u: the parameterized circuit that is optimized to
-                find the minimum energy of the original problem. It represents the
-                unitary U for both N-qubit subsystems in the Schmidt decomposition.
-            - bitstrings_u: the input bitstrings for each N-qubit
-                subsystem. The bitstrings represent the computational basis states
-                contributing to the Schmidt decomposition. List must contain less than
-                or equal to 2^N elements and each bitstring must have length N. These
-                bitstrings are used for each subsystem unless bitstrings_v is provided.
-            - bitstrings_v: specifies the bitstrings to be
-                used for the second subsystem in the Schmidt decomposition. Must be the
-                same shape as bitstrings_u. If not provided, then bitstrings_u is used
-                for both subsystems.
+            circuit_u: the parameterized circuit that is optimized to
+              find the minimum energy of the original problem. It represents the
+              unitary U for both N-qubit subsystems in the Schmidt decomposition.
+            bitstrings_u: the input bitstrings for each N-qubit
+              subsystem. The bitstrings represent the computational basis states
+              contributing to the Schmidt decomposition. List must contain less than
+              or equal to 2^N elements and each bitstring must have length N. These
+              bitstrings are used for each subsystem unless bitstrings_v is provided.
+            bitstrings_v: specifies the bitstrings to be
+              used for the second subsystem in the Schmidt decomposition. Must be the
+              same shape as bitstrings_u. If not provided, then bitstrings_u is used
+              for both subsystems.
 
         Returns:
             None
 
         Raises:
-            - ValueError: The input bitstrings are of incorrect shapes.
+            ValueError: The input bitstrings are of incorrect shapes.
         """
         if any(len(bitstring) != circuit_u.num_qubits for bitstring in bitstrings_u):
             raise ValueError(

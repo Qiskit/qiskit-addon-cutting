@@ -38,15 +38,12 @@ class EntanglementForgingOperator:  # noqa: D301
         Assign the necessary member variables.
 
         Args:
-            - tensor_paulis: The operators acting on the subsystems that have the
-                same Schmidt coefficients
-            - superposition_paulis: The operators acting on subsystems that have
-                different Schmidt coefficients
-            - w_ij: The weight matrix associated with the tensor paulis
-            - w_ab: The weight matrix associated with the superposition paulis
-
-        Returns:
-            None
+            tensor_paulis: The operators acting on the subsystems that have the
+              same Schmidt coefficients
+            superposition_paulis: The operators acting on subsystems that have
+              different Schmidt coefficients
+            w_ij: The weight matrix associated with the tensor paulis
+            w_ab: The weight matrix associated with the superposition paulis
         """
         self.tensor_paulis = tensor_paulis
         self.superposition_paulis = superposition_paulis

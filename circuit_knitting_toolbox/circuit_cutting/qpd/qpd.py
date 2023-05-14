@@ -66,8 +66,8 @@ def generate_qpd_samples(
     Generate random quasiprobability decompositions.
 
     Args:
-        - qpd_bases: The :class:`QPDBasis` objects from which to sample
-        - num_samples: Number of random samples to generate
+        qpd_bases: The :class:`QPDBasis` objects from which to sample
+        num_samples: Number of random samples to generate
 
     Returns:
         A mapping from a given decomposition to its sampled weight.
@@ -117,13 +117,13 @@ def decompose_qpd_instructions(
     Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
 
     Args:
-        - circuit: The circuit containing QPD instructions
-        - instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices
-            of instructions comprising one decomposition in the circuit. The elements within a
-            common sequence belong to a common decomposition and should be sampled together.
-        - map_ids: Indices to a specific linear mapping to be applied to the decompositions
-            in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
-            according to the decompositions' joint probability distribution.
+        circuit: The circuit containing QPD instructions
+        instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices
+          of instructions comprising one decomposition in the circuit. The elements within a
+          common sequence belong to a common decomposition and should be sampled together.
+        map_ids: Indices to a specific linear mapping to be applied to the decompositions
+          in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
+          according to the decompositions' joint probability distribution.
 
     Returns:
         Circuit which has had all its QPDGates decomposed into local operations.
@@ -132,13 +132,13 @@ def decompose_qpd_instructions(
         outcomes (accessible at ``retval.cregs[-1]``).
 
     Raises:
-        - ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
-            :class:`QPDGate`
-        - ValueError: A list within instruction_ids is not length 1 or 2
-        - ValueError: The total number of indices in ``instruction_ids`` does not equal the number
-            of :class:`QPDGate`\ s in the circuit
-        - ValueError: Gates within the same decomposition hold different QPD bases
-        - ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
+        ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
+          :class:`QPDGate`
+        ValueError: A list within instruction_ids is not length 1 or 2
+        ValueError: The total number of indices in ``instruction_ids`` does not equal the number
+          of :class:`QPDGate`\ s in the circuit
+        ValueError: Gates within the same decomposition hold different QPD bases
+        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
     """
     _validate_qpd_instructions(circuit, instruction_ids)
     new_qc = circuit.copy()
@@ -146,8 +146,7 @@ def decompose_qpd_instructions(
     if map_ids is not None:
         if len(instruction_ids) != len(map_ids):
             raise ValueError(
-                f"The number of map IDs ({len(map_ids)}) must equal the number of "
-                f"decompositions in the circuit ({len(instruction_ids)})."
+                f"The number of map IDs ({len(map_ids)}) must equal the number of decompositions in the circuit ({len(instruction_ids)})."
             )
         # If mapping is specified, set each gate's mapping
         for i, decomp_gate_ids in enumerate(instruction_ids):
@@ -190,7 +189,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
-        - ValueError: Cannot decompose gate with unbound parameters
+        ValueError: Cannot decompose gate with unbound parameters
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
@@ -319,20 +318,17 @@ def _validate_qpd_instructions(
     for decomp_ids in instruction_ids:
         if len(decomp_ids) not in [1, 2]:
             raise ValueError(
-                "Each decomposition must contain either one or two elements. Found a decomposition "
-                f"with ({len(decomp_ids)}) elements."
+                f"Each decomposition must contain either one or two elements. Found a decomposition with ({len(decomp_ids)}) elements."
             )
         if not isinstance(circuit.data[decomp_ids[0]].operation, BaseQPDGate):
             raise ValueError(
-                f"A circuit data index ({decomp_ids[0]}) corresponds to a non-QPDGate "
-                f"({circuit.data[decomp_ids[0]].operation.name})."
+                f"A circuit data index ({decomp_ids[0]}) corresponds to a non-QPDGate ({circuit.data[decomp_ids[0]].operation.name})."
             )
         compare_basis = circuit.data[decomp_ids[0]].operation.basis
         for gate_id in decomp_ids:
             if not isinstance(circuit.data[gate_id].operation, BaseQPDGate):
                 raise ValueError(
-                    f"A circuit data index ({gate_id}) corresponds to a non-QPDGate "
-                    f"({circuit.data[gate_id].operation.name})."
+                    f"A circuit data index ({gate_id}) corresponds to a non-QPDGate ({circuit.data[gate_id].operation.name})."
                 )
             tmp_basis = circuit.data[gate_id].operation.basis
             if compare_basis != tmp_basis:
