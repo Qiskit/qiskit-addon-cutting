@@ -186,8 +186,8 @@ def cross_entropy(target, obs):  # noqa: D301
     1.3862943611198906
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed cross entropy

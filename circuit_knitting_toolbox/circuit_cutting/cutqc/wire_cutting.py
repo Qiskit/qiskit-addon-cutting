@@ -43,9 +43,9 @@ def cut_circuit_wires(
 
     Args:
         method: Whether to have the cuts be 'automatically' found, in a
-          provably optimal way, or whether to 'manually' specify the cuts
+            provably optimal way, or whether to 'manually' specify the cuts
         subcircuit_vertices: The vertices to be used in the subcircuits. Note
-          that these are not the indices of the qubits, but the nodes in the circuit DAG
+            that these are not the indices of the qubits, but the nodes in the circuit DAG
         max_subcircuit_width: Max number of qubits in each subcircuit
         max_cuts: Max total number of cuts allowed
         num_subcircuits: List of number of subcircuits to try
@@ -161,7 +161,7 @@ def reconstruct_full_distribution(
     Args:
         circuit: The original full circuit
         subcircuit_instance_probabilities: The probability vectors from each
-          of the subcircuit instances, as output by the _run_subcircuits function
+            of the subcircuit instances, as output by the _run_subcircuits function
         num_threads: The number of threads to use to parallelize the recomposing
 
     Returns:
@@ -236,7 +236,7 @@ def _run_subcircuits(
     Args:
         cuts: Results from the cutting step
         subcircuit_instances: The dictionary containing the index information for each
-          of the subcircuit instances
+            of the subcircuit instances
         service: The arguments for the runtime service
         backend_names: The backend(s) used to run the subcircuits
         options: Options for the runtime execution of subcircuits
@@ -268,9 +268,9 @@ def _attribute_shots(
 
     Args:
         subcircuit_entries: Dictionary containing information about each of the
-          subcircuit instances
+            subcircuit instances
         subcircuit_instance_probs: The probability vectors from each of the subcircuit
-          instances, as output by the _run_subcircuits function
+            instances, as output by the _run_subcircuits function
 
     Returns:
         A dictionary containing the probability results to each of the appropriate subcircuits
@@ -337,7 +337,7 @@ def find_wire_cuts(
         num_subcircuits: List of number of subcircuits to try
         max_subcircuit_cuts: Max number of cuts for a subcircuit
         max_subcircuit_size: The maximum number of two qubit gates in each
-          subcircuit
+            subcircuit
         verbose: Whether to print information about the cut finding or not
 
     Returns:
@@ -511,7 +511,7 @@ def _print_cutter_result(
         num_cuts: The number of cuts
         subcircuits: The list of subcircuits
         counter: The dictionary containing all meta information regarding
-          each of the subcircuits
+            each of the subcircuits
         classical_cost: The estimated processing cost
 
     Returns:

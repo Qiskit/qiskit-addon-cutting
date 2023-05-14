@@ -27,9 +27,9 @@ def process_outcome(
 
     Args:
         num_qpd_bits: The number of QPD measurements in the circuit. It is
-          assumed that the second to last creg in the generating circuit
-          is the creg  containing the QPD measurements, and the last
-          creg is associated with the observable measurements.
+            assumed that the second to last creg in the generating circuit
+            is the creg  containing the QPD measurements, and the last
+            creg is associated with the observable measurements.
         cog: The observable set being measured by the current experiment
         outcome: The outcome of the classical bits
 

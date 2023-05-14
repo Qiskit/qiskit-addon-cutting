@@ -60,9 +60,9 @@ class MIPModel(object):
             edges: The list of edges of the circuit DAG
             n_edges: The number of edges
             vertex_ids: Dictionary mapping vertices (i.e. two qubit gates) to the vertex
-              id (i.e. a number)
+                id (i.e. a number)
             id_vertices: The inverse dictionary of vertex_ids, which has keys of vertex ids
-              and values of the vertices
+                and values of the vertices
             num_subcircuit: The number of subcircuits
             max_subcircuit_width: Maximum number of qubits per subcircuit
             max_subcircuit_cuts: Maximum number of cuts in each subcircuit
@@ -457,7 +457,7 @@ class MIPModel(object):
 
         Args:
             min_post_processing_cost: The predicted minimum post-processing cost,
-              often is inf
+                often is inf
 
         Returns:
             Flag denoting whether or not the model found a solution
