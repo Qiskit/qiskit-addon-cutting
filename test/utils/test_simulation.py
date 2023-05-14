@@ -74,7 +74,7 @@ class TestSimulationFunctions(unittest.TestCase):
             assert r[0] == pytest.approx(0.5)
             assert r[1] == pytest.approx(0.5)
 
-    def test_sampler(self):
+    def test_exact_sampler(self):
         with self.subTest("Mid-circuit measurement, etc."):
             qc = QuantumCircuit(2, 2)
             qc.h(0)
