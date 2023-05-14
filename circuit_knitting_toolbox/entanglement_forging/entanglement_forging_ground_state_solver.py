@@ -135,15 +135,15 @@ class EntanglementForgingGroundStateSolver:
         Assign the necessary class variables and initialize any defaults.
 
         Args:
-            ansatz: Class which holds the ansatz circuit and bitstrings
-            service: The service used to spawn Qiskit primitives
-            optimizer: Optimizer to use to optimize the ansatz circuit parameters
-            initial_point: Initial values for ansatz parameters
-            orbitals_to_reduce: List of orbital indices to remove from the problem before
-              decomposition.
-            backend_names: Backend name or list of backend names to use during parallel computation
-            options: Options or list of options to be applied to the backends
-            mo_coeff: Coefficients for converting an input problem to MO basis
+            - ansatz: Class which holds the ansatz circuit and bitstrings
+            - service: The service used to spawn Qiskit primitives
+            - optimizer: Optimizer to use to optimize the ansatz circuit parameters
+            - initial_point: Initial values for ansatz parameters
+            - orbitals_to_reduce: List of orbital indices to remove from the problem before
+                decomposition.
+            - backend_names: Backend name or list of backend names to use during parallel computation
+            - options: Options or list of options to be applied to the backends
+            - mo_coeff: Coefficients for converting an input problem to MO basis
 
         Returns:
             None
@@ -254,15 +254,15 @@ class EntanglementForgingGroundStateSolver:
         """Compute ground state properties.
 
         Args:
-            problem: A class encoding a problem to be solved
+            - problem: A class encoding a problem to be solved
 
         Returns:
             A result object
 
         Raises:
-            ValueError: The ``backend_names`` and ``options`` lists are of
-              incompatible lengths
-            AttributeError: Ansatz must be set before calling `solve` method
+            - ValueError: The ``backend_names`` and ``options`` lists are of
+                incompatible lengths
+            - AttributeError: Ansatz must be set before calling `solve` method
         """
         if self._backend_names and self._options:
             if len(self._backend_names) != len(self._options):
@@ -339,7 +339,7 @@ class EntanglementForgingGroundStateSolver:
         Produce a callable which provides an estimation of the min eigenvalue of an operator.
 
         Args:
-            operator: The decomposed Hamiltonian in entanglement forging format
+            - operator: The decomposed Hamiltonian in entanglement forging format
         Returns:
             Callable function which provides an estimation of the mihnimum eigenvalue
             of the input operator given some ansatz circuit parameters.
@@ -367,15 +367,15 @@ class EntanglementForgingGroundStateSolver:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
-            problem: A class encoding a problem to be solved
+            - problem: A class encoding a problem to be solved
 
         Returns:
-            hamiltonian_ops: Qubit operator representing the decomposed Hamiltonian
+            Qubit operator representing the decomposed Hamiltonian
 
         Raises:
-            ValueError: The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``
-            ValueError: The ``mo_coeff`` and input problem integrals are of incompatible shapes
-            ValueError: The input integrals are ``None``
+            - ValueError: The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``
+            - ValueError: The ``mo_coeff`` and input problem integrals are of incompatible shapes
+            - ValueError: The input integrals are ``None``
         """
         self._validate_problem_and_coeffs(problem, self.mo_coeff)
 

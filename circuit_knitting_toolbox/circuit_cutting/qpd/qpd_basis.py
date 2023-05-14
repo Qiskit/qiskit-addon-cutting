@@ -35,10 +35,10 @@ class QPDBasis:
         Assign member variables.
 
         Args:
-            maps: A sequence of tuples describing the noisy operations probabilistically
-              used to simulate an ideal quantum operation.
-            coeffs: Coefficients for quasiprobability representation. Each coefficient
-              can be any real number.
+            - maps: A sequence of tuples describing the noisy operations probabilistically
+                used to simulate an ideal quantum operation.
+            - coeffs: Coefficients for quasiprobability representation. Each coefficient
+                can be any real number.
 
         Returns:
             None

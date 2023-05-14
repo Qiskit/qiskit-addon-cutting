@@ -50,11 +50,11 @@ class EntanglementForgingKnitter:
         Assign the necessary member variables.
 
         Args:
-            ansatz: The container for the circuit structure and bitstrings to be used
-              (and generate the stateprep circuits)
-            service: The service used to spawn Qiskit primitives and runtime jobs
-            backend_names: Names of the backends to use for calculating expectation values
-            options: Options to use with the backends
+            - ansatz: The container for the circuit structure and bitstrings to be used
+                (and generate the stateprep circuits)
+            - service: The service used to spawn Qiskit primitives and runtime jobs
+            - backend_names: Names of the backends to use for calculating expectation values
+            - options: Options to use with the backends
 
         Returns:
             None
@@ -168,9 +168,9 @@ class EntanglementForgingKnitter:
         Additionally, U = V is currently required, but may change in future versions.
 
         Args:
-            ansatz_parameters: the parameters to be used by the ansatz circuit,
-              must be the same length as the circuit's parameters
-            forged_operator: the operator from which to forge the expectation value
+            - ansatz_parameters: the parameters to be used by the ansatz circuit,
+                must be the same length as the circuit's parameters
+            - forged_operator: the operator from which to forge the expectation value
 
         Returns:
             A tuple containing the energy (i.e. forged expectation value), the Schmidt
@@ -306,12 +306,12 @@ class EntanglementForgingKnitter:
         Compute the Schmidt decomposition of the Hamiltonian.
 
         Args:
-            forged_operator: The operator with which the forged expectation values are
-              computed
-            tensor_expvals: The expectation values for the tensor circuits
-              (i.e. same Schmidt coefficients)
-            superpos_expvals: The expectation values for the superposition circuits
-              (i.e. different Schmidt coefficients)
+            - forged_operator: The operator with which the forged expectation values are
+                computed
+            - tensor_expvals: The expectation values for the tensor circuits
+                (i.e. same Schmidt coefficients)
+            - superpos_expvals: The expectation values for the superposition circuits
+                (i.e. different Schmidt coefficients)
 
         Returns:
            The Schmidt matrix
@@ -457,8 +457,8 @@ def _construct_stateprep_circuits(
          └───┘     └───┘
 
     Args:
-        bitstrings: The input list of bitstrings used to generate the state preparation circuits
-        subsystem_id: The subsystem the bitstring reflects ("u" or "v")
+        - bitstrings: The input list of bitstrings used to generate the state preparation circuits
+        - subsystem_id: The subsystem the bitstring reflects ("u" or "v")
 
     Returns:
         A tuple containing the tensor (i.e., non-superposition or bitstring) circuits in the first
@@ -535,9 +535,9 @@ def _prepare_bitstring(
     every qubit that has a 1 in the bitstring.
 
     Args:
-        bitstring: The container for the bitstring information. Must contain 0s and 1s, and
-          the 1s are used to determine where to put the X gates
-        name: The name of the circuit
+        - bitstring: The container for the bitstring information. Must contain 0s and 1s, and
+            the 1s are used to determine where to put the X gates
+        - name: The name of the circuit
 
     Returns:
         The prepared circuit
@@ -558,8 +558,8 @@ def _partition(a, n):
     _partition([1, 2, 3], 2) -> (i for i in [[1, 2], [3]])
 
     Args:
-        a: An object with length and indexing to be partitioned
-        n: The number of partitions
+        - a: An object with length and indexing to be partitioned
+        - n: The number of partitions
 
     Returns:
         The generator containing the paritions
@@ -587,16 +587,16 @@ def _estimate_expvals(
     process).
 
     Args:
-        tensor_ansatze: The circuits that have the same Schmidt coefficient
-        tensor_paulis: The pauli operators to measure and calculate
-          the expectation values from for the circuits with the same Schmidt coefficient
-        superposition_ansatze: The circuits with different Schmidt coefficients
-        superposition_paulis: The pauli operators to measure and calculate
-          the expectation values from for the circuits with different Schmidt coefficients
-        service_args: The service account used to spawn Qiskit primitives
-        backend_name: The backend to use to evaluate the grouped experiments
-        options: The options to use with the backend
-        session_id: The session id to use when calling primitive programs
+        - tensor_ansatze: The circuits that have the same Schmidt coefficient
+        - tensor_paulis: The pauli operators to measure and calculate
+            the expectation values from for the circuits with the same Schmidt coefficient
+        - superposition_ansatze: The circuits with different Schmidt coefficients
+        - superposition_paulis: The pauli operators to measure and calculate
+            the expectation values from for the circuits with different Schmidt coefficients
+        - service_args: The service account used to spawn Qiskit primitives
+        - backend_name: The backend to use to evaluate the grouped experiments
+        - options: The options to use with the backend
+        - session_id: The session id to use when calling primitive programs
 
     Returns:
         The expectation values for the tensor circuits and superposition circuits
