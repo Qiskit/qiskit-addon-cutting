@@ -13,10 +13,17 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.quantum_info import Statevector, Operator
+from qiskit.primitives.base import BaseSampler, SamplerResult
+from qiskit.primitives.primitive_job import PrimitiveJob
+from qiskit.result import QuasiDistribution
+
+from .iteration import strict_zip
 
 
 _TOLERANCE = 1e-16
@@ -105,3 +112,49 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
                     )
 
     return {outcome: sum(prob for prob, _ in svs) for outcome, svs in current.items()}
+
+
+class ExactSampler(BaseSampler):
+    """Sampler which returns exact probabilities for each possible outcome.
+
+    This sampler supports:
+
+    - all unitary gates
+    - projective measurements, anywhere in the circuit
+    - reset operations, anywhere in the circuit
+    - some (or all) classical bits can remain unused
+    - classical bits can be written more than once
+
+    The samplers provided by ``qiskit.primitives`` and
+    ``qiskit_aer.primitives`` do not currently support all of the above
+    functionality.  Related upstream issues:
+
+    - https://github.com/Qiskit/qiskit-terra/issues/9657
+    - https://github.com/Qiskit/qiskit-aer/issues/1810
+    - https://github.com/Qiskit/qiskit-aer/issues/1811
+    """
+
+    def _call(
+        self,
+        circuits: tuple[QuantumCircuit, ...],
+        parameter_values: Sequence[Sequence[float]],
+        **run_options,
+    ) -> SamplerResult:
+        metadata: list[dict[str, Any]] = [{} for _ in range(len(circuits))]
+        bound_circuits = [
+            circuit if len(value) == 0 else circuit.bind_parameters(value)
+            for circuit, value in strict_zip(circuits, parameter_values)
+        ]
+        probabilities = [simulate_statevector_outcomes(qc) for qc in bound_circuits]
+        quasis = [QuasiDistribution(p) for p in probabilities]
+        return SamplerResult(quasis, metadata)
+
+    def _run(
+        self,
+        circuits: tuple[QuantumCircuit, ...],
+        parameter_values: tuple[tuple[float, ...], ...],
+        **run_options,
+    ):
+        job = PrimitiveJob(self._call, circuits, parameter_values, **run_options)
+        job.submit()
+        return job
