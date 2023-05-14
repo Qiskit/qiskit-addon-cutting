@@ -92,7 +92,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            ansatz: The container for the circuit structure and bitstrings to be used</span>
-<span class="sd">              (and generate the stateprep circuits)</span>
+<span class="sd">                (and generate the stateprep circuits)</span>
 <span class="sd">            service: The service used to spawn Qiskit primitives and runtime jobs</span>
 <span class="sd">            backend_names: Names of the backends to use for calculating expectation values</span>
 <span class="sd">            options: Options to use with the backends</span>
@@ -210,7 +210,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            ansatz_parameters: the parameters to be used by the ansatz circuit,</span>
-<span class="sd">              must be the same length as the circuit&#39;s parameters</span>
+<span class="sd">                must be the same length as the circuit&#39;s parameters</span>
 <span class="sd">            forged_operator: the operator from which to forge the expectation value</span>
 
 <span class="sd">        Returns:</span>
@@ -348,11 +348,11 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            forged_operator: The operator with which the forged expectation values are</span>
-<span class="sd">              computed</span>
+<span class="sd">                computed</span>
 <span class="sd">            tensor_expvals: The expectation values for the tensor circuits</span>
-<span class="sd">              (i.e. same Schmidt coefficients)</span>
+<span class="sd">                (i.e. same Schmidt coefficients)</span>
 <span class="sd">            superpos_expvals: The expectation values for the superposition circuits</span>
-<span class="sd">              (i.e. different Schmidt coefficients)</span>
+<span class="sd">                (i.e. different Schmidt coefficients)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">           The Schmidt matrix</span>
@@ -577,7 +577,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        bitstring: The container for the bitstring information. Must contain 0s and 1s, and</span>
-<span class="sd">          the 1s are used to determine where to put the X gates</span>
+<span class="sd">            the 1s are used to determine where to put the X gates</span>
 <span class="sd">        name: The name of the circuit</span>
 
 <span class="sd">    Returns:</span>
@@ -630,10 +630,10 @@
 <span class="sd">    Args:</span>
 <span class="sd">        tensor_ansatze: The circuits that have the same Schmidt coefficient</span>
 <span class="sd">        tensor_paulis: The pauli operators to measure and calculate</span>
-<span class="sd">          the expectation values from for the circuits with the same Schmidt coefficient</span>
+<span class="sd">            the expectation values from for the circuits with the same Schmidt coefficient</span>
 <span class="sd">        superposition_ansatze: The circuits with different Schmidt coefficients</span>
 <span class="sd">        superposition_paulis: The pauli operators to measure and calculate</span>
-<span class="sd">          the expectation values from for the circuits with different Schmidt coefficients</span>
+<span class="sd">            the expectation values from for the circuits with different Schmidt coefficients</span>
 <span class="sd">        service_args: The service account used to spawn Qiskit primitives</span>
 <span class="sd">        backend_name: The backend to use to evaluate the grouped experiments</span>
 <span class="sd">        options: The options to use with the backend</span>

@@ -108,11 +108,11 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian</span>
-<span class="sd">          will be calculated</span>
+<span class="sd">            will be calculated</span>
 <span class="sd">        mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input</span>
-<span class="sd">          integrals will be assumed to be in the MO basis</span>
+<span class="sd">            integrals will be assumed to be in the MO basis</span>
 <span class="sd">        orbitals_to_reduce: A list of orbital indices to remove from the problem</span>
-<span class="sd">          before decomposition</span>
+<span class="sd">            before decomposition</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Tuple containing the cholesky operator and the energy shift resulting from decomposition</span>
@@ -172,10 +172,10 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        operator: A `ListOp` containing the single-body Hamiltonian followed</span>
-<span class="sd">          by the Cholesky operators</span>
-<span class="sd">          shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
+<span class="sd">            by the Cholesky operators</span>
+<span class="sd">            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
 <span class="sd">        ansatz: The ansatz for which to compute expectation values of operator. The</span>
-<span class="sd">          `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem</span>
+<span class="sd">            `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        An `EntanglementForgingOperator` object describing the</span>
@@ -289,11 +289,11 @@
 <span class="sd">    Args:</span>
 <span class="sd">        mo_coeff: 2D array representing coefficients for converting from AO to MO basis</span>
 <span class="sd">        h1: 2D array representing operator</span>
-<span class="sd">          coefficients of one-body integrals in the AO basis</span>
+<span class="sd">            coefficients of one-body integrals in the AO basis</span>
 <span class="sd">        h2: 4D array representing operator coefficients</span>
-<span class="sd">          of two-body integrals in the AO basis</span>
+<span class="sd">            of two-body integrals in the AO basis</span>
 <span class="sd">        halve_transformed_h2: Should be set to True for Hamiltonian</span>
-<span class="sd">          operator to agree with Qiskit conventions</span>
+<span class="sd">            operator to agree with Qiskit conventions</span>
 <span class="sd">        occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed</span>
 <span class="sd">        virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed</span>
 <span class="sd">        epsilon_cholesky: The threshold for the decomposition (typically a number close to 0)</span>
