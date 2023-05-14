@@ -18,7 +18,9 @@ from qiskit.algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
 from qiskit_nature.units import DistanceUnit
 from qiskit_nature.second_q.drivers import PySCFDriver
-from qiskit_nature.second_q.problems import ElectronicBasis
+from qiskit_nature.second_q.problems import (
+    ElectronicBasis,
+)
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
 
 from circuit_knitting_toolbox.entanglement_forging import (
