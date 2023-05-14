@@ -188,9 +188,10 @@ def decompose_observables(
     """
     Decompose a list of observables with respect to some qubit partition labels.
 
-    - observables: A list of observables to decompose
-    - partition_labels: A sequence of partition labels, such that each label
-        corresponds to the qubit in the same index
+    Args:
+        - observables: A list of observables to decompose
+        - partition_labels: A sequence of partition labels, such that each label
+            corresponds to the qubit in the same index
 
     Returns:
         A tuple containing a dictionary mapping a partition to its associated sub-observables
