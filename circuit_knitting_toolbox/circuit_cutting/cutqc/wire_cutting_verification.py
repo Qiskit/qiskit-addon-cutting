@@ -45,9 +45,9 @@ def verify(
     Provides a variety of metrics to evaluate the differences in the distributions.
 
     Args:
-        full_circuit: The original quantum circuit that was cut
-        reconstructed_output: The reconstructed probability distribution from the
-          execution of the subcircuits
+        - full_circuit: The original quantum circuit that was cut
+        - reconstructed_output: The reconstructed probability distribution from the
+            execution of the subcircuits
 
     Returns:
         A tuple containing metrics for the ground truth and reconstructed distributions
@@ -85,12 +85,12 @@ def generate_reconstructed_output(
     Reorder the probability distribution.
 
     Args:
-        full_circuit: The original uncut circuit
-        subcircuits: The cut subcircuits
-        unordered: The unordered results of the subcircuits
-        smart_order: The correct ordering of the subcircuits
-        complete_path_map: The path map of the cuts, as defined from the
-          cutting function
+        - full_circuit: The original uncut circuit
+        - subcircuits: The cut subcircuits
+        - unordered: The unordered results of the subcircuits
+        - smart_order: The correct ordering of the subcircuits
+        - complete_path_map: The path map of the cuts, as defined from the
+            cutting function
 
     Returns:
         The reordered and reconstructed probability distribution over the
@@ -139,7 +139,7 @@ def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     Compute exact probability vector of given circuit.
 
     Args:
-        circuit: The circuit to simulate
+        - circuit: The circuit to simulate
 
     Returns:
         The final probability vector of the circuit

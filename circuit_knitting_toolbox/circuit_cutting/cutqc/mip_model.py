@@ -56,19 +56,19 @@ class MIPModel(object):
         Initialize member variables.
 
         Args:
-            n_vertices: The number of vertices in the circuit DAG
-            edges: The list of edges of the circuit DAG
-            n_edges: The number of edges
-            vertex_ids: Dictionary mapping vertices (i.e. two qubit gates) to the vertex
-              id (i.e. a number)
-            id_vertices: The inverse dictionary of vertex_ids, which has keys of vertex ids
-              and values of the vertices
-            num_subcircuit: The number of subcircuits
-            max_subcircuit_width: Maximum number of qubits per subcircuit
-            max_subcircuit_cuts: Maximum number of cuts in each subcircuit
-            max_subcircuit_size: Maximum number of gates in a subcircuit
-            num_qubits: The number of qubits in the circuit
-            max_cuts: The maximum total number of cuts
+            - n_vertices: The number of vertices in the circuit DAG
+            - edges: The list of edges of the circuit DAG
+            - n_edges: The number of edges
+            - vertex_ids: Dictionary mapping vertices (i.e. two qubit gates) to the vertex
+                id (i.e. a number)
+            - id_vertices: The inverse dictionary of vertex_ids, which has keys of vertex ids
+                and values of the vertices
+            - num_subcircuit: The number of subcircuits
+            - max_subcircuit_width: Maximum number of qubits per subcircuit
+            - max_subcircuit_cuts: Maximum number of cuts in each subcircuit
+            - max_subcircuit_size: Maximum number of gates in a subcircuit
+            - num_qubits: The number of qubits in the circuit
+            - max_cuts: The maximum total number of cuts
 
         Returns:
             None
@@ -396,11 +396,11 @@ class MIPModel(object):
         Approximate a nonlinear exponential function via a piecewise linear function.
 
         Args:
-            lb: Lower bound
-            ub: Upper bound
-            base: The base of the input exponential
-            coefficient: The coefficient of the original exponential
-            integer_only: Whether the input x's are only integers
+            - lb: Lower bound
+            - ub: Upper bound
+            - base: The base of the input exponential
+            - coefficient: The coefficient of the original exponential
+            - integer_only: Whether the input x's are only integers
 
         Returns:
             A tuple containing the :math:`x`\ s and :math:`f(x)`\ s of the piecewise approximation
@@ -425,14 +425,14 @@ class MIPModel(object):
         and that the graph is otherwise a valid graph.
 
         Args:
-            n_vertices: The number of vertices
-            edges: The edge list
+            - n_vertices: The number of vertices
+            - edges: The edge list
 
         Returns:
             None
 
         Raises:
-            ValueError: The graph is invalid
+            - ValueError: The graph is invalid
         """
         # 1. edges must include all vertices
         # 2. all u,v must be ordered and smaller than n_vertices
@@ -456,8 +456,8 @@ class MIPModel(object):
         Solve the MIP model.
 
         Args:
-            min_post_processing_cost: The predicted minimum post-processing cost,
-              often is inf
+            - min_post_processing_cost: The predicted minimum post-processing cost,
+                often is inf
 
         Returns:
             Flag denoting whether or not the model found a solution
