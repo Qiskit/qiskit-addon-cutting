@@ -100,8 +100,8 @@ def decompose_gates(circuit: QuantumCircuit, gate_ids: Sequence[int]) -> Quantum
     Transform specified gates into :class:`QPDGate`\ s.
 
     Args:
-        - circuit: The circuit containing gates to be decomposed
-        - gate_ids: The indices of the gates to decompose
+        circuit: The circuit containing gates to be decomposed
+        gate_ids: The indices of the gates to decompose
 
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
@@ -134,18 +134,18 @@ def partition_problem(
     ``partition_labels``.
 
     Args:
-        - circuit: The circuit to separate
-        - partition_labels: A sequence of labels, such that each label corresponds
+        circuit: The circuit to separate
+        partition_labels: A sequence of labels, such that each label corresponds
             to the circuit qubit with the same index
-        - observables: The observables to separate
+        observables: The observables to separate
 
     Returns:
         A tuple containing a dictionary mapping a partition label to a subcircuit
         and a dictionary mapping a partition label to a list of Pauli observables
 
     Raises:
-        - ValueError: The number of partition labels does not equal the number of qubits in the circuit
-        - ValueError: An input observable acts on a different number of qubits than the input circuit
+        ValueError: The number of partition labels does not equal the number of qubits in the circuit
+        ValueError: An input observable acts on a different number of qubits than the input circuit
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -189,8 +189,8 @@ def decompose_observables(
     Decompose a list of observables with respect to some qubit partition labels.
 
     Args:
-        - observables: A list of observables to decompose
-        - partition_labels: A sequence of partition labels, such that each label
+        observables: A list of observables to decompose
+        partition_labels: A sequence of partition labels, such that each label
             corresponds to the qubit in the same index
 
     Returns:

@@ -32,12 +32,12 @@ def reconstruct_expectation_values(
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        - counts: A 3D sequence of length-2 tuples containing the counts and QPD bit information
+        counts: A 3D sequence of length-2 tuples containing the counts and QPD bit information
             from each sub-experiment
-        - coefficients: A sequence of coefficients, such that each coefficient is associated
+        coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
             the length of ``counts``.
-        - observables: The observable(s) for which the expectation values will be calculated.
+        observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
             was not separated into subcircuits. If the decomposed circuit was separated, this
             should be a dictionary mapping from partition label to subobservables.
