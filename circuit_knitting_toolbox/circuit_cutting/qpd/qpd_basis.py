@@ -35,9 +35,9 @@ class QPDBasis:
         Assign member variables.
 
         Args:
-            - maps: A sequence of tuples describing the noisy operations probabilistically
+            maps: A sequence of tuples describing the noisy operations probabilistically
                 used to simulate an ideal quantum operation.
-            - coeffs: Coefficients for quasiprobability representation. Each coefficient
+            coeffs: Coefficients for quasiprobability representation. Each coefficient
                 can be any real number.
 
         Returns:
@@ -78,12 +78,7 @@ class QPDBasis:
 
     @property
     def coeffs(self) -> Sequence[float]:
-        """
-        Quasiprobability decomposition coefficients.
-
-        Returns:
-            The ``coeffs`` member variable
-        """
+        """Quasiprobability decomposition coefficients."""
         return self._coeffs
 
     @coeffs.setter
@@ -97,12 +92,7 @@ class QPDBasis:
 
     @property
     def probabilities(self) -> Sequence[float]:
-        """
-        Get the probabilities on which the maps will be sampled.
-
-        Returns:
-            The ``probabilities`` member variable
-        """
+        """Get the probabilities on which the maps will be sampled."""
         return self._probabilities
 
     @property
@@ -111,9 +101,6 @@ class QPDBasis:
         Get the square root of the sampling overhead.
 
         This quantity is the sum of the magnitude of the coefficients.
-
-        Returns:
-            The square root of the sampling overhead
         """
         return self._kappa
 
@@ -123,9 +110,6 @@ class QPDBasis:
         Get the sampling overhead.
 
         The sampling overhead is the square of the sum of the magnitude of the coefficients.
-
-        Returns:
-            The sampling overhead
         """
         return self._kappa**2
 
@@ -136,6 +120,9 @@ class QPDBasis:
 
         This static method is provided for convenience; it simply
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
+
+        Args:
+            gate: The gate from which to instantiate a decomposition
 
         Returns:
             The newly-instantiated :class:`QPDBasis` object

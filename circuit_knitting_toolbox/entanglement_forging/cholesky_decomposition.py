@@ -41,10 +41,10 @@ def get_cholesky_op(
     Convert a two-body term into a cholesky operator.
 
     Args:
-        - l_op: Two body integrals
-        - g: Integral index
-        - converter: Qubit converter to be used
-        - opname: Prefix for output cholesky operator name
+        l_op: Two body integrals
+        g: Integral index
+        converter: Qubit converter to be used
+        opname: Prefix for output cholesky operator name
 
     Returns:
         The converted Cholesky operator
@@ -66,18 +66,18 @@ def cholesky_decomposition(
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
-        - problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian
+        problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian
             will be calculated
-        - mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input
+        mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input
             integrals will be assumed to be in the MO basis
-        - orbitals_to_reduce: A list of orbital indices to remove from the problem
+        orbitals_to_reduce: A list of orbital indices to remove from the problem
             before decomposition
 
     Returns:
         Tuple containing the cholesky operator and the energy shift resulting from decomposition
 
     Raises:
-        - ValueError: The input ElectronicStructureProblem contains no particle number information.
+        ValueError: The input ElectronicStructureProblem contains no particle number information.
     """
     hcore = np.array(problem.hamiltonian.electronic_integrals.one_body.alpha["+-"])
     eri = to_chemist_ordering(
@@ -130,10 +130,10 @@ def convert_cholesky_operator(
     Convert the Cholesky operator (ListOp) into the entanglement forging format.
 
     Args:
-        - operator: A `ListOp` containing the single-body Hamiltonian followed
+        operator: A `ListOp` containing the single-body Hamiltonian followed
             by the Cholesky operators
             shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
-        - ansatz: The ansatz for which to compute expectation values of operator. The
+        ansatz: The ansatz for which to compute expectation values of operator. The
             `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem
 
     Returns:
@@ -246,16 +246,16 @@ def _get_fermionic_ops_with_cholesky(
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
     Args:
-        - mo_coeff: 2D array representing coefficients for converting from AO to MO basis
-        - h1: 2D array representing operator
+        mo_coeff: 2D array representing coefficients for converting from AO to MO basis
+        h1: 2D array representing operator
             coefficients of one-body integrals in the AO basis
-        - h2: 4D array representing operator coefficients
+        h2: 4D array representing operator coefficients
             of two-body integrals in the AO basis
-        - halve_transformed_h2: Should be set to True for Hamiltonian
+        halve_transformed_h2: Should be set to True for Hamiltonian
             operator to agree with Qiskit conventions
-        - occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed
-        - virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed
-        - epsilon_cholesky: The threshold for the decomposition (typically a number close to 0)
+        occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed
+        virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed
+        epsilon_cholesky: The threshold for the decomposition (typically a number close to 0)
 
     Returns:
         A tuple containing the single and two-body integrals, the energy shift, and the

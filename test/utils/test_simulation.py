@@ -14,7 +14,11 @@ import pytest
 
 import numpy as np
 from qiskit import QuantumCircuit
-from circuit_knitting_toolbox.utils.simulation import simulate_statevector_outcomes
+
+from circuit_knitting_toolbox.utils.simulation import (
+    simulate_statevector_outcomes,
+    ExactSampler,
+)
 
 
 class TestSimulationFunctions(unittest.TestCase):
@@ -69,3 +73,31 @@ class TestSimulationFunctions(unittest.TestCase):
             assert r.keys() == {0, 1}
             assert r[0] == pytest.approx(0.5)
             assert r[1] == pytest.approx(0.5)
+
+    def test_exact_sampler(self):
+        with self.subTest("Mid-circuit measurement, etc."):
+            qc = QuantumCircuit(2, 2)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.measure(0, 0)
+            qc.reset(0)
+            qc.measure(0, 1)
+            quasi_dists = ExactSampler().run(qc).result().quasi_dists
+            assert len(quasi_dists) == 1
+            r = quasi_dists[0]
+            assert r.keys() == {0, 1}
+            assert r[0] == pytest.approx(0.5)
+            assert r[0] == pytest.approx(0.5)
+
+        with self.subTest("Circuit with reset"):
+            qc = QuantumCircuit(2, 2)
+            qc.h(0)
+            qc.cx(0, 1)
+            qc.reset(0)
+            qc.measure([0, 1], [0, 1])
+            quasi_dists = ExactSampler().run(qc).result().quasi_dists
+            assert len(quasi_dists) == 1
+            r = quasi_dists[0]
+            assert r.keys() == {0, 2}
+            assert r[0] == pytest.approx(0.5)
+            assert r[2] == pytest.approx(0.5)

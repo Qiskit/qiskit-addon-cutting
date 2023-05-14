@@ -36,13 +36,13 @@ def separate_circuit(
     """Separate the circuit into its disconnected components.
 
     Args:
-        - circuit: The circuit to separate into disconnected subcircuits
+        circuit: The circuit to separate into disconnected subcircuits
 
     Returns:
         A named tuple containing the subcircuits and qubit map
 
     Raises:
-        - ValueError: The number of partition labels does not equal the number of
+        ValueError: The number of partition labels does not equal the number of
             qubits in the input circuit.
     """
     # Split barriers into single-qubit barriers before separating

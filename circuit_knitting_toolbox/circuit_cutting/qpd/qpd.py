@@ -66,8 +66,8 @@ def generate_qpd_samples(
     Generate random quasiprobability decompositions.
 
     Args:
-        - qpd_bases: The :class:`QPDBasis` objects from which to sample
-        - num_samples: Number of random samples to generate
+        qpd_bases: The :class:`QPDBasis` objects from which to sample
+        num_samples: Number of random samples to generate
 
     Returns:
         A mapping from a given decomposition to its sampled weight.
@@ -117,11 +117,11 @@ def decompose_qpd_instructions(
     Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
 
     Args:
-        - circuit: The circuit containing QPD instructions
-        - instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices
+        circuit: The circuit containing QPD instructions
+        instruction_ids: A 2D sequence, such that each inner sequence corresponds to indices
             of instructions comprising one decomposition in the circuit. The elements within a
             common sequence belong to a common decomposition and should be sampled together.
-        - map_ids: Indices to a specific linear mapping to be applied to the decompositions
+        map_ids: Indices to a specific linear mapping to be applied to the decompositions
             in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
             according to the decompositions' joint probability distribution.
 
@@ -132,13 +132,13 @@ def decompose_qpd_instructions(
         outcomes (accessible at ``retval.cregs[-1]``).
 
     Raises:
-        - ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
+        ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
             :class:`QPDGate`
-        - ValueError: A list within instruction_ids is not length 1 or 2
-        - ValueError: The total number of indices in ``instruction_ids`` does not equal the number
+        ValueError: A list within instruction_ids is not length 1 or 2
+        ValueError: The total number of indices in ``instruction_ids`` does not equal the number
             of :class:`QPDGate`\ s in the circuit
-        - ValueError: Gates within the same decomposition hold different QPD bases
-        - ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
+        ValueError: Gates within the same decomposition hold different QPD bases
+        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
     """
     _validate_qpd_instructions(circuit, instruction_ids)
     new_qc = circuit.copy()
@@ -190,7 +190,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
-        - ValueError: Cannot decompose gate with unbound parameters
+        ValueError: Cannot decompose gate with unbound parameters
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
@@ -319,8 +319,8 @@ def _validate_qpd_instructions(
     for decomp_ids in instruction_ids:
         if len(decomp_ids) not in [1, 2]:
             raise ValueError(
-                "Each decomposition must contain either one or two elements. Found a decomposition "
-                f"with ({len(decomp_ids)}) elements."
+                "Each decomposition must contain either one or two elements. Found a "
+                f"decomposition with ({len(decomp_ids)}) elements."
             )
         if not isinstance(circuit.data[decomp_ids[0]].operation, BaseQPDGate):
             raise ValueError(
@@ -348,8 +348,8 @@ def _validate_qpd_instructions(
             qpd_gate_total += 1
     if qpd_gate_total != num_qpd_gates:
         raise ValueError(
-            f"The total number of QPDGates specified in instruction_ids ({num_qpd_gates}) does not equal the number "
-            f"of QPDGates in the circuit ({qpd_gate_total})."
+            f"The total number of QPDGates specified in instruction_ids ({num_qpd_gates}) "
+            f"does not equal the number of QPDGates in the circuit ({qpd_gate_total})."
         )
 
 

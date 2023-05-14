@@ -42,12 +42,12 @@ def run_subcircuit_instances(
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
 
     Args:
-        - subcircuits: The list of subcircuits to execute
-        - subcircuit_instances: Dictionary containing information about each of the
+        subcircuits: The list of subcircuits to execute
+        subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
-        - service: The runtime service
-        - backend_names: The backend(s) used to execute the subcircuits
-        - options: Options for the runtime execution of subcircuits
+        service: The runtime service
+        backend_names: The backend(s) used to execute the subcircuits
+        options: Options for the runtime execution of subcircuits
 
     Returns:
         The probability vectors from each of the subcircuit instances
@@ -110,7 +110,7 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     I and Z measurement basis correspond to the same logical circuit.
 
     Args:
-        - meas: The current measurement bases
+        meas: The current measurement bases
 
     Returns:
         The update measurement bases
@@ -136,16 +136,16 @@ def modify_subcircuit_instance(
     Modify the initialization and measurement bases for a given subcircuit.
 
     Args:
-        - subcircuit: The subcircuit to be modified
-        - init: The current initializations
-        - meas: The current measement bases
+        subcircuit: The subcircuit to be modified
+        init: The current initializations
+        meas: The current measement bases
 
     Returns:
         The updated circuit, modified so the initialziation
         and measurement operators are all in the standard computational basis
 
     Raises:
-        - Exeption: One of the inits or meas's are not an acceptable string
+        Exeption: One of the inits or meas's are not an acceptable string
     """
     subcircuit_dag = circuit_to_dag(subcircuit)
     subcircuit_instance_dag = copy.deepcopy(subcircuit_dag)
@@ -217,8 +217,8 @@ def run_subcircuits_using_sampler(
     Execute the subcircuit(s).
 
     Args:
-        - subcircuit: The subcircuits to be executed
-        - sampler: The Sampler to use for executions
+        subcircuit: The subcircuits to be executed
+        sampler: The Sampler to use for executions
 
     Returns:
         The probability distributions
@@ -251,10 +251,10 @@ def run_subcircuits(
     Execute the subcircuit(s).
 
     Args:
-        - subcircuit: The subcircuits to be executed
-        - service: The runtime service
-        - backend_name: The backend used to execute the subcircuits
-        - options: Options for the runtime execution of subcircuits
+        subcircuit: The subcircuits to be executed
+        service: The runtime service
+        backend_name: The backend used to execute the subcircuits
+        options: Options for the runtime execution of subcircuits
 
     Returns:
         The probability distributions
@@ -273,8 +273,8 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
     Compute the effective probability distribution from the subcircuit distribution.
 
     Args:
-        - unmeasured_prob: The outputs of the subcircuit execution
-        - meas: The measurement bases
+        unmeasured_prob: The outputs of the subcircuit execution
+        meas: The measurement bases
 
     Returns:
         The updated measured probability distribution
@@ -298,8 +298,8 @@ def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     Measured in basis `meas`. Returns sigma (int), effective_state (int) where sigma = +-1
 
     Args:
-        - full_state: The current state (in decimal form)
-        - meas: The measurement bases
+        full_state: The current state (in decimal form)
+        meas: The measurement bases
 
     Returns:
         Sigma (defined by the parity of non computational basis 1 measurements) and
@@ -329,12 +329,12 @@ def _run_subcircuit_batch(
     Execute a circuit using qiskit runtime.
 
     Args:
-        - subcircuit_instances: Dictionary containing information about each of the
+        subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
-        - subcircuit: The subcircuit to execute
-        - service: The runtime service
-        - backend_name: The backends used to execute the subcircuit
-        - options: Options for the runtime execution of subcircuit
+        subcircuit: The subcircuit to execute
+        service: The runtime service
+        backend_name: The backends used to execute the subcircuit
+        options: Options for the runtime execution of subcircuit
 
     Returns:
         The measurement probabilities for the subcircuit batch, as calculated from the

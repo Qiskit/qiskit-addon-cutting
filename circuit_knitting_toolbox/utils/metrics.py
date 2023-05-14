@@ -31,14 +31,14 @@ def chi2_distance(target, obs):  # noqa: D301
     0
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed distance
 
     Raises:
-        - Exception: The target is not a numpy array or dictionary
+        Exception: The target is not a numpy array or dictionary
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -76,16 +76,16 @@ def MSE(target, obs):  # noqa: D301
     0.0275
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed MSE
 
     Raises:
-        - Exception: The target is not a dict
-        - Exception: The target and obs are not numpy arrays
-        - Exception: The target is not a numpy array and the obs are not a dict
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -127,16 +127,16 @@ def MAPE(target, obs):  # noqa: D301
     91.66666666666659
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed MAPE
 
     Raises:
-        - Exception: The target is not a dict
-        - Exception: The target and obs are not numpy arrays
-        - Exception: The target is not a numpy array and the obs are not a dict
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -186,16 +186,16 @@ def cross_entropy(target, obs):  # noqa: D301
     1.3862943611198906
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed cross entropy
 
     Raises:
-        - Exception: The target is not a dict
-        - Exception: The target and obs are not numpy arrays
-        - Exception: The target is not a numpy array and the obs are not a dict
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -235,8 +235,8 @@ def HOP(target, obs):
     0.5
 
     Args:
-        - target: The target feature vector
-        - obs: The actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
         The computed HOP

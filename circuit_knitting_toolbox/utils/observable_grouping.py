@@ -35,8 +35,8 @@ def observables_restricted_to_subsystem(
     a ``list[Pauli]`` will be returned.
 
     Args:
-        - qubits: The qubits in a subsystem
-        - global_observables: The list of observables
+        qubits: The qubits in a subsystem
+        global_observables: The list of observables
 
     Returns:
         Each Pauli restricted to the subsystem.
@@ -63,15 +63,15 @@ def most_general_observable(
     of interest.
 
     Args:
-        - commuting_observables: Input sequence of mutually qubit-wise commuting observables
-        - num_qubits: Number of qubits.  If ``None``, it is inferred from
+        commuting_observables: Input sequence of mutually qubit-wise commuting observables
+        num_qubits: Number of qubits.  If ``None``, it is inferred from
             ``commuting_observables`` (default: ``None``).
 
     Raises:
-        - ValueError: The input sequence is empty (in which case, no experiment is even needed
+        ValueError: The input sequence is empty (in which case, no experiment is even needed
             to measure the observables)
-        - ValueError: The input sequence is _not_ mutually qubit-wise commuting
-        - ValueError: An observable has an unexpected ``num_qubits``
+        ValueError: The input sequence is _not_ mutually qubit-wise commuting
+        ValueError: An observable has an unexpected ``num_qubits``
 
     >>> most_general_observable(PauliList(["IIIZ", "IIZZ", "XIII"]))
     Pauli('XIZZ')
@@ -116,12 +116,12 @@ def most_general_observable(
 class CommutingObservableGroup:
     r"""Set of mutually qubit-wise commuting observables.
 
-    Contains the following fields:
-        - commuting_observables: Those that can be measured simultaneously
-        - general_observable: A single Pauli string that contains all
+    Attributes:
+        commuting_observables: Those that can be measured simultaneously
+        general_observable: A single Pauli string that contains all
             qubit-wise measurements needed to measure everything in ``commuting_observables``.
-        - pauli_indices: The indices of non-identity ``Pauli``\ s in ``general_observable``
-        - pauli_bitmasks: A bitmask for each observable in
+        pauli_indices: The indices of non-identity ``Pauli``\ s in ``general_observable``
+        pauli_bitmasks: A bitmask for each observable in
             ``commuting_observables``.  Given an element, each bit corresponds to
             whether the corresponding entry in ``pauli_indices`` is relevant to
             that observable.
@@ -170,7 +170,7 @@ class ObservableCollection:
         """Assign member variables.
 
         Args:
-            - observables: Observables of interest
+            observables: Observables of interest
         """
         # From here forward, we only need to process *unique* observables.
         if isinstance(observables, PauliList):
