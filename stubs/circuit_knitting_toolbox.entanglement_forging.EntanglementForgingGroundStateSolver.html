@@ -51,15 +51,15 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ansatz</strong> (<em>-</em>) – Class which holds the ansatz circuit and bitstrings</p></li>
-<li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives</p></li>
-<li><p><strong>optimizer</strong> (<em>-</em>) – Optimizer to use to optimize the ansatz circuit parameters</p></li>
-<li><p><strong>initial_point</strong> (<em>-</em>) – Initial values for ansatz parameters</p></li>
-<li><p><strong>orbitals_to_reduce</strong> (<em>-</em>) – List of orbital indices to remove from the problem before
+<li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a><em> | </em><em>None</em>) – Class which holds the ansatz circuit and bitstrings</p></li>
+<li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives</p></li>
+<li><p><strong>optimizer</strong> (<em>Optimizer</em><em> | </em><em>MINIMIZER</em><em> | </em><em>None</em>) – Optimizer to use to optimize the ansatz circuit parameters</p></li>
+<li><p><strong>initial_point</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – Initial values for ansatz parameters</p></li>
+<li><p><strong>orbitals_to_reduce</strong> (<em>Sequence</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – List of orbital indices to remove from the problem before
 decomposition.</p></li>
-<li><p><strong>backend_names</strong> (<em>-</em>) – Backend name or list of backend names to use during parallel computation</p></li>
-<li><p><strong>options</strong> (<em>-</em>) – Options or list of options to be applied to the backends</p></li>
-<li><p><strong>mo_coeff</strong> (<em>-</em>) – Coefficients for converting an input problem to MO basis</p></li>
+<li><p><strong>backend_names</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Backend name or list of backend names to use during parallel computation</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><em>list</em><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options or list of options to be applied to the backends</p></li>
+<li><p><strong>mo_coeff</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – Coefficients for converting an input problem to MO basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -73,15 +73,15 @@ decomposition.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ansatz</strong> (<em>-</em>) – Class which holds the ansatz circuit and bitstrings</p></li>
-<li><p><strong>service</strong> (<em>-</em>) – The service used to spawn Qiskit primitives</p></li>
-<li><p><strong>optimizer</strong> (<em>-</em>) – Optimizer to use to optimize the ansatz circuit parameters</p></li>
-<li><p><strong>initial_point</strong> (<em>-</em>) – Initial values for ansatz parameters</p></li>
-<li><p><strong>orbitals_to_reduce</strong> (<em>-</em>) – List of orbital indices to remove from the problem before
+<li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html#circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz" title="circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a><em> | </em><em>None</em>) – Class which holds the ansatz circuit and bitstrings</p></li>
+<li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives</p></li>
+<li><p><strong>optimizer</strong> (<em>Optimizer</em><em> | </em><em>MINIMIZER</em><em> | </em><em>None</em>) – Optimizer to use to optimize the ansatz circuit parameters</p></li>
+<li><p><strong>initial_point</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – Initial values for ansatz parameters</p></li>
+<li><p><strong>orbitals_to_reduce</strong> (<em>Sequence</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – List of orbital indices to remove from the problem before
 decomposition.</p></li>
-<li><p><strong>backend_names</strong> (<em>-</em>) – Backend name or list of backend names to use during parallel computation</p></li>
-<li><p><strong>options</strong> (<em>-</em>) – Options or list of options to be applied to the backends</p></li>
-<li><p><strong>mo_coeff</strong> (<em>-</em>) – Coefficients for converting an input problem to MO basis</p></li>
+<li><p><strong>backend_names</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Backend name or list of backend names to use during parallel computation</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><em>list</em><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options or list of options to be applied to the backends</p></li>
+<li><p><strong>mo_coeff</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – Coefficients for converting an input problem to MO basis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

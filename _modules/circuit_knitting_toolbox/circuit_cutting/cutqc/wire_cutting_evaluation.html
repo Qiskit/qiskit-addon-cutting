@@ -83,12 +83,12 @@
 <span class="sd">    subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuits: The list of subcircuits to execute</span>
-<span class="sd">        - subcircuit_instances: Dictionary containing information about each of the</span>
-<span class="sd">            subcircuit instances</span>
-<span class="sd">        - service: The runtime service</span>
-<span class="sd">        - backend_names: The backend(s) used to execute the subcircuits</span>
-<span class="sd">        - options: Options for the runtime execution of subcircuits</span>
+<span class="sd">        subcircuits: The list of subcircuits to execute</span>
+<span class="sd">        subcircuit_instances: Dictionary containing information about each of the</span>
+<span class="sd">          subcircuit instances</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_names: The backend(s) used to execute the subcircuits</span>
+<span class="sd">        options: Options for the runtime execution of subcircuits</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The probability vectors from each of the subcircuit instances</span>
@@ -151,7 +151,7 @@
 <span class="sd">    I and Z measurement basis correspond to the same logical circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - meas: The current measurement bases</span>
+<span class="sd">        meas: The current measurement bases</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The update measurement bases</span>
@@ -177,16 +177,16 @@
 <span class="sd">    Modify the initialization and measurement bases for a given subcircuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit: The subcircuit to be modified</span>
-<span class="sd">        - init: The current initializations</span>
-<span class="sd">        - meas: The current measement bases</span>
+<span class="sd">        subcircuit: The subcircuit to be modified</span>
+<span class="sd">        init: The current initializations</span>
+<span class="sd">        meas: The current measement bases</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The updated circuit, modified so the initialziation</span>
 <span class="sd">        and measurement operators are all in the standard computational basis</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - Exeption: One of the inits or meas&#39;s are not an acceptable string</span>
+<span class="sd">        Exeption: One of the inits or meas&#39;s are not an acceptable string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_dag</span> <span class="o">=</span> <span class="n">circuit_to_dag</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">)</span>
     <span class="n">subcircuit_instance_dag</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">subcircuit_dag</span><span class="p">)</span>
@@ -258,8 +258,8 @@
 <span class="sd">    Execute the subcircuit(s).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit: The subcircuits to be executed</span>
-<span class="sd">        - sampler: The Sampler to use for executions</span>
+<span class="sd">        subcircuit: The subcircuits to be executed</span>
+<span class="sd">        sampler: The Sampler to use for executions</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The probability distributions</span>
@@ -292,10 +292,10 @@
 <span class="sd">    Execute the subcircuit(s).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit: The subcircuits to be executed</span>
-<span class="sd">        - service: The runtime service</span>
-<span class="sd">        - backend_name: The backend used to execute the subcircuits</span>
-<span class="sd">        - options: Options for the runtime execution of subcircuits</span>
+<span class="sd">        subcircuit: The subcircuits to be executed</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_name: The backend used to execute the subcircuits</span>
+<span class="sd">        options: Options for the runtime execution of subcircuits</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The probability distributions</span>
@@ -314,8 +314,8 @@
 <span class="sd">    Compute the effective probability distribution from the subcircuit distribution.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - unmeasured_prob: The outputs of the subcircuit execution</span>
-<span class="sd">        - meas: The measurement bases</span>
+<span class="sd">        unmeasured_prob: The outputs of the subcircuit execution</span>
+<span class="sd">        meas: The measurement bases</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The updated measured probability distribution</span>
@@ -339,8 +339,8 @@
 <span class="sd">    Measured in basis `meas`. Returns sigma (int), effective_state (int) where sigma = +-1</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_state: The current state (in decimal form)</span>
-<span class="sd">        - meas: The measurement bases</span>
+<span class="sd">        full_state: The current state (in decimal form)</span>
+<span class="sd">        meas: The measurement bases</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Sigma (defined by the parity of non computational basis 1 measurements) and</span>
@@ -370,12 +370,12 @@
 <span class="sd">    Execute a circuit using qiskit runtime.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_instances: Dictionary containing information about each of the</span>
+<span class="sd">        subcircuit_instances: Dictionary containing information about each of the</span>
 <span class="sd">            subcircuit instances</span>
-<span class="sd">        - subcircuit: The subcircuit to execute</span>
-<span class="sd">        - service: The runtime service</span>
-<span class="sd">        - backend_name: The backends used to execute the subcircuit</span>
-<span class="sd">        - options: Options for the runtime execution of subcircuit</span>
+<span class="sd">        subcircuit: The subcircuit to execute</span>
+<span class="sd">        service: The runtime service</span>
+<span class="sd">        backend_name: The backends used to execute the subcircuit</span>
+<span class="sd">        options: Options for the runtime execution of subcircuit</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The measurement probabilities for the subcircuit batch, as calculated from the</span>

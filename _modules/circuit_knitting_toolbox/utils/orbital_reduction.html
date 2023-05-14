@@ -67,11 +67,12 @@
 <span class="sd">    [(0, 1, 0), (0, 0, 1), (1, 1, 0)]</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - bitstrings: The list of bitstrings to be reduced</span>
-<span class="sd">        - orbitals_to_reduce: The positions/orbitals to remove from the bitstrings</span>
+<span class="sd">        bitstrings: The list of bitstrings to be reduced</span>
+<span class="sd">        orbitals_to_reduce: The positions/orbitals to remove from the bitstrings</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The list of reduced bitstrings</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">reduced_bitstrings_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
         <span class="n">bitstrings</span><span class="p">,</span> <span class="n">orbitals_to_reduce</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span>

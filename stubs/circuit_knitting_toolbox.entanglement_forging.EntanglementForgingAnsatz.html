@@ -61,15 +61,15 @@ the circuit and bitstrings, and is required for the EntanglementForgingGroundSta
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit_u</strong> (<em>-</em>) – the parameterized circuit that is optimized to
+<li><p><strong>circuit_u</strong> (<em>QuantumCircuit</em>) – the parameterized circuit that is optimized to
 find the minimum energy of the original problem. It represents the
 unitary U for both N-qubit subsystems in the Schmidt decomposition.</p></li>
-<li><p><strong>bitstrings_u</strong> (<em>-</em>) – the input bitstrings for each N-qubit
+<li><p><strong>bitstrings_u</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em><em>]</em>) – the input bitstrings for each N-qubit
 subsystem. The bitstrings represent the computational basis states
 contributing to the Schmidt decomposition. List must contain less than
 or equal to 2^N elements and each bitstring must have length N. These
 bitstrings are used for each subsystem unless bitstrings_v is provided.</p></li>
-<li><p><strong>bitstrings_v</strong> (<em>-</em>) – specifies the bitstrings to be
+<li><p><strong>bitstrings_v</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em><em>] </em><em>| </em><em>None</em>) – specifies the bitstrings to be
 used for the second subsystem in the Schmidt decomposition. Must be the
 same shape as bitstrings_u. If not provided, then bitstrings_u is used
 for both subsystems.</p></li>
@@ -79,7 +79,7 @@ for both subsystems.</p></li>
 <dd class="field-even"><p>None</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>- ValueError</strong> – The input bitstrings are of incorrect shapes.</p>
+<dd class="field-odd"><p><strong>ValueError</strong> – The input bitstrings are of incorrect shapes.</p>
 </dd>
 </dl>
 <dl class="py method">
@@ -89,15 +89,15 @@ for both subsystems.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit_u</strong> (<em>-</em>) – the parameterized circuit that is optimized to
+<li><p><strong>circuit_u</strong> (<em>QuantumCircuit</em>) – the parameterized circuit that is optimized to
 find the minimum energy of the original problem. It represents the
 unitary U for both N-qubit subsystems in the Schmidt decomposition.</p></li>
-<li><p><strong>bitstrings_u</strong> (<em>-</em>) – the input bitstrings for each N-qubit
+<li><p><strong>bitstrings_u</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em><em>]</em>) – the input bitstrings for each N-qubit
 subsystem. The bitstrings represent the computational basis states
 contributing to the Schmidt decomposition. List must contain less than
 or equal to 2^N elements and each bitstring must have length N. These
 bitstrings are used for each subsystem unless bitstrings_v is provided.</p></li>
-<li><p><strong>bitstrings_v</strong> (<em>-</em>) – specifies the bitstrings to be
+<li><p><strong>bitstrings_v</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em><em>] </em><em>| </em><em>None</em>) – specifies the bitstrings to be
 used for the second subsystem in the Schmidt decomposition. Must be the
 same shape as bitstrings_u. If not provided, then bitstrings_u is used
 for both subsystems.</p></li>
@@ -107,7 +107,7 @@ for both subsystems.</p></li>
 <dd class="field-even"><p>None</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>- ValueError</strong> – The input bitstrings are of incorrect shapes.</p>
+<dd class="field-odd"><p><strong>ValueError</strong> – The input bitstrings are of incorrect shapes.</p>
 </dd>
 </dl>
 </dd></dl>

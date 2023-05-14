@@ -176,15 +176,15 @@
 <span class="sd">        Assign the necessary class variables and initialize any defaults.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - ansatz: Class which holds the ansatz circuit and bitstrings</span>
-<span class="sd">            - service: The service used to spawn Qiskit primitives</span>
-<span class="sd">            - optimizer: Optimizer to use to optimize the ansatz circuit parameters</span>
-<span class="sd">            - initial_point: Initial values for ansatz parameters</span>
-<span class="sd">            - orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
-<span class="sd">                decomposition.</span>
-<span class="sd">            - backend_names: Backend name or list of backend names to use during parallel computation</span>
-<span class="sd">            - options: Options or list of options to be applied to the backends</span>
-<span class="sd">            - mo_coeff: Coefficients for converting an input problem to MO basis</span>
+<span class="sd">            ansatz: Class which holds the ansatz circuit and bitstrings</span>
+<span class="sd">            service: The service used to spawn Qiskit primitives</span>
+<span class="sd">            optimizer: Optimizer to use to optimize the ansatz circuit parameters</span>
+<span class="sd">            initial_point: Initial values for ansatz parameters</span>
+<span class="sd">            orbitals_to_reduce: List of orbital indices to remove from the problem before</span>
+<span class="sd">              decomposition.</span>
+<span class="sd">            backend_names: Backend name or list of backend names to use during parallel computation</span>
+<span class="sd">            options: Options or list of options to be applied to the backends</span>
+<span class="sd">            mo_coeff: Coefficients for converting an input problem to MO basis</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -295,15 +295,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute ground state properties.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - problem: A class encoding a problem to be solved</span>
+<span class="sd">            problem: A class encoding a problem to be solved</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A result object</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError: The ``backend_names`` and ``options`` lists are of</span>
-<span class="sd">                incompatible lengths</span>
-<span class="sd">            - AttributeError: Ansatz must be set before calling `solve` method</span>
+<span class="sd">            ValueError: The ``backend_names`` and ``options`` lists are of</span>
+<span class="sd">              incompatible lengths</span>
+<span class="sd">            AttributeError: Ansatz must be set before calling `solve` method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backend_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">):</span>
@@ -380,7 +380,7 @@
 <span class="sd">        Produce a callable which provides an estimation of the min eigenvalue of an operator.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - operator: The decomposed Hamiltonian in entanglement forging format</span>
+<span class="sd">            operator: The decomposed Hamiltonian in entanglement forging format</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Callable function which provides an estimation of the mihnimum eigenvalue</span>
 <span class="sd">            of the input operator given some ansatz circuit parameters.</span>
@@ -408,15 +408,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct decomposed qubit operators from an ``ElectronicStructureProblem``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - problem: A class encoding a problem to be solved</span>
+<span class="sd">            problem: A class encoding a problem to be solved</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Qubit operator representing the decomposed Hamiltonian</span>
+<span class="sd">            hamiltonian_ops: Qubit operator representing the decomposed Hamiltonian</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError: The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``</span>
-<span class="sd">            - ValueError: The ``mo_coeff`` and input problem integrals are of incompatible shapes</span>
-<span class="sd">            - ValueError: The input integrals are ``None``</span>
+<span class="sd">            ValueError: The input problem is not in MO basis, and ``mo_coeff`` is set to ``None``</span>
+<span class="sd">            ValueError: The ``mo_coeff`` and input problem integrals are of incompatible shapes</span>
+<span class="sd">            ValueError: The input integrals are ``None``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_problem_and_coeffs</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mo_coeff</span><span class="p">)</span>
 

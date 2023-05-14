@@ -86,9 +86,9 @@
 <span class="sd">    Provides a variety of metrics to evaluate the differences in the distributions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_circuit: The original quantum circuit that was cut</span>
-<span class="sd">        - reconstructed_output: The reconstructed probability distribution from the</span>
-<span class="sd">            execution of the subcircuits</span>
+<span class="sd">        full_circuit: The original quantum circuit that was cut</span>
+<span class="sd">        reconstructed_output: The reconstructed probability distribution from the</span>
+<span class="sd">          execution of the subcircuits</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A tuple containing metrics for the ground truth and reconstructed distributions</span>
@@ -126,12 +126,12 @@
 <span class="sd">    Reorder the probability distribution.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - full_circuit: The original uncut circuit</span>
-<span class="sd">        - subcircuits: The cut subcircuits</span>
-<span class="sd">        - unordered: The unordered results of the subcircuits</span>
-<span class="sd">        - smart_order: The correct ordering of the subcircuits</span>
-<span class="sd">        - complete_path_map: The path map of the cuts, as defined from the</span>
-<span class="sd">            cutting function</span>
+<span class="sd">        full_circuit: The original uncut circuit</span>
+<span class="sd">        subcircuits: The cut subcircuits</span>
+<span class="sd">        unordered: The unordered results of the subcircuits</span>
+<span class="sd">        smart_order: The correct ordering of the subcircuits</span>
+<span class="sd">        complete_path_map: The path map of the cuts, as defined from the</span>
+<span class="sd">          cutting function</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The reordered and reconstructed probability distribution over the</span>
@@ -180,7 +180,7 @@
 <span class="sd">    Compute exact probability vector of given circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: The circuit to simulate</span>
+<span class="sd">        circuit: The circuit to simulate</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The final probability vector of the circuit</span>

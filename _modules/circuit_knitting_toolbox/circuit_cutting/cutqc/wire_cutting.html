@@ -83,23 +83,23 @@
 <span class="sd">    Decompose the circuit into a collection of subcircuits.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - method: Whether to have the cuts be &#39;automatically&#39; found, in a</span>
-<span class="sd">            provably optimal way, or whether to &#39;manually&#39; specify the cuts</span>
-<span class="sd">        - subcircuit_vertices: The vertices to be used in the subcircuits. Note</span>
-<span class="sd">            that these are not the indices of the qubits, but the nodes in the circuit DAG</span>
-<span class="sd">        - max_subcircuit_width: Max number of qubits in each subcircuit</span>
-<span class="sd">        - max_cuts: Max total number of cuts allowed</span>
-<span class="sd">        - num_subcircuits: List of number of subcircuits to try</span>
-<span class="sd">        - max_subcircuit_cuts: Max number of cuts for a subcircuit</span>
-<span class="sd">        - max_subcircuit_size: Max number of gates in a subcircuit</span>
-<span class="sd">        - verbose: Flag for printing output of cutting</span>
+<span class="sd">        method: Whether to have the cuts be &#39;automatically&#39; found, in a</span>
+<span class="sd">          provably optimal way, or whether to &#39;manually&#39; specify the cuts</span>
+<span class="sd">        subcircuit_vertices: The vertices to be used in the subcircuits. Note</span>
+<span class="sd">          that these are not the indices of the qubits, but the nodes in the circuit DAG</span>
+<span class="sd">        max_subcircuit_width: Max number of qubits in each subcircuit</span>
+<span class="sd">        max_cuts: Max total number of cuts allowed</span>
+<span class="sd">        num_subcircuits: List of number of subcircuits to try</span>
+<span class="sd">        max_subcircuit_cuts: Max number of cuts for a subcircuit</span>
+<span class="sd">        max_subcircuit_size: Max number of gates in a subcircuit</span>
+<span class="sd">        verbose: Flag for printing output of cutting</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A dictionary containing information on the cuts, including the subcircuits</span>
 <span class="sd">        themselves (key: &#39;subcircuits&#39;)</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - ValueError: The input method does not match the other provided arguments</span>
+<span class="sd">        ValueError: The input method does not match the other provided arguments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cuts</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;automatic&quot;</span><span class="p">:</span>
@@ -142,10 +142,10 @@
 <span class="sd">    Evaluate the subcircuits.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts: The results of cutting</span>
-<span class="sd">        - service: A service for connecting to Qiskit Runtime Service</span>
-<span class="sd">        - options: Options to use on each backend</span>
-<span class="sd">        - backend_names: The name(s) of the backend(s) to be used</span>
+<span class="sd">        cuts: The results of cutting</span>
+<span class="sd">        service: A service for connecting to Qiskit Runtime Service</span>
+<span class="sd">        options: Options to use on each backend</span>
+<span class="sd">        backend_names: The name(s) of the backend(s) to be used</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The dictionary containing the results from running each of the subcircuits</span>
@@ -200,10 +200,10 @@
 <span class="sd">    Reconstruct the full probabilities from the subcircuit evaluations.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: The original full circuit</span>
-<span class="sd">        - subcircuit_instance_probabilities: The probability vectors from each</span>
-<span class="sd">            of the subcircuit instances, as output by the _run_subcircuits function</span>
-<span class="sd">        - num_threads: The number of threads to use to parallelize the recomposing</span>
+<span class="sd">        circuit: The original full circuit</span>
+<span class="sd">        subcircuit_instance_probabilities: The probability vectors from each</span>
+<span class="sd">          of the subcircuit instances, as output by the _run_subcircuits function</span>
+<span class="sd">        num_threads: The number of threads to use to parallelize the recomposing</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The reconstructed probability vector</span>
@@ -243,7 +243,7 @@
 <span class="sd">    Generate metadata used to execute subcircuits and reconstruct probabilities of original circuit.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts: Results from the cutting step</span>
+<span class="sd">        cuts: Results from the cutting step</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Information about the 4^(num cuts) summation terms used to reconstruct original</span>
@@ -275,12 +275,12 @@
 <span class="sd">    task[&#39;subcircuit_instance_probs&#39;][subcircuit_idx][subcircuit_instance_idx] = measured prob</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts: Results from the cutting step</span>
-<span class="sd">        - subcircuit_instances: The dictionary containing the index information for each</span>
-<span class="sd">            of the subcircuit instances</span>
-<span class="sd">        - service: The arguments for the runtime service</span>
-<span class="sd">        - backend_names: The backend(s) used to run the subcircuits</span>
-<span class="sd">        - options: Options for the runtime execution of subcircuits</span>
+<span class="sd">        cuts: Results from the cutting step</span>
+<span class="sd">        subcircuit_instances: The dictionary containing the index information for each</span>
+<span class="sd">          of the subcircuit instances</span>
+<span class="sd">        service: The arguments for the runtime service</span>
+<span class="sd">        backend_names: The backend(s) used to run the subcircuits</span>
+<span class="sd">        options: Options for the runtime execution of subcircuits</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The resulting probabilities from each of the subcircuit instances</span>
@@ -308,17 +308,17 @@
 <span class="sd">    task[&#39;subcircuit_entry_probs&#39;][subcircuit_idx][subcircuit_entry_idx] = prob</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_entries: Dictionary containing information about each of the</span>
-<span class="sd">            subcircuit instances</span>
-<span class="sd">        - subcircuit_instance_probs: The probability vectors from each of the subcircuit</span>
-<span class="sd">            instances, as output by the _run_subcircuits function</span>
+<span class="sd">        subcircuit_entries: Dictionary containing information about each of the</span>
+<span class="sd">          subcircuit instances</span>
+<span class="sd">        subcircuit_instance_probs: The probability vectors from each of the subcircuit</span>
+<span class="sd">          instances, as output by the _run_subcircuits function</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A dictionary containing the probability results to each of the appropriate subcircuits</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        - ValueError: A kronecker term is not size two</span>
-<span class="sd">        - ValueError: There are no subcircuit probs provided</span>
+<span class="sd">        ValueError: A kronecker term is not size two</span>
+<span class="sd">        ValueError: There are no subcircuit probs provided</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">subcircuit_entry_probs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">subcircuit_idx</span> <span class="ow">in</span> <span class="n">subcircuit_entries</span><span class="p">:</span>
@@ -372,14 +372,14 @@
 <span class="sd">    the found solution is optimal or not.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: Original quantum circuit to be cut into subcircuits</span>
-<span class="sd">        - max_subcircuit_width: Max number of qubits in each subcircuit</span>
-<span class="sd">        - max_cuts: Max total number of cuts allowed</span>
-<span class="sd">        - num_subcircuits: List of number of subcircuits to try</span>
-<span class="sd">        - max_subcircuit_cuts: Max number of cuts for a subcircuit</span>
-<span class="sd">        - max_subcircuit_size: The maximum number of two qubit gates in each</span>
-<span class="sd">            subcircuit</span>
-<span class="sd">        - verbose: Whether to print information about the cut finding or not</span>
+<span class="sd">        circuit: Original quantum circuit to be cut into subcircuits</span>
+<span class="sd">        max_subcircuit_width: Max number of qubits in each subcircuit</span>
+<span class="sd">        max_cuts: Max total number of cuts allowed</span>
+<span class="sd">        num_subcircuits: List of number of subcircuits to try</span>
+<span class="sd">        max_subcircuit_cuts: Max number of cuts for a subcircuit</span>
+<span class="sd">        max_subcircuit_size: The maximum number of two qubit gates in each</span>
+<span class="sd">          subcircuit</span>
+<span class="sd">        verbose: Whether to print information about the cut finding or not</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The solution found for the cuts</span>
@@ -483,9 +483,9 @@
 <span class="sd">    Used when cut locations are chosen manually.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: Original quantum circuit to be cut into subcircuits</span>
-<span class="sd">        - subcircuit_vertices: The list of vertices to apply the cuts to</span>
-<span class="sd">        - verbose: Whether to print the details of cutting or not</span>
+<span class="sd">        circuit: Original quantum circuit to be cut into subcircuits</span>
+<span class="sd">        subcircuit_vertices: The list of vertices to apply the cuts to</span>
+<span class="sd">        verbose: Whether to print the details of cutting or not</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The solution calculated from the provided cuts</span>
@@ -548,12 +548,12 @@
 <span class="sd">    Pretty print the results.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - num_subciruit: The number of subcircuits</span>
-<span class="sd">        - num_cuts: The number of cuts</span>
-<span class="sd">        - subcircuits: The list of subcircuits</span>
-<span class="sd">        - counter: The dictionary containing all meta information regarding</span>
-<span class="sd">            each of the subcircuits</span>
-<span class="sd">        - classical_cost: The estimated processing cost</span>
+<span class="sd">        num_subciruit: The number of subcircuits</span>
+<span class="sd">        num_cuts: The number of cuts</span>
+<span class="sd">        subcircuits: The list of subcircuits</span>
+<span class="sd">        counter: The dictionary containing all meta information regarding</span>
+<span class="sd">          each of the subcircuits</span>
+<span class="sd">        classical_cost: The estimated processing cost</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        None</span>
@@ -582,8 +582,8 @@
 <span class="sd">    Convert cuts to wires.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - cuts: The cuts found by the model (or provided by the user)</span>
-<span class="sd">        - circ: The quantum circuit the cuts are from</span>
+<span class="sd">        cuts: The cuts found by the model (or provided by the user)</span>
+<span class="sd">        circ: The quantum circuit the cuts are from</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The list containing the wires that were cut and the gates</span>
@@ -655,8 +655,8 @@
 <span class="sd">    Convert the subcircuit gates into quantum circuits and path out the DAGs to enable conversion.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_gates: The gates in the subcircuits</span>
-<span class="sd">        - circuit: The original circuit</span>
+<span class="sd">        subcircuit_gates: The gates in the subcircuits</span>
+<span class="sd">        circuit: The original circuit</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A tuple containing he subcircuits and the paths in the quantum circuit DAGs</span>
@@ -795,10 +795,10 @@
 <span class="sd">    into actual quantum circuit objects.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuit_op_nodes: The nodes of each of the subcircuits</span>
-<span class="sd">        - complete_path_map: The complete path through the subcircuits</span>
-<span class="sd">        - subcircuit_sizes: The number of qubits in each of the subcircuits</span>
-<span class="sd">        - dag: The dag representation of the input quantum circuit</span>
+<span class="sd">        subcircuit_op_nodes: The nodes of each of the subcircuits</span>
+<span class="sd">        complete_path_map: The complete path through the subcircuits</span>
+<span class="sd">        subcircuit_sizes: The number of qubits in each of the subcircuits</span>
+<span class="sd">        dag: The dag representation of the input quantum circuit</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The subcircuits</span>
@@ -844,8 +844,8 @@
 <span class="sd">    Create information regarding each of the subcircuit parameters (qubits, width, etc.).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - subcircuits: The list of subcircuits</span>
-<span class="sd">        - O_rho_pairs: The pairs for each qubit path as generated in the _get_pairs function</span>
+<span class="sd">        subcircuits: The list of subcircuits</span>
+<span class="sd">        O_rho_pairs: The pairs for each qubit path as generated in the _get_pairs function</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The resulting dictionary with all parameter information</span>
@@ -876,7 +876,7 @@
 <span class="sd">    Estimate the cost of processing the subcircuits.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - counter: Dictionary containing information for each of the subcircuits</span>
+<span class="sd">        counter: Dictionary containing information for each of the subcircuits</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The estimated cost for classical processing</span>
@@ -908,7 +908,7 @@
 <span class="sd">    each pair of neigbors.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - complete_path_map: The dictionary containing all path information</span>
+<span class="sd">        complete_path_map: The dictionary containing all path information</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        All pairs for each of the qubit paths</span>
@@ -929,7 +929,7 @@
 <span class="sd">    Remove all single qubit and barrier type gates.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: The circuit to strip</span>
+<span class="sd">        circuit: The circuit to strip</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The stripped circuit</span>
@@ -951,7 +951,7 @@
 <span class="sd">    Read the input circuit to a graph based representation for the MIP model.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        - circuit: A stripped circuit to be converted into a DAG like representation</span>
+<span class="sd">        circuit: A stripped circuit to be converted into a DAG like representation</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A tuple containing the number of vertices, edge list, vertex to vertex id mapping,</span>

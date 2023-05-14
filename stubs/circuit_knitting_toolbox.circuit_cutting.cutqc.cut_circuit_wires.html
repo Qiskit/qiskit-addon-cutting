@@ -50,16 +50,16 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>method</strong> (<em>-</em>) – Whether to have the cuts be ‘automatically’ found, in a
+<li><p><strong>method</strong> (<em>str</em>) – Whether to have the cuts be ‘automatically’ found, in a
 provably optimal way, or whether to ‘manually’ specify the cuts</p></li>
-<li><p><strong>subcircuit_vertices</strong> (<em>-</em>) – The vertices to be used in the subcircuits. Note
+<li><p><strong>subcircuit_vertices</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>] </em><em>| </em><em>None</em>) – The vertices to be used in the subcircuits. Note
 that these are not the indices of the qubits, but the nodes in the circuit DAG</p></li>
-<li><p><strong>max_subcircuit_width</strong> (<em>-</em>) – Max number of qubits in each subcircuit</p></li>
-<li><p><strong>max_cuts</strong> (<em>-</em>) – Max total number of cuts allowed</p></li>
-<li><p><strong>num_subcircuits</strong> (<em>-</em>) – List of number of subcircuits to try</p></li>
-<li><p><strong>max_subcircuit_cuts</strong> (<em>-</em>) – Max number of cuts for a subcircuit</p></li>
-<li><p><strong>max_subcircuit_size</strong> (<em>-</em>) – Max number of gates in a subcircuit</p></li>
-<li><p><strong>verbose</strong> (<em>-</em>) – Flag for printing output of cutting</p></li>
+<li><p><strong>max_subcircuit_width</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of qubits in each subcircuit</p></li>
+<li><p><strong>max_cuts</strong> (<em>int</em><em> | </em><em>None</em>) – Max total number of cuts allowed</p></li>
+<li><p><strong>num_subcircuits</strong> (<em>Sequence</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – List of number of subcircuits to try</p></li>
+<li><p><strong>max_subcircuit_cuts</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of cuts for a subcircuit</p></li>
+<li><p><strong>max_subcircuit_size</strong> (<em>int</em><em> | </em><em>None</em>) – Max number of gates in a subcircuit</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Flag for printing output of cutting</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -70,7 +70,7 @@ that these are not the indices of the qubits, but the nodes in the circuit DAG</
 themselves (key: ‘subcircuits’)</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>- ValueError</strong> – The input method does not match the other provided arguments</p>
+<dd class="field-even"><p><strong>ValueError</strong> – The input method does not match the other provided arguments</p>
 </dd>
 </dl>
 </dd></dl>

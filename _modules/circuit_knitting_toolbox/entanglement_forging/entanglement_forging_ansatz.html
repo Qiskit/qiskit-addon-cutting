@@ -83,24 +83,24 @@
 <span class="sd">        Assign the necessary member variables and check for shaping errors.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            - circuit_u: the parameterized circuit that is optimized to</span>
-<span class="sd">                find the minimum energy of the original problem. It represents the</span>
-<span class="sd">                unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
-<span class="sd">            - bitstrings_u: the input bitstrings for each N-qubit</span>
-<span class="sd">                subsystem. The bitstrings represent the computational basis states</span>
-<span class="sd">                contributing to the Schmidt decomposition. List must contain less than</span>
-<span class="sd">                or equal to 2^N elements and each bitstring must have length N. These</span>
-<span class="sd">                bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
-<span class="sd">            - bitstrings_v: specifies the bitstrings to be</span>
-<span class="sd">                used for the second subsystem in the Schmidt decomposition. Must be the</span>
-<span class="sd">                same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
-<span class="sd">                for both subsystems.</span>
+<span class="sd">            circuit_u: the parameterized circuit that is optimized to</span>
+<span class="sd">              find the minimum energy of the original problem. It represents the</span>
+<span class="sd">              unitary U for both N-qubit subsystems in the Schmidt decomposition.</span>
+<span class="sd">            bitstrings_u: the input bitstrings for each N-qubit</span>
+<span class="sd">              subsystem. The bitstrings represent the computational basis states</span>
+<span class="sd">              contributing to the Schmidt decomposition. List must contain less than</span>
+<span class="sd">              or equal to 2^N elements and each bitstring must have length N. These</span>
+<span class="sd">              bitstrings are used for each subsystem unless bitstrings_v is provided.</span>
+<span class="sd">            bitstrings_v: specifies the bitstrings to be</span>
+<span class="sd">              used for the second subsystem in the Schmidt decomposition. Must be the</span>
+<span class="sd">              same shape as bitstrings_u. If not provided, then bitstrings_u is used</span>
+<span class="sd">              for both subsystems.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            - ValueError: The input bitstrings are of incorrect shapes.</span>
+<span class="sd">            ValueError: The input bitstrings are of incorrect shapes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bitstring</span><span class="p">)</span> <span class="o">!=</span> <span class="n">circuit_u</span><span class="o">.</span><span class="n">num_qubits</span> <span class="k">for</span> <span class="n">bitstring</span> <span class="ow">in</span> <span class="n">bitstrings_u</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

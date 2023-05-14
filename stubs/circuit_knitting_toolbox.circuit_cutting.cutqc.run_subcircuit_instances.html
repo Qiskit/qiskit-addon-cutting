@@ -53,12 +53,12 @@ subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured pr
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>subcircuits</strong> (<em>-</em>) – The list of subcircuits to execute</p></li>
-<li><p><strong>subcircuit_instances</strong> (<em>-</em>) – Dictionary containing information about each of the
+<li><p><strong>subcircuits</strong> (<em>Sequence</em><em>[</em><em>QuantumCircuit</em><em>]</em>) – The list of subcircuits to execute</p></li>
+<li><p><strong>subcircuit_instances</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>dict</em><em>[</em><em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em><em>, </em><em>tuple</em><em>[</em><em>Any</em><em>, </em><em>...</em><em>]</em><em>]</em><em>, </em><em>int</em><em>]</em><em>]</em>) – Dictionary containing information about each of the
 subcircuit instances</p></li>
-<li><p><strong>service</strong> (<em>-</em>) – The runtime service</p></li>
-<li><p><strong>backend_names</strong> (<em>-</em>) – The backend(s) used to execute the subcircuits</p></li>
-<li><p><strong>options</strong> (<em>-</em>) – Options for the runtime execution of subcircuits</p></li>
+<li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The runtime service</p></li>
+<li><p><strong>backend_names</strong> (<em>Sequence</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – The backend(s) used to execute the subcircuits</p></li>
+<li><p><strong>options</strong> (<em>Sequence</em><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options for the runtime execution of subcircuits</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
