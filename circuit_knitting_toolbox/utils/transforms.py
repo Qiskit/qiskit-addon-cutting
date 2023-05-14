@@ -43,7 +43,7 @@ def separate_circuit(
 
     Raises:
         ValueError: The number of partition labels does not equal the number of
-          qubits in the input circuit.
+            qubits in the input circuit.
     """
     # Split barriers into single-qubit barriers before separating
     new_qc = circuit.copy()

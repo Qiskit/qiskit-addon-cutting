@@ -36,8 +36,8 @@ def partition_circuit_qubits(
     Args:
         circuit: The circuit to partition
         partition_labels: A sequence containing a partition label for each qubit in the
-          input circuit. Nonlocal gates belonging to more than one partition
-          will be replaced with QPDGates.
+            input circuit. Nonlocal gates belonging to more than one partition
+            will be replaced with QPDGates.
 
     Returns:
         The output circuit with each nonlocal gate spanning two partitions replaced by a

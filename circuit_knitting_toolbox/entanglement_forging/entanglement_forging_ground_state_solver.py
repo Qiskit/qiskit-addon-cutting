@@ -140,7 +140,7 @@ class EntanglementForgingGroundStateSolver:
             optimizer: Optimizer to use to optimize the ansatz circuit parameters
             initial_point: Initial values for ansatz parameters
             orbitals_to_reduce: List of orbital indices to remove from the problem before
-              decomposition.
+                decomposition.
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
@@ -261,7 +261,7 @@ class EntanglementForgingGroundStateSolver:
 
         Raises:
             ValueError: The ``backend_names`` and ``options`` lists are of
-              incompatible lengths
+                incompatible lengths
             AttributeError: Ansatz must be set before calling `solve` method
         """
         if self._backend_names and self._options:

@@ -39,9 +39,9 @@ class EntanglementForgingOperator:  # noqa: D301
 
         Args:
             tensor_paulis: The operators acting on the subsystems that have the
-              same Schmidt coefficients
+                same Schmidt coefficients
             superposition_paulis: The operators acting on subsystems that have
-              different Schmidt coefficients
+                different Schmidt coefficients
             w_ij: The weight matrix associated with the tensor paulis
             w_ab: The weight matrix associated with the superposition paulis
         """
