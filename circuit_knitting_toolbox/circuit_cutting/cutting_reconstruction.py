@@ -17,6 +17,7 @@ from collections.abc import Sequence
 
 import numpy as np
 from qiskit.quantum_info import PauliList
+from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
@@ -24,7 +25,7 @@ from .cutting_decomposition import decompose_observables
 
 
 def reconstruct_expectation_values(
-    counts: Sequence[Sequence[Sequence[tuple[dict[str, int], int]]]],
+    quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
     coefficients: Sequence[float],
     observables: PauliList | dict[str | int, PauliList],
 ) -> list[float]:
@@ -32,8 +33,8 @@ def reconstruct_expectation_values(
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        counts: A 3D sequence of length-2 tuples containing the counts and QPD bit information
-            from each sub-experiment
+        quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and
+            QPD bit information from each sub-experiment
         coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
             the length of ``counts``.
@@ -60,7 +61,7 @@ def reconstruct_expectation_values(
         expvals = np.zeros(len(list(observables.values())[0]))
 
     # Assign each weight's sign and calculate the expectation values for each observable
-    for i, _ in enumerate(counts):
+    for i, _ in enumerate(quasi_dists):
         sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
         coeff = coefficients[i]
         current_expvals = np.ones((len(expvals),))
@@ -70,11 +71,10 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                outcomes = counts[i][j][k][0]
-                shots = sum(outcomes.values())
-                for outcome, count in outcomes.items():
-                    subsystem_expvals[k] += (count / shots) * process_outcome(
-                        counts[i][j][k][1], cog, outcome
+                quasi_probs = quasi_dists[i][j][k][0]
+                for outcome, quasi_prob in quasi_probs.items():
+                    subsystem_expvals[k] += quasi_prob * process_outcome(
+                        quasi_dists[i][j][k][1], cog, outcome
                     )
 
             for k, subobservable in enumerate(subobservables[label]):

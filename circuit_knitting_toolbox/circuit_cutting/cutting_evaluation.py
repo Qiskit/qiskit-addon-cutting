@@ -21,10 +21,13 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 from qiskit.providers import Backend
+from qiskit.primitives.base import BaseSampler
+from qiskit.result import QuasiDistribution
 from qiskit_aer import AerSimulator
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
+from ..utils.simulation import ExactSampler
 from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
@@ -39,9 +42,8 @@ def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
-    backends: Backend | Sequence[Backend] | None = None,
-    shots: int = 1000,
-) -> tuple[list[list[list[tuple[dict[str, int], int]]]], Sequence[float]]:
+    samplers: BaseSampler | Sequence[BaseSampler] | None = None,
+) -> tuple[list[list[list[tuple[QuasiDistribution, int]]]], Sequence[float]]:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -51,14 +53,14 @@ def execute_experiments(
         a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
         from partition label to subobservables is expected.
     num_samples: The number of samples to draw from the quasiprobability distribution
-    backends: Backend(s) on which to run the sub-experiments. If no backend is selected,
-        the ``AerSimulator`` from ``Qiskit Aer`` will be used. Experiments corresponding
-        to the same qubit partition will be run on the same backend.
-    shots: The number of shots to run for each experiment
+    samplers: Sampler(s) on which to run the sub-experiments. If no sampler is selected,
+        the ``ExactSampler`` from the ``utils.simulation`` module will be used.
+        Experiments corresponding to the same qubit partition will be run on the same backend.
 
     Returns:
-        A tuple containing a 3D list of length-2 tuples holding the counts and QPD bit
-        information for each sub-experiment as well as the coefficients corresponding to each unique sample
+        A tuple containing a 3D list of length-2 tuples holding the quasi-distributions
+        and QPD bit information for each sub-experiment as well as the coefficients corresponding
+        to each unique sample
 
     Raises:
     ValueError: The number of requested samples must be positive.
@@ -94,30 +96,29 @@ def execute_experiments(
 
     # Create a rotating list of the backends of length equal to the number of partitions
     num_partitions = len(subexperiments[0])
-    backends_repeated = _get_rotating_backends_list(backends, num_partitions)
+    samplers_repeated = _get_rotating_samplers_list(samplers, num_partitions)
 
     # Run each partition's sub-experiments within its own thread
     with ThreadPool() as pool:
         args = [
             [
                 [sample[i] for sample in subexperiments],
-                backends_repeated[i],
-                shots,
+                samplers_repeated[i],
             ]
             for i in range(num_partitions)
         ]
-        counts_by_partition = pool.starmap(_run_experiments_batch, args)
+        quasi_dists_by_partition = pool.starmap(_run_experiments_batch, args)
 
     # Reformat the counts to match the shape of the input before returning
     num_unique_samples = len(subexperiments)
-    counts: list[list[list[tuple[dict[str, int], int]]]] = [
+    quasi_dists: list[list[list[tuple[dict[str, int], int]]]] = [
         [] for _ in range(num_unique_samples)
     ]
     for i in range(num_unique_samples):
-        for partition in counts_by_partition:
-            counts[i].append(partition[i])
+        for partition in quasi_dists_by_partition:
+            quasi_dists[i].append(partition[i])
 
-    return counts, coefficients
+    return quasi_dists, coefficients
 
 
 def append_measurement_circuit(
@@ -262,9 +263,8 @@ def _generate_cutting_experiments(
 
 def _run_experiments_batch(
     subexperiments: Sequence[Sequence[QuantumCircuit]],
-    backend: Backend,
-    shots: int,
-) -> list[list[tuple[dict[str, int], int]]]:
+    sampler: BaseSampler,
+) -> list[list[tuple[QuasiDistribution, int]]]:
     """Run subexperiments on the backend."""
     counts: list[list[tuple[dict[str, int], int]]] = []
     num_qpd_bits_flat = []
@@ -287,19 +287,19 @@ def _run_experiments_batch(
             num_qpd_bits_flat.append(len(circ.cregs[-2]))
 
     # Run all of the batched experiments
-    counts_flat = backend.run(experiments_flat, shots=shots).result().get_counts()
+    quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
 
     # Reshape the output data to match the input
-    counts_reshaped = np.reshape(counts_flat, np.shape(subexperiments))
+    quasi_dists_reshaped = np.reshape(quasi_dists_flat, np.shape(subexperiments))
     num_qpd_bits = np.reshape(num_qpd_bits_flat, np.shape(subexperiments))
 
     # Create the counts tuples, which include the number of QPD measurement bits
-    counts = [[] for _ in range(len(subexperiments))]
-    for i, sample in enumerate(counts_reshaped):
-        for j, count_dict in enumerate(sample):
-            counts[i].append((count_dict, num_qpd_bits[i][j]))
+    quasi_dists = [[] for _ in range(len(subexperiments))]
+    for i, sample in enumerate(quasi_dists_reshaped):
+        for j, prob_dict in enumerate(sample):
+            quasi_dists[i].append((prob_dict, num_qpd_bits[i][j]))
 
-    return counts
+    return quasi_dists
 
 
 def _get_mapping_ids_by_partition(
@@ -356,12 +356,12 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
     return bases, qpd_gate_ids
 
 
-def _get_rotating_backends_list(
-    backends: Backend | Sequence[Backend] | None, num_partitions: int
-) -> Sequence[Backend]:
-    """Return a list of backends, one for each partition."""
-    if isinstance(backends, Backend):
-        backends = [backends]
-    if backends is None:
-        backends = [AerSimulator()]
-    return [backends[i % len(backends)] for i in range(num_partitions)]
+def _get_rotating_samplers_list(
+    samplers: BaseSampler | Sequence[BaseSampler] | None, num_partitions: int
+) -> Sequence[BaseSampler]:
+    """Return a list of samplers, one for each partition."""
+    if isinstance(samplers, BaseSampler):
+        samplers = [samplers]
+    if samplers is None:
+        samplers = [ExactSampler()]
+    return [samplers[i % len(samplers)] for i in range(num_partitions)]
