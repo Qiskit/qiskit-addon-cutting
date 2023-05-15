@@ -51,8 +51,8 @@ def partition_circuit_qubits(
         :class:`TwoQubitQPDGate`
 
     Raises:
-        ValueError: Length of partition_labels does not equal the number of qubits in the circuit
-        ValueError: Cannot decompose gate which acts on more than 2 qubits
+        ValueError: The length of partition_labels does not equal the number of qubits in the circuit.
+        ValueError: Input circuit contains unsupported gate.
     """
     if len(partition_labels) != len(circuit.qubits):
         raise ValueError(
@@ -97,14 +97,14 @@ def partition_circuit_qubits(
 
 def decompose_gates(circuit: QuantumCircuit, gate_ids: Sequence[int]) -> QuantumCircuit:
     r"""
-    Transform specified gates into :class:`QPDGate`\ s.
+    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
 
     Args:
         circuit: The circuit containing gates to be decomposed
         gate_ids: The indices of the gates to decompose
 
     Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`QPDGate`\ s
+        A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
     """
     # Replace specified gates with TwoQubitQPDGates
     new_qc = circuit.copy()
@@ -126,7 +126,7 @@ def partition_problem(
     """
     Separate an input circuit and observable(s) along qubit partition labels.
 
-    Circuit qubits with matching partition labels will be grouped together, and nonlocal
+    Circuit qubits with matching partition labels will be grouped together, and non-local
     operations spanning more than one partition will be decomposed and replaced with
     probabilistic local operations.
 
@@ -144,8 +144,8 @@ def partition_problem(
         and a dictionary mapping a partition label to a list of Pauli observables
 
     Raises:
-        ValueError: The number of partition labels does not equal the number of qubits in the circuit
-        ValueError: An input observable acts on a different number of qubits than the input circuit
+        ValueError: The number of partition labels does not equal the number of qubits in the circuit.
+        ValueError: An input observable acts on a different number of qubits than the input circuit.
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(

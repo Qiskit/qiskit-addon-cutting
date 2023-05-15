@@ -45,7 +45,7 @@ def reconstruct_expectation_values(
 
     Returns:
         A ``list`` of ``float``\ s, such that each float is a simulated expectation
-        value corresponding to the observable in the same position
+        value corresponding to the input observable in the same position
     """
     # Create the commuting observable groups
     if isinstance(observables, PauliList):

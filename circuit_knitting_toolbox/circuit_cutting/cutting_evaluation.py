@@ -64,8 +64,8 @@ def execute_experiments(
 
     Raises:
     ValueError: The number of requested samples must be positive.
-    ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible
-    ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits
+    ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
+    ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
