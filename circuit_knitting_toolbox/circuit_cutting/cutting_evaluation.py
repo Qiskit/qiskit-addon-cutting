@@ -47,15 +47,16 @@ def execute_experiments(
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
-    circuits: The circuit(s) resulting from decomposing nonlocal gates
-    observables: The observable(s) corresponding to the circuit(s). If
-        a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
-        a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
-        from partition label to subobservables is expected.
-    num_samples: The number of samples to draw from the quasiprobability distribution
-    samplers: Sampler(s) on which to run the sub-experiments. If no sampler is selected,
-        the ``ExactSampler`` from the ``utils.simulation`` module will be used.
-        Experiments corresponding to the same qubit partition will be run on the same backend.
+    Args:
+        circuits: The circuit(s) resulting from decomposing nonlocal gates
+        observables: The observable(s) corresponding to the circuit(s). If
+            a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
+            a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
+            from partition label to subobservables is expected.
+        num_samples: The number of samples to draw from the quasiprobability distribution
+        samplers: Sampler(s) on which to run the sub-experiments. If no sampler is selected,
+            the ``ExactSampler`` from the ``utils.simulation`` module will be used.
+            Experiments corresponding to the same qubit partition will be run on the same backend.
 
     Returns:
         A tuple containing a 3D list of length-2 tuples holding the quasi-distributions
@@ -63,9 +64,9 @@ def execute_experiments(
         to each unique sample
 
     Raises:
-    ValueError: The number of requested samples must be positive.
-    ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
-    ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
+        ValueError: The number of requested samples must be positive.
+        ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
+        ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
