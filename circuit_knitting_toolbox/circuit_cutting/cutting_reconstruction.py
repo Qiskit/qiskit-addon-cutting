@@ -61,9 +61,8 @@ def reconstruct_expectation_values(
         expvals = np.zeros(len(list(observables.values())[0]))
 
     # Assign each weight's sign and calculate the expectation values for each observable
-    for i, _ in enumerate(quasi_dists):
+    for i, coeff in enumerate(coefficients):
         sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
-        coeff = coefficients[i]
         current_expvals = np.ones((len(expvals),))
         for j, label in enumerate(sorted_subsystems):
             so = subsystem_observables[label]
