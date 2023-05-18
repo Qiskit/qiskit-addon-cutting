@@ -178,7 +178,7 @@ def partition_problem(
 
     # Separate the decomposed circuit into its subcircuits
     qpd_circuit_dx = qpd_circuit.decompose(TwoQubitQPDGate)
-    separated_circs = separate_circuit(qpd_circuit_dx)
+    separated_circs = separate_circuit(qpd_circuit_dx, partition_labels)
 
     # Decompose the observables, if provided
     subobservables_by_subsystem = None
