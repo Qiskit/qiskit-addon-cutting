@@ -114,16 +114,14 @@ def decompose_gates(
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
         circuit = circuit.copy()
-    offset = 0
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
         qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
         decomposition = QPDBasis.from_gate(gate.operation)
         qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
-        circuit.data[gate_id + offset] = CircuitInstruction(
+        circuit.data[gate_id] = CircuitInstruction(
             qpd_gate, qubits=qubit_indices
         )
-        offset += 1
 
     return circuit
 
