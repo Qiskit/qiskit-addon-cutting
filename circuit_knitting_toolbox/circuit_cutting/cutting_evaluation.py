@@ -20,10 +20,8 @@ from multiprocessing.pool import ThreadPool
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.providers import Backend
 from qiskit.primitives.base import BaseSampler
 from qiskit.result import QuasiDistribution
-from qiskit_aer import AerSimulator
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
@@ -267,7 +265,6 @@ def _run_experiments_batch(
     sampler: BaseSampler,
 ) -> list[list[tuple[QuasiDistribution, int]]]:
     """Run subexperiments on the backend."""
-    counts: list[list[tuple[dict[str, int], int]]] = []
     num_qpd_bits_flat = []
 
     # Run all the experiments in one big batch
