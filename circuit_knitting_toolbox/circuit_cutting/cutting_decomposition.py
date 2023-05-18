@@ -76,7 +76,7 @@ def partition_circuit_qubits(
             or len(partitions_spanned) == 1
             or isinstance(instruction.operation, Barrier)
         ):
-            continue
+            continue  # pragma: no cover
 
         if len(qubit_indices) > 2:
             raise ValueError(
@@ -119,9 +119,7 @@ def decompose_gates(
         qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
         decomposition = QPDBasis.from_gate(gate.operation)
         qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
-        circuit.data[gate_id] = CircuitInstruction(
-            qpd_gate, qubits=qubit_indices
-        )
+        circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit
 

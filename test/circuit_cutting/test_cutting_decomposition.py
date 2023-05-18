@@ -18,9 +18,19 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction, Barrier
 from qiskit.circuit.library import EfficientSU2, RXXGate
+from qiskit.circuit.library.standard_gates import CXGate
+from qiskit.quantum_info import PauliList
 
-from circuit_knitting_toolbox.circuit_cutting import partition_circuit_qubits
-from circuit_knitting_toolbox.circuit_cutting.qpd import QPDBasis, TwoQubitQPDGate
+from circuit_knitting_toolbox.circuit_cutting import (
+    partition_circuit_qubits,
+    partition_problem,
+    decompose_gates,
+)
+from circuit_knitting_toolbox.circuit_cutting.qpd import (
+    QPDBasis,
+    TwoQubitQPDGate,
+    BaseQPDGate,
+)
 
 
 class TestCuttingDecomposition(unittest.TestCase):
@@ -139,3 +149,64 @@ class TestCuttingDecomposition(unittest.TestCase):
             circuit.toffoli(0, 1, 2)
             circuit.rzz(np.pi / 7, 2, 3)
             partition_circuit_qubits(circuit, "AAAB")
+
+    def test_partition_problem(self):
+        with self.subTest("simple circuit and observable"):
+            # Split 4q HWEA in middle of qubits
+            partition_labels = "AABB"
+
+            observable = PauliList(["ZZXX"])
+
+            subcircuits, subobservables = partition_problem(
+                self.circuit, partition_labels, observables=observable
+            )
+            for subcircuit in subcircuits.values():
+                parameter_vals = [np.pi / 4] * len(subcircuit.parameters)
+                subcircuit.assign_parameters(parameter_vals, inplace=True)
+                for inst in subcircuit.data:
+                    if isinstance(inst.operation, BaseQPDGate):
+                        inst.operation.basis_id = 0
+
+            compare_obs = {"A": PauliList(["XX"]), "B": PauliList(["ZZ"])}
+
+            self.assertEqual(subobservables, compare_obs)
+
+        with self.subTest("test mismatching inputs"):
+            # Split 4q HWEA in middle of qubits
+            partition_labels = "AB"
+
+            with pytest.raises(ValueError) as e_info:
+                subcircuits, subobservables = partition_problem(
+                    self.circuit, partition_labels
+                )
+            assert (
+                e_info.value.args[0]
+                == "The number of partition labels (2) must equal the number of qubits in the circuit (4)."
+            )
+
+            partition_labels = "AABB"
+            observable = PauliList(["ZZ"])
+
+            with pytest.raises(ValueError) as e_info:
+                subcircuits, subobservables = partition_problem(
+                    self.circuit, partition_labels, observable
+                )
+            assert (
+                e_info.value.args[0]
+                == "An input observable acts on a different number of qubits than the input circuit."
+            )
+
+    def test_decompose_gates(self):
+        with self.subTest("simple circuit"):
+            compare_qc = QuantumCircuit(2)
+            compare_qc.append(
+                CircuitInstruction(
+                    TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                    qubits=[0, 1],
+                )
+            )
+
+            qc = QuantumCircuit(2)
+            qc.cx(0, 1)
+            qpd_qc = decompose_gates(qc, [0])
+            self.assertEqual(qpd_qc, compare_qc)
