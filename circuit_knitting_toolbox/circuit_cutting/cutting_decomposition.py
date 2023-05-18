@@ -33,7 +33,7 @@ from .qpd.instructions import TwoQubitQPDGate
 
 
 def partition_circuit_qubits(
-    circuit: QuantumCircuit, partition_labels: Sequence[Hashable]
+    circuit: QuantumCircuit, partition_labels: Sequence[Hashable], inplace: bool = False
 ) -> QuantumCircuit:
     r"""
     Replace all nonlocal gates belonging to more than one partition with instances of :class:`TwoQubitQPDGate`.
@@ -45,6 +45,7 @@ def partition_circuit_qubits(
         partition_labels: A sequence containing a partition label for each qubit in the
             input circuit. Nonlocal gates belonging to more than one partition
             will be replaced with QPDGates.
+        inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
         The output circuit with each nonlocal gate spanning two partitions replaced by a
@@ -60,13 +61,14 @@ def partition_circuit_qubits(
             f"in the input circuit ({len(circuit.qubits)})."
         )
 
-    new_qc = circuit.copy()
+    if not inplace:
+        circuit = circuit.copy()
 
     # Find 2-qubit gates spanning more than one partition and replace it with a QPDGate.
-    for i, instruction in enumerate(new_qc.data):
+    for i, instruction in enumerate(circuit.data):
         if instruction.operation.name == "barrier":
             continue
-        qubit_indices = [new_qc.find_bit(qubit).index for qubit in instruction.qubits]
+        qubit_indices = [circuit.find_bit(qubit).index for qubit in instruction.qubits]
         partitions_spanned = {partition_labels[idx] for idx in qubit_indices}
         # Ignore local gates and gates that span only one partition
         if (
@@ -90,32 +92,40 @@ def partition_circuit_qubits(
         qpd_gate = TwoQubitQPDGate(
             decomposition, label=f"qpd_{instruction.operation.name}"
         )
-        new_qc.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
+        circuit.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
-    return new_qc
+    return circuit
 
 
-def decompose_gates(circuit: QuantumCircuit, gate_ids: Sequence[int]) -> QuantumCircuit:
+def decompose_gates(
+    circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
+) -> QuantumCircuit:
     r"""
     Transform specified gates into :class:`TwoQubitQPDGate`\ s.
 
     Args:
         circuit: The circuit containing gates to be decomposed
         gate_ids: The indices of the gates to decompose
+        inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
     """
     # Replace specified gates with TwoQubitQPDGates
-    new_qc = circuit.copy()
+    if not inplace:
+        circuit = circuit.copy()
+    offset = 0
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
-        qubit_indices = [new_qc.find_bit(qubit).index for qubit in gate.qubits]
+        qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
         decomposition = QPDBasis.from_gate(gate.operation)
         qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
-        new_qc.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
+        circuit.data[gate_id + offset] = CircuitInstruction(
+            qpd_gate, qubits=qubit_indices
+        )
+        offset += 1
 
-    return new_qc
+    return circuit
 
 
 def partition_problem(
