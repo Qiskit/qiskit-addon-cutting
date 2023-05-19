@@ -39,7 +39,7 @@ def reconstruct_expectation_values(
         coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
             the length of ``counts``. Each coefficient is a tuple containing the numerical
-            value and how the value was generated.
+            value and the ``WeightType`` denoting how the value was generated.
         observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
             was not separated into subcircuits. If the decomposed circuit was separated, this
