@@ -49,9 +49,13 @@ def reconstruct_expectation_values(
     """
     # Create the commuting observable groups
     if isinstance(observables, PauliList):
-        subobservables, subsystem_observables = decompose_observables(
+        subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
+        subsystem_observables = {
+            label: ObservableCollection(subobservables)
+            for label, subobservables in subobservables_by_subsystem.items()
+        }
         expvals = np.zeros(len(observables))
     else:
         subobservables = observables

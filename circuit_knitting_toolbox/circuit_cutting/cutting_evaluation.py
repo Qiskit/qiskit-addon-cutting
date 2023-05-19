@@ -197,9 +197,13 @@ def _generate_cutting_experiments(
     if isinstance(circuits, QuantumCircuit):
         is_separated = False
         subcircuit_list = [circuits]
-        _, subsystem_observables = decompose_observables(
+        subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
+        subsystem_observables = {
+            label: ObservableCollection(subobservables)
+            for label, subobservables in subobservables_by_subsystem.items()
+        }
         # Gather the unique bases from the circuit
         bases, qpd_gate_ids = _get_bases(circuits)
         subcirc_qpd_gate_ids = [qpd_gate_ids]

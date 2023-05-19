@@ -23,10 +23,7 @@ from qiskit.circuit import (
 )
 from qiskit.quantum_info import PauliList
 
-from ..utils.observable_grouping import (
-    ObservableCollection,
-    observables_restricted_to_subsystem,
-)
+from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
@@ -181,7 +178,7 @@ def partition_problem(
     # Decompose the observables, if provided
     subobservables_by_subsystem = None
     if observables:
-        subobservables_by_subsystem, _ = decompose_observables(
+        subobservables_by_subsystem = decompose_observables(
             observables, partition_labels
         )
 
@@ -190,7 +187,7 @@ def partition_problem(
 
 def decompose_observables(
     observables: PauliList, partition_labels: Sequence[str | int]
-) -> tuple[dict[str | int, PauliList], dict[str | int, ObservableCollection]]:
+) -> dict[str | int, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 
@@ -200,8 +197,7 @@ def decompose_observables(
             corresponds to the qubit in the same index
 
     Returns:
-        A tuple containing a dictionary mapping a partition to its associated sub-observables
-        and a dictionary mapping a partition to an ``ObservableCollection``
+        A dictionary mapping a partition to its associated sub-observables
     """
     qubits_by_subsystem = defaultdict(list)
     for i, label in enumerate(partition_labels):
@@ -213,9 +209,4 @@ def decompose_observables(
         for label, qubits in qubits_by_subsystem.items()
     }
 
-    subsystem_observables = {
-        label: ObservableCollection(subobservables)
-        for label, subobservables in subobservables_by_subsystem.items()
-    }
-
-    return subobservables_by_subsystem, subsystem_observables
+    return subobservables_by_subsystem
