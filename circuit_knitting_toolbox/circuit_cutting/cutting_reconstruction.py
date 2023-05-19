@@ -54,16 +54,15 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
-        subsystem_observables = {
-            label: ObservableCollection(subobservables)
-            for label, subobservables in subobservables_by_subsystem.items()
-        }
         expvals = np.zeros(len(observables))
     else:
-        subsystem_observables = {
-            label: ObservableCollection(so) for label, so in observables.items()
-        }
+        subobservables_by_subsystem = observables
         expvals = np.zeros(len(list(observables.values())[0]))
+
+    subsystem_observables = {
+        label: ObservableCollection(subobservables)
+        for label, subobservables in subobservables_by_subsystem.items()
+    }
 
     # Assign each weight's sign and calculate the expectation values for each observable
     for i, coeff in enumerate(coefficients):
