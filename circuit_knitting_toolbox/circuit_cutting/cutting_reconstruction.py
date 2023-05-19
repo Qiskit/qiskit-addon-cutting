@@ -80,7 +80,7 @@ def reconstruct_expectation_values(
                         quasi_dists[i][j][k][1], cog, outcome
                     )
 
-            for k, subobservable in enumerate(subsystem_observables[label]):
+            for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
