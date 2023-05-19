@@ -31,6 +31,7 @@ from .qpd import (
     TwoQubitQPDGate,
     generate_qpd_samples,
     decompose_qpd_instructions,
+    WeightType,
 )
 from .cutting_decomposition import decompose_observables
 
@@ -40,7 +41,9 @@ def execute_experiments(
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-) -> tuple[list[list[list[tuple[QuasiDistribution, int]]]], Sequence[float]]:
+) -> tuple[
+    list[list[list[tuple[QuasiDistribution, int]]]], Sequence[tuple[float, WeightType]]
+]:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -189,7 +192,7 @@ def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
-) -> tuple[list[list[list[QuantumCircuit]]], list[float], list[int]]:
+) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[float, WeightType]], list[int]]:
     """Generate all the experiments to run on the backend and their associated coefficients."""
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on whether the decomposed circuit was separated into subcircuits before calling
@@ -236,14 +239,13 @@ def _generate_cutting_experiments(
     subexperiments: list[list[list[QuantumCircuit]]] = []
     coefficients = []
     sampled_frequencies = []
-    for z, (map_ids, sample_weight) in enumerate(sorted_samples):
-        redundancy = sample_weight[0]
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
         subexperiments.append([])
         actual_coeff = np.prod(
             [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
         )
         sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-        coefficients.append(sampled_coeff)
+        coefficients.append((sampled_coeff, weight_type))
         sampled_frequencies.append(redundancy)
         for i, (subcircuit, label) in enumerate(
             strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))

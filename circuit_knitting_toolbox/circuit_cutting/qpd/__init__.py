@@ -27,7 +27,7 @@ Instructions (:mod:`circuit_knitting_toolbox.qpd.instructions`)
 """
 
 from .qpd_basis import QPDBasis
-from .qpd import generate_qpd_samples, decompose_qpd_instructions
+from .qpd import generate_qpd_samples, decompose_qpd_instructions, WeightType
 from .instructions import (
     BaseQPDGate,
     SingleQubitQPDGate,
@@ -44,4 +44,5 @@ __all__ = [
     "TwoQubitQPDGate",
     "SingleQubitQPDGate",
     "QPDMeasure",
+    "WeightType",
 ]

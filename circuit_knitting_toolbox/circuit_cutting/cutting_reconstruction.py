@@ -22,11 +22,12 @@ from qiskit.result import QuasiDistribution
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
+from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
     quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
-    coefficients: Sequence[float],
+    coefficients: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[str | int, PauliList],
 ) -> list[float]:
     r"""
@@ -37,7 +38,8 @@ def reconstruct_expectation_values(
             QPD bit information from each sub-experiment
         coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
-            the length of ``counts``.
+            the length of ``counts``. Each coefficient is a tuple containing the numerical
+            value and how the value was generated.
         observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
             was not separated into subcircuits. If the decomposed circuit was separated, this
@@ -85,7 +87,7 @@ def reconstruct_expectation_values(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
 
-        expvals += coeff * current_expvals
+        expvals += coeff[0] * current_expvals
 
     return list(expvals)
 
