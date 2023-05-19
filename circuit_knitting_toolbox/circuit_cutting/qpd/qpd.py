@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence, Callable
 from enum import Enum
+import itertools
 
 import numpy as np
 from qiskit.circuit import (
@@ -46,7 +47,7 @@ from qiskit.circuit.library.standard_gates import (
 
 from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
-from ...utils.iteration import unique_by_id
+from ...utils.iteration import unique_by_id, strict_zip
 
 
 class WeightType(Enum):
@@ -61,7 +62,7 @@ class WeightType(Enum):
 
 def generate_qpd_samples(
     qpd_bases: Sequence[QPDBasis], num_samples: int = 1000
-) -> dict[tuple[int, ...], tuple[int, WeightType]]:
+) -> dict[tuple[int, ...], tuple[float, WeightType]]:
     """
     Generate random quasiprobability decompositions.
 
@@ -82,15 +83,24 @@ def generate_qpd_samples(
     if num_samples <= 0:
         raise ValueError("num_samples must be positive.")
 
-    if len(qpd_bases) == 0:
-        # This case must be handled explicitly, as it is not handled correctly
-        # by the `zip()` call below.
-        return {(): (num_samples, WeightType.EXACT)}
+    # Determine if the smallest probability is above the threshold implied by
+    # num_samples.  If so, then we can evaluate all weights exactly.
+    probabilities_by_basis = [basis.probabilities for basis in qpd_bases]
+    smallest_probability = np.prod([min(probs) for probs in probabilities_by_basis])
+    if smallest_probability >= 1 / num_samples:
+        retval: dict[tuple[int, ...], tuple[float, WeightType]] = {}
+        for map_ids in itertools.product(
+            *[range(len(probs)) for probs in probabilities_by_basis]
+        ):
+            probability = np.prod(
+                [probs[i] for i, probs in strict_zip(map_ids, probabilities_by_basis)]
+            )
+            retval[map_ids] = (num_samples * probability, WeightType.EXACT)
+        return retval
 
     # Loop through each gate and sample from its distribution num_samples times
     samples_by_decomp = []
     for basis in qpd_bases:
-        # All gates in a decomp should have same QPDBasis, so we sample from gate_0 object
         samples_by_decomp.append(
             np.random.choice(
                 range(len(basis.probabilities)),
