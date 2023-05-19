@@ -25,7 +25,6 @@ from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
-from ..utils.simulation import ExactSampler
 from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
@@ -40,7 +39,7 @@ def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
-    samplers: BaseSampler | Sequence[BaseSampler] | None = None,
+    samplers: BaseSampler | dict[str | int, BaseSampler],
 ) -> tuple[list[list[list[tuple[QuasiDistribution, int]]]], Sequence[float]]:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
@@ -52,9 +51,7 @@ def execute_experiments(
             a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
             from partition label to subobservables is expected.
         num_samples: The number of samples to draw from the quasiprobability distribution
-        samplers: Sampler(s) on which to run the sub-experiments. If no sampler is selected,
-            the ``ExactSampler`` from the ``utils.simulation`` module will be used.
-            Experiments corresponding to the same qubit partition will be run on the same backend.
+        samplers: Sampler(s) on which to run the sub-experiments.
 
     Returns:
         A tuple containing a 3D list of length-2 tuples holding the quasi-distributions
@@ -95,14 +92,17 @@ def execute_experiments(
 
     # Create a rotating list of the backends of length equal to the number of partitions
     num_partitions = len(subexperiments[0])
-    samplers_repeated = _get_rotating_samplers_list(samplers, num_partitions)
+    if isinstance(samplers, BaseSampler):
+        samplers_by_partition = [samplers] * num_partitions
+    else:
+        samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
 
     # Run each partition's sub-experiments within its own thread
     with ThreadPool() as pool:
         args = [
             [
                 [sample[i] for sample in subexperiments],
-                samplers_repeated[i],
+                samplers_by_partition[i],
             ]
             for i in range(num_partitions)
         ]
@@ -292,7 +292,9 @@ def _run_experiments_batch(
     num_qpd_bits = np.reshape(num_qpd_bits_flat, np.shape(subexperiments))
 
     # Create the counts tuples, which include the number of QPD measurement bits
-    quasi_dists = [[] for _ in range(len(subexperiments))]
+    quasi_dists: list[list[tuple[dict[str, float], int]]] = [
+        [] for _ in range(len(subexperiments))
+    ]
     for i, sample in enumerate(quasi_dists_reshaped):
         for j, prob_dict in enumerate(sample):
             quasi_dists[i].append((prob_dict, num_qpd_bits[i][j]))
@@ -352,14 +354,3 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
             qpd_gate_ids.append([i])
 
     return bases, qpd_gate_ids
-
-
-def _get_rotating_samplers_list(
-    samplers: BaseSampler | Sequence[BaseSampler] | None, num_partitions: int
-) -> Sequence[BaseSampler]:
-    """Return a list of samplers, one for each partition."""
-    if isinstance(samplers, BaseSampler):
-        samplers = [samplers]
-    if samplers is None:
-        samplers = [ExactSampler()]
-    return [samplers[i % len(samplers)] for i in range(num_partitions)]
