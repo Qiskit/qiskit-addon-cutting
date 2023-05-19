@@ -89,6 +89,16 @@ class TestQPDFunctions(unittest.TestCase):
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
+        with self.subTest("HWEA exact weights"):
+            # Do the same thing with num_samples above the threshold for exact weights
+            basis_ids = [9, 20]
+            bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
+            samples = generate_qpd_samples(bases, num_samples=1000)
+            assert sum(w for w, t in samples.values()) == pytest.approx(1000)
+            assert all(t == WeightType.EXACT for w, t in samples.values())
+            for decomp_ids in samples.keys():
+                self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
+                self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
 
     def test_decompose_qpd_instructions(self):
         with self.subTest("Empty circuit"):
