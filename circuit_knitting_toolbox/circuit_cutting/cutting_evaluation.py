@@ -425,5 +425,6 @@ def _terra_sampler_warn() -> None:
 
 def _bad_samplers_error() -> None:
     raise ValueError(
-        "The samplers dictionary must be a mapping from partition labels to qiskit.primitives.BaseSampler instances."
+        "The samplers input argument must be either an instance of qiskit.primitives.BaseSampler "
+        "or a mapping from partition labels to qiskit.primitives.BaseSampler instances."
     )
