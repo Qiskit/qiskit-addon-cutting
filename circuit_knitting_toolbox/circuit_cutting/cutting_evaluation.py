@@ -13,6 +13,9 @@
 
 from __future__ import annotations
 
+import copy
+import warnings
+from typing import Any
 from collections.abc import Sequence
 from itertools import chain
 from multiprocessing.pool import ThreadPool
@@ -20,11 +23,13 @@ from multiprocessing.pool import ThreadPool
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.primitives.base import BaseSampler
+from qiskit.primitives import BaseSampler, Sampler as TerraSampler
 from qiskit.result import QuasiDistribution
+from qiskit_aer.primitives import Sampler as AerSampler
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
+from ..utils.simulation import ExactSampler
 from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
@@ -66,6 +71,7 @@ def execute_experiments(
         ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
     """
+    samplers = _validate_samplers(samplers)
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
 
@@ -192,7 +198,7 @@ def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
-) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[float, WeightType]], list[int]]:
+) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[Any, WeightType]], list[float]]:
     """Generate all the experiments to run on the backend and their associated coefficients."""
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on whether the decomposed circuit was separated into subcircuits before calling
@@ -230,7 +236,7 @@ def _generate_cutting_experiments(
 
     # Calculate terms in coefficient calculation
     kappa = np.prod([basis.kappa for basis in bases])
-    num_samples = sum([value[0] for value in random_samples.values()])
+    num_samples = sum([value[0] for value in random_samples.values()])  # type: ignore
 
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
@@ -360,3 +366,64 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
             qpd_gate_ids.append([i])
 
     return bases, qpd_gate_ids
+
+
+def _validate_samplers(
+    samplers: BaseSampler | dict[str | int, BaseSampler]
+) -> BaseSampler | dict[str | int, BaseSampler]:
+    samplers_out = samplers
+    if isinstance(samplers, BaseSampler):
+        if (
+            isinstance(samplers, AerSampler)
+            and "shots" in samplers.options
+            and samplers.options.shots is None
+        ):
+            _aer_sampler_warn()
+            samplers_out = ExactSampler()
+        elif isinstance(samplers, TerraSampler):
+            _terra_sampler_warn()
+            samplers_out = ExactSampler()
+
+    elif isinstance(samplers, dict):
+        for key, sampler in samplers.items():
+            if (
+                isinstance(sampler, AerSampler)
+                and "shots" in sampler.options
+                and sampler.options.shots is None
+            ):
+                _aer_sampler_warn()
+                samplers_out[key] = ExactSampler()
+            elif isinstance(sampler, TerraSampler):
+                _terra_sampler_warn()
+                samplers_out[key] = ExactSampler()
+            elif isinstance(sampler, BaseSampler):
+                samplers_out[key] = sampler
+            else:
+                _bad_samplers_error()
+
+    else:
+        _bad_samplers_error()
+
+    return samplers_out
+
+
+def _aer_sampler_warn() -> None:
+    warnings.warn(
+        f"qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
+        "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
+        RuntimeWarning,
+    )
+
+
+def _terra_sampler_warn() -> None:
+    warnings.warn(
+        f"qiskit.primitives.Sampler does not support mid-circuit measurements. "
+        "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
+        RuntimeWarning,
+    )
+
+
+def _bad_samplers_error() -> None:
+    raise ValueError(
+        "The samplers dictionary must be a mapping from partition labels to qiskit.primitives.BaseSampler instances."
+    )
