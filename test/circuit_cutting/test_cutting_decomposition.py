@@ -157,7 +157,7 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             observable = PauliList(["ZZXX"])
 
-            subcircuits, subobservables = partition_problem(
+            subcircuits, subobservables, _ = partition_problem(
                 self.circuit, partition_labels, observables=observable
             )
             for subcircuit in subcircuits.values():
@@ -176,7 +176,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             partition_labels = "AB"
 
             with pytest.raises(ValueError) as e_info:
-                subcircuits, subobservables = partition_problem(
+                subcircuits, subobservables, _ = partition_problem(
                     self.circuit, partition_labels
                 )
             assert (
@@ -188,7 +188,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             observable = PauliList(["ZZ"])
 
             with pytest.raises(ValueError) as e_info:
-                subcircuits, subobservables = partition_problem(
+                subcircuits, subobservables, _ = partition_problem(
                     self.circuit, partition_labels, observable
                 )
             assert (
@@ -208,5 +208,5 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             qc = QuantumCircuit(2)
             qc.cx(0, 1)
-            qpd_qc = decompose_gates(qc, [0])
+            qpd_qc, _ = decompose_gates(qc, [0])
             self.assertEqual(qpd_qc, compare_qc)
