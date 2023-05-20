@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import copy
 import warnings
 from typing import Any
 from collections.abc import Sequence
@@ -370,7 +371,7 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
 def _validate_samplers(
     samplers: BaseSampler | dict[str | int, BaseSampler]
 ) -> BaseSampler | dict[str | int, BaseSampler]:
-    samplers_out = samplers
+    samplers_out = copy.copy(samplers)
     if isinstance(samplers, BaseSampler):
         if (
             isinstance(samplers, AerSampler)
