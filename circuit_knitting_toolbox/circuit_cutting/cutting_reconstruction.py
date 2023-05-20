@@ -38,7 +38,7 @@ def reconstruct_expectation_values(
             QPD bit information from each sub-experiment
         coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
-            the length of ``counts``. Each coefficient is a tuple containing the numerical
+            the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical
             value and the ``WeightType`` denoting how the value was generated.
         observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
@@ -48,7 +48,15 @@ def reconstruct_expectation_values(
     Returns:
         A ``list`` of ``float``\ s, such that each float is a simulated expectation
         value corresponding to the input observable in the same position
+
+    Raises:
+        ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
     """
+    if len(coefficients) != len(quasi_dists):
+        raise ValueError(
+            f"The number of unique samples in the quasi_dists list ({len(quasi_dists)}) does "
+            f"not equal the number of coefficients ({len(coefficients)})"
+        )
     # Create the commuting observable groups
     if isinstance(observables, PauliList):
         subobservables_by_subsystem = decompose_observables(
