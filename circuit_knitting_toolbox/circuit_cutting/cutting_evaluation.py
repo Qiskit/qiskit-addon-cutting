@@ -13,7 +13,6 @@
 
 from __future__ import annotations
 
-import copy
 import warnings
 from typing import Any
 from collections.abc import Sequence
@@ -409,7 +408,7 @@ def _validate_samplers(
 
 def _aer_sampler_warn() -> None:
     warnings.warn(
-        f"qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
+        "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
         "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
         RuntimeWarning,
     )
@@ -417,7 +416,7 @@ def _aer_sampler_warn() -> None:
 
 def _terra_sampler_warn() -> None:
     warnings.warn(
-        f"qiskit.primitives.Sampler does not support mid-circuit measurements. "
+        "qiskit.primitives.Sampler does not support mid-circuit measurements. "
         "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
         RuntimeWarning,
     )
