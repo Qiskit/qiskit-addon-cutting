@@ -71,7 +71,6 @@ def execute_experiments(
         ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
     """
-    samplers = _validate_samplers(samplers)
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
 
@@ -87,6 +86,9 @@ def execute_experiments(
             "If a QuantumCircuit is passed as the circuits argument, a PauliList "
             "is expected as the observables argument."
         )
+
+    # Ensure input Samplers can handle mid-circuit measurements
+    samplers = _validate_samplers(samplers)
 
     # Generate the sub-experiments to run on backend
     (
