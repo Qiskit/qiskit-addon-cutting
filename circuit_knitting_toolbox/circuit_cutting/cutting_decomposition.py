@@ -96,7 +96,7 @@ def partition_circuit_qubits(
 
 def decompose_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
-) -> QuantumCircuit:
+) -> tuple[QuantumCircuit, list[QPDBasis]]:
     r"""
     Transform specified gates into :class:`TwoQubitQPDGate`\ s.
 
@@ -107,25 +107,31 @@ def decompose_gates(
 
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
+        and a list of ``QPDBasis`` instances -- one for each decomposed gate.
     """
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
         circuit = circuit.copy()
+
+    bases = []
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
         qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
         decomposition = QPDBasis.from_gate(gate.operation)
+        bases.append(decomposition)
         qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
         circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
-    return circuit
+    return circuit, bases
 
 
 def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
     observables: PauliList | None = None,
-) -> tuple[dict[str | int, QuantumCircuit], dict[str | int, PauliList] | None]:
+) -> tuple[
+    dict[str | int, QuantumCircuit], dict[str | int, PauliList] | None, list[QPDBasis]
+]:
     """
     Separate an input circuit and observable(s) along qubit partition labels.
 
@@ -143,8 +149,9 @@ def partition_problem(
         observables: The observables to separate
 
     Returns:
-        A tuple containing a dictionary mapping a partition label to a subcircuit
-        and a dictionary mapping a partition label to a list of Pauli observables
+        A tuple containing a dictionary mapping a partition label to a subcircuit,
+        a dictionary mapping a partition label to a list of Pauli observables, and a list
+        of QPD bases -- one for each decomposed gate or wire.
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -165,9 +172,12 @@ def partition_problem(
 
     # Partition the circuit with TwoQubitQPDGates and assign the order via their labels
     qpd_circuit = partition_circuit_qubits(circuit, partition_labels)
+
+    bases = []
     i = 0
     for inst in qpd_circuit.data:
         if isinstance(inst.operation, TwoQubitQPDGate):
+            bases.append(inst.operation.basis)
             inst.operation.label = inst.operation.label + f"_{i}"
             i += 1
 
@@ -182,7 +192,7 @@ def partition_problem(
             observables, partition_labels
         )
 
-    return separated_circs.subcircuits, subobservables_by_subsystem
+    return separated_circs.subcircuits, subobservables_by_subsystem, bases
 
 
 def decompose_observables(
