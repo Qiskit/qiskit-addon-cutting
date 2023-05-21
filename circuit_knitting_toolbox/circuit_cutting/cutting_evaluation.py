@@ -70,6 +70,7 @@ def execute_experiments(
         ValueError: The number of requested samples must be positive.
         ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
+        ValueError: The keys for the input dictionaries are not equivalent.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
@@ -86,6 +87,16 @@ def execute_experiments(
             "If a QuantumCircuit is passed as the circuits argument, a PauliList "
             "is expected as the observables argument."
         )
+
+    if isinstance(circuits, dict):
+        if circuits.keys() != observables.keys():
+            raise ValueError(
+                "The keys for the circuits and observabes dicts should be equivalent."
+            )
+        if isinstance(samplers, dict) and circuits.keys() != samplers.keys():
+            raise ValueError(
+                "The keys for the circuits and samplers dicts should be equivalent."
+            )
 
     # Ensure input Samplers can handle mid-circuit measurements
     samplers = _validate_samplers(samplers)
