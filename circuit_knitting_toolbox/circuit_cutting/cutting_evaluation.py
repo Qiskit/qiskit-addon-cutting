@@ -313,8 +313,18 @@ def _run_experiments_batch(
     quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
 
     # Reshape the output data to match the input
-    quasi_dists_reshaped = np.reshape(quasi_dists_flat, np.shape(subexperiments))
-    num_qpd_bits = np.reshape(num_qpd_bits_flat, np.shape(subexperiments))
+    if len(subexperiments) == 1:
+        quasi_dists_reshaped = np.array([quasi_dists_flat])
+        num_qpd_bits = np.array([num_qpd_bits_flat])
+    else:
+        # We manually build the shape tuple in second arg because it behaves strangely
+        # with QuantumCircuits in some versions. (e.g. passes local pytest but fails in tox env)
+        quasi_dists_reshaped = np.reshape(
+            quasi_dists_flat, (len(subexperiments), len(subexperiments[0]))
+        )
+        num_qpd_bits = np.reshape(
+            num_qpd_bits_flat, (len(subexperiments), len(subexperiments[0]))
+        )
 
     # Create the counts tuples, which include the number of QPD measurement bits
     quasi_dists: list[list[tuple[dict[str, float], int]]] = [
