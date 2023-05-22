@@ -104,7 +104,6 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("Empty circuit"):
             circ = QuantumCircuit()
             new_circ = decompose_qpd_instructions(QuantumCircuit(), [])
-            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
             self.assertEqual(circ, new_circ)
         with self.subTest("No QPD circuit"):
             circ = QuantumCircuit(2, 1)
@@ -112,7 +111,6 @@ class TestQPDFunctions(unittest.TestCase):
             circ.cx(0, 1)
             circ.measure(1, 0)
             new_circ = decompose_qpd_instructions(circ, [])
-            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
             self.assertEqual(circ, new_circ)
         with self.subTest("Single QPD gate"):
             circ = QuantumCircuit(2)
