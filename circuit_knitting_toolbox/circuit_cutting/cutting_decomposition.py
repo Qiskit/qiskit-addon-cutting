@@ -74,7 +74,7 @@ def partition_circuit_qubits(
             or len(partitions_spanned) == 1
             or isinstance(instruction.operation, Barrier)
         ):
-            continue  # pragma: no coverage
+            continue
 
         if len(qubit_indices) > 2:
             raise ValueError(
