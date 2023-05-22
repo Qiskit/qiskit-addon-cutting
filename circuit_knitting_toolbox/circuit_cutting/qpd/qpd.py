@@ -384,23 +384,24 @@ def _decompose_qpd_measurements(
         if instruction.operation.name.lower() == "qpd_measure"
     ]
 
-    # Create a classical register for the qpd measurement results.  This is
-    # partly for convenience, partly to work around
-    # https://github.com/Qiskit/qiskit-aer/issues/1660.
-    reg = ClassicalRegister(len(qpd_measure_ids), name="qpd_measurements")
-    circuit.add_register(reg)
+    if len(qpd_measure_ids) > 0:
+        # Create a classical register for the qpd measurement results.  This is
+        # partly for convenience, partly to work around
+        # https://github.com/Qiskit/qiskit-aer/issues/1660.
+        reg = ClassicalRegister(len(qpd_measure_ids), name="qpd_measurements")
+        circuit.add_register(reg)
 
-    # Place the measurement instructions
-    for idx, i in enumerate(qpd_measure_ids):
-        gate = circuit.data[i]
-        inst = CircuitInstruction(
-            operation=Measure(), qubits=[gate.qubits], clbits=[reg[idx]]
-        )
-        circuit.data[i] = inst
+        # Place the measurement instructions
+        for idx, i in enumerate(qpd_measure_ids):
+            gate = circuit.data[i]
+            inst = CircuitInstruction(
+                operation=Measure(), qubits=[gate.qubits], clbits=[reg[idx]]
+            )
+            circuit.data[i] = inst
 
-    # If the user wants to access the qpd register, it will be the final
-    # classical register of the returned circuit.
-    assert circuit.cregs[-1] is reg
+        # If the user wants to access the qpd register, it will be the final
+        # classical register of the returned circuit.
+        assert circuit.cregs[-1] is reg
 
     return circuit
 

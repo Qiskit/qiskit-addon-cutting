@@ -200,7 +200,7 @@ def append_measurement_circuit(
         actual_qubit = qubit_locations[subqubit]
         if genobs_x[subqubit]:
             if genobs_z[subqubit]:
-                qc.sdg(actual_qubit)
+                qc.sdg(actual_qubit)  # pragma: no coverage
             qc.h(actual_qubit)
         qc.measure(actual_qubit, obs_creg[clbit])
 
@@ -295,18 +295,15 @@ def _run_experiments_batch(
     # Run all the experiments in one big batch
     experiments_flat = list(chain.from_iterable(subexperiments))
     for circ in experiments_flat:
-        if len(circ.cregs) < 1 or circ.cregs[-1].name != "observable_measurements":
-            raise ValueError(
-                "Circuit's last register is expected to be named 'observable_measurements'."
-            )
-        if len(circ.cregs) > 1 and circ.cregs[-2].name != "qpd_measurements":
-            raise ValueError(
-                "Circuit's next-to-last register is expected to be named 'qpd_measurements'."
-            )
+        assert not (
+            len(circ.cregs) < 1 or circ.cregs[-1].name != "observable_measurements"
+        )
+        assert not (len(circ.cregs) > 1 and circ.cregs[-2].name != "qpd_measurements")
 
         if len(circ.cregs) < 2:
             num_qpd_bits_flat.append(0)  # No gates decomposed to a measurement
         else:
+            print(circ.cregs)
             num_qpd_bits_flat.append(len(circ.cregs[-2]))
 
     # Run all of the batched experiments

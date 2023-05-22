@@ -29,8 +29,9 @@ from qiskit.circuit.library.standard_gates import (
 )
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
-from qiskit_aer.primitives import Estimator, Sampler
+from qiskit_aer.primitives import Estimator
 
+from circuit_knitting_toolbox.utils.simulation import ExactSampler
 from circuit_knitting_toolbox.circuit_cutting import (
     partition_problem,
     execute_experiments,
@@ -108,7 +109,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     exact_expvals = (
         estimator.run([qc0] * len(observables), list(observables)).result().values
     )
-    sampler = Sampler(run_options={"shots": None})
+    sampler = ExactSampler()
     subcircuits, subobservables, bases = partition_problem(
         qc, "AAB", observables=observables
     )

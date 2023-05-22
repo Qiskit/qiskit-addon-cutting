@@ -13,12 +13,24 @@ import pytest
 import unittest
 
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.circuit import QuantumCircuit, ClassicalRegister
+from qiskit.result import QuasiDistribution
+from qiskit.primitives import Sampler as TerraSampler
+from qiskit_aer.primitives import Sampler as AerSampler
+from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
+from qiskit.circuit.library.standard_gates import XGate
 
 from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
+from circuit_knitting_toolbox.utils.simulation import ExactSampler
+from circuit_knitting_toolbox.circuit_cutting.qpd import (
+    SingleQubitQPDGate,
+    TwoQubitQPDGate,
+    QPDBasis,
+)
 from circuit_knitting_toolbox.circuit_cutting.cutting_evaluation import (
     append_measurement_circuit,
+    execute_experiments,
 )
+from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
 
 
 class TestCuttingEvaluation(unittest.TestCase):
@@ -35,6 +47,218 @@ class TestCuttingEvaluation(unittest.TestCase):
         self.cog = CommutingObservableGroup(
             Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"]))
         )
+
+        self.circuit = QuantumCircuit(2)
+        self.circuit.append(
+            CircuitInstruction(
+                TwoQubitQPDGate(QPDBasis(maps=[([XGate()], [XGate()])], coeffs=[1.0])),
+                qubits=[0, 1],
+            )
+        )
+        self.circuit[0].operation.basis_id = 0
+        self.observable = PauliList(["ZZ"])
+        self.sampler = ExactSampler()
+
+    def test_execute_experiments(self):
+        with self.subTest("Basic test"):
+            quasi_dists, coefficients = execute_experiments(
+                self.circuit, self.observable, num_samples=50, samplers=self.sampler
+            )
+            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Terra sampler"):
+            quasi_dists, coefficients = execute_experiments(
+                self.circuit, self.observable, num_samples=50, samplers=TerraSampler()
+            )
+            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Aer sampler no shots"):
+            quasi_dists, coefficients = execute_experiments(
+                self.circuit,
+                self.observable,
+                num_samples=50,
+                samplers=AerSampler(run_options={"shots": None}),
+            )
+            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Basic test with dicts"):
+            circ1 = QuantumCircuit(1)
+            circ1.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(
+                        QPDBasis(maps=[([XGate()], [XGate()])], coeffs=[1.0]),
+                        qubit_id=0,
+                        label="cut_cx_0",
+                    ),
+                    qubits=[0],
+                )
+            )
+            circ2 = QuantumCircuit(1)
+            circ2.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(
+                        QPDBasis(maps=[([XGate()], [XGate()])], coeffs=[1.0]),
+                        qubit_id=1,
+                        label="cut_cx_0",
+                    ),
+                    qubits=[0],
+                )
+            )
+            subcircuits = {"A": circ1, "B": circ2}
+            subobservables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
+            quasi_dists, coefficients = execute_experiments(
+                subcircuits,
+                subobservables,
+                num_samples=50,
+                samplers={"A": self.sampler, "B": self.sampler},
+            )
+            self.assertEqual(
+                [
+                    [
+                        [(QuasiDistribution({1: 1.0}), 0)],
+                        [(QuasiDistribution({1: 1.0}), 0)],
+                    ]
+                ],
+                quasi_dists,
+            )
+            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Terra/Aer samplers with dicts"):
+            circ1 = QuantumCircuit(1)
+            circ1.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(
+                        QPDBasis(maps=[([XGate()], [XGate()])], coeffs=[1.0]),
+                        qubit_id=0,
+                        label="cut_cx_0",
+                    ),
+                    qubits=[0],
+                )
+            )
+            circ2 = QuantumCircuit(1)
+            circ2.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(
+                        QPDBasis(maps=[([XGate()], [XGate()])], coeffs=[1.0]),
+                        qubit_id=1,
+                        label="cut_cx_0",
+                    ),
+                    qubits=[0],
+                )
+            )
+            subcircuits = {"A": circ1, "B": circ2}
+            subobservables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
+            quasi_dists, coefficients = execute_experiments(
+                subcircuits,
+                subobservables,
+                num_samples=50,
+                samplers={
+                    "A": TerraSampler(),
+                    "B": AerSampler(run_options={"shots": None}),
+                },
+            )
+            self.assertEqual(
+                [
+                    [
+                        [(QuasiDistribution({1: 1.0}), 0)],
+                        [(QuasiDistribution({1: 1.0}), 0)],
+                    ]
+                ],
+                quasi_dists,
+            )
+            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Bad samplers"):
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit, self.observable, num_samples=50, samplers=42
+                )
+            assert e_info.value.args[0] == (
+                "The samplers input argument must be either an instance of qiskit.primitives.BaseSampler "
+                "or a mapping from partition labels to qiskit.primitives.BaseSampler instances."
+            )
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit, self.observable, num_samples=50, samplers={42: 42}
+                )
+            assert e_info.value.args[0] == (
+                "The samplers input argument must be either an instance of qiskit.primitives.BaseSampler "
+                "or a mapping from partition labels to qiskit.primitives.BaseSampler instances."
+            )
+        with self.subTest("Negative num-samples"):
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit, self.observable, num_samples=-1, samplers=self.sampler
+                )
+            assert (
+                e_info.value.args[0]
+                == "The number of requested samples must be positive."
+            )
+        with self.subTest("Incompatible inputs"):
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    {"A": self.circuit},
+                    self.observable,
+                    num_samples=100,
+                    samplers=self.sampler,
+                )
+            assert e_info.value.args[0] == (
+                "If a partition mapping (dict[label, subcircuit]) is passed as the circuits argument, a "
+                "partition mapping (dict[label, subobservables]) is expected as the observables argument."
+            )
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit,
+                    {"A": self.observable},
+                    num_samples=100,
+                    samplers=self.sampler,
+                )
+            assert e_info.value.args[0] == (
+                "If a QuantumCircuit is passed as the circuits argument, a PauliList "
+                "is expected as the observables argument."
+            )
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    {"B": self.circuit},
+                    {"A": self.observable},
+                    num_samples=100,
+                    samplers=self.sampler,
+                )
+            assert (
+                e_info.value.args[0]
+                == "The keys for the circuits and observabes dicts should be equivalent."
+            )
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    {"A": self.circuit},
+                    {"A": self.observable},
+                    num_samples=100,
+                    samplers={"B": self.sampler},
+                )
+            assert (
+                e_info.value.args[0]
+                == "The keys for the circuits and samplers dicts should be equivalent."
+            )
+        with self.subTest("Single qubit gate in QuantumCircuit input"):
+            circuit = QuantumCircuit(1)
+            circuit.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(
+                        QPDBasis(maps=[([XGate()],)], coeffs=[1.0]), qubit_id=0
+                    ),
+                    qubits=[0],
+                )
+            )
+            observable = PauliList(["Z"])
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    circuit,
+                    observable,
+                    num_samples=50,
+                    samplers=self.sampler,
+                )
+            assert (
+                e_info.value.args[0]
+                == "SingleQubitQPDGates are not supported in unseparable circuits."
+            )
 
     def test_append_measurement_circuit(self):
         qc = self.qc1.copy()

@@ -10,7 +10,9 @@ Glossary of terms
 -----------------
 * **decompose**: Replace an abstracted gate with a more explicit representation. `BaseQPDGate`\ s decompose to a set of local operations, as specified by their `basis` and `basis_id` fields.
 * **separate**: Pull the qubits apart in a circuit or observable to create subcircuits or subobservables.
-* **sample**: One sample from the decomposed instructions' joint quasiprobability distribution. This could refer to a `QuantumCircuit` with its `BaseQPDGate`\ s decomposed into local operations or a tuple of sampled indices describing a particular circuit decomposition. Each index in the tuple corresponds to one decomposed operation in the circuit, and it should be applied to its corresponding `BaseQPDGate`\ 's `basis_id` field.
+* **sample**: One sample from the decomposed instructions' joint quasiprobability distribution. This could refer to:
+  * A `QuantumCircuit` with its `BaseQPDGate`\ s decomposed into local operations
+  * A tuple of sampled indices describing a particular circuit decomposition. Each index in the tuple corresponds to one decomposed operation in the circuit, and it should be applied to its corresponding `BaseQPDGate`\ 's `basis_id` field.
 * **subcircuits**: The set of circuits resulting from decomposing operations in a `QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain `SingleQubitQPDGate`\ s and will be used to instantiate each unique sample.
 * **subexperiments**: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their `BaseQPDGate`\ s decomposed into local operations and are the circuits sent to the backend for execution.
 * **partition**:
