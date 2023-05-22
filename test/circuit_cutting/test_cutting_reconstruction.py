@@ -21,7 +21,7 @@ from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
 from circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction import (
-    process_outcome,
+    _process_outcome,
     reconstruct_expectation_values,
 )
 
@@ -81,4 +81,4 @@ class TestCuttingReconstruction(unittest.TestCase):
             int(f"0b{outcome}", 0),
             hex(int(f"0b{outcome}", 0)),
         ):
-            assert np.all(process_outcome(num_qpd_bits, self.cog, o) == expected)
+            assert np.all(_process_outcome(num_qpd_bits, self.cog, o) == expected)

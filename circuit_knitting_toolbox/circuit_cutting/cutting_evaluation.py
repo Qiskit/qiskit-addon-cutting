@@ -142,7 +142,7 @@ def execute_experiments(
     return quasi_dists, coefficients
 
 
-def append_measurement_circuit(
+def _append_measurement_circuit(
     qc: QuantumCircuit,
     cog: CommutingObservableGroup,
     /,
@@ -278,7 +278,7 @@ def _generate_cutting_experiments(
             subexperiments[-1].append([])
             so = subsystem_observables[label]
             for j, cog in enumerate(so.groups):
-                meas_qc = append_measurement_circuit(decomp_qc, cog)
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 # Should have strictly 2 classical registers, "qpd measurements" and "observable_measurements"
                 subexperiments[-1][-1].append(meas_qc)
 

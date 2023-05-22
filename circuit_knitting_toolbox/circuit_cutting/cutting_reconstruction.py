@@ -84,7 +84,7 @@ def reconstruct_expectation_values(
             for k, cog in enumerate(so.groups):
                 quasi_probs = quasi_dists[i][j][k][0]
                 for outcome, quasi_prob in quasi_probs.items():
-                    subsystem_expvals[k] += quasi_prob * process_outcome(
+                    subsystem_expvals[k] += quasi_prob * _process_outcome(
                         quasi_dists[i][j][k][1], cog, outcome
                     )
 
@@ -98,7 +98,7 @@ def reconstruct_expectation_values(
     return list(expvals)
 
 
-def process_outcome(
+def _process_outcome(
     num_qpd_bits: int, cog: CommutingObservableGroup, outcome: int | str, /
 ) -> np.typing.NDArray[np.float64]:
     """
