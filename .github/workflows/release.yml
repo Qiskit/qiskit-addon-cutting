@@ -16,7 +16,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Publish release
-        uses: eloquent/github-release-action@v3
+        uses: eloquent/github-release-action@v4
         if: github.ref_type == 'tag'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
