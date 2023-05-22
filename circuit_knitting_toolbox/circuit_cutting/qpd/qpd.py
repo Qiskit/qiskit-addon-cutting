@@ -16,6 +16,7 @@ from __future__ import annotations
 from collections.abc import Sequence, Callable
 from enum import Enum
 import itertools
+import math
 
 import numpy as np
 from qiskit.circuit import (
@@ -61,7 +62,7 @@ class WeightType(Enum):
 
 
 def generate_qpd_samples(
-    qpd_bases: Sequence[QPDBasis], num_samples: int = 1000
+    qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
     """
     Generate random quasiprobability decompositions.
@@ -80,14 +81,15 @@ def generate_qpd_samples(
         weight of the contribution.  The second element is the :class:`WeightType`,
         either ``EXACT`` or ``SAMPLED``.
     """
-    if num_samples <= 0:
-        raise ValueError("num_samples must be positive.")
+    if not num_samples >= 1:
+        raise ValueError("num_samples must be at least 1.")
 
     # Determine if the smallest probability is above the threshold implied by
     # num_samples.  If so, then we can evaluate all weights exactly.
     probabilities_by_basis = [basis.probabilities for basis in qpd_bases]
     smallest_probability = np.prod([min(probs) for probs in probabilities_by_basis])
     if smallest_probability >= 1 / num_samples:
+        multiplier = num_samples if math.isfinite(num_samples) else 1.0
         retval: dict[tuple[int, ...], tuple[float, WeightType]] = {}
         for map_ids in itertools.product(
             *[range(len(probs)) for probs in probabilities_by_basis]
@@ -95,16 +97,17 @@ def generate_qpd_samples(
             probability = np.prod(
                 [probs[i] for i, probs in strict_zip(map_ids, probabilities_by_basis)]
             )
-            retval[map_ids] = (num_samples * probability, WeightType.EXACT)
+            retval[map_ids] = (multiplier * probability, WeightType.EXACT)
         return retval
 
     # Loop through each gate and sample from its distribution num_samples times
     samples_by_decomp = []
+    sample_multiplier = num_samples / math.ceil(num_samples)
     for basis in qpd_bases:
         samples_by_decomp.append(
             np.random.choice(
                 range(len(basis.probabilities)),
-                num_samples,
+                math.ceil(num_samples),
                 p=basis.probabilities,
             )
         )
@@ -115,7 +118,10 @@ def generate_qpd_samples(
         # Increment the counter for this basis selection
         random_samples[decomp_ids] = random_samples.setdefault(decomp_ids, 0) + 1
 
-    return {k: (v, WeightType.SAMPLED) for k, v in random_samples.items()}
+    return {
+        k: (v * sample_multiplier, WeightType.SAMPLED)
+        for k, v in random_samples.items()
+    }
 
 
 def decompose_qpd_instructions(

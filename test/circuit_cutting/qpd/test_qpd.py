@@ -12,6 +12,7 @@
 """Tests for quasiprobability decomposition functions."""
 
 import unittest
+import math
 
 import pytest
 import numpy as np
@@ -72,11 +73,15 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("Negative number of samples"):
             with pytest.raises(ValueError) as e_info:
                 generate_qpd_samples([], -100)
-            assert e_info.value.args[0] == "num_samples must be positive."
+            assert e_info.value.args[0] == "num_samples must be at least 1."
+        with self.subTest("num_samples == NaN"):
+            with pytest.raises(ValueError) as e_info:
+                generate_qpd_samples([], math.nan)
+            assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("Zero samples requested"):
             with pytest.raises(ValueError) as e_info:
                 generate_qpd_samples([], 0)
-            assert e_info.value.args[0] == "num_samples must be positive."
+            assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("Empty case"):
             empty_samples = {(): (1000, WeightType.EXACT)}
             samples = generate_qpd_samples([])
@@ -89,6 +94,11 @@ class TestQPDFunctions(unittest.TestCase):
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
+        with self.subTest("HWEA 100.5 samples"):
+            basis_ids = [9, 20]
+            bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
+            samples = generate_qpd_samples(bases, num_samples=100.5)
+            assert sum(w for w, t in samples.values()) == pytest.approx(100.5)
         with self.subTest("HWEA exact weights"):
             # Do the same thing with num_samples above the threshold for exact weights
             basis_ids = [9, 20]
@@ -99,6 +109,13 @@ class TestQPDFunctions(unittest.TestCase):
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
+        with self.subTest("HWEA exact weights via 'infinite' num_samples"):
+            # Do the same thing with num_samples above the threshold for exact weights
+            basis_ids = [9, 20]
+            bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
+            samples = generate_qpd_samples(bases, num_samples=math.inf)
+            assert sum(w for w, t in samples.values()) == pytest.approx(1)
+            assert all(t == WeightType.EXACT for w, t in samples.values())
 
     def test_decompose_qpd_instructions(self):
         with self.subTest("Empty circuit"):
