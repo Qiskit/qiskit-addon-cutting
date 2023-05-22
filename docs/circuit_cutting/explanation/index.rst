@@ -19,8 +19,8 @@ Glossary of terms
 
 Current limitations
 -------------------
-* No support for wire cutting until CKT >= v0.3.0
-* `PauliList` is the only supported observable format until CKT >= v.0.3.0
+* No support for wire cutting until no sooner than CKT v0.3.0
+* `PauliList` is the only supported observable format until no sooner than CKT v.0.3.0
 
 References
 ----------
