@@ -110,7 +110,6 @@ class TestQPDFunctions(unittest.TestCase):
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
         with self.subTest("HWEA exact weights via 'infinite' num_samples"):
-            # Do the same thing with num_samples above the threshold for exact weights
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
             samples = generate_qpd_samples(bases, num_samples=math.inf)
