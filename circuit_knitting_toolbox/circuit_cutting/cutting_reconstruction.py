@@ -55,7 +55,7 @@ def reconstruct_expectation_values(
     if len(coefficients) != len(quasi_dists):
         raise ValueError(
             f"The number of unique samples in the quasi_dists list ({len(quasi_dists)}) does "
-            f"not equal the number of coefficients ({len(coefficients)})"
+            f"not equal the number of coefficients ({len(coefficients)})."
         )
     # Create the commuting observable groups
     if isinstance(observables, PauliList):

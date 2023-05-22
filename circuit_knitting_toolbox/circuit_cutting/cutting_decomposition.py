@@ -67,13 +67,14 @@ def partition_circuit_qubits(
             continue
         qubit_indices = [circuit.find_bit(qubit).index for qubit in instruction.qubits]
         partitions_spanned = {partition_labels[idx] for idx in qubit_indices}
+
         # Ignore local gates and gates that span only one partition
         if (
             len(qubit_indices) <= 1
             or len(partitions_spanned) == 1
             or isinstance(instruction.operation, Barrier)
         ):
-            continue
+            continue  # pragma: no coverage
 
         if len(qubit_indices) > 2:
             raise ValueError(

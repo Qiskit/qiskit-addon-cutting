@@ -12,13 +12,17 @@
 import unittest
 from ddt import ddt, data, unpack
 
+import pytest
 import numpy as np
+from qiskit.result import QuasiDistribution
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
 from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
+from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
 from circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction import (
     process_outcome,
+    reconstruct_expectation_values,
 )
 
 
@@ -37,6 +41,26 @@ class TestCuttingReconstruction(unittest.TestCase):
         self.cog = CommutingObservableGroup(
             Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"]))
         )
+
+    def test_cutting_reconstruction(self):
+        with self.subTest("Test PauliList observable"):
+            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
+            coefficients = [(1.0, WeightType.EXACT)]
+            observables = PauliList(["ZZ"])
+            expvals = reconstruct_expectation_values(
+                quasi_dists, coefficients, observables
+            )
+            self.assertEqual([1.0], expvals)
+        with self.subTest("Test mismatching inputs"):
+            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
+            coefficients = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            observables = PauliList(["ZZ"])
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+            assert (
+                e_info.value.args[0]
+                == "The number of unique samples in the quasi_dists list (1) does not equal the number of coefficients (2)."
+            )
 
     @data(
         ("000", [1, 1, 1]),
