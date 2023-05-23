@@ -1,0 +1,5 @@
+# numpy
+py:class numpy.ndarray
+
+# qiskit
+py:class qiskit.opflow.list_ops.list_op.ListOp

@@ -76,3 +76,12 @@ exclude_patterns = [
     "test_notebooks",
     "**/README.rst",
 ]
+
+# Enable nitpicky mode, and read from nitpick-exceptions file
+nitpicky = True
+nitpick_ignore = []
+with open("nitpick-exceptions") as f:
+    for line in f:
+        line = line.strip()
+        if line and not line.startswith("#"):
+            nitpick_ignore.append(tuple(line.split(None, 1)))
