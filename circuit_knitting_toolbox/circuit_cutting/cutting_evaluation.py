@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import copy
 import warnings
-from typing import Any
+from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
 from multiprocessing.pool import ThreadPool
@@ -24,8 +24,8 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 from qiskit.primitives import BaseSampler, Sampler as TerraSampler
-from qiskit.result import QuasiDistribution
 from qiskit_aer.primitives import Sampler as AerSampler
+from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
@@ -41,14 +41,19 @@ from .qpd import (
 from .cutting_decomposition import decompose_observables
 
 
+class ExperimentResults(NamedTuple):
+    """The results of running each sampled subexperiment on the backend."""
+
+    quasi_dists: list[list[list[tuple[QuasiDistribution, int]]]]
+    coeffs: Sequence[tuple[float, WeightType]]
+
+
 def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-) -> tuple[
-    list[list[list[tuple[QuasiDistribution, int]]]], Sequence[tuple[float, WeightType]]
-]:
+) -> ExperimentResults:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -64,7 +69,7 @@ def execute_experiments(
     Returns:
         A tuple containing a 3D list of length-2 tuples holding the quasi-distributions
         and QPD bit information for each sub-experiment as well as the coefficients corresponding
-        to each unique sample
+        to each unique subexperiment's sampling frequency.
 
     Raises:
         ValueError: The number of requested samples must be positive.
@@ -139,7 +144,7 @@ def execute_experiments(
         for partition in quasi_dists_by_partition:
             quasi_dists[i].append(partition[i])
 
-    return quasi_dists, coefficients
+    return ExperimentResults(quasi_dists, coefficients)
 
 
 def _append_measurement_circuit(

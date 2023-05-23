@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence, Hashable
+from typing import NamedTuple
 
 from qiskit.circuit import (
     QuantumCircuit,
@@ -27,6 +28,14 @@ from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
+
+
+class PartitionedProblem(NamedTuple):
+    """The result of decomposing and separating a circuit and observables."""
+
+    subcircuits: dict[str | int, QuantumCircuit]
+    bases: list[QPDBasis]
+    subobservables: dict[str | int, QuantumCircuit] | None = None
 
 
 def partition_circuit_qubits(
@@ -130,9 +139,7 @@ def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
     observables: PauliList | None = None,
-) -> tuple[
-    dict[str | int, QuantumCircuit], dict[str | int, PauliList] | None, list[QPDBasis]
-]:
+) -> PartitionedProblem:
     """
     Separate an input circuit and observable(s) along qubit partition labels.
 
@@ -151,8 +158,9 @@ def partition_problem(
 
     Returns:
         A tuple containing a dictionary mapping a partition label to a subcircuit,
-        a dictionary mapping a partition label to a list of Pauli observables, and a list
-        of QPD bases -- one for each decomposed gate or wire.
+        a list of QPD bases -- one for each circuit gate or wire which was decomposed,
+        and, optionally, a dictionary mapping a partition label to a list of Pauli observables.
+
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -193,7 +201,11 @@ def partition_problem(
             observables, partition_labels
         )
 
-    return separated_circs.subcircuits, subobservables_by_subsystem, bases
+    return PartitionedProblem(
+        separated_circs.subcircuits,
+        bases=bases,
+        subobservables=subobservables_by_subsystem,
+    )
 
 
 def decompose_observables(

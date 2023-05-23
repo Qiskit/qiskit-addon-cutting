@@ -110,7 +110,7 @@ def test_cutting_exact_reconstruction(example_circuit):
         estimator.run([qc0] * len(observables), list(observables)).result().values
     )
     sampler = ExactSampler()
-    subcircuits, subobservables, bases = partition_problem(
+    subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables
     )
     quasi_dists, coefficients = execute_experiments(
