@@ -203,7 +203,7 @@ def partition_problem(
 
     return PartitionedProblem(
         separated_circs.subcircuits,
-        bases=bases,
+        bases,
         subobservables=subobservables_by_subsystem,
     )
 

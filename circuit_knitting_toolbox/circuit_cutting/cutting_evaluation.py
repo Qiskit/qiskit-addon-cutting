@@ -115,7 +115,7 @@ def execute_experiments(
         num_samples,
     )
 
-    # Create a rotating list of the backends of length equal to the number of partitions
+    # Create a list of samplers -- one for each qubit partition
     num_partitions = len(subexperiments[0])
     if isinstance(samplers, BaseSampler):
         samplers_by_partition = [samplers] * num_partitions
@@ -203,7 +203,7 @@ def _append_measurement_circuit(
         actual_qubit = qubit_locations[subqubit]
         if genobs_x[subqubit]:
             if genobs_z[subqubit]:
-                qc.sdg(actual_qubit)  # pragma: no coverage
+                qc.sdg(actual_qubit)
             qc.h(actual_qubit)
         qc.measure(actual_qubit, obs_creg[clbit])
 
@@ -217,8 +217,8 @@ def _generate_cutting_experiments(
 ) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[Any, WeightType]], list[float]]:
     """Generate all the experiments to run on the backend and their associated coefficients."""
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
-    # depending on whether the decomposed circuit was separated into subcircuits before calling
-    # execute_experiments, but the 2nd half of this function can be shared between both cases.
+    # depending on the format of the execute_experiments input args, but the 2nd half of this function
+    # can be shared between both cases.
     if isinstance(circuits, QuantumCircuit):
         is_separated = False
         subcircuit_list = [circuits]
@@ -282,7 +282,6 @@ def _generate_cutting_experiments(
             so = subsystem_observables[label]
             for j, cog in enumerate(so.groups):
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                # Should have strictly 2 classical registers, "qpd measurements" and "observable_measurements"
                 subexperiments[-1][-1].append(meas_qc)
 
     return subexperiments, coefficients, sampled_frequencies

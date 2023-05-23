@@ -103,7 +103,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     qc0 = example_circuit
     qc = qc0.copy()
 
-    observables = PauliList(["ZZZ"])
+    observables = PauliList(["ZYZ"])
 
     estimator = Estimator(run_options={"shots": None}, approximation=True)
     exact_expvals = (
