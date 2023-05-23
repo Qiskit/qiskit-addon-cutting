@@ -18,7 +18,7 @@ the new code.  These features currently specific to ``cutqc`` include:
 
 .. _cutqc tutorials:
 
-.. include:: tutorials/README.rst
+.. include:: README.rst
 
 .. nbgallery::
     :glob:
