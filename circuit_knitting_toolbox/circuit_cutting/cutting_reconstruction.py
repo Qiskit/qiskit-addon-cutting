@@ -29,7 +29,7 @@ def reconstruct_expectation_values(
     quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
     coefficients: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[str | int, PauliList],
-    phases: Sequence[complex] = None,
+    phases: Sequence[complex] | None = None,
 ) -> list[complex]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
