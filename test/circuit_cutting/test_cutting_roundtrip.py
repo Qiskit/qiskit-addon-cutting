@@ -103,9 +103,8 @@ def test_cutting_exact_reconstruction(example_circuit):
     qc0 = example_circuit
     qc = qc0.copy()
 
-    # The i is causing a "not Hermitian" error in Estimator. The - is causing slightly incorrect answers.
-    #observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
-    observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "XZI"])
+    observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
+    phases = np.array([(-1j) ** obs.phase for obs in observables])
 
     estimator = Estimator()
     exact_expvals = (
@@ -122,14 +121,9 @@ def test_cutting_exact_reconstruction(example_circuit):
         samplers=sampler,
     )
     simulated_expvals = reconstruct_expectation_values(
-        quasi_dists,
-        coefficients,
-        subobservables,
+        quasi_dists, coefficients, subobservables, phases=phases
     )
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))
 
-    print(exact_expvals[4])
-    print(simulated_expvals[4])
-    print(exact_expvals[4] - simulated_expvals[4])
-    #assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)
+    assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)

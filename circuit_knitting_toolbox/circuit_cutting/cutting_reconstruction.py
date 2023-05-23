@@ -29,7 +29,8 @@ def reconstruct_expectation_values(
     quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
     coefficients: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[str | int, PauliList],
-) -> list[float]:
+    phases: Sequence[complex] = None,
+) -> list[complex]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
@@ -44,6 +45,7 @@ def reconstruct_expectation_values(
             This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
             was not separated into subcircuits. If the decomposed circuit was separated, this
             should be a dictionary mapping from partition label to subobservables.
+        phases: A global phase which should be applied to each simulated expectation value
 
     Returns:
         A ``list`` of ``float``\ s, such that each float is a simulated expectation
@@ -51,6 +53,8 @@ def reconstruct_expectation_values(
 
     Raises:
         ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
+        ValueError: A phase has a magnitude not equal to 1.0.
+        ValueError: The ``phases`` and ``observables`` arguments are incompatible.
     """
     if len(coefficients) != len(quasi_dists):
         raise ValueError(
@@ -63,9 +67,25 @@ def reconstruct_expectation_values(
             observables, "A" * len(observables[0])
         )
         expvals = np.zeros(len(observables))
+
     else:
         subobservables_by_subsystem = observables
         expvals = np.zeros(len(list(observables.values())[0]))
+
+    # Prepare the phases for final simulated expectation values
+    if phases is None:
+        phases = [1.0 + 0j] * len(expvals)
+
+    else:
+        if len(phases) != len(expvals):
+            raise ValueError(
+                f"The number of phases ({len(phases)}) must equal the number of observables ({len(expvals)})."
+            )
+        for phase in phases:
+            if abs(phase) != 1.0:
+                raise ValueError(
+                    f"All phase magnitudes must equal 1.0. Phase ({phase}) encountered."
+                )
 
     subsystem_observables = {
         label: ObservableCollection(subobservables)
@@ -95,7 +115,10 @@ def reconstruct_expectation_values(
 
         expvals += coeff[0] * current_expvals
 
-    return list(expvals)
+    # Apply global phases to simulated expvals
+    expvals_w_phase = expvals * phases
+
+    return list(expvals_w_phase)
 
 
 def _process_outcome(
