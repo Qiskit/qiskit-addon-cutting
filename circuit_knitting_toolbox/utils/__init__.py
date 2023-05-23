@@ -16,9 +16,14 @@ Utility functions.
    :toctree: ../stubs/
    :nosignatures:
 
+   bitwise
    conversion
+   iteration
    metrics
+   observable_grouping
    orbital_reduction.reduce_bitstrings
+   simulation
+   transforms
 """
 
 from .orbital_reduction import reduce_bitstrings
