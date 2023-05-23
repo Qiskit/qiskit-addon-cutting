@@ -303,11 +303,7 @@ def _run_experiments_batch(
         )
         assert not (len(circ.cregs) > 1 and circ.cregs[-2].name != "qpd_measurements")
 
-        if len(circ.cregs) < 2:
-            num_qpd_bits_flat.append(0)  # No gates decomposed to a measurement
-        else:
-            print(circ.cregs)
-            num_qpd_bits_flat.append(len(circ.cregs[-2]))
+        num_qpd_bits_flat.append(len(circ.cregs[-2]))
 
     # Run all of the batched experiments
     quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
