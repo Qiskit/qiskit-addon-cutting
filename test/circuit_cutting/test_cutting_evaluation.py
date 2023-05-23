@@ -66,21 +66,6 @@ class TestCuttingEvaluation(unittest.TestCase):
             )
             self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
-        with self.subTest("Terra sampler"):
-            quasi_dists, coefficients = execute_experiments(
-                self.circuit, self.observable, num_samples=50, samplers=TerraSampler()
-            )
-            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
-            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
-        with self.subTest("Aer sampler no shots"):
-            quasi_dists, coefficients = execute_experiments(
-                self.circuit,
-                self.observable,
-                num_samples=50,
-                samplers=AerSampler(run_options={"shots": None}),
-            )
-            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
-            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Basic test with dicts"):
             circ1 = QuantumCircuit(1)
             circ1.append(
@@ -147,25 +132,62 @@ class TestCuttingEvaluation(unittest.TestCase):
             )
             subcircuits = {"A": circ1, "B": circ2}
             subobservables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
-            quasi_dists, coefficients = execute_experiments(
-                subcircuits,
-                subobservables,
-                num_samples=50,
-                samplers={
-                    "A": TerraSampler(),
-                    "B": AerSampler(run_options={"shots": None}),
-                },
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    subcircuits,
+                    subobservables,
+                    num_samples=50,
+                    samplers={
+                        "A": TerraSampler(),
+                        "B": TerraSampler(),
+                    },
+                )
+            assert e_info.value.args[0] == (
+                "qiskit.primitives.Sampler does not support mid-circuit measurements. "
+                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact "
+                "distributions for each subexperiment."
             )
-            self.assertEqual(
-                [
-                    [
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                    ]
-                ],
-                quasi_dists,
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    subcircuits,
+                    subobservables,
+                    num_samples=50,
+                    samplers={
+                        "A": AerSampler(run_options={"shots": None}),
+                        "B": AerSampler(run_options={"shots": None}),
+                    },
+                )
+            assert e_info.value.args[0] == (
+                "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
+                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+                "for each subexperiment."
             )
-            self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
+        with self.subTest("Terra sampler"):
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit,
+                    self.observable,
+                    num_samples=50,
+                    samplers=TerraSampler(),
+                )
+            assert e_info.value.args[0] == (
+                "qiskit.primitives.Sampler does not support mid-circuit measurements. "
+                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact "
+                "distributions for each subexperiment."
+            )
+        with self.subTest("Aer sampler no shots"):
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    self.circuit,
+                    self.observable,
+                    num_samples=50,
+                    samplers=AerSampler(run_options={"shots": None}),
+                )
+            assert e_info.value.args[0] == (
+                "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
+                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+                "for each subexperiment."
+            )
         with self.subTest("Bad samplers"):
             with pytest.raises(ValueError) as e_info:
                 execute_experiments(

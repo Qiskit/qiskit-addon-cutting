@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 import copy
-import warnings
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
@@ -29,7 +28,6 @@ from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
-from ..utils.simulation import ExactSampler
 from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
@@ -104,7 +102,7 @@ def execute_experiments(
             )
 
     # Ensure input Samplers can handle mid-circuit measurements
-    samplers = _validate_samplers(samplers)
+    _validate_samplers(samplers)
 
     # Generate the sub-experiments to run on backend
     (
@@ -393,9 +391,7 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
     return bases, qpd_gate_ids
 
 
-def _validate_samplers(
-    samplers: BaseSampler | dict[str | int, BaseSampler]
-) -> BaseSampler | dict[str | int, BaseSampler]:
+def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> None:
     """Replace unsupported statevector-based Samplers with ExactSampler."""
     samplers_out = copy.copy(samplers)
     if isinstance(samplers, BaseSampler):
@@ -404,11 +400,9 @@ def _validate_samplers(
             and "shots" in samplers.options
             and samplers.options.shots is None
         ):
-            _aer_sampler_warn()
-            samplers_out = ExactSampler()
+            _aer_sampler_error()
         elif isinstance(samplers, TerraSampler):
-            _terra_sampler_warn()
-            samplers_out = ExactSampler()
+            _terra_sampler_error()
 
     elif isinstance(samplers, dict):
         for key, sampler in samplers.items():
@@ -417,11 +411,9 @@ def _validate_samplers(
                 and "shots" in sampler.options
                 and sampler.options.shots is None
             ):
-                _aer_sampler_warn()
-                samplers_out[key] = ExactSampler()
+                _aer_sampler_error()
             elif isinstance(sampler, TerraSampler):
-                _terra_sampler_warn()
-                samplers_out[key] = ExactSampler()
+                _terra_sampler_error()
             elif isinstance(sampler, BaseSampler):
                 samplers_out[key] = sampler
             else:
@@ -430,22 +422,20 @@ def _validate_samplers(
     else:
         _bad_samplers_error()
 
-    return samplers_out
 
-
-def _aer_sampler_warn() -> None:
-    warnings.warn(
+def _aer_sampler_error() -> None:
+    raise ValueError(
         "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
-        "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
-        RuntimeWarning,
+        "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+        "for each subexperiment.",
     )
 
 
-def _terra_sampler_warn() -> None:
-    warnings.warn(
+def _terra_sampler_error() -> None:
+    raise ValueError(
         "qiskit.primitives.Sampler does not support mid-circuit measurements. "
-        "Using circuit_knitting_toolbox.utils.simulation.ExactSampler instead.",
-        RuntimeWarning,
+        "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+        "for each subexperiment."
     )
 
 
