@@ -121,8 +121,9 @@ def test_cutting_exact_reconstruction(example_circuit):
         samplers=sampler,
     )
     simulated_expvals = reconstruct_expectation_values(
-        quasi_dists, coefficients, subobservables, phases=phases
+        quasi_dists, coefficients, subobservables
     )
+    simulated_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))
 

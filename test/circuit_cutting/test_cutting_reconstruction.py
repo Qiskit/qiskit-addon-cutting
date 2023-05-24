@@ -61,28 +61,6 @@ class TestCuttingReconstruction(unittest.TestCase):
                 e_info.value.args[0]
                 == "The number of unique samples in the quasi_dists list (1) does not equal the number of coefficients (2)."
             )
-        with self.subTest("Test poorly formatted phases"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT)]
-            observables = PauliList(["ZZ"])
-            phases = [1.0, 1.0]
-            with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(
-                    quasi_dists, coefficients, observables, phases=phases
-                )
-            assert (
-                e_info.value.args[0]
-                == "The number of phases (2) must equal the number of observables (1)."
-            )
-            phases = [2.0]
-            with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(
-                    quasi_dists, coefficients, observables, phases=phases
-                )
-            assert (
-                e_info.value.args[0]
-                == "All phase magnitudes must equal 1.0. Phase (2.0) encountered."
-            )
 
     @data(
         ("000", [1, 1, 1]),
