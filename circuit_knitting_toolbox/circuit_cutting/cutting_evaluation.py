@@ -73,6 +73,7 @@ def execute_experiments(
         ValueError: The types of ``circuits`` and ``subobservables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
+        ValueError: The input circuits may not contain any classical registers or bits.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
