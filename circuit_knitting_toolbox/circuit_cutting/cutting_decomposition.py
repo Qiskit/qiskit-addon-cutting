@@ -158,7 +158,7 @@ def partition_problem(
 
     Returns:
         A tuple containing a dictionary mapping a partition label to a subcircuit,
-        a list of QPD bases -- one for each circuit gate or wire which was decomposed,
+        a list of QPD bases (one for each circuit gate or wire which was decomposed),
         and, optionally, a dictionary mapping a partition label to a list of Pauli observables.
 
 
