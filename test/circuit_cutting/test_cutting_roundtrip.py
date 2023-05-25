@@ -116,7 +116,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     )
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
-        observables=subobservables,
+        subobservables=subobservables,
         num_samples=1500,
         samplers=sampler,
     )

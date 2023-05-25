@@ -39,8 +39,8 @@ from .qpd import (
 from .cutting_decomposition import decompose_observables
 
 
-class ExperimentResults(NamedTuple):
-    """The results of running each sampled subexperiment on the backend."""
+class CuttingExperimentResults(NamedTuple):
+    """Circuit cutting subexperiment results and sampling coefficients."""
 
     quasi_dists: list[list[list[tuple[QuasiDistribution, int]]]]
     coeffs: Sequence[tuple[float, WeightType]]
@@ -48,16 +48,16 @@ class ExperimentResults(NamedTuple):
 
 def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
-    observables: PauliList | dict[str | int, PauliList],
+    subobservables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-) -> ExperimentResults:
+) -> CuttingExperimentResults:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
     Args:
         circuits: The circuit(s) resulting from decomposing nonlocal gates
-        observables: The observable(s) corresponding to the circuit(s). If
+        subobservables: The subobservable(s) corresponding to the circuit(s). If
             a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
             a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
             from partition label to subobservables is expected.
@@ -71,28 +71,28 @@ def execute_experiments(
 
     Raises:
         ValueError: The number of requested samples must be positive.
-        ValueError: The types of ``circuits`` and ``observables`` arguments are incompatible.
+        ValueError: The types of ``circuits`` and ``subobservables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
 
-    if isinstance(circuits, dict) and not isinstance(observables, dict):
+    if isinstance(circuits, dict) and not isinstance(subobservables, dict):
         raise ValueError(
             "If a partition mapping (dict[label, subcircuit]) is passed as the "
             "circuits argument, a partition mapping (dict[label, subobservables]) "
-            "is expected as the observables argument."
+            "is expected as the subobservables argument."
         )
 
-    if isinstance(circuits, QuantumCircuit) and isinstance(observables, dict):
+    if isinstance(circuits, QuantumCircuit) and isinstance(subobservables, dict):
         raise ValueError(
             "If a QuantumCircuit is passed as the circuits argument, a PauliList "
-            "is expected as the observables argument."
+            "is expected as the subobservables argument."
         )
 
     if isinstance(circuits, dict):
-        if circuits.keys() != observables.keys():
+        if circuits.keys() != subobservables.keys():
             raise ValueError(
                 "The keys for the circuits and observabes dicts should be equivalent."
             )
@@ -111,7 +111,7 @@ def execute_experiments(
         sampled_frequencies,
     ) = _generate_cutting_experiments(
         circuits,
-        observables,
+        subobservables,
         num_samples,
     )
 
@@ -142,7 +142,7 @@ def execute_experiments(
         for partition in quasi_dists_by_partition:
             quasi_dists[i].append(partition[i])
 
-    return ExperimentResults(quasi_dists, coefficients)
+    return CuttingExperimentResults(quasi_dists, coefficients)
 
 
 def _append_measurement_circuit(

@@ -224,7 +224,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "If a partition mapping (dict[label, subcircuit]) is passed as the circuits argument, a "
-                "partition mapping (dict[label, subobservables]) is expected as the observables argument."
+                "partition mapping (dict[label, subobservables]) is expected as the subobservables argument."
             )
             with pytest.raises(ValueError) as e_info:
                 execute_experiments(
@@ -235,7 +235,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "If a QuantumCircuit is passed as the circuits argument, a PauliList "
-                "is expected as the observables argument."
+                "is expected as the subobservables argument."
             )
             with pytest.raises(ValueError) as e_info:
                 execute_experiments(
