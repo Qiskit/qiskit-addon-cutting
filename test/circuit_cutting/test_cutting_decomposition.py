@@ -16,7 +16,7 @@ import unittest
 import pytest
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import CircuitInstruction, Barrier
+from qiskit.circuit import CircuitInstruction, Barrier, Clbit
 from qiskit.circuit.library import EfficientSU2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
 from qiskit.quantum_info import PauliList
@@ -195,6 +195,22 @@ class TestCuttingDecomposition(unittest.TestCase):
                 e_info.value.args[0]
                 == "An input observable acts on a different number of qubits than the input circuit."
             )
+        with self.subTest("Classical bit on input"):
+            # Split 4q HWEA in middle of qubits
+            partition_labels = "AABB"
+
+            observable = PauliList(["ZZXX"])
+
+            # Add a clbit
+            circuit = self.circuit.copy()
+            circuit.add_bits([Clbit()])
+
+            with pytest.raises(ValueError) as e_info:
+                partition_problem(circuit, partition_labels, observables=observable)
+            assert (
+                e_info.value.args[0]
+                == "Circuits input to execute_experiments should contain no classical registers or bits."
+            )
 
     def test_decompose_gates(self):
         with self.subTest("simple circuit"):
@@ -210,3 +226,12 @@ class TestCuttingDecomposition(unittest.TestCase):
             qc.cx(0, 1)
             qpd_qc, _ = decompose_gates(qc, [0])
             self.assertEqual(qpd_qc, compare_qc)
+        with self.subTest("classical bit on input"):
+            qc = QuantumCircuit(2, 1)
+            qc.cx(0, 1)
+            with pytest.raises(ValueError) as e_info:
+                decompose_gates(qc, [0])
+            assert (
+                e_info.value.args[0]
+                == "Circuits input to execute_experiments should contain no classical registers or bits."
+            )

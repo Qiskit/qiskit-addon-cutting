@@ -295,13 +295,21 @@ def _run_experiments_batch(
 
     # Run all the experiments in one big batch
     experiments_flat = list(chain.from_iterable(subexperiments))
-    for circ in experiments_flat:
-        assert not (
-            len(circ.cregs) < 1 or circ.cregs[-1].name != "observable_measurements"
-        )
-        assert not (len(circ.cregs) > 1 and circ.cregs[-2].name != "qpd_measurements")
 
-        num_qpd_bits_flat.append(len(circ.cregs[-2]))
+    for circ in experiments_flat:
+        if (
+            len(circ.cregs) != 2
+            or circ.cregs[1].name != "observable_measurements"
+            or circ.cregs[0].name != "qpd_measurements"
+            or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
+        ):
+            # If the classical bits/registers are in any other format than expected, the user must have
+            # input them, so we can just raise this generic error in any case.
+            raise ValueError(
+                "Circuits input to execute_experiments should contain no classical registers or bits."
+            )
+
+        num_qpd_bits_flat.append(len(circ.cregs[0]))
 
     # Run all of the batched experiments
     quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists

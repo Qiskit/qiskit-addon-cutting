@@ -16,7 +16,7 @@ from qiskit.quantum_info import Pauli, PauliList
 from qiskit.result import QuasiDistribution
 from qiskit.primitives import Sampler as TerraSampler
 from qiskit_aer.primitives import Sampler as AerSampler
-from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
+from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction, Clbit
 from qiskit.circuit.library.standard_gates import XGate
 
 from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
@@ -280,6 +280,20 @@ class TestCuttingEvaluation(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "SingleQubitQPDGates are not supported in unseparable circuits."
+            )
+        with self.subTest("Classical regs on input"):
+            circuit = self.circuit.copy()
+            circuit.add_bits([Clbit()])
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    circuit,
+                    self.observable,
+                    num_samples=50,
+                    samplers=self.sampler,
+                )
+            assert (
+                e_info.value.args[0]
+                == "Circuits input to execute_experiments should contain no classical registers or bits."
             )
 
     def test_append_measurement_circuit(self):

@@ -118,7 +118,14 @@ def decompose_gates(
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
         and a list of ``QPDBasis`` instances -- one for each decomposed gate.
+
+    Raises:
+        ValueError: The input circuit should contain no classical bits or registers.
     """
+    if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
+        raise ValueError(
+            "Circuits input to execute_experiments should contain no classical registers or bits."
+        )
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
         circuit = circuit.copy()
@@ -165,6 +172,7 @@ def partition_problem(
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
         ValueError: An input observable acts on a different number of qubits than the input circuit.
+        ValueError: The input circuit should contain no classical bits or registers.
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -176,6 +184,10 @@ def partition_problem(
     ):
         raise ValueError(
             "An input observable acts on a different number of qubits than the input circuit."
+        )
+    if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
+        raise ValueError(
+            "Circuits input to execute_experiments should contain no classical registers or bits."
         )
 
     # Partition the circuit with TwoQubitQPDGates and assign the order via their labels
