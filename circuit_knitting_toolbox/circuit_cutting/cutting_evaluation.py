@@ -13,7 +13,6 @@
 
 from __future__ import annotations
 
-import copy
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
