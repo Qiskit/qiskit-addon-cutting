@@ -171,9 +171,8 @@ def partition_problem(
             f"The number of partition labels ({len(partition_labels)}) must equal the number "
             f"of qubits in the circuit ({circuit.num_qubits})."
         )
-    if (
-        observables is not None
-        and any(len(obs) != circuit.num_qubits for obs in observables)
+    if observables is not None and any(
+        len(obs) != circuit.num_qubits for obs in observables
     ):
         raise ValueError(
             "An input observable acts on a different number of qubits than the input circuit."
