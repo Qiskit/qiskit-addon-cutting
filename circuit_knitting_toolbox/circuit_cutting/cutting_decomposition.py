@@ -173,7 +173,7 @@ def partition_problem(
         )
     if (
         observables is not None
-        and len([obs for obs in observables if len(obs) != circuit.num_qubits]) != 0
+        and any(len(obs) != circuit.num_qubits for obs in observables)
     ):
         raise ValueError(
             "An input observable acts on a different number of qubits than the input circuit."
