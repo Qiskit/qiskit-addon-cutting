@@ -31,7 +31,7 @@ from .qpd.instructions import TwoQubitQPDGate
 
 
 class PartitionedProblem(NamedTuple):
-    """The result of decomposing and separating a circuit and observables."""
+    """The result of decomposing and separating a circuit and observable(s)."""
 
     subcircuits: dict[str | int, QuantumCircuit]
     bases: list[QPDBasis]
