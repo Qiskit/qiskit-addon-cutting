@@ -30,7 +30,7 @@ from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
 
 
-class PartitionedProblem(NamedTuple):
+class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
     subcircuits: dict[str | int, QuantumCircuit]
@@ -146,7 +146,7 @@ def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
     observables: PauliList | None = None,
-) -> PartitionedProblem:
+) -> PartitionedCuttingProblem:
     """
     Separate an input circuit and observable(s) along qubit partition labels.
 
@@ -212,7 +212,7 @@ def partition_problem(
             observables, partition_labels
         )
 
-    return PartitionedProblem(
+    return PartitionedCuttingProblem(
         separated_circs.subcircuits,
         bases,
         subobservables=subobservables_by_subsystem,
