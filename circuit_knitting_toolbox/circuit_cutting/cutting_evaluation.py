@@ -407,6 +407,8 @@ def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> 
                 _aer_sampler_error()
             elif isinstance(sampler, TerraSampler):
                 _terra_sampler_error()
+            elif isinstance(sampler, BaseSampler):
+                continue
             else:
                 _bad_samplers_error()
 
