@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qiskit.primitives.base.base_sampler &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/style.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../_static/thebelab-helper.js"></script>
+    <script src="../../../../_static/clipboard.min.js"></script>
+    <script src="../../../../_static/copybutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for qiskit.primitives.base.base_sampler</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of Qiskit.</span>
+<span class="c1">#</span>
+<span class="c1"># (C) Copyright IBM 2022.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===================</span>
+<span class="sd">Overview of Sampler</span>
+<span class="sd">===================</span>
+
+<span class="sd">Sampler class calculates probabilities or quasi-probabilities of bitstrings from quantum circuits.</span>
+
+<span class="sd">A sampler is initialized with an empty parameter set. The sampler is used to</span>
+<span class="sd">create a :class:`~qiskit.providers.JobV1`, via the :meth:`qiskit.primitives.Sampler.run()`</span>
+<span class="sd">method. This method is called with the following parameters</span>
+
+<span class="sd">* quantum circuits (:math:`\psi_i(\theta)`): list of (parameterized) quantum circuits.</span>
+<span class="sd">  (a list of :class:`~qiskit.circuit.QuantumCircuit` objects)</span>
+
+<span class="sd">* parameter values (:math:`\theta_k`): list of sets of parameter values</span>
+<span class="sd">  to be bound to the parameters of the quantum circuits.</span>
+<span class="sd">  (list of list of float)</span>
+
+<span class="sd">The method returns a :class:`~qiskit.providers.JobV1` object, calling</span>
+<span class="sd">:meth:`qiskit.providers.JobV1.result()` yields a :class:`~qiskit.primitives.SamplerResult`</span>
+<span class="sd">object, which contains probabilities or quasi-probabilities of bitstrings,</span>
+<span class="sd">plus optional metadata like error bars in the samples.</span>
+
+<span class="sd">Here is an example of how sampler is used.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from qiskit.primitives import Sampler</span>
+<span class="sd">    from qiskit import QuantumCircuit</span>
+<span class="sd">    from qiskit.circuit.library import RealAmplitudes</span>
+
+<span class="sd">    # a Bell circuit</span>
+<span class="sd">    bell = QuantumCircuit(2)</span>
+<span class="sd">    bell.h(0)</span>
+<span class="sd">    bell.cx(0, 1)</span>
+<span class="sd">    bell.measure_all()</span>
+
+<span class="sd">    # two parameterized circuits</span>
+<span class="sd">    pqc = RealAmplitudes(num_qubits=2, reps=2)</span>
+<span class="sd">    pqc.measure_all()</span>
+<span class="sd">    pqc2 = RealAmplitudes(num_qubits=2, reps=3)</span>
+<span class="sd">    pqc2.measure_all()</span>
+
+<span class="sd">    theta1 = [0, 1, 1, 2, 3, 5]</span>
+<span class="sd">    theta2 = [0, 1, 2, 3, 4, 5, 6, 7]</span>
+
+<span class="sd">    # initialization of the sampler</span>
+<span class="sd">    sampler = Sampler()</span>
+
+<span class="sd">    # Sampler runs a job on the Bell circuit</span>
+<span class="sd">    job = sampler.run(circuits=[bell], parameter_values=[[]], parameters=[[]])</span>
+<span class="sd">    job_result = job.result()</span>
+<span class="sd">    print([q.binary_probabilities() for q in job_result.quasi_dists])</span>
+
+<span class="sd">    # Sampler runs a job on the parameterized circuits</span>
+<span class="sd">    job2 = sampler.run(</span>
+<span class="sd">        circuits=[pqc, pqc2],</span>
+<span class="sd">        parameter_values=[theta1, theta2],</span>
+<span class="sd">        parameters=[pqc.parameters, pqc2.parameters])</span>
+<span class="sd">    job_result = job2.result()</span>
+<span class="sd">    print([q.binary_probabilities() for q in job_result.quasi_dists])</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span>
+
+<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.parametertable</span> <span class="kn">import</span> <span class="n">ParameterView</span>
+<span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">JobV1</span> <span class="k">as</span> <span class="n">Job</span>
+
+<span class="kn">from</span> <span class="nn">.base_primitive</span> <span class="kn">import</span> <span class="n">BasePrimitive</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Job</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">BaseSampler</span><span class="p">(</span><span class="n">BasePrimitive</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampler base class</span>
+
+<span class="sd">    Base class of Sampler that calculates quasi-probabilities of bitstrings from quantum circuits.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="fm">__hash__</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            options: Default options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
+        <span class="n">parameter_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">run_options</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the job of the sampling of bitstrings.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            circuits: One of more circuit objects.</span>
+<span class="sd">            parameter_values: Parameters to be bound to the circuit.</span>
+<span class="sd">            run_options: Backend runtime options used for circuit execution.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The job object of the result of the sampler. The i-th result corresponds to</span>
+<span class="sd">            ``circuits[i]`` evaluated with parameters bound as ``parameter_values[i]``.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Invalid arguments are given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Singular validation</span>
+        <span class="n">circuits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+        <span class="n">parameter_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_parameter_values</span><span class="p">(</span>
+            <span class="n">parameter_values</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="p">[()]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Cross-validation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cross_validate_circuits_parameter_values</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">)</span>
+
+        <span class="c1"># Options</span>
+        <span class="n">run_opts</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">run_opts</span><span class="o">.</span><span class="n">update_options</span><span class="p">(</span><span class="o">**</span><span class="n">run_options</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span>
+            <span class="n">circuits</span><span class="p">,</span>
+            <span class="n">parameter_values</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">run_opts</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">run_options</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The subclass of BaseSampler must implment `_run` method.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># TODO: validate measurement gates are present</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_validate_circuits</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="n">circuits</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_validate_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circuit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuits</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_clbits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">-th circuit does not have any classical bit. &quot;</span>
+                    <span class="s2">&quot;Sampler requires classical bits, plus measurements &quot;</span>
+                    <span class="s2">&quot;on the desired qubits.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">circuits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">circuits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Quantum circuits to be sampled.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The quantum circuits to be sampled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_circuits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ParameterView</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters of quantum circuits.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of the parameters in each quantum circuit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">Circuit Knitting Toolbox</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../install.html">Installation Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../circuit_cutting/cutqc/index.html">CutQC (legacy circuit cutting implementation)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apidocs/index.html">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release-notes.html">Release Notes</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

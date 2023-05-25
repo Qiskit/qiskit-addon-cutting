@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.utils.simulation.simulate\_statevector\_outcomes
+===========================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.utils.simulation
+
+.. autofunction:: simulate_statevector_outcomes

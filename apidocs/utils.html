@@ -23,7 +23,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="circuit_knitting_toolbox.utils.conversion" href="../stubs/circuit_knitting_toolbox.utils.conversion.html" />
+    <link rel="next" title="circuit_knitting_toolbox.utils.bitwise.bit_count" href="../stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html" />
     <link rel="prev" title="circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator" href="../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -44,19 +44,130 @@
   <section id="module-circuit_knitting_toolbox.utils">
 <span id="utilities"></span><span id="utils"></span><h1>Utilities<a class="headerlink" href="#module-circuit_knitting_toolbox.utils" title="Permalink to this heading">¶</a></h1>
 <p>Utility functions.</p>
+<section id="module-circuit_knitting_toolbox.utils.bitwise">
+<span id="bitwise-utilities-circuit-knitting-toolbox-utils-bitwise"></span><h2>Bitwise utilities (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.bitwise" title="circuit_knitting_toolbox.utils.bitwise"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.bitwise</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.bitwise" title="Permalink to this heading">¶</a></h2>
+<p>Bitwise utilities.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.html#module-circuit_knitting_toolbox.utils.conversion" title="circuit_knitting_toolbox.utils.conversion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conversion</span></code></a></p></td>
-<td><p>Code for converting types of distributions.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html#circuit_knitting_toolbox.utils.bitwise.bit_count" title="circuit_knitting_toolbox.utils.bitwise.bit_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bit_count</span></code></a>(x, /)</p></td>
+<td><p>Count number of set bits.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.html#module-circuit_knitting_toolbox.utils.metrics" title="circuit_knitting_toolbox.utils.metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metrics</span></code></a></p></td>
-<td><p>Functions for comparing array distances.</p></td>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.conversion">
+<span id="conversion-circuit-knitting-toolbox-utils-conversion"></span><h2>Conversion (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.conversion" title="circuit_knitting_toolbox.utils.conversion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.conversion</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.conversion" title="Permalink to this heading">¶</a></h2>
+<p>Code for converting types of distributions.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.quasi_to_real.html#circuit_knitting_toolbox.utils.conversion.quasi_to_real" title="circuit_knitting_toolbox.utils.conversion.quasi_to_real"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quasi_to_real</span></code></a>(quasiprobability, mode)</p></td>
+<td><p>Convert a quasi probability to a valid probability distribution.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html#circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings" title="circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_reduction.reduce_bitstrings</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution.html#circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution" title="circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest_probability_distribution</span></code></a>(...)</p></td>
+<td><p>Convert quasiprobability distribution to the nearest probability distribution.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.naive_probability_distribution.html#circuit_knitting_toolbox.utils.conversion.naive_probability_distribution" title="circuit_knitting_toolbox.utils.conversion.naive_probability_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">naive_probability_distribution</span></code></a>(quasiprobability)</p></td>
+<td><p>Convert quasiprobability dist to probability dist by zero-ing out negative values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.dict_to_array.html#circuit_knitting_toolbox.utils.conversion.dict_to_array" title="circuit_knitting_toolbox.utils.conversion.dict_to_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_to_array</span></code></a>(distribution_dict, force_prob)</p></td>
+<td><p>Convert dictionary of shot results to array of distribution.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.iteration">
+<span id="iteration-utilities-circuit-knitting-toolbox-utils-iteration"></span><h2>Iteration utilities (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.iteration" title="circuit_knitting_toolbox.utils.iteration"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.iteration</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.iteration" title="Permalink to this heading">¶</a></h2>
+<p>Iteration utilities.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_id.html#circuit_knitting_toolbox.utils.iteration.unique_by_id" title="circuit_knitting_toolbox.utils.iteration.unique_by_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_by_id</span></code></a>(iterable, /)</p></td>
+<td><p>Return unique objects in <code class="docutils literal notranslate"><span class="pre">iterable</span></code>, by identity.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_eq.html#circuit_knitting_toolbox.utils.iteration.unique_by_eq" title="circuit_knitting_toolbox.utils.iteration.unique_by_eq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_by_eq</span></code></a>(iterable, /)</p></td>
+<td><p>Return unique objects in <code class="docutils literal notranslate"><span class="pre">iterable</span></code>, by equality.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.metrics">
+<span id="metrics-circuit-knitting-toolbox-utils-metrics"></span><h2>Metrics (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.metrics" title="circuit_knitting_toolbox.utils.metrics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.metrics</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.metrics" title="Permalink to this heading">¶</a></h2>
+<p>Functions for comparing array distances.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.chi2_distance.html#circuit_knitting_toolbox.utils.metrics.chi2_distance" title="circuit_knitting_toolbox.utils.metrics.chi2_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">chi2_distance</span></code></a>(target, obs)</p></td>
+<td><p>Measure the Chi-square distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.MSE.html#circuit_knitting_toolbox.utils.metrics.MSE" title="circuit_knitting_toolbox.utils.metrics.MSE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MSE</span></code></a>(target, obs)</p></td>
+<td><p>Compute the Mean Squared Error (MSE).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.MAPE.html#circuit_knitting_toolbox.utils.metrics.MAPE" title="circuit_knitting_toolbox.utils.metrics.MAPE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAPE</span></code></a>(target, obs)</p></td>
+<td><p>Compute the Mean Absolute Percentage Error (MAPE).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.cross_entropy.html#circuit_knitting_toolbox.utils.metrics.cross_entropy" title="circuit_knitting_toolbox.utils.metrics.cross_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_entropy</span></code></a>(target, obs)</p></td>
+<td><p>Compute the cross entropy between two distributions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.HOP.html#circuit_knitting_toolbox.utils.metrics.HOP" title="circuit_knitting_toolbox.utils.metrics.HOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HOP</span></code></a>(target, obs)</p></td>
+<td><p>Compute the Heavy Output Probability (HOP).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.observable_grouping">
+<span id="observable-grouping-circuit-knitting-toolbox-utils-observable-grouping"></span><h2>Observable grouping (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.observable_grouping" title="circuit_knitting_toolbox.utils.observable_grouping"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.observable_grouping</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.observable_grouping" title="Permalink to this heading">¶</a></h2>
+<p>Module for conducting Pauli observable grouping.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem.html#circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem" title="circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">observables_restricted_to_subsystem</span></code></a>(qubits, ...)</p></td>
+<td><p>Restrict each observable to its support on a given subsystem.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup.html#circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup" title="circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CommutingObservableGroup</span></code></a>(general_observable, ...)</p></td>
+<td><p>Set of mutually qubit-wise commuting observables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html#circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection" title="circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObservableCollection</span></code></a>(observables, /)</p></td>
+<td><p>Collection of observables organized for efficient taking of measurements.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.orbital_reduction">
+<span id="orbital-reduction-circuit-knitting-toolbox-utils-orbital-reduction"></span><h2>Orbital reduction (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.orbital_reduction" title="circuit_knitting_toolbox.utils.orbital_reduction"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.orbital_reduction</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.orbital_reduction" title="Permalink to this heading">¶</a></h2>
+<p>Helper functions for reducing orbitals.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html#circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings" title="circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reduce_bitstrings</span></code></a>(bitstrings, orbitals_to_reduce)</p></td>
 <td><p>Eliminates the specified orbitals in the bitstrings.</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.simulation">
+<span id="simulation-circuit-knitting-toolbox-utils-simulation"></span><h2>Simulation (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.simulation" title="circuit_knitting_toolbox.utils.simulation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.simulation</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.simulation" title="Permalink to this heading">¶</a></h2>
+<p>Simulation of precise measurement outcome probabilities.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html#circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes" title="circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simulate_statevector_outcomes</span></code></a>(qc, /)</p></td>
+<td><p>Return each classical outcome along with its precise probability.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.simulation.ExactSampler.html#circuit_knitting_toolbox.utils.simulation.ExactSampler" title="circuit_knitting_toolbox.utils.simulation.ExactSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExactSampler</span></code></a>(*[, options])</p></td>
+<td><p>Sampler which returns exact probabilities for each possible outcome.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-circuit_knitting_toolbox.utils.transforms">
+<span id="transforms-circuit-knitting-toolbox-utils-transforms"></span><h2>Transforms (<a class="reference internal" href="#module-circuit_knitting_toolbox.utils.transforms" title="circuit_knitting_toolbox.utils.transforms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.transforms</span></code></a>)<a class="headerlink" href="#module-circuit_knitting_toolbox.utils.transforms" title="Permalink to this heading">¶</a></h2>
+<p>Functions for manipulating quantum circuits.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.transforms.separate_circuit.html#circuit_knitting_toolbox.utils.transforms.separate_circuit" title="circuit_knitting_toolbox.utils.transforms.separate_circuit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">separate_circuit</span></code></a>(circuit[, partition_labels])</p></td>
+<td><p>Separate the circuit into its disconnected components.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html#circuit_knitting_toolbox.utils.transforms.SeparatedCircuits" title="circuit_knitting_toolbox.utils.transforms.SeparatedCircuits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SeparatedCircuits</span></code></a>(subcircuits, qubit_map)</p></td>
+<td><p>Named tuple for result of <a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.transforms.separate_circuit.html#circuit_knitting_toolbox.utils.transforms.separate_circuit" title="circuit_knitting_toolbox.utils.transforms.separate_circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">separate_circuit</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 
@@ -100,7 +211,7 @@
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Circuit Knitting Toolbox API References</a><ul>
       <li>Previous: <a href="../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html" title="previous chapter">circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator</a></li>
-      <li>Next: <a href="../stubs/circuit_knitting_toolbox.utils.conversion.html" title="next chapter">circuit_knitting_toolbox.utils.conversion</a></li>
+      <li>Next: <a href="../stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html" title="next chapter">circuit_knitting_toolbox.utils.bitwise.bit_count</a></li>
   </ul></li>
   </ul></li>
 </ul>

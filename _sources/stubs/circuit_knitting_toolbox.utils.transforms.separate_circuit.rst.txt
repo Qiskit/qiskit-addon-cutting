@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.utils.transforms.separate\_circuit
+=============================================================
+
+.. currentmodule:: circuit_knitting_toolbox.utils.transforms
+
+.. autofunction:: separate_circuit

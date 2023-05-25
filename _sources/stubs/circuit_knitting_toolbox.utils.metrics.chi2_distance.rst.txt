@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.utils.metrics.chi2\_distance
+=======================================================
+
+.. currentmodule:: circuit_knitting_toolbox.utils.metrics
+
+.. autofunction:: chi2_distance

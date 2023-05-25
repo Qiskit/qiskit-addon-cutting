@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
+    <title>circuit_knitting_toolbox.utils.metrics.MAPE &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
@@ -23,8 +23,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes" href="circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html" />
-    <link rel="prev" title="circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection" href="circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html" />
+    <link rel="next" title="circuit_knitting_toolbox.utils.metrics.cross_entropy" href="circuit_knitting_toolbox.utils.metrics.cross_entropy.html" />
+    <link rel="prev" title="circuit_knitting_toolbox.utils.metrics.MSE" href="circuit_knitting_toolbox.utils.metrics.MSE.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -41,26 +41,34 @@
 
           <div class="body" role="main">
             
-  <section id="circuit-knitting-toolbox-utils-orbital-reduction-reduce-bitstrings">
-<h1>circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings<a class="headerlink" href="#circuit-knitting-toolbox-utils-orbital-reduction-reduce-bitstrings" title="Permalink to this heading">¶</a></h1>
+  <section id="circuit-knitting-toolbox-utils-metrics-mape">
+<h1>circuit_knitting_toolbox.utils.metrics.MAPE<a class="headerlink" href="#circuit-knitting-toolbox-utils-metrics-mape" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings">
-<span class="sig-name descname"><span class="pre">reduce_bitstrings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bitstrings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals_to_reduce</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/utils/orbital_reduction.html#reduce_bitstrings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Eliminates the specified orbitals in the bitstrings.</p>
-<p>This is achieved by simply deleting those orbitals from the
-elements of the bitstrings.</p>
+<dt class="sig sig-object py" id="circuit_knitting_toolbox.utils.metrics.MAPE">
+<span class="sig-name descname"><span class="pre">MAPE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/utils/metrics.html#MAPE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.utils.metrics.MAPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Mean Absolute Percentage Error (MAPE).</p>
+<p>The MAPE is a scaled metric in the range [0, 100] defining the percentage
+difference between two vectors via:
+$ sum_i frac{x_i - y_i}{x_i} $.</p>
 <p>Example:
-&gt;&gt;&gt; reduce_bitstrings([[1, 0, 0, 1, 0], [1, 0, 0, 0, 1], [1, 1, 1, 1, 0]], [0, 1])
-[(0, 1, 0), (0, 0, 1), (1, 1, 0)]</p>
+&gt;&gt;&gt; MAPE(np.array([0.1, 0.1, 0.3, 0.5]), np.array([0.25, 0.25, 0.25, 0.25]))
+91.66666666666659</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bitstrings</strong> – The list of bitstrings to be reduced</p></li>
-<li><p><strong>orbitals_to_reduce</strong> – The positions/orbitals to remove from the bitstrings</p></li>
+<li><p><strong>target</strong> – The target feature vector</p></li>
+<li><p><strong>obs</strong> – The actually observed feature vector</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The list of reduced bitstrings</p>
+<dd class="field-even"><p>The computed MAPE</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Exception</strong> – The target is not a dict</p></li>
+<li><p><strong>Exception</strong> – The target and obs are not numpy arrays</p></li>
+<li><p><strong>Exception</strong> – The target is not a numpy array and the obs are not a dict</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -108,8 +116,8 @@ elements of the bitstrings.</p>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="../apidocs/index.html">Circuit Knitting Toolbox API References</a><ul>
   <li><a href="../apidocs/utils.html">Utilities</a><ul>
-      <li>Previous: <a href="circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html" title="previous chapter">circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection</a></li>
-      <li>Next: <a href="circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html" title="next chapter">circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes</a></li>
+      <li>Previous: <a href="circuit_knitting_toolbox.utils.metrics.MSE.html" title="previous chapter">circuit_knitting_toolbox.utils.metrics.MSE</a></li>
+      <li>Next: <a href="circuit_knitting_toolbox.utils.metrics.cross_entropy.html" title="next chapter">circuit_knitting_toolbox.utils.metrics.cross_entropy</a></li>
   </ul></li>
   </ul></li>
   </ul></li>
@@ -145,7 +153,7 @@ elements of the bitstrings.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
-      <a href="../_sources/stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.rst.txt"
+      <a href="../_sources/stubs/circuit_knitting_toolbox.utils.metrics.MAPE.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
