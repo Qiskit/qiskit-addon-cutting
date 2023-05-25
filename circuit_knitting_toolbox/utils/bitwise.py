@@ -9,7 +9,20 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Bitwise utilities."""
+"""
+=================================================================
+Bitwise utilities (:mod:`circuit_knitting_toolbox.utils.bitwise`)
+=================================================================
+
+Bitwise utilities.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.bitwise
+
+.. autosummary::
+   :toctree: ../stubs/
+
+   bit_count
+"""
 
 if hasattr(0, "bit_count"):
 

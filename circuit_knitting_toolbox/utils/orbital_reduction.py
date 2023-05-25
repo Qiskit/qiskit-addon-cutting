@@ -9,7 +9,20 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Helper functions for reducing orbitals."""
+"""
+===========================================================================
+Orbital reduction (:mod:`circuit_knitting_toolbox.utils.orbital_reduction`)
+===========================================================================
+
+Helper functions for reducing orbitals.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.orbital_reduction
+
+.. autosummary::
+   :toctree: ../stubs
+
+   reduce_bitstrings
+"""
 
 import numpy as np
 

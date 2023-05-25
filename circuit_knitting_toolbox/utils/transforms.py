@@ -9,12 +9,27 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for manipulating quantum circuit objects."""
+"""
+=============================================================
+Transforms (:mod:`circuit_knitting_toolbox.utils.transforms`)
+=============================================================
+
+Functions for manipulating quantum circuits.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.transforms
+
+.. autosummary::
+   :toctree: ../stubs
+
+   separate_circuit
+   SeparatedCircuits
+"""
 from __future__ import annotations
 
 from uuid import uuid4, UUID
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 from collections.abc import Sequence, Iterable, Hashable, MutableMapping
+from typing import NamedTuple
 
 from rustworkx import PyGraph, connected_components
 from qiskit.circuit import (
@@ -26,7 +41,11 @@ from qiskit.circuit import (
 )
 
 
-SeparatedCircuits = namedtuple("SeparatedCircuits", ["subcircuits", "qubit_map"])
+class SeparatedCircuits(NamedTuple):
+    """Named tuple for result of :class:`separate_circuit`."""
+
+    subcircuits: dict[Hashable, QuantumCircuit]
+    qubit_map: list[tuple[Hashable, int]]
 
 
 def separate_circuit(

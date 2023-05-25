@@ -9,7 +9,21 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Iteration utilities."""
+"""
+=====================================================================
+Iteration utilities (:mod:`circuit_knitting_toolbox.utils.iteration`)
+=====================================================================
+
+Iteration utilities.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.iteration
+
+.. autosummary::
+   :toctree: ../stubs/
+
+   unique_by_id
+   unique_by_eq
+"""
 
 import sys
 from collections.abc import Iterable, ValuesView

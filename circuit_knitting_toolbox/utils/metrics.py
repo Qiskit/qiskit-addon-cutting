@@ -9,7 +9,24 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for comparing array distances."""
+"""
+=======================================================
+Metrics (:mod:`circuit_knitting_toolbox.utils.metrics`)
+=======================================================
+
+Functions for comparing array distances.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.metrics
+
+.. autosummary::
+   :toctree: ../stubs
+
+   chi2_distance
+   MSE
+   MAPE
+   cross_entropy
+   HOP
+"""
 
 import copy
 

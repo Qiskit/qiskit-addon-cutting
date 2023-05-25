@@ -12,18 +12,14 @@
 """
 Utility functions.
 
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   bitwise
-   conversion
-   iteration
-   metrics
-   observable_grouping
-   orbital_reduction.reduce_bitstrings
-   simulation
-   transforms
+.. automodule:: circuit_knitting_toolbox.utils.bitwise
+.. automodule:: circuit_knitting_toolbox.utils.conversion
+.. automodule:: circuit_knitting_toolbox.utils.iteration
+.. automodule:: circuit_knitting_toolbox.utils.metrics
+.. automodule:: circuit_knitting_toolbox.utils.observable_grouping
+.. automodule:: circuit_knitting_toolbox.utils.orbital_reduction
+.. automodule:: circuit_knitting_toolbox.utils.simulation
+.. automodule:: circuit_knitting_toolbox.utils.transforms
 """
 
 from .orbital_reduction import reduce_bitstrings

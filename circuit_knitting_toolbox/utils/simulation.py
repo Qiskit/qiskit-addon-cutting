@@ -9,7 +9,21 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Simulation of precise measurement outcome probabilities."""
+"""
+=============================================================
+Simulation (:mod:`circuit_knitting_toolbox.utils.simulation`)
+=============================================================
+
+Simulation of precise measurement outcome probabilities.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.simulation
+
+.. autosummary::
+   :toctree: ../stubs
+
+   simulate_statevector_outcomes
+   ExactSampler
+"""
 from __future__ import annotations
 
 from collections import defaultdict

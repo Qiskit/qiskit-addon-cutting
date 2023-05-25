@@ -9,7 +9,23 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Code for converting types of distributions."""
+"""
+=============================================================
+Conversion (:mod:`circuit_knitting_toolbox.utils.conversion`)
+=============================================================
+
+Code for converting types of distributions.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.conversion
+
+.. autosummary::
+   :toctree: ../stubs/
+
+   quasi_to_real
+   nearest_probability_distribution
+   naive_probability_distribution
+   dict_to_array
+"""
 
 import numpy as np
 
@@ -35,7 +51,7 @@ def quasi_to_real(quasiprobability, mode):
 
 def nearest_probability_distribution(quasiprobability):
     """
-    Convert quasiprobability dist to the nearest probability dist.
+    Convert quasiprobability distribution to the nearest probability distribution.
 
     Takes a quasiprobability distribution and maps
     it to the closest probability distribution as defined by
