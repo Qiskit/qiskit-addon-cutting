@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=======================================================
-Metrics (:mod:`circuit_knitting_toolbox.utils.metrics`)
-=======================================================
-
 Functions for comparing array distances.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.metrics

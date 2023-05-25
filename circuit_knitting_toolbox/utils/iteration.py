@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=====================================================================
-Iteration utilities (:mod:`circuit_knitting_toolbox.utils.iteration`)
-=====================================================================
-
 Iteration utilities.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.iteration

@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-===============================================================================
-Observable grouping (:mod:`circuit_knitting_toolbox.utils.observable_grouping`)
-===============================================================================
-
 Module for conducting Pauli observable grouping.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.observable_grouping

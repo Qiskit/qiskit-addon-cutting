@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=================================================================
-Bitwise utilities (:mod:`circuit_knitting_toolbox.utils.bitwise`)
-=================================================================
-
 Bitwise utilities.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.bitwise

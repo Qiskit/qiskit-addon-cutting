@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=============================================================
-Conversion (:mod:`circuit_knitting_toolbox.utils.conversion`)
-=============================================================
-
 Code for converting types of distributions.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.conversion

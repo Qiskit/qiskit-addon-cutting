@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=============================================================
-Transforms (:mod:`circuit_knitting_toolbox.utils.transforms`)
-=============================================================
-
 Functions for manipulating quantum circuits.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.transforms

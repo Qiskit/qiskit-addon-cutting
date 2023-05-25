@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-=============================================================
-Simulation (:mod:`circuit_knitting_toolbox.utils.simulation`)
-=============================================================
-
 Simulation of precise measurement outcome probabilities.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.simulation

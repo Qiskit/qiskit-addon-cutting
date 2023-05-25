@@ -10,10 +10,6 @@
 # that they have been altered from the originals.
 
 """
-===========================================================================
-Orbital reduction (:mod:`circuit_knitting_toolbox.utils.orbital_reduction`)
-===========================================================================
-
 Helper functions for reducing orbitals.
 
 .. currentmodule:: circuit_knitting_toolbox.utils.orbital_reduction
