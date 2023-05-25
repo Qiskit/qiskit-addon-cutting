@@ -388,7 +388,6 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
 
 def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> None:
     """Replace unsupported statevector-based Samplers with ExactSampler."""
-    samplers_out = copy.copy(samplers)
     if isinstance(samplers, BaseSampler):
         if (
             isinstance(samplers, AerSampler)
@@ -409,8 +408,6 @@ def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> 
                 _aer_sampler_error()
             elif isinstance(sampler, TerraSampler):
                 _terra_sampler_error()
-            elif isinstance(sampler, BaseSampler):
-                samplers_out[key] = sampler
             else:
                 _bad_samplers_error()
 

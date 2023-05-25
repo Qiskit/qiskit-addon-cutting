@@ -4,24 +4,24 @@ prelude: >
     implementation of gate cutting workflows.
 
     The foundation of the CKT circuit cutting API is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
-    module. This module allows for easy transformation of elements of quantum circuits (gates and wires) into
-    elements which probabilistically decompose to a particular set of gates with respect to a given basis. See
-    :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and
+    package. This module allows for easy transformation of elements of quantum circuits (gates and wires) into
+    elements which probabilistically decompose to a particular set of gates with respect to a given probabilistic basis.
+    See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` for more information.
 
     Additionally, 0.2.0 includes a set of functions which allow for easy implementation
     of gate cutting workflows. These functions are built on top of the QPD package. Like all circuit
-    knitting techniques, gate cutting can be described as a decomposition of a problem,
-    execution of many subexperiments, and reconstruction of a simulated output of the original circuit.
-    These steps are realized in the :mod:`~circuit_knitting_toolbox.circuit_cutting` module with a few primary
-    functions, namely, the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_values`.
-    Check out the `tutorials <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials>`_ for a look at a couple of circuit cutting workflows.
+    knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
+    execution of many subexperiments, and reconstruction of a simulated output of the original problem.
+    These steps may be implemented using the :mod:`~circuit_knitting_toolbox.circuit_cutting` module using only a few primary
+    functions, namely, the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_values` functions.
+    Check out the `tutorials <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials>`_ for a look at a couple of example circuit cutting workflows.
 
 features:
   - |
     Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package which allows for easy
     transformation of elements of quantum circuits (gates and wires) into elements which
-    probabilistically decompose to a particular set of gates with respect to a given basis. See 
+    probabilistically decompose to a particular set of gates with respect to a given probabilistic basis. See 
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and 
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` for more information.
 
@@ -31,4 +31,13 @@ features:
     the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_value` functions.
 issues:
   - |
-    Only support Pauli observables which have a trivial phase. Full support for `
+    Only support Pauli observables which have a trivial phase (1.0 + 0j). Full support for `SparsePauliOp` is expected
+    no sooner than 0.3.0.
+
+    Qiskit and Qiskit Aer `Sampler`\ s do not support statevector-based construction of quasi-distributions for circuits
+    containing midcircuit measurements. If exact reconstruction of expectation values is desired, the
+    :class:`~circuit_knitting_toolbox.utils.simulation.ExactSampler` should be used. For more on reconstructing exact
+    expectation values in a circuit cutting workflow, check out the `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_simulate_exact_expectation_values.ipynb>`_.
+
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package generally does not yet support input circuits with user-added
+    classical bits, so by extension, it does not yet support dynamic circuits.
