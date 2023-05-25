@@ -274,7 +274,7 @@ def _generate_cutting_experiments(
         ):
             map_ids_tmp = map_ids
             if is_separated:
-                map_ids_tmp = tuple(map(map_ids.__getitem__, subcirc_map_ids[i]))
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
             decomp_qc = decompose_qpd_instructions(
                 subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
             )
