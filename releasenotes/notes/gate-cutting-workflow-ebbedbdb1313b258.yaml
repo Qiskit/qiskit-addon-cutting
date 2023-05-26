@@ -31,7 +31,7 @@ features:
     the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_value` functions.
 issues:
   - |
-    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports `PauliList` observables for calculating expectation values. Support for calculating
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports ``PauliList`` observables for calculating expectation values. Support for calculating
     expectation values for more observable types, including :class:`~qiskit.quantum_info.SparsePauliOp`, is expected no sooner than 0.3.0.
 
     The Qiskit and Qiskit Aer samplers do not support mid-circuit measurements in statevector mode. For more on reconstructing exact
