@@ -10,15 +10,15 @@ Quasiprobability Decomposition (QPD)
 ------------------------------------
 Quasiprobability decomposition is a technique which can be used to simulate noise-free quantum gates using only noisy, local operations (LO). This is often referred to as circuit cutting. One could cut a non-local gate and simulate it using only local operations. This is referred to as a "gate cut" or "space-like cut". One could also imagine cutting a single-qubit identity gate and simulating it using local operations on either side of the cut. The other side of the cut would be simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit. This is referred to as a "wire cut" or "time-like cut". The cost of conducting these techniques is an exponential sampling overhead. If no real-time classical communication is available between qubits of the cut gate or wire, gate cuts incur a sampling overhead of O(9\ :sup:`n`), and wire cuts incur a sampling overhead of O(16\ :sup:`n`), where n is the total number of cuts. If real-time communication is available (i.e. dynamic circuits), the sampling overhead for both gate and wire cuts may be reduced to O(4\ :sup:`n`) [`1 <https://arxiv.org/abs/2205.00016>`_] [`3 <https://arxiv.org/abs/2302.03366>`_]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.
 
-For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [`4 <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509>`_].
+For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [`4 <https://arxiv.org/abs/1612.02058>`_].
 
 Key terms
 -----------------
-* subcircuits: The set of circuits resulting from cutting gates in a `QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain `SingleQubitQPDGate`\ s and will be used to instantiate each unique subexperiment.
+* subcircuits: The set of circuits resulting from cutting gates in a :class:`QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain :class:`SingleQubitQPDGate`\ s and will be used to instantiate each unique subexperiment.
 
-* subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their `BaseQPDGate`\ s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.
+* subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their :class:`BaseQPDGate`\ s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.
 
-* decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting `BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
+* decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting :class:`BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
 
 Current limitations
 -------------------
@@ -43,4 +43,4 @@ classical communication*,
 https://arxiv.org/abs/2302.03366
 
 [4] K. Temme, S. Bravyi, and J. M. Gambetta, *Error mitigation for short-depth quantum circuits*,
-https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509
+https://arxiv.org/abs/1612.02058
