@@ -13,7 +13,7 @@ prelude: >
     of gate cutting workflows. These functions are built on top of the QPD package. Like all circuit
     knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
     execution of many subexperiments, and reconstruction of a simulated output of the original problem.
-    These steps may be implemented using the :mod:`~circuit_knitting_toolbox.circuit_cutting` module using only a few primary
+    These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` module using only a few primary
     functions, namely, the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_values` functions.
     Check out the `tutorials <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials>`_ for a look at a couple of example circuit cutting workflows.
 
@@ -31,8 +31,8 @@ features:
     the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_value` functions.
 issues:
   - |
-    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports Pauli observables which have a phase of 1. Support for calculating
-    expectation values for any Pauli observable is expected no sooner than 0.3.0.
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports `PauliList` observables for calculating expectation values. Support for calculating
+    expectation values for more observable types, including :class:`~qiskit.quantum_info.SparsePauliOp`, is expected no sooner than 0.3.0.
 
     The Qiskit and Qiskit Aer samplers do not support mid-circuit measurements in statevector mode. For more on reconstructing exact
     expectation values in a circuit cutting workflow, check out our `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
