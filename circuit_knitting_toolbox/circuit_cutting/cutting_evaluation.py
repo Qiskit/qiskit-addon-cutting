@@ -64,11 +64,10 @@ def execute_experiments(
         samplers: Sampler(s) on which to run the sub-experiments.
 
     Returns:
-        A tuple containing:
-            - A 3D list of length-2 tuples holding the quasi-distributions and QPD bit information
-            for each sub-experiment. The shape of the list is: (num_unique_samples, num_partitions, num_commuting_observ_groups)
-            - Coefficients corresponding to each unique subexperiment's
-            sampling frequency
+        - A 3D list of length-2 tuples holding the quasi-distributions and QPD bit information
+          for each sub-experiment. The shape of the list is: (``num_unique_samples``, ``num_partitions``, ``num_commuting_observ_groups``)
+        - Coefficients corresponding to each unique subexperiment's
+          sampling frequency
 
     Raises:
         ValueError: The number of requested samples must be positive.
