@@ -46,9 +46,20 @@
 <span id="release-notes-upcoming-release-main-branch"></span><h2>Upcoming release (<code class="docutils literal notranslate"><span class="pre">main</span></code> branch)<a class="headerlink" href="#upcoming-release-main-branch" title="Permalink to this heading">¶</a></h2>
 <section id="prelude">
 <span id="release-notes-upcoming-release-main-branch-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">¶</a></h3>
-<p>0.2.0 is centered around the addition of functions which allow for the easy implementation of gate cutting workflows.
-The foundation of the CKT circuit cutting API is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code> package. This module allows for easy transformation of elements of quantum circuits (gates and wires) into elements which probabilistically decompose to a particular set of gates with respect to a given probabilistic basis. See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> for more information.
-Additionally, 0.2.0 includes a set of functions which allow for easy implementation of gate cutting workflows. These functions are built on top of the QPD package. Like all circuit knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem, execution of many subexperiments, and reconstruction of a simulated output of the original problem. These steps may be implemented with the <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> module using only a few primary functions, namely, the <cite>partition_problem</cite>, <cite>decompose_gates</cite>, <cite>execute_experiments</cite>, and <cite>reconstruct_expectation_values</cite> functions. Check out the <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials">tutorials</a> for a look at a couple of example circuit cutting workflows.</p>
+<p>0.2.0 is centered around the addition of functions which allow for the easy
+implementation of gate cutting workflows.</p>
+<p>The foundation of the CKT circuit cutting API is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code>
+package. This module allows for easy transformation of elements of quantum circuits (gates and wires) into
+elements which probabilistically decompose to a particular set of gates with respect to a given probabilistic basis.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> for more information.</p>
+<p>Additionally, 0.2.0 includes a set of functions which allow for easy implementation
+of gate cutting workflows. These functions are built on top of the QPD package. Like all circuit
+knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
+execution of many subexperiments, and reconstruction of a simulated output of the original problem.
+These steps may be implemented with the <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> module using only a few primary
+functions, namely, the <cite>partition_problem</cite>, <cite>decompose_gates</cite>, <cite>execute_experiments</cite>, and <cite>reconstruct_expectation_values</cite> functions.
+Check out the <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials">tutorials</a> for a look at a couple of example circuit cutting workflows.</p>
 </section>
 <section id="new-features">
 <span id="release-notes-upcoming-release-main-branch-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
