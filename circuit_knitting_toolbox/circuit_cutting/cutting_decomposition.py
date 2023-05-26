@@ -117,7 +117,7 @@ def decompose_gates(
 
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
-        and a list of ``QPDBasis`` instances -- one for each decomposed gate.
+        and a list of :class:`QPDBasis` instances -- one for each decomposed gate.
 
     Raises:
         ValueError: The input circuit should contain no classical bits or registers.
