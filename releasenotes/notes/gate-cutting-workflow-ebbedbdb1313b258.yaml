@@ -37,7 +37,7 @@ issues:
     Qiskit and Qiskit Aer `Sampler`\ s do not support statevector-based construction of quasi-distributions for circuits
     containing midcircuit measurements. If exact reconstruction of expectation values is desired, the
     :class:`~circuit_knitting_toolbox.utils.simulation.ExactSampler` should be used. For more on reconstructing exact
-    expectation values in a circuit cutting workflow, check out the `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_simulate_exact_expectation_values.ipynb>`_.
+    expectation values in a circuit cutting workflow, check out the `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
 
     The :mod:`~circuit_knitting_toolbox.circuit_cutting` package generally does not yet support input circuits with user-added
     classical bits, so by extension, it does not yet support dynamic circuits.
