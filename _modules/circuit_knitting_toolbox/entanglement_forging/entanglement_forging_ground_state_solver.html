@@ -68,13 +68,13 @@
 
 <span class="kn">from</span> <span class="nn">qiskit.algorithms.minimum_eigensolvers</span> <span class="kn">import</span> <span class="n">MinimumEigensolverResult</span>
 <span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerResult</span>
-<span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="n">EigenstateResult</span><span class="p">,</span>
     <span class="n">ElectronicBasis</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">PauliSumOp</span>
 
 <span class="kn">from</span> <span class="nn">.entanglement_forging_ansatz</span> <span class="kn">import</span> <span class="n">EntanglementForgingAnsatz</span>
 <span class="kn">from</span> <span class="nn">.entanglement_forging_knitter</span> <span class="kn">import</span> <span class="n">EntanglementForgingKnitter</span>
@@ -404,7 +404,7 @@
     <span class="k">def</span> <span class="nf">get_qubit_operators</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ListOp</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct decomposed qubit operators from an ``ElectronicStructureProblem``.</span>
 
 <span class="sd">        Args:</span>

@@ -58,7 +58,8 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">ListOp</span><span class="p">,</span> <span class="n">PauliSumOp</span>
+
+<span class="kn">from</span> <span class="nn">qiskit.opflow</span> <span class="kn">import</span> <span class="n">PauliSumOp</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.mappers</span> <span class="kn">import</span> <span class="n">QubitConverter</span><span class="p">,</span> <span class="n">JordanWignerMapper</span>
@@ -102,7 +103,7 @@
     <span class="n">problem</span><span class="p">:</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span>
     <span class="n">mo_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">orbitals_to_reduce</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ListOp</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.</span>
 
@@ -158,20 +159,20 @@
     <span class="p">)</span>
 
     <span class="n">op_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">h_1_op</span><span class="p">]</span> <span class="o">+</span> <span class="n">h_chol_ops</span>
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">ListOp</span><span class="p">(</span><span class="n">op_list</span><span class="p">)</span>
+    <span class="n">operator</span> <span class="o">=</span> <span class="n">op_list</span>
 
     <span class="k">return</span> <span class="n">operator</span><span class="p">,</span> <span class="n">nuclear_repulsion_energy</span> <span class="o">+</span> <span class="n">freeze_shift</span></div>
 
 
 <div class="viewcode-block" id="convert_cholesky_operator"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html#circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator">[docs]</a><span class="k">def</span> <span class="nf">convert_cholesky_operator</span><span class="p">(</span>
-    <span class="n">operator</span><span class="p">:</span> <span class="n">ListOp</span><span class="p">,</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PauliSumOp</span><span class="p">],</span>
     <span class="n">ansatz</span><span class="p">:</span> <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EntanglementForgingOperator</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert the Cholesky operator (ListOp) into the entanglement forging format.</span>
+<span class="sd">    Convert the Cholesky operator (List[PauliSumOp]) into the entanglement forging format.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        operator: A `ListOp` containing the single-body Hamiltonian followed</span>
+<span class="sd">        operator: A `List[PauliSumOp]` containing the single-body Hamiltonian followed</span>
 <span class="sd">            by the Cholesky operators</span>
 <span class="sd">            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]</span>
 <span class="sd">        ansatz: The ansatz for which to compute expectation values of operator. The</span>
