@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Circuit Cutting Explanation &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
+    <title>Explanatory material for the circuit cutting module &#8212; Circuit Knitting Toolbox 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
@@ -21,10 +21,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Circuit Cutting How-To Guides" href="../how-tos/index.html" />
-    <link rel="prev" title="Circuit Cutting Tutorials" href="../tutorials/index.html" />
+    <link rel="prev" title="Gate Cutting to Reduce Circuit Width" href="../tutorials/gate_cutting_to_reduce_circuit_width.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -41,9 +43,51 @@
 
           <div class="body" role="main">
             
-  <section id="circuit-cutting-explanation">
-<h1>Circuit Cutting Explanation<a class="headerlink" href="#circuit-cutting-explanation" title="Permalink to this heading">¶</a></h1>
-<p>Circuit cutting is a technique to decompose a quantum circuit into smaller circuits, whose results can be knitted together to reconstruct the original circuit output.</p>
+  <section id="explanatory-material-for-the-circuit-cutting-module">
+<h1>Explanatory material for the circuit cutting module<a class="headerlink" href="#explanatory-material-for-the-circuit-cutting-module" title="Permalink to this heading">¶</a></h1>
+<section id="overview-of-circuit-cutting">
+<h2>Overview of circuit cutting<a class="headerlink" href="#overview-of-circuit-cutting" title="Permalink to this heading">¶</a></h2>
+<p>Circuit cutting is a technique to increase the size of circuits we can run on quantum hardware at the cost of an additional sampling overhead. A larger quantum circuit can be decomposed by cutting its gates and/or wires, resulting in smaller circuits which can be executed within the constraints of available quantum hardware. The results of these smaller circuits are combined to reconstruct the outcome of the original problem. Circuit cutting can also be used to engineer gates between distant qubits which would otherwise require a large swap overhead.</p>
+</section>
+<section id="circuit-cutting-as-a-quasiprobability-decomposition-qpd">
+<h2>Circuit cutting as a quasiprobability decomposition (QPD)<a class="headerlink" href="#circuit-cutting-as-a-quasiprobability-decomposition-qpd" title="Permalink to this heading">¶</a></h2>
+<p>Quasiprobability decomposition is a technique which can be used to simulate quantum circuit executions that go beyond the actual capabilities of current quantum hardware while using that same hardware.  It forms the basis of many error mitigation techniques, which allow simulating a noise-free quantum computing using a noisy one.  Circuit cutting techniques, which allow simulating a quantum circuit using fewer qubits than would otherwise be necessary, can also be phrased in terms of a quasiprobability decomposition.  No matter the goal, the cost of the quasiprobability decomposition is an exponential overhead in the number of circuit executions which must be performed.  In certain cases, this tradeoff is worth it, because it can allow the estimation of quantities that would otherwise be impossible on today’s hardware.</p>
+<p>To perform circuit cutting, one must partition (“cut”) the graph representing a quantum circuit into smaller pieces, which are then executed on available hardware.  The results of the original circuit must then be reconstructed during post-processing, resulting in the desired quantity (e.g., the expectation value of a joint observable).</p>
+<p>There are two types of cuts: gate cuts and wire cuts.  Gate cuts, also known as “space-like” cuts, exist when the cut goes through a gate operating on two (or more) qubits.  Wire cuts, also known as “time-like” cuts, are direct cuts through a qubit wire, essentially a single-qubit identity gate that has been cut into two pieces.  A wire cut is simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit.</p>
+<p>There are three settings to consider for circuit cutting.  The first is where only local operations (LO) [i.e., local _quantum_ operations] are available.  The other settings introduce classical communication between the circuit executions, which is known in the quantum information literature as LOCC, for <a class="reference external" href="https://en.wikipedia.org/wiki/LOCC">local operations and classical communication</a>.  The LOCC can be either near-time, one-directional communication between the circuit executions (the second setting), or real-time, bi-directional communication (the third setting).</p>
+<p>As mentioned above, the cost of any simulation based on quasiprobability distribution is an exponential sampling overhead. The overhead of a cut gate depends on which gate is cut; see the final appendix of [<a class="reference external" href="https://arxiv.org/abs/2205.00016">1</a>] for details.  Here, we will focus on the CNOT gate.  If no real-time classical communication is available between qubits of the cut gate or wire, cut CNOT gates incur a sampling overhead of O(<span class="math notranslate nohighlight">\(9^n\)</span>), and wire cuts incur a sampling overhead of O(<span class="math notranslate nohighlight">\(16^n\)</span>), where <span class="math notranslate nohighlight">\(n\)</span> is the total number of cuts. If real-time communication is available (i.e., if the hardware supports “dynamic circuits”), the sampling overhead for both CNOT gate and wire cuts may be reduced to O(<span class="math notranslate nohighlight">\(4^n\)</span>) [<a class="reference external" href="https://arxiv.org/abs/2205.00016">1</a>] [<a class="reference external" href="https://arxiv.org/abs/2302.03366">3</a>]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.</p>
+<p>For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [<a class="reference external" href="https://arxiv.org/abs/1612.02058">4</a>].</p>
+</section>
+<section id="key-terms">
+<h2>Key terms<a class="headerlink" href="#key-terms" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>subcircuits: The set of circuits resulting from cutting gates in a <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> and then separating the disconnected qubit subsets into smaller circuits. These circuits contain <code class="xref py py-class docutils literal notranslate"><span class="pre">SingleQubitQPDGate</span></code>s and will be used to instantiate each unique subexperiment.</p></li>
+<li><p>subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code>s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.</p></li>
+<li><p>decompose: We try to honor the Qiskit notion of “decompose” in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. <em>Occasionally</em>, we may use the term “decompose” to refer to the act of inserting <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> instances into quantum circuits as “decomposing” a gate or wire; however, we try to use terms like “partition” and “cut” when referring to this to avoid ambiguity with Qiskit language.</p></li>
+</ul>
+</section>
+<section id="current-limitations">
+<h2>Current limitations<a class="headerlink" href="#current-limitations" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>QPD-based wire cutting will be available no sooner than CKT v0.3.0. The <a class="reference internal" href="../cutqc/index.html"><span class="doc">cutqc</span></a> package may be used for wire cutting in the meantime.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PauliList</span></code> is the only supported observable format until no sooner than CKT v0.3.0.</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<p>This module is based on the theory described in the
+following papers:</p>
+<p>[1] Christophe Piveteau, David Sutter, <em>Circuit knitting with classical communication</em>,
+<a class="reference external" href="https://arxiv.org/abs/2205.00016">https://arxiv.org/abs/2205.00016</a></p>
+<p>[2] Kosuke Mitarai, Keisuke Fujii, <em>Constructing a virtual two-qubit gate by sampling
+single-qubit operations</em>,
+<a class="reference external" href="https://arxiv.org/abs/1909.07534">https://arxiv.org/abs/1909.07534</a></p>
+<p>[3] Lukas Brenner, Christophe Piveteau, David Sutter, <em>Optimal wire cutting with
+classical communication</em>,
+<a class="reference external" href="https://arxiv.org/abs/2302.03366">https://arxiv.org/abs/2302.03366</a></p>
+<p>[4] K. Temme, S. Bravyi, and J. M. Gambetta, <em>Error mitigation for short-depth quantum circuits</em>,
+<a class="reference external" href="https://arxiv.org/abs/1612.02058">https://arxiv.org/abs/1612.02058</a></p>
+</section>
 </section>
 
 
@@ -66,7 +110,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Circuit Cutting Tutorials</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Circuit Cutting Explanatory Material</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Circuit Cutting Explanatory Material</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview-of-circuit-cutting">Overview of circuit cutting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#circuit-cutting-as-a-quasiprobability-decomposition-qpd">Circuit cutting as a quasiprobability decomposition (QPD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-terms">Key terms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#current-limitations">Current limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../how-tos/index.html">Circuit Cutting How-To Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cutqc/index.html">CutQC (legacy circuit cutting implementation)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a></li>
@@ -80,7 +131,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../tutorials/index.html" title="previous chapter">Circuit Cutting Tutorials</a></li>
+      <li>Previous: <a href="../tutorials/gate_cutting_to_reduce_circuit_width.html" title="previous chapter">Gate Cutting to Reduce Circuit Width</a></li>
       <li>Next: <a href="../how-tos/index.html" title="next chapter">Circuit Cutting How-To Guides</a></li>
   </ul></li>
 </ul>

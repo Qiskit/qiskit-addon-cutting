@@ -23,7 +23,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Entanglement Forging" href="../apidocs/entanglement_forging.html" />
+    <link rel="next" title="circuit_knitting_toolbox.circuit_cutting.partition_problem" href="circuit_knitting_toolbox.circuit_cutting.partition_problem.html" />
     <link rel="prev" title="circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution" href="circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -45,7 +45,7 @@
 <h1>circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits<a class="headerlink" href="#circuit-knitting-toolbox-circuit-cutting-partition-circuit-qubits" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits">
-<span class="sig-name descname"><span class="pre">partition_circuit_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/circuit_cutting/cutting_decomposition.html#partition_circuit_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">partition_circuit_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting_toolbox/circuit_cutting/cutting_decomposition.html#partition_circuit_qubits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace all nonlocal gates belonging to more than one partition with instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>.</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s belonging to a single partition will not be affected.</p>
 <dl class="field-list simple">
@@ -54,7 +54,8 @@
 <li><p><strong>circuit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code>) – The circuit to partition</p></li>
 <li><p><strong>partition_labels</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Hashable</span></code>]) – A sequence containing a partition label for each qubit in the
 input circuit. Nonlocal gates belonging to more than one partition
-will be replaced with QPDGates.</p></li>
+will be replaced with <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s.</p></li>
+<li><p><strong>inplace</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Flag denoting whether to copy the input circuit before acting on it</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -66,8 +67,8 @@ will be replaced with QPDGates.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – Length of partition_labels does not equal the number of qubits in the circuit</p></li>
-<li><p><strong>ValueError</strong> – Cannot decompose gate which acts on more than 2 qubits</p></li>
+<li><p><strong>ValueError</strong> – The length of partition_labels does not equal the number of qubits in the circuit.</p></li>
+<li><p><strong>ValueError</strong> – Input circuit contains unsupported gate.</p></li>
 </ul>
 </dd>
 </dl>
@@ -117,7 +118,7 @@ will be replaced with QPDGates.</p></li>
   <li><a href="../apidocs/index.html">Circuit Knitting Toolbox API References</a><ul>
   <li><a href="../apidocs/circuit_cutting.html">Circuit Cutting</a><ul>
       <li>Previous: <a href="circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html" title="previous chapter">circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution</a></li>
-      <li>Next: <a href="../apidocs/entanglement_forging.html" title="next chapter">Entanglement Forging</a></li>
+      <li>Next: <a href="circuit_knitting_toolbox.circuit_cutting.partition_problem.html" title="next chapter">circuit_knitting_toolbox.circuit_cutting.partition_problem</a></li>
   </ul></li>
   </ul></li>
   </ul></li>
