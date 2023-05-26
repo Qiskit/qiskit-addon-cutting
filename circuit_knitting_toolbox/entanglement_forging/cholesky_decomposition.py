@@ -17,7 +17,8 @@ import copy
 from typing import Sequence
 
 import numpy as np
-from qiskit.opflow import ListOp, PauliSumOp
+
+from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
@@ -61,7 +62,7 @@ def cholesky_decomposition(
     problem: ElectronicStructureProblem,
     mo_coeff: np.ndarray | None = None,
     orbitals_to_reduce: Sequence[int] | None = None,
-) -> tuple[ListOp, float]:
+) -> tuple[list[PauliSumOp], float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
@@ -117,20 +118,20 @@ def cholesky_decomposition(
     )
 
     op_list = [h_1_op] + h_chol_ops
-    operator = ListOp(op_list)
+    operator = op_list
 
     return operator, nuclear_repulsion_energy + freeze_shift
 
 
 def convert_cholesky_operator(
-    operator: ListOp,
+    operator: list[PauliSumOp],
     ansatz: EntanglementForgingAnsatz,
 ) -> EntanglementForgingOperator:
     """
-    Convert the Cholesky operator (ListOp) into the entanglement forging format.
+    Convert the Cholesky operator (List[PauliSumOp]) into the entanglement forging format.
 
     Args:
-        operator: A `ListOp` containing the single-body Hamiltonian followed
+        operator: A `List[PauliSumOp]` containing the single-body Hamiltonian followed
             by the Cholesky operators
             shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
         ansatz: The ansatz for which to compute expectation values of operator. The
