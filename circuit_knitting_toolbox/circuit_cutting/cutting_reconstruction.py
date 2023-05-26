@@ -51,6 +51,7 @@ def reconstruct_expectation_values(
 
     Raises:
         ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
+        ValueError: An input observable has a phase not equal to 1.
     """
     if len(coefficients) != len(quasi_dists):
         raise ValueError(
@@ -59,12 +60,17 @@ def reconstruct_expectation_values(
         )
     # Create the commuting observable groups
     if isinstance(observables, PauliList):
+        if any(obs.phase != 0 for obs in observables):
+            raise ValueError("An input observable has a phase not equal to 1.")
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
         expvals = np.zeros(len(observables))
 
     else:
+        for label, subobservable in observables.items():
+            if any(obs.phase != 0 for obs in subobservable):
+                raise ValueError("An input observable has a phase not equal to 1.")
         subobservables_by_subsystem = observables
         expvals = np.zeros(len(list(observables.values())[0]))
 

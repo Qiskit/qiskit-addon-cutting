@@ -211,6 +211,18 @@ class TestCuttingDecomposition(unittest.TestCase):
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
             )
+        with self.subTest("Unsupported phase"):
+            # Split 4q HWEA in middle of qubits
+            partition_labels = "AABB"
+
+            observable = PauliList(["-ZZXX"])
+
+            with pytest.raises(ValueError) as e_info:
+                partition_problem(circuit, partition_labels, observables=observable)
+            assert (
+                e_info.value.args[0]
+                == "An input observable has a phase not equal to 1."
+            )
 
     def test_decompose_gates(self):
         with self.subTest("simple circuit"):

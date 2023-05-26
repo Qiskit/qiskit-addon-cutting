@@ -105,6 +105,7 @@ def test_cutting_exact_reconstruction(example_circuit):
 
     observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
     phases = np.array([(-1j) ** obs.phase for obs in observables])
+    observables_nophase = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
 
     estimator = Estimator()
     exact_expvals = (
@@ -112,7 +113,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     )
     sampler = ExactSampler()
     subcircuits, bases, subobservables = partition_problem(
-        qc, "AAB", observables=observables
+        qc, "AAB", observables=observables_nophase
     )
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,

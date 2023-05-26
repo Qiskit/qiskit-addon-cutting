@@ -50,7 +50,7 @@ def partition_circuit_qubits(
         circuit: The circuit to partition
         partition_labels: A sequence containing a partition label for each qubit in the
             input circuit. Nonlocal gates belonging to more than one partition
-            will be replaced with QPDGates.
+            will be replaced with :class:`TwoQubitQPDGate`\ s.
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
@@ -147,18 +147,17 @@ def partition_problem(
     partition_labels: Sequence[str | int],
     observables: PauliList | None = None,
 ) -> PartitionedCuttingProblem:
-    """
+    r"""
     Separate an input circuit and observable(s) along qubit partition labels.
 
     Circuit qubits with matching partition labels will be grouped together, and non-local
-    operations spanning more than one partition will be decomposed and replaced with
-    probabilistic local operations.
+    gates spanning more than one partition will be replaced with :class:`TwoQubitQPDGate`\ s.
 
     If provided, the observables will be separated along the boundaries specified by
     ``partition_labels``.
 
     Args:
-        circuit: The circuit to separate
+        circuit: The circuit to partition and separate
         partition_labels: A sequence of labels, such that each label corresponds
             to the circuit qubit with the same index
         observables: The observables to separate
@@ -172,6 +171,7 @@ def partition_problem(
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
         ValueError: An input observable acts on a different number of qubits than the input circuit.
+        ValueError: An input observable has a phase not equal to 1.
         ValueError: The input circuit should contain no classical bits or registers.
     """
     if len(partition_labels) != circuit.num_qubits:
@@ -185,6 +185,9 @@ def partition_problem(
         raise ValueError(
             "An input observable acts on a different number of qubits than the input circuit."
         )
+    if observables is not None and any(obs.phase != 0 for obs in observables):
+        raise ValueError("An input observable has a phase not equal to 1.")
+
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
             "Circuits input to execute_experiments should contain no classical registers or bits."
@@ -213,7 +216,7 @@ def partition_problem(
         )
 
     return PartitionedCuttingProblem(
-        separated_circs.subcircuits,
+        separated_circs.subcircuits,  # type: ignore
         bases,
         subobservables=subobservables_by_subsystem,
     )
