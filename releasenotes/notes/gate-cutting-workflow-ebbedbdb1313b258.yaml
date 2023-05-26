@@ -31,13 +31,11 @@ features:
     the `partition_problem`, `decompose_gates`, `execute_experiments`, and `reconstruct_expectation_value` functions.
 issues:
   - |
-    Only support Pauli observables which have a trivial phase (1.0 + 0j). Full support for `SparsePauliOp` is expected
-    no sooner than 0.3.0.
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports Pauli observables which have a phase of 1. Support for calculating
+    expectation values for any Pauli observable is expected no sooner than 0.3.0.
 
-    Qiskit and Qiskit Aer `Sampler`\ s do not support statevector-based construction of quasi-distributions for circuits
-    containing midcircuit measurements. If exact reconstruction of expectation values is desired, the
-    :class:`~circuit_knitting_toolbox.utils.simulation.ExactSampler` should be used. For more on reconstructing exact
-    expectation values in a circuit cutting workflow, check out the `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
+    The Qiskit and Qiskit Aer samplers do not support mid-circuit measurements in statevector mode. For more on reconstructing exact
+    expectation values in a circuit cutting workflow, check out our `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
 
     The :mod:`~circuit_knitting_toolbox.circuit_cutting` package generally does not yet support input circuits with user-added
     classical bits, so by extension, it does not yet support dynamic circuits.
