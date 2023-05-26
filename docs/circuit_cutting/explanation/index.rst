@@ -6,11 +6,13 @@ Overview of circuit cutting
 ---------------------------
 Circuit cutting is a technique to increase the size of circuits we can run on quantum hardware at the cost of an additional sampling overhead. A larger quantum circuit can be decomposed by cutting its gates and wires into smaller circuits, which can be executed within the constraints of available quantum hardware. The results of these smaller circuits are combined to reconstruct the outcome of the original problem. Circuit cutting can also be used to engineer gates between distant qubits which would otherwise require a large swap overhead.
 
-Glossary of terms
+Key terms
 -----------------
 * subcircuits: The set of circuits resulting from cutting gates in a `QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain `SingleQubitQPDGate`\ s and will be used to instantiate each unique subexperiment.
 
 * subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their `BaseQPDGate`\ s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.
+
+* decompose: We try to honor the Qiskit notion of "decompose" in the documentation, which loosely means transforming a gate into a less-abstracted representation. *Ocassionally*, we may use the term "decompose" to refer to the act of inserting `BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
 
 Current limitations
 -------------------
