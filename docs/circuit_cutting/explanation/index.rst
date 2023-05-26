@@ -8,9 +8,9 @@ Circuit cutting is a technique to increase the size of circuits we can run on qu
 
 Quasiprobability Decomposition (QPD)
 ------------------------------------
-Quasiprobability decomposition is a technique which can be used to simulate noise-free quantum gates using only noisy, local operations. This is often referred to as circuit cutting. One could cut a non-local gate and simulate it using only local operations. This is referred to as a "gate cut" or "space-like cut". One could also imagine cutting a single-qubit identity gate and simulating it using local operations on either side of the cut. The other side of the cut would be simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit. This is referred to as a "wire cut" or "space-like cut". The cost of conducting these techniques is an exponential sampling overhead. If no real-time classical communication is available between qubits of the cut gate, gate cuts incur a sampling overhead of O(9\ :sup:`n`), and wire cuts incur a sampling overhead of O(16\ :sup:`n`). If real-time communication is available (i.e. dynamic circuits), the sampling overhead for both gate and wire cuts is reduced to O(4\ :sup:`n`). [`3 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/cutting-workflow#references>`_] [`4 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/cutting-workflow#references>`_]
+Quasiprobability decomposition is a technique which can be used to simulate noise-free quantum gates using only noisy, local operations. This is often referred to as circuit cutting. One could cut a non-local gate and simulate it using only local operations. This is referred to as a "gate cut" or "space-like cut". One could also imagine cutting a single-qubit identity gate and simulating it using local operations on either side of the cut. The other side of the cut would be simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit. This is referred to as a "wire cut" or "space-like cut". The cost of conducting these techniques is an exponential sampling overhead. If no real-time classical communication is available between qubits of the cut gate, gate cuts incur a sampling overhead of O(9\ :sup:`n`), and wire cuts incur a sampling overhead of O(16\ :sup:`n`). If real-time communication is available (i.e. dynamic circuits), the sampling overhead for both gate and wire cuts is reduced to O(4\ :sup:`n`). [1] [3]
 
-For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [`6 <https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509>`_].
+For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [4].
 
 Key terms
 -----------------
@@ -41,3 +41,6 @@ https://arxiv.org/abs/1909.07534
 [3] Lukas Brenner, Christophe Piveteau, David Sutter, *Optimal wire cutting with
 classical communication*,
 https://arxiv.org/abs/2302.03366
+
+[4] K. Temme, S. Bravyi, and J. M. Gambetta, *Error mitigation for short-depth quantum circuits*,
+https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509
