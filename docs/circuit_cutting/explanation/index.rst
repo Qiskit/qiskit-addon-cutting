@@ -8,9 +8,9 @@ Circuit cutting is a technique to increase the size of circuits we can run on qu
 
 Quasiprobability Decomposition (QPD)
 ------------------------------------
-Quasiprobability decomposition is a technique which can be used to simulate noise-free quantum gates using only noisy, local operations (LO). This is often referred to as circuit cutting. One could cut a non-local gate and simulate it using only local operations. This is referred to as a "gate cut" or "space-like cut". One could also imagine cutting a single-qubit identity gate and simulating it using local operations on either side of the cut. The other side of the cut would be simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit. This is referred to as a "wire cut" or "time-like cut". The cost of conducting these techniques is an exponential sampling overhead. If no real-time classical communication is available between qubits of the cut gate or wire, gate cuts incur a sampling overhead of O(9\ :sup:`n`), and wire cuts incur a sampling overhead of O(16\ :sup:`n`), where n is the total number of cuts. If real-time communication is available (i.e. dynamic circuits), the sampling overhead for both gate and wire cuts may be reduced to O(4\ :sup:`n`) [`1 <https://arxiv.org/abs/2205.00016>`__] [`3 <https://arxiv.org/abs/2302.03366>`__]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.
+Quasiprobability decomposition is a technique which can be used to simulate noise-free quantum gates using only noisy, local operations (LO). This is often referred to as circuit cutting. One could cut a non-local gate and simulate it using only local operations. This is referred to as a "gate cut" or "space-like cut". One could also imagine cutting a single-qubit identity gate and simulating it using local operations on either side of the cut. The other side of the cut would be simulated by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit. This is referred to as a "wire cut" or "time-like cut". The cost of conducting these techniques is an exponential sampling overhead. If no real-time classical communication is available between qubits of the cut gate or wire, gate cuts incur a sampling overhead of O(9\ :sup:`n`), and wire cuts incur a sampling overhead of O(16\ :sup:`n`), where n is the total number of cuts. If real-time communication is available (i.e. dynamic circuits), the sampling overhead for both gate and wire cuts may be reduced to O(4\ :sup:`n`) [`1 <https://arxiv.org/abs/2205.00016>`_] [`3 <https://arxiv.org/abs/2302.03366>`_]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.
 
-For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [`4 <https://arxiv.org/abs/1612.02058>`__].
+For more detailed information on this technique, refer to the paper, Error mitigation for short-depth quantum circuits [`4 <https://arxiv.org/abs/1612.02058>`_].
 
 Key terms
 -----------------
@@ -22,7 +22,7 @@ Key terms
 
 Current limitations
 -------------------
-* QPD-based wire cutting will be available no sooner than CKT v0.3.0. The `cutqc <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/cutqc/index.htmlpackage>`__ package may be used for wire cutting in the meantime.
+* QPD-based wire cutting will be available no sooner than CKT v0.3.0. The `cutqc <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/cutqc/index.htmlpackage>`_ package may be used for wire cutting in the meantime.
 * ``PauliList`` is the only supported observable format until no sooner than CKT v0.3.0.
 
 References
