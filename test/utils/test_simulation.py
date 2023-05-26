@@ -74,6 +74,32 @@ class TestSimulationFunctions(unittest.TestCase):
             assert r[0] == pytest.approx(0.5)
             assert r[1] == pytest.approx(0.5)
 
+        with self.subTest("Circuit with control flow"):
+            qc = QuantumCircuit(2, 1)
+            with qc.for_loop(range(5)):
+                qc.h(0)
+                qc.cx(0, 1)
+                qc.measure(0, 0)
+                qc.break_loop().c_if(0, True)
+            with pytest.raises(ValueError) as e_info:
+                simulate_statevector_outcomes(qc)
+            assert (
+                e_info.value.args[0]
+                == "Circuit cannot contain a non-measurement operation on classical bit(s)."
+            )
+
+        with self.subTest("Circuit with condition bits"):
+            qc = QuantumCircuit(2, 1)
+            qc.h(0)
+            qc.measure(0, 0)
+            qc.x(1).c_if(0, True)
+            with pytest.raises(ValueError) as e_info:
+                simulate_statevector_outcomes(qc)
+            assert (
+                e_info.value.args[0]
+                == "Operations conditioned on classical bits are currently not supported."
+            )
+
     def test_exact_sampler(self):
         with self.subTest("Mid-circuit measurement, etc."):
             qc = QuantumCircuit(2, 2)

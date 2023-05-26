@@ -9,7 +9,20 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for comparing array distances."""
+"""
+Functions for comparing array distances.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.metrics
+
+.. autosummary::
+   :toctree: ../stubs
+
+   chi2_distance
+   MSE
+   MAPE
+   cross_entropy
+   HOP
+"""
 
 import copy
 
@@ -175,7 +188,7 @@ def MAPE(target, obs):  # noqa: D301
 
 def cross_entropy(target, obs):  # noqa: D301
     r"""
-    Compue the cross entropy between two distributions.
+    Compute the cross entropy between two distributions.
 
     The cross entropy is a measure of the difference between two probability
     distributions, defined via:
@@ -225,7 +238,7 @@ def cross_entropy(target, obs):  # noqa: D301
 
 def HOP(target, obs):
     """
-    Compue the Heavy Output Probability (HOP).
+    Compute the Heavy Output Probability (HOP).
 
     The HOP is an important metric for quantum volume experiments and is defined at the
     probability that one measures a bitstring above the median target probability.
