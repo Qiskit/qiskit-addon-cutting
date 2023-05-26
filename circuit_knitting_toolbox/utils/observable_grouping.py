@@ -9,7 +9,18 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Module for conducting Pauli observable grouping."""
+"""
+Module for conducting Pauli observable grouping.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.observable_grouping
+
+.. autosummary::
+   :toctree: ../stubs
+
+   observables_restricted_to_subsystem
+   CommutingObservableGroup
+   ObservableCollection
+"""
 
 from __future__ import annotations
 

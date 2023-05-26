@@ -9,7 +9,17 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Simulation of precise measurement outcome probabilities."""
+"""
+Simulation of precise measurement outcome probabilities.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.simulation
+
+.. autosummary::
+   :toctree: ../stubs
+
+   simulate_statevector_outcomes
+   ExactSampler
+"""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -39,6 +49,10 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
     current = defaultdict(list)
     current[0].append((1.0, Statevector.from_int(0, 2**qc.num_qubits)))
     for inst in qc.data:
+        if inst.operation.condition_bits:
+            raise ValueError(
+                "Operations conditioned on classical bits are currently not supported."
+            )
         opname = inst.operation.name
         if opname in ("measure", "reset"):
             # The current instruction is not unitary: it's either a measurement
@@ -101,7 +115,7 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
             if len(inst.clbits) != 0:
                 raise ValueError(
                     "Circuit cannot contain a non-measurement operation on classical bit(s)."
-                )  # pragma: no cover
+                )
             # Evolve each statevector according to the current instruction
             for svs in current.values():
                 for _, sv in svs:
