@@ -22,7 +22,7 @@ Key terms
 
 Current limitations
 -------------------
-* No support for wire cutting until no sooner than CKT v0.3.0
+* QPD-based wire cutting available no sooner than CKT v0.3.0. The :mod:`~circuit_knitting_toolbox.circuit_cutting.cutqc` package may be used for wire cutting in the meantime.
 * `PauliList` is the only supported observable format until no sooner than CKT v.0.3.0
 
 References
