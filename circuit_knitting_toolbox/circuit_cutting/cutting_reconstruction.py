@@ -35,7 +35,8 @@ def reconstruct_expectation_values(
 
     Args:
         quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and
-            QPD bit information from each sub-experiment
+            QPD bit information from each sub-experiment. Its expected shape is
+            (num_unique_samples, num_partitions, num_commuting_observ_groups)
         coefficients: A sequence of coefficients, such that each coefficient is associated
             with one unique sample. The length of ``coefficients`` should equal
             the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical
