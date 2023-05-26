@@ -27,13 +27,13 @@ import numpy as np
 
 from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
-from qiskit.opflow import ListOp
 from qiskit_nature.second_q.problems import (
     ElectronicStructureProblem,
     EigenstateResult,
     ElectronicBasis,
 )
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
+from qiskit.opflow import PauliSumOp
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
@@ -363,7 +363,7 @@ class EntanglementForgingGroundStateSolver:
     def get_qubit_operators(
         self,
         problem: ElectronicStructureProblem,
-    ) -> ListOp:
+    ) -> list[PauliSumOp]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:
