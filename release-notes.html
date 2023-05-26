@@ -58,7 +58,7 @@ of gate cutting workflows. These functions are built on top of the QPD package. 
 knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
 execution of many subexperiments, and reconstruction of a simulated output of the original problem.
 These steps may be implemented with the <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> module using only a few primary
-functions, namely, the <cite>partition_problem</cite>, <cite>decompose_gates</cite>, <cite>execute_experiments</cite>, and <cite>reconstruct_expectation_values</cite> functions.
+functions, namely, the <code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code>, and <code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code> functions.
 Check out the <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials">tutorials</a> for a look at a couple of example circuit cutting workflows.</p>
 </section>
 <section id="new-features">
@@ -78,14 +78,17 @@ the <cite>partition_problem</cite>, <cite>decompose_gates</cite>, <cite>execute_
 </section>
 <section id="known-issues">
 <span id="release-notes-upcoming-release-main-branch-known-issues"></span><h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">¶</a></h3>
-<ul>
+<ul class="simple">
 <li><p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package only supports <code class="docutils literal notranslate"><span class="pre">PauliList</span></code> observables for calculating expectation values. Support for calculating
-expectation values for more observable types, including <code class="xref py py-class docutils literal notranslate"><span class="pre">SparsePauliOp</span></code>, is expected no sooner than 0.3.0.</p>
-<p>The Qiskit and Qiskit Aer samplers do not support mid-circuit measurements in statevector mode. For more on reconstructing exact
-expectation values in a circuit cutting workflow, check out our <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb">how-to guide</a>.</p>
-<p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package generally does not yet support input circuits with user-added
-classical bits, so by extension, it does not yet support dynamic circuits.</p>
-</li>
+expectation values for more observable types, including <code class="xref py py-class docutils literal notranslate"><span class="pre">SparsePauliOp</span></code>, is expected no sooner than 0.3.0.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The Qiskit and Qiskit Aer samplers do not support mid-circuit measurements in statevector mode. For more on reconstructing exact
+expectation values in a circuit cutting workflow, check out our <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb">how-to guide</a>.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package generally does not yet support input circuits with user-added
+classical bits, so by extension, it does not yet support dynamic circuits.</p></li>
 </ul>
 </section>
 <section id="upgrade-notes">
