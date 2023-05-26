@@ -1,5 +1,5 @@
 ---
-prelude: >
+prelude: |
     0.2.0 is centered around the addition of functions which allow for the easy
     implementation of gate cutting workflows.
 
