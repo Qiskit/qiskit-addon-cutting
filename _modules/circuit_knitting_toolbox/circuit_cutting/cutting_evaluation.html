@@ -57,7 +57,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NamedTuple</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
-<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">ClassicalRegister</span>
@@ -164,16 +163,14 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">samplers_by_partition</span> <span class="o">=</span> <span class="p">[</span><span class="n">samplers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">samplers</span><span class="o">.</span><span class="n">keys</span><span class="p">())]</span>
 
-    <span class="c1"># Run each partition&#39;s sub-experiments within its own thread</span>
-    <span class="k">with</span> <span class="n">ThreadPool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">[</span>
-                <span class="p">[</span><span class="n">sample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="p">],</span>
-                <span class="n">samplers_by_partition</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_partitions</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">quasi_dists_by_partition</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="n">_run_experiments_batch</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="c1"># Run each partition&#39;s sub-experiments</span>
+    <span class="n">quasi_dists_by_partition</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_run_experiments_batch</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">sample</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="p">],</span>
+            <span class="n">samplers_by_partition</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_partitions</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="c1"># Reformat the counts to match the shape of the input before returning</span>
     <span class="n">num_unique_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">)</span>
