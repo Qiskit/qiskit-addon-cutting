@@ -139,10 +139,9 @@ def execute_experiments(
     # Wait for the results
     for iterator in iters:
         for _ in iterator:
-            pass
+            pass  # pragma: no cover
     # Collect the results
     quasi_dists_by_partition = [gen.value for gen in generators]
-    print(f"quasi_dists_by_partition: {quasi_dists_by_partition}")
 
     # Reformat the counts to match the shape of the input before returning
     num_unique_samples = len(subexperiments)
