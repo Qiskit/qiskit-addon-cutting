@@ -73,7 +73,7 @@ def generate_qpd_samples(
 
     Returns:
         A mapping from a given decomposition to its sampled weight.
-        Keys are tuples of indices -- one index per decomposition in the circuit. The indices
+        Keys are tuples of indices -- one index per input :class:`QPDBasis`. The indices
         correspond to a specific decomposition mapping which will be applied to each gate in
         the decomposition.
 
