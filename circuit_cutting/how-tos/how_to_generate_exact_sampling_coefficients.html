@@ -150,13 +150,13 @@ Number of samples needed to retrieve exact weights: 36.0
 </div>
 </section>
 <section id="Observe-the-coefficient-weights-returned-from-execute_experiments-are-WeightType.EXACT">
-<h2>Observe the coefficient weights returned from <code class="docutils literal notranslate"><span class="pre">execute_experiments</span></code> are WeightType.EXACT<a class="headerlink" href="#Observe-the-coefficient-weights-returned-from-execute_experiments-are-WeightType.EXACT" title="Permalink to this heading">¶</a></h2>
+<h2>Observe the coefficient weights returned from <code class="docutils literal notranslate"><span class="pre">execute_experiments</span></code> are <code class="docutils literal notranslate"><span class="pre">WeightType.EXACT</span></code><a class="headerlink" href="#Observe-the-coefficient-weights-returned-from-execute_experiments-are-WeightType.EXACT" title="Permalink to this heading">¶</a></h2>
 <p>Above, we determined 36 samples would trigger the coefficients to be returned as exact. Here we set <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> to exactly 36 to test this.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
 
 <span class="n">quasi_dists</span><span class="p">,</span> <span class="n">coefficients</span> <span class="o">=</span> <span class="n">execute_experiments</span><span class="p">(</span>
     <span class="n">circuits</span><span class="o">=</span><span class="n">subcircuits</span><span class="p">,</span>
