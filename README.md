@@ -34,7 +34,7 @@ The toolbox enables users to run parallelized and hybrid (quantum + classical) w
 
 The toolbox currently contains the following tools:
 - Entanglement Forging [[1]](#references)
-- Circuit Cutting [[2]](#references)
+- Circuit Cutting [[2-6]](#references)
   
 ----------------------------------------------------------------------------------------------------
   
