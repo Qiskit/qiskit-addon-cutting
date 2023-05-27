@@ -56,8 +56,6 @@ CutQC
     cutqc.cut_circuit_wires
     cutqc.evaluate_subcircuits
     cutqc.reconstruct_full_distribution
-    execute_experiments
-    reconstruct_expectation_values
 
 """
 
