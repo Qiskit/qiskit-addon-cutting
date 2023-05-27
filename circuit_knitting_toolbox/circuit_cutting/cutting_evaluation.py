@@ -16,7 +16,6 @@ from __future__ import annotations
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
-from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
@@ -123,16 +122,27 @@ def execute_experiments(
     else:
         samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
 
-    # Run each partition's sub-experiments within its own thread
-    with ThreadPool() as pool:
-        args = [
-            [
+    # Run each partition's sub-experiments
+    generators = [
+        _Generator(
+            _run_experiments_batch(
                 [sample[i] for sample in subexperiments],
                 samplers_by_partition[i],
-            ]
-            for i in range(num_partitions)
-        ]
-        quasi_dists_by_partition = pool.starmap(_run_experiments_batch, args)
+            )
+        )
+        for i in range(num_partitions)
+    ]
+    iters = [iter(gen) for gen in generators]
+    # Submit the jobs
+    for iterator in iters:
+        next(iterator)
+    # Wait for the results
+    for iterator in iters:
+        for _ in iterator:
+            pass
+    # Collect the results
+    quasi_dists_by_partition = [gen.value for gen in generators]
+    print(f"quasi_dists_by_partition: {quasi_dists_by_partition}")
 
     # Reformat the counts to match the shape of the input before returning
     num_unique_samples = len(subexperiments)
@@ -288,10 +298,19 @@ def _generate_cutting_experiments(
     return subexperiments, coefficients, sampled_frequencies
 
 
+# https://stackoverflow.com/a/34073559/1558890
+class _Generator:
+    def __init__(self, gen):
+        self.gen = gen
+
+    def __iter__(self):
+        self.value = yield from self.gen
+
+
 def _run_experiments_batch(
     subexperiments: Sequence[Sequence[QuantumCircuit]],
     sampler: BaseSampler,
-) -> list[list[tuple[QuasiDistribution, int]]]:
+):  # -> list[list[tuple[QuasiDistribution, int]]] via StopIteration
     """Run subexperiments on the backend."""
     num_qpd_bits_flat = []
 
@@ -314,7 +333,9 @@ def _run_experiments_batch(
         num_qpd_bits_flat.append(len(circ.cregs[0]))
 
     # Run all of the batched experiments
-    quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
+    job = sampler.run(experiments_flat)
+    yield
+    quasi_dists_flat = job.result().quasi_dists
 
     # Reshape the output data to match the input
     if len(subexperiments) == 1:
