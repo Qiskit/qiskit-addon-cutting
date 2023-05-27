@@ -9,9 +9,9 @@ prelude: |
     See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` for more information.
 
-    Additionally, 0.2.0 includes a set of functions which allow for easy implementation
-of gate cutting workflows. These functions are built on top of the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd` package. Like all circuit
-    knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
+    Additionally, 0.2.0 includes a set of functions which allow for easy implementation of gate cutting workflows.
+    These functions are built on top of the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd` package. Like all
+    circuit knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
     execution of many subexperiments, and reconstruction of a simulated output of the original problem.
     These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` module using only a few primary
     functions, namely, the :func:`partition_problem`, :func:`decompose_gates`, :func:`execute_experiments`, and :func:`reconstruct_expectation_values` functions.
