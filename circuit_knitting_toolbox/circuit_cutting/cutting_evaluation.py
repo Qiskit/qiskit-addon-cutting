@@ -16,7 +16,6 @@ from __future__ import annotations
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
-from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
@@ -123,16 +122,14 @@ def execute_experiments(
     else:
         samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
 
-    # Run each partition's sub-experiments within its own thread
-    with ThreadPool() as pool:
-        args = [
-            [
-                [sample[i] for sample in subexperiments],
-                samplers_by_partition[i],
-            ]
-            for i in range(num_partitions)
-        ]
-        quasi_dists_by_partition = pool.starmap(_run_experiments_batch, args)
+    # Run each partition's sub-experiments
+    quasi_dists_by_partition = [
+        _run_experiments_batch(
+            [sample[i] for sample in subexperiments],
+            samplers_by_partition[i],
+        )
+        for i in range(num_partitions)
+    ]
 
     # Reformat the counts to match the shape of the input before returning
     num_unique_samples = len(subexperiments)
