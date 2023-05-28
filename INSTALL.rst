@@ -189,15 +189,9 @@ Users of Mac M1 or M2 chips and Windows users may have issues running certain co
 - If you are using Linux or macOS with an Intel chip (i.e., not the
   new M1 or M2 chips), everything should work natively, so we
   recommend either :ref:`Option 1` or :ref:`Option 2`.
-- All users on ARM chips, as well as all Windows users, will have to
-  use the toolbox within Docker (:ref:`Option 3`) for all features to
-  work as designed.
-
-Specifically, the following features are unavailable on the
-aforementioned platforms:
-
-- The automatic wire cut search in the circuit cutting module
-  depends on cplex, which is only available on Intel chips and is not
-  yet available for Python 3.11.
-- The entanglement forging tool requires pyscf, which does not
-  support Windows.
+- All users on ARM chips, as well as all Windows users, may have to
+  use the toolbox within Docker (:ref:`Option 3`), depending on what tools they intend to use.
+    - The automatic wire cut search in the ``circuit_cutting`` module depends
+      on cplex, which is only available on Intel chips and is not yet available
+      for Python 3.11.
+    - The entanglement forging tool requires pyscf, which does not support Windows.
