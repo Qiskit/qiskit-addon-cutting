@@ -61,13 +61,13 @@ Install the CKT package.
 
     pip install circuit-knitting-toolbox
 
-Users intending to use the entanglement forging tool should install the pyscf option.
+Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
 .. code:: sh
     
     pip install 'circuit-knitting-toolbox[pyscf]'
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
+Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
 
 .. code:: sh
     
@@ -99,13 +99,13 @@ all the visualizations in the tutorial notebooks.
     
     pip install tox notebook -e '.[notebook-dependencies]'
 
-Users intending to use the entanglement forging tool should install the pyscf option.
+Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
 .. code:: sh
     
     pip install -e '.[pyscf]'
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
+Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
 
 .. code:: sh
     
@@ -184,12 +184,13 @@ Platform Support
 
 Users of Mac M1 or M2 chips and Windows users may have issues running certain components of CKT.
 
-- If you are using Linux or macOS with an Intel chip (i.e., not the
-  new M1 or M2 chips), everything should work natively, so we
-  recommend either :ref:`Option 1` or :ref:`Option 2`.
-- All users on ARM chips, as well as all Windows users, may have to
-  use the toolbox within Docker (:ref:`Option 3`), depending on what tools they intend to use.
-    - The automatic wire cut search in the ``circuit_cutting`` module depends
-      on cplex, which is only available on Intel chips and is not yet available
-      for Python 3.11.
-    - The entanglement forging tool requires pyscf, which does not support Windows.
+If you are using Linux or macOS with an Intel chip (i.e., not the
+new M1 or M2 chips), everything should work natively, so we
+recommend either :ref:`Option 1` or :ref:`Option 2`.
+
+All users on ARM chips, as well as all Windows users, may have to
+use the toolbox within Docker (:ref:`Option 3`), depending on what tools they intend to use.
+  - The automatic wire cut search in the ``circuit_cutting`` module depends
+    on CPLEX, which is only available on Intel chips and is not yet available
+    for Python 3.11.
+  - The entanglement forging tool requires PySCF, which does not support Windows.
