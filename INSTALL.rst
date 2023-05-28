@@ -55,11 +55,11 @@ Upgrade pip.
     
     pip install --upgrade pip
 
-Install the CKT package.
+Upgrade pip and install the CKT package.
 
 .. code:: sh
 
-    pip install circuit-knitting-toolbox
+    pip install --upgrade pip && pip install circuit-knitting-toolbox
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
@@ -89,8 +89,7 @@ Upgrade pip and enter the repository.
 
 .. code:: sh
     
-    pip install --upgrade pip
-    cd circuit-knitting-toolbox
+    pip install --upgrade pip && cd circuit-knitting-toolbox
 
 Install CKT from source. Install the notebook dependencies in order to run
 all the visualizations in the tutorial notebooks.
