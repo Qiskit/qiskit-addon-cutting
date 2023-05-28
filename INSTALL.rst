@@ -63,17 +63,17 @@ Install the CKT package.
 
     pip install circuit-knitting-toolbox
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
-
-.. code:: sh
-    
-    pip install 'circuit-knitting-toolbox[cplex]'
-
 Users intending to use the entanglement forging tool should install the pyscf option.
 
 .. code:: sh
     
     pip install 'circuit-knitting-toolbox[pyscf]'
+
+Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
+
+.. code:: sh
+    
+    pip install 'circuit-knitting-toolbox[cplex]'
     
 
 .. _Option 2:
