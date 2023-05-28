@@ -9,6 +9,14 @@ packages. There are three primary ways to do this: :ref:`Option 1`,
 
 Pre-Installation
 ^^^^^^^^^^^^^^^^
+.. note::
+
+    If a user wishes to use the circuit cutting tool to
+    automatically find optimized wire cuts for a circuit too large for
+    the free version of CPLEX, they should acquire a license and install
+    the `full
+    version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
+
 Users with ARM chips and Windows users should consult the
 :ref:`Platform Support` section to determine which installation option
 is appropriate for them. Users who wish to run within a
@@ -34,14 +42,6 @@ Note: If you are using Windows, use the following commands in PowerShell:
     
     python3 -m venv c:\path\to\virtual\environment
     c:\path\to\virtual\environment\Scripts\Activate.ps1
-
-.. note::
-
-    **OPTIONAL** If a user wishes to use the circuit cutting tool to
-    automatically find optimized wire cuts for a circuit too large for
-    the free version of CPLEX, they should acquire a license and install
-    the `full
-    version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
 
 
 .. _Option 1:
@@ -103,7 +103,7 @@ Users intending to use the entanglement forging tool should install the pyscf op
 
 .. code:: sh
     
-    pip install '.[pyscf]'
+    pip install -e '.[pyscf]'
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
 
