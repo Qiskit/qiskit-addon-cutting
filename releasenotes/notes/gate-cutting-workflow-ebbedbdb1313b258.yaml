@@ -4,27 +4,23 @@ prelude: |
     implementation of gate cutting workflows. For more details on the circuit cutting
     technique, check out our `explanation guide <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html>`__.
 
-    The foundation of the CKT circuit cutting API is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
-    package. This module allows for easy transformation of elements of quantum circuits (gates and wires) into
-    elements which decompose to a particular set of gates with respect to a given probabilistic basis.
-    See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and
-    :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` for more information.
+    The foundation of the :mod:`~circuit_knitting_toolbox.circuit cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
+    sub-package. The :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package allows for easy transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
+    See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
 
     Additionally, 0.2.0 includes a set of functions which allow for easy implementation of gate cutting workflows.
     These functions are built on top of the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd` package. Like all
-    circuit knitting techniques, gate cutting can be described as three consecutive stages: decomposition of a problem,
-    execution of many subexperiments, and reconstruction of a simulated output of the original problem.
-    These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` module using only a few primary
+    circuit knitting techniques, gate cutting can be described as three consecutive stages: *decomposition* of a problem,
+    *execution* of many subexperiments, and *reconstruction* of a simulated output of the original problem.
+    These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` package using only a few primary
     functions, namely, the :func:`partition_problem`, :func:`decompose_gates`, :func:`execute_experiments`, and :func:`reconstruct_expectation_values` functions.
     Check out the `tutorials <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials>`__ for a look at a couple of example circuit cutting workflows.
 
 features:
   - |
-    Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package which allows for easy
-    transformation of elements of quantum circuits (gates and wires) into elements which
-    decompose to a particular set of gates with respect to a given probabilistic basis. See 
-    :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and 
-    :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` for more information.
+    Addition of a :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package which allows for easy
+    transformation of QuantumCircuit gates and wires into elements which may be decomposed to a
+    probabilistic set of basis gates. See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
   - |
     Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_decomposition`, :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_execution`,
     and :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction` modules. These modules
