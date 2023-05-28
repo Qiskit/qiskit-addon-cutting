@@ -190,6 +190,7 @@ recommend either :ref:`Option 1` or :ref:`Option 2`.
 
 All users on ARM chips, as well as all Windows users, may have to
 use the toolbox within Docker (:ref:`Option 3`), depending on what tools they intend to use.
+  
   - The automatic wire cut search in the ``circuit_cutting`` module depends
     on CPLEX, which is only available on Intel chips and is not yet available
     for Python 3.11.
