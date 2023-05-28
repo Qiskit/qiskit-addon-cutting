@@ -46,7 +46,7 @@ Note: If you are using Windows, use the following commands in PowerShell:
 
 .. _Option 1:
 
-Option 1: Pip installation
+Option 1: Pip Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Upgrade pip.
