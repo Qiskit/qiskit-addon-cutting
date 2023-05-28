@@ -1,5 +1,5 @@
-Install
-=======
+Installation Instructions
+=========================
 
 Let's get started with the Circuit Knitting Toolbox (CKT)! The first
 thing to do is choose how you're going to run and install the
