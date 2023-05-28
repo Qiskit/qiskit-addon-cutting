@@ -2,14 +2,14 @@
 Installation Instructions
 #########################
 
-There are two options: installing locally or using within a Docker
-container.
+There are three options: installing via pip, installing locally or
+using within a Docker container.
 
 - If you are using Linux or macOS with an Intel chip (i.e., not the
   new M1 or M2 chips), everything should work natively, so we
   recommend the first option.
 - All users on ARM chips, as well as all Windows users, will have to
-  use the toolbox within Docker (the second option) for all features to
+  use the toolbox within Docker (the third option) for all features to
   work as designed.
 
 Specifically, the following features are unavailable on the
@@ -21,16 +21,29 @@ aforementioned platforms:
 - The entanglement forging notebooks require pyscf, which does not
   support Windows.
 
-Option 1: Local installation
+.. note::
+    **OPTIONAL** If a user wishes to use the circuit cutting tool to
+    automatically find optimized wire cuts for a circuit too large for
+    the free version of CPLEX, they should acquire a license and install
+    the `full
+    version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
+
+Option 1: pip installation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- The most straightforward way to install the software is to install via pip.
+  Users who want to run entanglement forging should include the pyscf option,
+  and users who want to run the CutQC package should use the cplex option.
+
+.. code:: sh
+
+    pip install circuit-knitting-toolbox[<pyscf, cplex>]
+    
+Option 2: Local installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
--  **OPTIONAL** If a user wishes to use the circuit cutting tool to
-   automatically find optimized wire cuts for a circuit too large for
-   the free version of CPLEX, they should acquire a license and install
-   the `full
-   version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
-
--  Enter a Python environment and install the software
+-  Users who wish to develop in the repository, or who do not wish to install via
+   pip, may wish to run off a local installation.
 
 .. code:: sh
 
@@ -45,7 +58,7 @@ Option 1: Local installation
 -  Navigate to the notebooks in the ``docs/tutorials/`` directory to run the
    tutorials.
 
-Option 2: Use within Docker
+Option 3: Use within Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We have provided a `Dockerfile <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile>`__, which can be used to
