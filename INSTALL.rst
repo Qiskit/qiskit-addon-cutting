@@ -18,7 +18,7 @@ to :ref:`Option 3`.
 Users who wish to install locally or via PyPI may follow a few set of
 common instructions to prepare for installation:
 
-Create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
+First, create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
 
 .. code:: sh
     
