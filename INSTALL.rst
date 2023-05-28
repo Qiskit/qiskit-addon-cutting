@@ -7,12 +7,13 @@ packages. There are three primary ways to do this: :ref:`Option 1`,
 :ref:`Option 2`, or :ref:`Option 3`.
 
 
-Prerequisites
-^^^^^^^^^^^^^
+Pre-Installation
+^^^^^^^^^^^^^^^^
 Users with ARM chips and Windows users should consult the
 :ref:`Platform Support` section to determine which installation option
 is appropriate for them. Users who wish to run within a
-containerized environment may skip the prerequisites and move to :ref:`Option 3`.
+containerized environment may skip the pre-installation and move straight
+to :ref:`Option 3`.
 
 Users who wish to install locally or via PyPI may follow a few set of
 common instructions to prepare for installation:
