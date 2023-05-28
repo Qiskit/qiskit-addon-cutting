@@ -35,7 +35,7 @@ issues:
     The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports :class:`~qiskit.quantum_info.PauliList` observables for calculating expectation values. Support for calculating
     expectation values for more observable types, including :class:`~qiskit.quantum_info.SparsePauliOp`, is expected no sooner than 0.3.0.
   - |
-    The `Qiskit` and `Qiskit Aer` samplers do not support mid-circuit measurements in statevector mode. For more on generating exact quasi-distributions using the :class:`~qiskit.primitives.BaseSampler` interface, check out our `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
+    The :class:`~qiskit.primitives.Sampler` and :class:`~qiskit_aer.primitives.Sampler` do not support mid-circuit measurements in statevector mode. For more on generating exact quasi-distributions using the :class:`~qiskit.primitives.BaseSampler` interface, check out our `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
   - |
     The :mod:`~circuit_knitting_toolbox.circuit_cutting` package generally does not yet support input circuits with user-added
     classical bits, so by extension, it does not yet support dynamic circuits.
