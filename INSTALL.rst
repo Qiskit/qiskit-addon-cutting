@@ -1,62 +1,119 @@
-#########################
-Installation Instructions
-#########################
+Install
+=======
 
-There are three options: installing via pip, installing locally or
-using within a Docker container.
+Let's get started with the Circuit Knitting Toolbox (CKT)! The first
+thing to do is choose how you're going to run and install the
+packages. There are three primary ways to do this: :ref:`Option 1`,
+:ref:`Option 2`, or :ref:`Option 3`.
 
-- If you are using Linux or macOS with an Intel chip (i.e., not the
-  new M1 or M2 chips), everything should work natively, so we
-  recommend the first option.
-- All users on ARM chips, as well as all Windows users, will have to
-  use the toolbox within Docker (the third option) for all features to
-  work as designed.
 
-Specifically, the following features are unavailable on the
-aforementioned platforms:
+Prerequisites
+^^^^^^^^^^^^^
+Users with ARM chips and Windows users should consult the
+:ref:`Platform Support` section to determine which installation option
+is appropriate for them. Users who wish to run within a
+containerized environment may skip the prerequisits and move to :ref:`Option 3`.
 
-- The automatic wire cut search in the circuit cutting module
-  depends on cplex, which is only available on Intel chips and is not
-  yet available for Python 3.11.
-- The entanglement forging notebooks require pyscf, which does not
-  support Windows.
+Users who wish to install locally or via PyPI may follow a few set of
+common instructions to prepare for installation:
+
+Create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
+
+.. code:: sh
+    
+    python3 -m venv /path/to/virtual/environment
+
+Activate your new environment.
+
+.. code:: sh
+    
+    source /path/to/virtual/environment/bin/activate
+
+Note: If you are using Windows, use the following commands in PowerShell:
+
+.. code:: sh
+    
+    python3 -m venv c:\path\to\virtual\environment
+    c:\path\to\virtual\environment\Scripts\Activate.ps1
 
 .. note::
+
     **OPTIONAL** If a user wishes to use the circuit cutting tool to
     automatically find optimized wire cuts for a circuit too large for
     the free version of CPLEX, they should acquire a license and install
     the `full
     version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
 
+
+.. _Option 1:
+
 Option 1: pip installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- The most straightforward way to install the software is to install via pip.
-  Users who want to run entanglement forging should include the pyscf option,
-  and users who want to run the CutQC package should use the cplex option.
+Upgrade pip.
+
+.. code:: sh
+    
+    pip install --upgrade pip
+
+Install the CKT package.
 
 .. code:: sh
 
-    pip install circuit-knitting-toolbox[<pyscf, cplex>]
+    pip install circuit-knitting-toolbox
+
+Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
+
+.. code:: sh
     
-Option 2: Local installation
+    pip install 'circuit-knitting-toolbox[cplex]'
+
+Users intending to use the entanglement forging tool should install the pyscf option.
+
+.. code:: sh
+    
+    pip install 'circuit-knitting-toolbox[pyscf]'
+    
+
+.. _Option 2:
+
+Option 2: Local Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
--  Users who wish to develop in the repository, or who do not wish to install via
-   pip, may wish to run off a local installation.
+Clone the CKT repository.
 
 .. code:: sh
 
     git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-    cd circuit-knitting-toolbox
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install --upgrade pip
-    pip install tox notebook -e '.[notebook-dependencies]'
-    jupyter notebook
+    
+Upgrade pip and enter the repository. 
 
--  Navigate to the notebooks in the ``docs/tutorials/`` directory to run the
-   tutorials.
+.. code:: sh
+    
+    pip install --upgrade pip
+    cd circuit-knitting-toolbox
+
+Install CKT from source. Install the notebook dependencies in order to run
+all the visualizations in the tutorial notebooks.
+
+.. code:: sh
+    
+    pip install tox notebook -e '.[notebook-dependencies]'
+
+Users intending to use the entanglement forging tool should install the pyscf option.
+
+.. code:: sh
+    
+    pip install '.[pyscf]'
+
+Users intending to use the automatic cut finding functionality in the CutQC package should install the cplex option.
+
+.. code:: sh
+    
+    pip install -e '.[cplex]'
+
+
+.. _Option 3:
 
 Option 3: Use within Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -108,3 +165,38 @@ Jupyter notebook interface.
 The home directory includes a subdirectory named ``persistent-volume``.
 All work you’d like to save should be placed in this directory, as it is
 the only one that will be saved across different container runs.
+
+
+Running some Examples
+^^^^^^^^^^^^^^^^^^^^^
+From inside the ``circuit_knitting_toolbox`` repository, open a `Jupyter Notebook <https://jupyter.org/install>`__, navigate
+to the tutorials, and open a Jupyter Notebook instance.
+
+.. code::
+    
+    cd docs/<circuit_cutting | entanglement_forging>/tutorials
+    jupyter notebook
+
+
+.. _Platform Support:
+
+Platform Support
+^^^^^^^^^^^^^^^^
+
+Users of Mac M1 or M2 chips and Windows users may have issues running certain components of CKT.
+
+- If you are using Linux or macOS with an Intel chip (i.e., not the
+  new M1 or M2 chips), everything should work natively, so we
+  recommend either :ref:`Option 1` or :ref:`Option 2`.
+- All users on ARM chips, as well as all Windows users, will have to
+  use the toolbox within Docker (:ref:`Option 3`) for all features to
+  work as designed.
+
+Specifically, the following features are unavailable on the
+aforementioned platforms:
+
+- The automatic wire cut search in the circuit cutting module
+  depends on cplex, which is only available on Intel chips and is not
+  yet available for Python 3.11.
+- The entanglement forging tool requires pyscf, which does not
+  support Windows.
