@@ -74,8 +74,7 @@ def generate_qpd_samples(
     Returns:
         A mapping from a given decomposition to its sampled weight.
         Keys are tuples of indices -- one index per input :class:`QPDBasis`. The indices
-        correspond to a specific decomposition mapping which will be applied to each gate in
-        the decomposition.
+        correspond to a specific decomposition mapping in the basis.
 
         Values are tuples.  The first element is a number corresponding to the
         weight of the contribution.  The second element is the :class:`WeightType`,
