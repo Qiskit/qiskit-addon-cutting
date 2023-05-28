@@ -161,7 +161,7 @@ Once the container is running, you should see a message like this:
 
 Locate the *last* URL in your terminal (the one that includes
 ``127.0.0.1``), and navigate to that URL in a web browser to access the
-Jupyter notebook interface.
+Jupyter Notebook interface.
 
 The home directory includes a subdirectory named ``persistent-volume``.
 All work you’d like to save should be placed in this directory, as it is
