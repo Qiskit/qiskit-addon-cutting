@@ -12,7 +12,7 @@ Prerequisites
 Users with ARM chips and Windows users should consult the
 :ref:`Platform Support` section to determine which installation option
 is appropriate for them. Users who wish to run within a
-containerized environment may skip the prerequisits and move to :ref:`Option 3`.
+containerized environment may skip the prerequisites and move to :ref:`Option 3`.
 
 Users who wish to install locally or via PyPI may follow a few set of
 common instructions to prepare for installation:
