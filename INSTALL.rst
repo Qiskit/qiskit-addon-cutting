@@ -50,12 +50,6 @@ Note: If you are using Windows, use the following commands in PowerShell:
 Option 1: Pip Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Upgrade pip.
-
-.. code:: sh
-    
-    pip install --upgrade pip
-
 Upgrade pip and install the CKT package.
 
 .. code:: sh
