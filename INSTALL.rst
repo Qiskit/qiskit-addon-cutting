@@ -59,7 +59,7 @@ Upgrade pip and install the CKT package.
 
 .. code:: sh
 
-    pip install --upgrade pip && pip install circuit-knitting-toolbox
+    pip install --upgrade pip circuit-knitting-toolbox
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
