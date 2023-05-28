@@ -14,7 +14,7 @@ Users with ARM chips and Windows users should consult the
 is appropriate for them. Users who wish to run within a
 containerized environment may skip the pre-installation and move straight
 to :ref:`Option 3`. Otherwise, users who wish to install locally or via PyPI may 
-ollow a few set of common instructions to prepare for installation:
+follow a few set of common instructions to prepare for installation:
 
 First, create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
 
