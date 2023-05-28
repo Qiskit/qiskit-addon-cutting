@@ -1,7 +1,7 @@
 Installation Instructions
 =========================
 
-Let's see how to install Circuit Knitting Toolbox (CKT). The first
+Let's see how to install the Circuit Knitting Toolbox (CKT). The first
 thing to do is choose how you're going to run and install the
 packages. There are three primary ways to do this: :ref:`Option 1`,
 :ref:`Option 2`, or :ref:`Option 3`.
