@@ -11,13 +11,13 @@ Pre-Installation
 ^^^^^^^^^^^^^^^^
 .. note::
 
-    If a user wishes to use the circuit cutting tool to
+    If a user wishes to use the circuit cutting toolbox to
     automatically find optimized wire cuts for a circuit too large for
     the free version of CPLEX, they should acquire a license and install
     the `full
     version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
 
-Users with ARM chips and Windows users should consult the
+CutQC and entanglement forging users should consult the
 :ref:`Platform Support` section to determine which installation option
 is appropriate for them. Users who wish to run within a
 containerized environment may skip the pre-installation and move straight
