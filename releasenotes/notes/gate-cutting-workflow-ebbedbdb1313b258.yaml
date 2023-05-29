@@ -1,8 +1,8 @@
 ---
 prelude: |
     0.2.0 is centered around the addition of functions which allow for the easy
-    implementation of gate cutting workflows. For more details on the circuit cutting
-    technique, check out our `explanation guide <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html>`__.
+    implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
+    `explanation guide <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html>`__.
 
     The foundation of the :mod:`~circuit_knitting_toolbox.circuit cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
     sub-package. The :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package allows for easy transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
@@ -19,12 +19,12 @@ prelude: |
 features:
   - |
     Addition of a :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package which allows for easy
-    transformation of QuantumCircuit gates and wires into elements which may be decomposed to a
+    transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a
     probabilistic set of basis gates. See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
   - |
     Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_decomposition`, :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_execution`,
     and :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction` modules. These modules
-    provide several functions which allow for easy implementation of a gate cutting workflow, namely,
+    provide several functions which allow for easy implementation of a gate cutting workflows, namely,
     the :func:`partition_problem`, :func:`decompose_gates`, :func:`execute_experiments`, and :func:`reconstruct_expectation_value` functions.
 
 issues:
