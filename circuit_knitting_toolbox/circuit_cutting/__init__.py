@@ -20,6 +20,7 @@ Quasi-probability Decomposition (QPD)
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
+   :template: autosummary/class_no_inherited_members.rst
 
     qpd.QPDBasis
     qpd.BaseQPDGate
