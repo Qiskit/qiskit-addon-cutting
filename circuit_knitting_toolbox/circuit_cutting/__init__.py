@@ -14,8 +14,8 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 
 .. currentmodule:: circuit_knitting_toolbox.circuit_cutting
 
-QPD Classes
-===========
+Quasi-Probability Decomposition (QPD)
+=====================================
 
 .. autosummary::
     :toctree: ../stubs/
@@ -27,9 +27,6 @@ QPD Classes
     qpd.SingleQubitQPDGate
     qpd.TwoQubitQPDGate
     qpd.WeightType
-
-QPD Functions
-=============
 
 .. autosummary::
     :toctree: ../stubs/
