@@ -47,8 +47,8 @@
 <section id="prelude">
 <span id="release-notes-upcoming-release-main-branch-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">¶</a></h3>
 <p>0.2.0 is centered around the addition of functions which allow for the easy
-implementation of gate cutting workflows. For more details on the circuit cutting
-technique, check out our <a class="reference external" href="https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html">explanation guide</a>.</p>
+implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
+<a class="reference external" href="https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html">explanation guide</a>.</p>
 <p>The foundation of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit</span> <span class="pre">cutting</span></code> package is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code>
 sub-package. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package allows for easy transformation of <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
 See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> classes for more information.</p>
@@ -64,13 +64,13 @@ Check out the <a class="reference external" href="https://github.com/Qiskit-Exte
 <span id="release-notes-upcoming-release-main-branch-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Addition of a <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package which allows for easy
-transformation of QuantumCircuit gates and wires into elements which may be decomposed to a
+transformation of <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> gates and wires into elements which may be decomposed to a
 probabilistic set of basis gates. See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> classes for more information.</p></li>
 </ul>
 <ul class="simple">
 <li><p>Addition of <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_decomposition</span></code>, <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_execution</span></code>,
 and <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_reconstruction</span></code> modules. These modules
-provide several functions which allow for easy implementation of a gate cutting workflow, namely,
+provide several functions which allow for easy implementation of a gate cutting workflows, namely,
 the <code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code>, and <code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_value()</span></code> functions.</p></li>
 </ul>
 </section>
