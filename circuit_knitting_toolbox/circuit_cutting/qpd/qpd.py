@@ -141,19 +141,19 @@ def decompose_qpd_instructions(
             according to the decompositions' joint probability distribution.
 
     Returns:
-        Circuit which has had all its QPDGates decomposed into local operations.
+        Circuit which has had all its :class:`BaseQPDGate` instances decomposed into local operations.
 
         The circuit will contain a new, final classical register to contain the QPD measurement
         outcomes (accessible at ``retval.cregs[-1]``).
 
     Raises:
         ValueError: An index in ``instruction_ids`` corresponds to a gate which is not a
-            :class:`QPDGate`
-        ValueError: A list within instruction_ids is not length 1 or 2
+            :class:`BaseQPDGate` instance.
+        ValueError: A list within instruction_ids is not length 1 or 2.
         ValueError: The total number of indices in ``instruction_ids`` does not equal the number
-            of :class:`QPDGate`\ s in the circuit
-        ValueError: Gates within the same decomposition hold different QPD bases
-        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit
+            of :class:`BaseQPDGate` instances in the circuit.
+        ValueError: Gates within the same decomposition hold different QPD bases.
+        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit.
     """
     _validate_qpd_instructions(circuit, instruction_ids)
     new_qc = circuit.copy()
@@ -205,7 +205,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
-        ValueError: Cannot decompose gate with unbound parameters
+        ValueError: Cannot decompose gate with unbound parameters.
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
