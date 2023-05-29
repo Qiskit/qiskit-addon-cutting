@@ -65,7 +65,6 @@ CutQC
     cutqc.cut_circuit_wires
     cutqc.evaluate_subcircuits
     cutqc.reconstruct_full_distribution
-
 """
 
 from .cutting_decomposition import (
