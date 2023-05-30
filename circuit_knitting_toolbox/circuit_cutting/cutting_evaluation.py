@@ -74,7 +74,7 @@ def execute_experiments(
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
         ValueError: The input circuits may not contain any classical registers or bits.
-        ValueError: If multiple samplers are passed, each one must currently be unique.
+        ValueError: If multiple samplers are passed, each one must be unique.
     """
     if num_samples <= 0:
         raise ValueError("The number of requested samples must be positive.")
