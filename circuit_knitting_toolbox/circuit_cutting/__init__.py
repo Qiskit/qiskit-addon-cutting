@@ -18,14 +18,22 @@ Circuit Cutting
 ===============
 
 .. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
+    :toctree: ../stubs/
+    :nosignatures:
 
     partition_circuit_qubits
     partition_problem
     decompose_gates
     execute_experiments
     reconstruct_expectation_values
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+    :template: autosummary/class_no_inherited_members.rst
+
+    PartitionedCuttingProblem
+    CuttingExperimentResults
 
 Quasi-Probability Decomposition (QPD)
 =====================================
@@ -68,8 +76,9 @@ from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
     decompose_gates,
+    PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments
+from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
 
 __all__ = [
@@ -78,4 +87,6 @@ __all__ = [
     "decompose_gates",
     "execute_experiments",
     "reconstruct_expectation_values",
+    "PartitionedCuttingProblem",
+    "CuttingExperimentResults",
 ]
