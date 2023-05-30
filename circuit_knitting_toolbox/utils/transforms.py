@@ -34,7 +34,9 @@ from qiskit.circuit import (
     QuantumRegister,
     ClassicalRegister,
     Barrier,
+    Qubit,
 )
+from .iteration import unique_by_eq
 
 
 class SeparatedCircuits(NamedTuple):
@@ -74,7 +76,7 @@ def separate_circuit(
             f"qubits in the input circuit ({new_qc.num_qubits})."
         )
 
-    qubit_map = _qubit_map_from_partition_labels(partition_labels)
+    qubit_map, qubits_by_subsystem = _qubit_map_from_partition_labels(partition_labels)
 
     # Gather instructions corresponding to the same partition together
     subcircuit_data_ids = _separate_instructions_by_partition(new_qc, qubit_map)
@@ -83,7 +85,11 @@ def separate_circuit(
     subcircuits = {}
     for label, subcircuit_data in subcircuit_data_ids.items():
         tmp_data = (new_qc.data[j] for j in subcircuit_data)
-        tmp_circ = _circuit_from_instructions(tmp_data, new_qc.cregs)
+        tmp_circ = _circuit_from_instructions(
+            tmp_data,
+            [new_qc.qubits[j] for j in qubits_by_subsystem[label]],
+            new_qc.cregs,
+        )
         _combine_barriers(tmp_circ)
         subcircuits[label] = tmp_circ
 
@@ -121,6 +127,7 @@ def _partition_labels_from_circuit(circuit: QuantumCircuit) -> list[int]:
 
 def _circuit_from_instructions(
     instructions: Iterable[CircuitInstruction],
+    qubits: Sequence[Qubit],
     cregs: Iterable[ClassicalRegister],
 ) -> QuantumCircuit:
     """
@@ -130,15 +137,10 @@ def _circuit_from_instructions(
     uncut circuit to each subcircuit, so we add them here.
     """
     circuit = QuantumCircuit()
+    circuit.add_register(QuantumRegister(bits=qubits))
     for register in cregs:
         circuit.add_register(register)
-    added_qubits = set()
     for data in instructions:
-        qubits = [qubit for qubit in data.qubits if qubit not in added_qubits]
-        if qubits != []:
-            circuit.add_register(QuantumRegister(bits=qubits))
-            added_qubits.update(qubits)
-
         circuit.append(data)
 
     return circuit
@@ -146,7 +148,7 @@ def _circuit_from_instructions(
 
 def _qubit_map_from_partition_labels(
     partition_labels: Sequence[Hashable],
-) -> list[tuple[Hashable, int]]:
+) -> tuple[list[tuple[Hashable, int]], dict[Hashable, list[int]]]:
     """Generate a qubit map given a qubit partitioning."""
     qubit_map: list[tuple[Hashable, int]] = []
     qubits_by_subsystem: MutableMapping[Hashable, list[int]] = defaultdict(list)
@@ -154,7 +156,7 @@ def _qubit_map_from_partition_labels(
         current_label_qubits = qubits_by_subsystem[qubit_label]
         qubit_map.append((qubit_label, len(current_label_qubits)))
         current_label_qubits.append(i)
-    return qubit_map
+    return qubit_map, dict(qubits_by_subsystem)
 
 
 def _separate_instructions_by_partition(
@@ -162,7 +164,10 @@ def _separate_instructions_by_partition(
     qubit_map: Sequence[tuple[Hashable, int]],
 ) -> dict[Hashable, list[int]]:
     """Generate a list of instructions for each partition of the circuit."""
-    subcircuit_data_ids: dict[Hashable, list[int]] = defaultdict(list)
+    unique_labels = unique_by_eq(label for label, _ in qubit_map)
+    subcircuit_data_ids: dict[Hashable, list[int]] = {
+        label: [] for label in unique_labels
+    }
 
     for i, gate in enumerate(circuit.data):
         partitions_spanned = {
