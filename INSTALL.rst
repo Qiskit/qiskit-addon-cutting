@@ -74,7 +74,7 @@ Users intending to use the automatic cut finding functionality in the CutQC pack
 Option 2: Local Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Clone the CKT repository.
+Clone the circuit-knitting-toolbox repository.
 
 .. code:: sh
 
