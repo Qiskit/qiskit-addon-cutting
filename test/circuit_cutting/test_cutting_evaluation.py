@@ -12,6 +12,8 @@
 import pytest
 import unittest
 
+from copy import deepcopy
+
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.result import QuasiDistribution
 from qiskit.primitives import Sampler as TerraSampler
@@ -31,6 +33,7 @@ from circuit_knitting_toolbox.circuit_cutting.cutting_evaluation import (
     execute_experiments,
 )
 from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
+from circuit_knitting_toolbox.circuit_cutting import partition_problem
 
 
 class TestCuttingEvaluation(unittest.TestCase):
@@ -95,7 +98,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 subcircuits,
                 subobservables,
                 num_samples=50,
-                samplers={"A": self.sampler, "B": self.sampler},
+                samplers={"A": self.sampler, "B": deepcopy(self.sampler)},
             )
             self.assertEqual(
                 [
@@ -214,6 +217,24 @@ class TestCuttingEvaluation(unittest.TestCase):
                 e_info.value.args[0]
                 == "The number of requested samples must be positive."
             )
+        with self.subTest("Dict of non-unique samplers"):
+            qc = QuantumCircuit(2)
+            qc.x(0)
+            qc.cnot(0, 1)
+            subcircuits, _, subobservables = partition_problem(
+                circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
+            )
+            with pytest.raises(ValueError) as e_info:
+                execute_experiments(
+                    subcircuits,
+                    subobservables,
+                    num_samples=10,
+                    samplers={"A": self.sampler, "B": self.sampler},
+                )
+            assert (
+                e_info.value.args[0]
+                == "Currently, if a samplers dict is passed to execute_experiments(), then each sampler must be unique; however, subsystems A and B were passed the same sampler."
+            )
         with self.subTest("Incompatible inputs"):
             with pytest.raises(ValueError) as e_info:
                 execute_experiments(
@@ -246,7 +267,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert (
                 e_info.value.args[0]
-                == "The keys for the circuits and observabes dicts should be equivalent."
+                == "The keys for the circuits and observables dicts should be equivalent."
             )
             with pytest.raises(ValueError) as e_info:
                 execute_experiments(
