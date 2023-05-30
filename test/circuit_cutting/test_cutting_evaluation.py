@@ -348,14 +348,6 @@ class TestCuttingEvaluation(unittest.TestCase):
 
     def test_workflow_with_unused_qubits(self):
         """Issue #218"""
-        from qiskit import QuantumCircuit
-        from qiskit.quantum_info import PauliList
-        from qiskit_aer.primitives import Sampler
-        from circuit_knitting_toolbox.circuit_cutting import (
-            partition_problem,
-            execute_experiments,
-        )
-
         qc = QuantumCircuit(2)
         subcircuits, _, subobservables = partition_problem(
             circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
@@ -364,5 +356,5 @@ class TestCuttingEvaluation(unittest.TestCase):
             subcircuits,
             subobservables,
             num_samples=1,
-            samplers=Sampler(),
+            samplers=AerSampler(),
         )
