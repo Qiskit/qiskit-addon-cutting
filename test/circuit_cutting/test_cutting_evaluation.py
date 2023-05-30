@@ -345,3 +345,16 @@ class TestCuttingEvaluation(unittest.TestCase):
                 e_info.value.args[0]
                 == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
+
+    def test_workflow_with_unused_qubits(self):
+        """Issue #218"""
+        qc = QuantumCircuit(2)
+        subcircuits, _, subobservables = partition_problem(
+            circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
+        )
+        execute_experiments(
+            subcircuits,
+            subobservables,
+            num_samples=1,
+            samplers=AerSampler(),
+        )

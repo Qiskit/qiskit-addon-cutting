@@ -415,6 +415,15 @@ class TestTransforms(unittest.TestCase):
                 (frozenset([2]), 0),
             ]
 
+        with self.subTest("Unused qubit"):
+            circuit = QuantumCircuit(2)
+            circuit.x(0)
+            separated_circuits = separate_circuit(circuit, partition_labels="BA")
+            assert separated_circuits.subcircuits.keys() == {"A", "B"}
+            assert len(separated_circuits.subcircuits["B"].data) == 1
+            assert len(separated_circuits.subcircuits["A"].data) == 0
+            assert separated_circuits.qubit_map == [("B", 0), ("A", 0)]
+
 
 def _create_barrier_subcirc() -> QuantumCircuit:
     qc = QuantumCircuit(1)

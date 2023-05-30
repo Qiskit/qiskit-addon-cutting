@@ -247,3 +247,12 @@ class TestCuttingDecomposition(unittest.TestCase):
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
             )
+
+    def test_unused_qubits(self):
+        """Issue #218"""
+        qc = QuantumCircuit(2)
+        subcircuits, _, subobservables = partition_problem(
+            circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
+        )
+        assert subcircuits.keys() == {"A", "B"}
+        assert subobservables.keys() == {"A", "B"}
