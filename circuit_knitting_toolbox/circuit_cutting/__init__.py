@@ -14,6 +14,19 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 
 .. currentmodule:: circuit_knitting_toolbox.circuit_cutting
 
+Circuit Cutting
+===============
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+    partition_circuit_qubits
+    partition_problem
+    decompose_gates
+    execute_experiments
+    reconstruct_expectation_values
+
 Quasi-Probability Decomposition (QPD)
 =====================================
 
@@ -34,19 +47,6 @@ Quasi-Probability Decomposition (QPD)
 
     qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
-
-Circuit Cutting
-===============
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-    partition_circuit_qubits
-    partition_problem
-    decompose_gates
-    execute_experiments
-    reconstruct_expectation_values
 
 CutQC
 =====
