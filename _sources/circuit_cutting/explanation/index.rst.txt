@@ -1,3 +1,5 @@
+.. _circuit cutting explanation:
+
 ###################################################
 Explanatory material for the circuit cutting module
 ###################################################
