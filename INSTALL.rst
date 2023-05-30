@@ -21,7 +21,7 @@ CutQC and entanglement forging users should consult the
 :ref:`Platform Support` section to determine which installation option
 is appropriate for them. Users who wish to run within a
 containerized environment may skip the pre-installation and move straight
-to :ref:`Option 3`. Otherwise, users who wish to install locally or via PyPI may 
+to :ref:`Option 3`. Otherwise, users who wish to install locally may 
 follow a few set of common instructions to prepare a Python environment for
 installation of CKT:
 
@@ -54,56 +54,48 @@ Upgrade pip and install the CKT package.
 
 .. code:: sh
 
-    pip install --upgrade pip circuit-knitting-toolbox
+    pip install --upgrade pip
+    pip install circuit-knitting-toolbox
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
-
-.. code:: sh
-    
-    pip install 'circuit-knitting-toolbox[pyscf]'
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
 
 .. code:: sh
     
-    pip install 'circuit-knitting-toolbox[cplex]'
-    
+    pip install 'circuit-knitting-toolbox[pyscf,cplex]'
+
 
 .. _Option 2:
 
-Option 2: Local Installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option 2: Install from Source
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Clone the circuit-knitting-toolbox repository.
+Users who wish to develop in the repository or run the tutorials locally may want to install from source.
+
+In either case, the first step is to clone the CKT repository.
 
 .. code:: sh
 
     git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
     
-Upgrade pip and enter the repository. 
+Next, upgrade pip and enter the repository. 
 
 .. code:: sh
     
     pip install --upgrade pip && cd circuit-knitting-toolbox
 
-Install CKT from source. Install the notebook dependencies in order to run
-all the visualizations in the tutorial notebooks.
-
-.. code:: sh
-    
-    pip install tox notebook -e '.[notebook-dependencies]'
+Install CKT from source. If you plan on running the tutorials, install the
+notebook dependencies in order to run all the visualizations in the notebooks.
+If you plan on developing in the repo, you may want to install the dev dependencies.
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
-
-.. code:: sh
-    
-    pip install -e '.[pyscf]'
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
 
 .. code:: sh
     
-    pip install -e '.[cplex]'
+    pip install tox notebook -e '.[notebook-dependencies,dev,pyscf,cplex]'
 
 
 .. _Option 3:
