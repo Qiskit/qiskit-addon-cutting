@@ -115,6 +115,7 @@
 <span class="sd">        ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.</span>
 <span class="sd">        ValueError: The keys for the input dictionaries are not equivalent.</span>
 <span class="sd">        ValueError: The input circuits may not contain any classical registers or bits.</span>
+<span class="sd">        ValueError: If multiple samplers are passed, each one must be unique.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">num_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The number of requested samples must be positive.&quot;</span><span class="p">)</span>
@@ -135,12 +136,24 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">circuits</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">!=</span> <span class="n">subobservables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;The keys for the circuits and observabes dicts should be equivalent.&quot;</span>
+                <span class="s2">&quot;The keys for the circuits and observables dicts should be equivalent.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplers</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">circuits</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">!=</span> <span class="n">samplers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;The keys for the circuits and samplers dicts should be equivalent.&quot;</span>
             <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">samplers</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="c1"># Ensure that each sampler is unique</span>
+        <span class="n">collision_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">samplers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">collision_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Currently, if a samplers dict is passed to execute_experiments(), &quot;</span>
+                    <span class="s2">&quot;then each sampler must be unique; however, subsystems &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">collision_dict</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> were passed the same sampler.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">collision_dict</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="n">k</span>
 
     <span class="c1"># Ensure input Samplers can handle mid-circuit measurements</span>
     <span class="n">_validate_samplers</span><span class="p">(</span><span class="n">samplers</span><span class="p">)</span>
