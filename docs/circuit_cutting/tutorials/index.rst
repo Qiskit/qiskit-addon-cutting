@@ -1,3 +1,5 @@
+.. _circuit cutting tutorials:
+
 #########################
 Circuit Cutting Tutorials
 #########################

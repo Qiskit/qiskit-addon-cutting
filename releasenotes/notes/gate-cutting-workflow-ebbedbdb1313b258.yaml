@@ -2,9 +2,9 @@
 prelude: |
     0.2.0 is centered around the addition of functions which allow for the easy
     implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
-    `explanation guide <https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html>`__.
+    :ref:`explanation guide <circuit cutting explanation>`.
 
-    The foundation of the :mod:`~circuit_knitting_toolbox.circuit cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
+    The foundation of the :mod:`~circuit_knitting_toolbox.circuit_cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
     sub-package. The :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package allows for easy transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
     See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
 
@@ -13,8 +13,8 @@ prelude: |
     circuit knitting techniques, gate cutting can be described as three consecutive stages: *decomposition* of a problem,
     *execution* of many subexperiments, and *reconstruction* of a simulated output of the original problem.
     These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` package using only a few primary
-    functions, namely, the :func:`partition_problem`, :func:`decompose_gates`, :func:`execute_experiments`, and :func:`reconstruct_expectation_values` functions.
-    Check out the `tutorials <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/tutorials>`__ for a look at a couple of example circuit cutting workflows.
+    functions, namely, the :func:`.partition_problem`, :func:`.decompose_gates`, :func:`.execute_experiments`, and :func:`.reconstruct_expectation_values` functions.
+    Check out the :ref:`tutorials <circuit cutting tutorials>` for a look at a couple of example circuit cutting workflows.
 
 features:
   - |
@@ -24,8 +24,8 @@ features:
   - |
     Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_decomposition`, :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_execution`,
     and :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction` modules. These modules
-    provide several functions which allow for easy implementation of a gate cutting workflows, namely,
-    the :func:`partition_problem`, :func:`decompose_gates`, :func:`execute_experiments`, and :func:`reconstruct_expectation_value` functions.
+    provide several functions which allow for easy implementation of gate cutting workflows, namely,
+    the :func:`.partition_problem`, :func:`.decompose_gates`, :func:`.execute_experiments`, and :func:`.reconstruct_expectation_values` functions.
 
 issues:
   - |
