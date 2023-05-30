@@ -66,6 +66,8 @@ Users intending to use the entanglement forging tool should install the ``pyscf`
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
+Adjust the options below to suit your needs.
+
 .. code:: sh
     
     pip install 'circuit-knitting-toolbox[pyscf,cplex]'
@@ -98,6 +100,8 @@ If you plan on developing in the repo, you may want to install the dev dependenc
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
+
+Adjust the options below to suit your needs.
 
 .. code:: sh
     
@@ -165,7 +169,7 @@ a `Jupyter Notebook <https://jupyter.org/install>`__ instance, and start experim
 
 .. code::
     
-    cd docs/<circuit_cutting | entanglement_forging>/tutorials
+    cd docs/
     jupyter notebook
 
 
