@@ -208,9 +208,7 @@ distribution will be sampled.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
-
-<span class="c1"># Keep in mind, Terra Sampler does not support mid-circuit measurements at all,</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Keep in mind, Terra Sampler does not support mid-circuit measurements at all,</span>
 <span class="c1"># and Aer Sampler does not support mid-circuit measurements when shots==None.</span>
 <span class="n">samplers</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">}),</span>
@@ -279,10 +277,10 @@ distribution will be sampled.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Simulated expectation values: [0.15707213, 0.16719556, 0.30101973, 0.4364444, 0.09293658, 0.72403508]
+Simulated expectation values: [0.16709793, 0.18652463, 0.30369848, 0.46279693, 0.08348149, 0.70464808]
 Exact expectation values: [0.17153613, 0.1815846, 0.30958691, 0.44036036, 0.08173037, 0.70623815]
-Errors in estimation: [-0.01446401, -0.01438904, -0.00856719, -0.00391596, 0.01120621, 0.01779693]
-Relative errors in estimation: [-0.08432046, -0.07924153, -0.02767296, -0.00889263, 0.13711191, 0.02519962]
+Errors in estimation: [-0.00443821, 0.00494003, -0.00588843, 0.02243656, 0.00175112, -0.00159008]
+Relative errors in estimation: [-0.02587331, 0.02720511, -0.01902029, 0.05095046, 0.0214256, -0.00225147]
 </pre></div></div>
 </div>
 </section>
