@@ -3,12 +3,18 @@ Installation Instructions
 
 Let's see how to install the Circuit Knitting Toolbox (CKT). The first
 thing to do is choose how you're going to run and install the
-packages. There are three primary ways to do this: :ref:`Option 1`,
-:ref:`Option 2`, or :ref:`Option 3`.
+packages. There are three primary ways to do this:
 
+- :ref:`Option 1`
+- :ref:`Option 2`
+- :ref:`Option 3`
 
-Pre-Installation
-^^^^^^^^^^^^^^^^
+CutQC and entanglement forging users should consult the
+:ref:`Platform Support` section to determine which installation option
+is appropriate for them. Users who wish to run within a
+containerized environment may skip the pre-installation and move straight
+to :ref:`Option 3`.
+
 .. note::
 
     If a user wishes to use the circuit cutting toolbox to
@@ -17,11 +23,10 @@ Pre-Installation
     the `full
     version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
 
-CutQC and entanglement forging users should consult the
-:ref:`Platform Support` section to determine which installation option
-is appropriate for them. Users who wish to run within a
-containerized environment may skip the pre-installation and move straight
-to :ref:`Option 3`. Otherwise, users who wish to install locally may 
+Pre-Installation
+^^^^^^^^^^^^^^^^
+
+Users who wish to install locally (using either :ref:`Option 1` or :ref:`Option 2`) may 
 follow a few set of common instructions to prepare a Python environment for
 installation of CKT:
 
@@ -59,7 +64,7 @@ Upgrade pip and install the CKT package.
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
+Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
 .. code:: sh
     
@@ -83,9 +88,10 @@ Next, upgrade pip and enter the repository.
 
 .. code:: sh
     
-    pip install --upgrade pip && cd circuit-knitting-toolbox
+    pip install --upgrade pip
+    cd circuit-knitting-toolbox
 
-Install CKT from source. If you plan on running the tutorials, install the
+The next step is to install CKT to the virtual environment. If you plan on running the tutorials, install the
 notebook dependencies in order to run all the visualizations in the notebooks.
 If you plan on developing in the repo, you may want to install the dev dependencies.
 
