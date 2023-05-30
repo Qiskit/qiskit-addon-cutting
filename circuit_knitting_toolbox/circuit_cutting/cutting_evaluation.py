@@ -94,12 +94,24 @@ def execute_experiments(
     if isinstance(circuits, dict):
         if circuits.keys() != subobservables.keys():
             raise ValueError(
-                "The keys for the circuits and observabes dicts should be equivalent."
+                "The keys for the circuits and observables dicts should be equivalent."
             )
         if isinstance(samplers, dict) and circuits.keys() != samplers.keys():
             raise ValueError(
                 "The keys for the circuits and samplers dicts should be equivalent."
             )
+
+    if isinstance(samplers, dict):
+        # Ensure that each sampler is unique
+        collision_dict: dict[int, str | int] = {}
+        for k, v in samplers.items():
+            if id(v) in collision_dict:
+                raise ValueError(
+                    "Currently, if a samplers dict is passed to execute_experiments(), "
+                    "then each sampler must be unique; however, subsystems "
+                    f"{collision_dict[id(v)]} and {k} were passed the same sampler."
+                )
+            collision_dict[id(v)] = k
 
     # Ensure input Samplers can handle mid-circuit measurements
     _validate_samplers(samplers)
