@@ -162,7 +162,7 @@ the only one that will be saved across different container runs.
 
 Running some Examples
 ^^^^^^^^^^^^^^^^^^^^^
-From inside the ``circuit_knitting_toolbox`` repository, navigate to the tutorials, open
+From inside the ``circuit-knitting-toolbox`` repository, navigate to the tutorials via the `docs/` directory, open
 a `Jupyter Notebook <https://jupyter.org/install>`__ instance, and start experimenting with CKT!
 
 .. code::
