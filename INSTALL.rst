@@ -99,7 +99,7 @@ If you plan on developing in the repo, you may want to install the dev dependenc
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` option.
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` option.
+Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
 Adjust the options below to suit your needs.
 
