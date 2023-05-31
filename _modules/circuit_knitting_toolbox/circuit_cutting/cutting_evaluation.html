@@ -78,11 +78,11 @@
 <span class="kn">from</span> <span class="nn">.cutting_decomposition</span> <span class="kn">import</span> <span class="n">decompose_observables</span>
 
 
-<span class="k">class</span> <span class="nc">CuttingExperimentResults</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="CuttingExperimentResults"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults.html#circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults">[docs]</a><span class="k">class</span> <span class="nc">CuttingExperimentResults</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Circuit cutting subexperiment results and sampling coefficients.&quot;&quot;&quot;</span>
 
     <span class="n">quasi_dists</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">QuasiDistribution</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span>
-    <span class="n">coeffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]]</span>
+    <span class="n">coeffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="execute_experiments"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html#circuit_knitting_toolbox.circuit_cutting.execute_experiments">[docs]</a><span class="k">def</span> <span class="nf">execute_experiments</span><span class="p">(</span>

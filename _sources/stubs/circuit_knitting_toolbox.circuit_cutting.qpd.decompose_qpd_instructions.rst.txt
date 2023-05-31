@@ -1,0 +1,6 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.qpd.decompose\_qpd\_instructions
+============================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.qpd
+
+.. autofunction:: decompose_qpd_instructions

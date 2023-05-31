@@ -23,7 +23,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html" />
+    <link rel="next" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html" />
     <link rel="prev" title="Circuit Knitting Toolbox API References" href="index.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -44,6 +44,72 @@
   <section id="module-circuit_knitting_toolbox.circuit_cutting">
 <span id="id1"></span><span id="circuit-cutting"></span><h1>Circuit Cutting<a class="headerlink" href="#module-circuit_knitting_toolbox.circuit_cutting" title="Permalink to this heading">¶</a></h1>
 <p>Circuit Cutting (<a class="reference internal" href="#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting</span></code></a>).</p>
+<section id="id2">
+<h2>Circuit Cutting<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition_circuit_qubits</span></code></a></p></td>
+<td><p>Replace all nonlocal gates belonging to more than one partition with instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html#circuit_knitting_toolbox.circuit_cutting.partition_problem" title="circuit_knitting_toolbox.circuit_cutting.partition_problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition_problem</span></code></a></p></td>
+<td><p>Separate an input circuit and observable(s) along qubit partition labels.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html#circuit_knitting_toolbox.circuit_cutting.decompose_gates" title="circuit_knitting_toolbox.circuit_cutting.decompose_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decompose_gates</span></code></a></p></td>
+<td><p>Transform specified gates into <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html#circuit_knitting_toolbox.circuit_cutting.execute_experiments" title="circuit_knitting_toolbox.circuit_cutting.execute_experiments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute_experiments</span></code></a></p></td>
+<td><p>Generate the sampled circuits, append the observables, and run the sub-experiments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html#circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values" title="circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_expectation_values</span></code></a></p></td>
+<td><p>Reconstruct an expectation value from the results of the sub-experiments.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html#circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem" title="circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartitionedCuttingProblem</span></code></a></p></td>
+<td><p>The result of decomposing and separating a circuit and observable(s).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults.html#circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults" title="circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CuttingExperimentResults</span></code></a></p></td>
+<td><p>Circuit cutting subexperiment results and sampling coefficients.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="quasi-probability-decomposition-qpd">
+<h2>Quasi-Probability Decomposition (QPD)<a class="headerlink" href="#quasi-probability-decomposition-qpd" title="Permalink to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html#circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis" title="circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.QPDBasis</span></code></a></p></td>
+<td><p>Basis in which to decompose an operation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html#circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate" title="circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.BaseQPDGate</span></code></a></p></td>
+<td><p>Base class for a gate to be decomposed using quasiprobability decomposition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate.html#circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate" title="circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.SingleQubitQPDGate</span></code></a></p></td>
+<td><p>Single qubit gate to be decomposed using quasiprobability decomposition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate.html#circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate" title="circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.TwoQubitQPDGate</span></code></a></p></td>
+<td><p>Two qubit gate to be decomposed using quasiprobability decomposition.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.WeightType.html#circuit_knitting_toolbox.circuit_cutting.qpd.WeightType" title="circuit_knitting_toolbox.circuit_cutting.qpd.WeightType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.WeightType</span></code></a></p></td>
+<td><p>Type of weight associated with a QPD sample.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples.html#circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples" title="circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.generate_qpd_samples</span></code></a></p></td>
+<td><p>Generate random quasiprobability decompositions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions.html#circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions" title="circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.decompose_qpd_instructions</span></code></a></p></td>
+<td><p>Replace all QPD instructions in the circuit with local Qiskit operations and measurements.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cutqc">
+<h2>CutQC<a class="headerlink" href="#cutqc" title="Permalink to this heading">¶</a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html#circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances" title="circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cutqc.run_subcircuit_instances</span></code></a></p></td>
@@ -67,23 +133,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html#circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution" title="circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cutqc.reconstruct_full_distribution</span></code></a></p></td>
 <td><p>Reconstruct the full probabilities from the subcircuit evaluations.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition_circuit_qubits</span></code></a></p></td>
-<td><p>Replace all nonlocal gates belonging to more than one partition with instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html#circuit_knitting_toolbox.circuit_cutting.partition_problem" title="circuit_knitting_toolbox.circuit_cutting.partition_problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition_problem</span></code></a></p></td>
-<td><p>Separate an input circuit and observable(s) along qubit partition labels.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html#circuit_knitting_toolbox.circuit_cutting.decompose_gates" title="circuit_knitting_toolbox.circuit_cutting.decompose_gates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decompose_gates</span></code></a></p></td>
-<td><p>Transform specified gates into <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html#circuit_knitting_toolbox.circuit_cutting.execute_experiments" title="circuit_knitting_toolbox.circuit_cutting.execute_experiments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute_experiments</span></code></a></p></td>
-<td><p>Generate the sampled circuits, append the observables, and run the sub-experiments.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html#circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values" title="circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct_expectation_values</span></code></a></p></td>
-<td><p>Reconstruct an expectation value from the results of the sub-experiments.</p></td>
-</tr>
 </tbody>
 </table>
+</section>
 </section>
 
 
@@ -127,7 +179,7 @@
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Circuit Knitting Toolbox API References</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Circuit Knitting Toolbox API References</a></li>
-      <li>Next: <a href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html" title="next chapter">circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances</a></li>
+      <li>Next: <a href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html" title="next chapter">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</a></li>
   </ul></li>
   </ul></li>
 </ul>

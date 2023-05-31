@@ -71,12 +71,12 @@
 <span class="kn">from</span> <span class="nn">.qpd.instructions</span> <span class="kn">import</span> <span class="n">TwoQubitQPDGate</span>
 
 
-<span class="k">class</span> <span class="nc">PartitionedCuttingProblem</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="PartitionedCuttingProblem"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html#circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem">[docs]</a><span class="k">class</span> <span class="nc">PartitionedCuttingProblem</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The result of decomposing and separating a circuit and observable(s).&quot;&quot;&quot;</span>
 
     <span class="n">subcircuits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">]</span>
     <span class="n">bases</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QPDBasis</span><span class="p">]</span>
-    <span class="n">subobservables</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">subobservables</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="partition_circuit_qubits"><a class="viewcode-back" href="../../../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits">[docs]</a><span class="k">def</span> <span class="nf">partition_circuit_qubits</span><span class="p">(</span>

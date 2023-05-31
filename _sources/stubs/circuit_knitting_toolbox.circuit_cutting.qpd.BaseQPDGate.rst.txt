@@ -1,0 +1,28 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.qpd.BaseQPDGate
+===========================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.qpd
+
+.. autoclass:: BaseQPDGate
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BaseQPDGate.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BaseQPDGate.basis
+      ~BaseQPDGate.basis_id
+   
+   

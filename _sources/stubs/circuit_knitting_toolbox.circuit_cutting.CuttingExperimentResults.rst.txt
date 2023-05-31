@@ -1,0 +1,27 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.CuttingExperimentResults
+====================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+
+.. autoclass:: CuttingExperimentResults
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CuttingExperimentResults.coeffs
+      ~CuttingExperimentResults.quasi_dists
+   
+   

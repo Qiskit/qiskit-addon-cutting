@@ -1,0 +1,27 @@
+﻿circuit\_knitting\_toolbox.circuit\_cutting.qpd.SingleQubitQPDGate
+==================================================================
+
+.. currentmodule:: circuit_knitting_toolbox.circuit_cutting.qpd
+
+.. autoclass:: SingleQubitQPDGate
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SingleQubitQPDGate.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SingleQubitQPDGate.qubit_id
+   
+   
