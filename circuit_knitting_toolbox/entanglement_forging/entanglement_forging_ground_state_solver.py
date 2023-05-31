@@ -33,7 +33,7 @@ from qiskit_nature.second_q.problems import (
     ElectronicBasis,
 )
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
-from qiskit.opflow import PauliSumOp
+from qiskit.quantum_info.operators.symplectic import SparsePauliOp
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
@@ -363,7 +363,7 @@ class EntanglementForgingGroundStateSolver:
     def get_qubit_operators(
         self,
         problem: ElectronicStructureProblem,
-    ) -> list[PauliSumOp]:
+    ) -> list[SparsePauliOp]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:

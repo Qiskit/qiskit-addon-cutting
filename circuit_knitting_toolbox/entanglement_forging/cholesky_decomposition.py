@@ -18,10 +18,10 @@ from typing import Sequence
 
 import numpy as np
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Pauli
+from qiskit.quantum_info.operators.symplectic import SparsePauliOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
-from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
+from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_nature.second_q.operators import (
     FermionicOp,
     PolynomialTensor,
@@ -36,8 +36,8 @@ from .entanglement_forging_operator import EntanglementForgingOperator
 
 
 def get_cholesky_op(
-    l_op: np.ndarray, g: int, converter: QubitConverter, opname: str
-) -> PauliSumOp:
+    l_op: np.ndarray, g: int, converter: JordanWignerMapper, opname: str
+) -> SparsePauliOp:
     """
     Convert a two-body term into a cholesky operator.
 
@@ -52,7 +52,7 @@ def get_cholesky_op(
     """
     pt = PolynomialTensor({"+-": l_op[:, :, g]})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
-    cholesky_op = converter.convert(fer_op)
+    cholesky_op = converter.map(fer_op)
     cholesky_op._name = opname + "_chol" + str(g)
 
     return cholesky_op
@@ -62,7 +62,7 @@ def cholesky_decomposition(
     problem: ElectronicStructureProblem,
     mo_coeff: np.ndarray | None = None,
     orbitals_to_reduce: Sequence[int] | None = None,
-) -> tuple[list[PauliSumOp], float]:
+) -> tuple[list[SparsePauliOp], float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
@@ -124,7 +124,7 @@ def cholesky_decomposition(
 
 
 def convert_cholesky_operator(
-    operator: list[PauliSumOp],
+    operator: list[SparsePauliOp],
     ansatz: EntanglementForgingAnsatz,
 ) -> EntanglementForgingOperator:
     """
@@ -242,7 +242,7 @@ def _get_fermionic_ops_with_cholesky(
     occupied_orbitals_to_reduce: np.ndarray | None = None,
     virtual_orbitals_to_reduce: np.ndarray | None = None,
     epsilon_cholesky: float = 1e-10,
-) -> tuple[PauliSumOp, list[PauliSumOp], float, np.ndarray, np.ndarray,]:
+) -> tuple[SparsePauliOp, list[SparsePauliOp], float, np.ndarray, np.ndarray,]:
     r"""
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
@@ -335,11 +335,10 @@ def _get_fermionic_ops_with_cholesky(
     if halve_transformed_h2:
         h2 /= 2  # type: ignore
 
-    converter = QubitConverter(JordanWignerMapper())
+    converter = JordanWignerMapper()
     pt = PolynomialTensor({"+-": h1, "++--": to_physicist_ordering(h2)})
     fer_op = FermionicOp.from_polynomial_tensor(pt)
-    qubit_op = converter.convert(fer_op)
-
+    qubit_op = converter.map(fer_op)
     qubit_op._name = opname + "_onebodyop"
 
     cholesky_ops = [
