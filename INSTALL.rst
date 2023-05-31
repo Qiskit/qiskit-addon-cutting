@@ -97,7 +97,7 @@ The next step is to install CKT to the virtual environment. If you plan on runni
 notebook dependencies in order to run all the visualizations in the notebooks.
 If you plan on developing in the repo, you may want to install the dev dependencies.
 
-Users intending to use the entanglement forging tool should install the ``pyscf`` option.
+Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency.
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
