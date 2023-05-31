@@ -107,7 +107,7 @@ Adjust the options below to suit your needs.
     
     pip install tox notebook -e '.[notebook-dependencies,dev,pyscf,cplex]'
 
-If you installed the notebook dependencies, you should be ready to run the notebooks in the docs.
+If you installed the notebook dependencies, you can get started with CKT by running the notebooks in the docs.
 
 .. code::
     
