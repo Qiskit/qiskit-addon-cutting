@@ -27,7 +27,7 @@ Pre-Installation
 ^^^^^^^^^^^^^^^^
 
 Users who wish to install locally (using either :ref:`Option 1` or :ref:`Option 2`) may 
-follow a few set of common instructions to prepare a Python environment for
+follow a brief set of common instructions to prepare a Python environment for
 installation of CKT:
 
 First, create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
