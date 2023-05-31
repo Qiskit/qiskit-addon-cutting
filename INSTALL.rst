@@ -107,6 +107,13 @@ Adjust the options below to suit your needs.
     
     pip install tox notebook -e '.[notebook-dependencies,dev,pyscf,cplex]'
 
+If you installed the notebook dependencies, you should be ready to run the notebooks in the docs.
+
+.. code::
+    
+    cd docs/
+    jupyter notebook
+
 
 .. _Option 3:
 
@@ -160,17 +167,6 @@ Jupyter Notebook interface.
 The home directory includes a subdirectory named ``persistent-volume``.
 All work you’d like to save should be placed in this directory, as it is
 the only one that will be saved across different container runs.
-
-
-Running some Examples
-^^^^^^^^^^^^^^^^^^^^^
-From inside the ``circuit-knitting-toolbox`` repository, navigate to the tutorials via the `docs/` directory, open
-a `Jupyter Notebook <https://jupyter.org/install>`__ instance, and start experimenting with CKT!
-
-.. code::
-    
-    cd docs/
-    jupyter notebook
 
 
 .. _Platform Support:
