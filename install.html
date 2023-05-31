@@ -43,51 +43,89 @@
             
   <section id="installation-instructions">
 <h1>Installation Instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this heading">¶</a></h1>
-<p>There are two options: installing locally or using within a Docker
-container.</p>
+<p>Let’s see how to install the Circuit Knitting Toolbox (CKT). The first
+thing to do is choose how you’re going to run and install the
+packages. There are three primary ways to do this:</p>
 <ul class="simple">
-<li><p>If you are using Linux or macOS with an Intel chip (i.e., not the
-new M1 or M2 chips), everything should work natively, so we
-recommend the first option.</p></li>
-<li><p>All users on ARM chips, as well as all Windows users, will have to
-use the toolbox within Docker (the second option) for all features to
-work as designed.</p></li>
+<li><p><a class="reference internal" href="#option-1"><span class="std std-ref">Option 1: Pip Installation</span></a></p></li>
+<li><p><a class="reference internal" href="#option-2"><span class="std std-ref">Option 2: Install from Source</span></a></p></li>
+<li><p><a class="reference internal" href="#option-3"><span class="std std-ref">Option 3: Use within Docker</span></a></p></li>
 </ul>
-<p>Specifically, the following features are unavailable on the
-aforementioned platforms:</p>
-<ul class="simple">
-<li><p>The automatic wire cut search in the circuit cutting module
-depends on cplex, which is only available on Intel chips and is not
-yet available for Python 3.11.</p></li>
-<li><p>The entanglement forging notebooks require pyscf, which does not
-support Windows.</p></li>
-</ul>
-<section id="option-1-local-installation">
-<h2>Option 1: Local installation<a class="headerlink" href="#option-1-local-installation" title="Permalink to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><strong>OPTIONAL</strong> If a user wishes to use the circuit cutting tool to
+<p>CutQC and entanglement forging users should consult the
+<a class="reference internal" href="#platform-support"><span class="std std-ref">Platform Support</span></a> section to determine which installation option
+is appropriate for them. Users who wish to run within a
+containerized environment may skip the pre-installation and move straight
+to <a class="reference internal" href="#option-3"><span class="std std-ref">Option 3: Use within Docker</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a user wishes to use the circuit cutting toolbox to
 automatically find optimized wire cuts for a circuit too large for
 the free version of CPLEX, they should acquire a license and install
 the <a class="reference external" href="https://www.ibm.com/products/ilog-cplex-optimization-studio">full
-version</a>.</p></li>
-<li><p>Enter a Python environment and install the software</p></li>
-</ul>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-<span class="nb">cd</span><span class="w"> </span>circuit-knitting-toolbox
-python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
-<span class="nb">source</span><span class="w"> </span>venv/bin/activate
-pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
-pip<span class="w"> </span>install<span class="w"> </span>tox<span class="w"> </span>notebook<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[notebook-dependencies]&#39;</span>
-jupyter<span class="w"> </span>notebook
+version</a>.</p>
+</div>
+<section id="pre-installation">
+<h2>Pre-Installation<a class="headerlink" href="#pre-installation" title="Permalink to this heading">¶</a></h2>
+<p>Users who wish to install locally (using either <a class="reference internal" href="#option-1"><span class="std std-ref">Option 1: Pip Installation</span></a> or <a class="reference internal" href="#option-2"><span class="std std-ref">Option 2: Install from Source</span></a>) are encouraged to
+follow a brief set of common instructions to prepare a Python environment for
+installation of CKT:</p>
+<p>First, create a minimal environment with only Python installed in it. We recommend using <a class="reference external" href="https://docs.python.org/3.10/tutorial/venv.html">Python virtual environments</a>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>/path/to/virtual/environment
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Navigate to the notebooks in the <code class="docutils literal notranslate"><span class="pre">docs/tutorials/</span></code> directory to run the
-tutorials.</p></li>
-</ul>
+<p>Activate your new environment.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>/path/to/virtual/environment/bin/activate
+</pre></div>
+</div>
+<p>Note: If you are using Windows, use the following commands in PowerShell:</p>
+<div class="highlight-pwsh notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">-m</span> <span class="n">venv</span> <span class="n">c</span><span class="p">:\</span><span class="n">path</span><span class="p">\</span><span class="n">to</span><span class="p">\</span><span class="n">virtual</span><span class="p">\</span><span class="n">environment</span>
+<span class="n">c</span><span class="p">:\</span><span class="n">path</span><span class="p">\</span><span class="n">to</span><span class="p">\</span><span class="n">virtual</span><span class="p">\</span><span class="n">environment</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+</pre></div>
+</div>
 </section>
-<section id="option-2-use-within-docker">
-<h2>Option 2: Use within Docker<a class="headerlink" href="#option-2-use-within-docker" title="Permalink to this heading">¶</a></h2>
+<section id="option-1-pip-installation">
+<span id="option-1"></span><h2>Option 1: Pip Installation<a class="headerlink" href="#option-1-pip-installation" title="Permalink to this heading">¶</a></h2>
+<p>Upgrade pip and install the CKT package.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>circuit-knitting-toolbox
+</pre></div>
+</div>
+<p>Users intending to use the entanglement forging tool should install the <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> optional dependency.</p>
+<p>Users intending to use the automatic cut finding functionality in the CutQC package should install the <code class="docutils literal notranslate"><span class="pre">cplex</span></code> optional dependency.</p>
+<p>Adjust the options below to suit your needs.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;circuit-knitting-toolbox[pyscf,cplex]&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="option-2-install-from-source">
+<span id="option-2"></span><h2>Option 2: Install from Source<a class="headerlink" href="#option-2-install-from-source" title="Permalink to this heading">¶</a></h2>
+<p>Users who wish to develop in the repository or run the tutorials locally may want to install from source.</p>
+<p>In either case, the first step is to clone the CKT repository.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+</pre></div>
+</div>
+<p>Next, upgrade pip and enter the repository.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<span class="nb">cd</span><span class="w"> </span>circuit-knitting-toolbox
+</pre></div>
+</div>
+<p>The next step is to install CKT to the virtual environment. If you plan on running the tutorials, install the
+notebook dependencies in order to run all the visualizations in the notebooks.
+If you plan on developing in the repository, you may want to install the <code class="docutils literal notranslate"><span class="pre">dev</span></code> dependencies.</p>
+<p>Users intending to use the entanglement forging tool should install the <code class="docutils literal notranslate"><span class="pre">pyscf</span></code> optional dependency.</p>
+<p>Users intending to use the automatic cut finding functionality in the CutQC package should install the <code class="docutils literal notranslate"><span class="pre">cplex</span></code> optional dependency.</p>
+<p>Adjust the options below to suit your needs.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>tox<span class="w"> </span>notebook<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[notebook-dependencies,dev,pyscf,cplex]&#39;</span>
+</pre></div>
+</div>
+<p>If you installed the notebook dependencies, you can get started with CKT by running the notebooks in the docs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span>
+<span class="n">jupyter</span> <span class="n">notebook</span>
+</pre></div>
+</div>
+</section>
+<section id="option-3-use-within-docker">
+<span id="option-3"></span><h2>Option 3: Use within Docker<a class="headerlink" href="#option-3-use-within-docker" title="Permalink to this heading">¶</a></h2>
 <p>We have provided a <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile">Dockerfile</a>, which can be used to
 build a Docker image, as well as a
 <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docker-compose.yml">docker-compose.yml</a> file, which allows one
@@ -124,10 +162,27 @@ notebook_1  |      or http://127.0.0.1:8888/lab?token=00ed70b5342f79f0a970ee9821
 </div>
 <p>Locate the <em>last</em> URL in your terminal (the one that includes
 <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>), and navigate to that URL in a web browser to access the
-Jupyter notebook interface.</p>
+Jupyter Notebook interface.</p>
 <p>The home directory includes a subdirectory named <code class="docutils literal notranslate"><span class="pre">persistent-volume</span></code>.
 All work you’d like to save should be placed in this directory, as it is
 the only one that will be saved across different container runs.</p>
+</section>
+<section id="platform-support">
+<span id="id1"></span><h2>Platform Support<a class="headerlink" href="#platform-support" title="Permalink to this heading">¶</a></h2>
+<p>Users of Mac M1 or M2 chips and Windows users may have issues running certain components of CKT.</p>
+<p>If you are using Linux or macOS with an Intel chip (i.e., not the
+new M1 or M2 chips), everything should work natively, so we
+recommend either <a class="reference internal" href="#option-1"><span class="std std-ref">Option 1: Pip Installation</span></a> or <a class="reference internal" href="#option-2"><span class="std std-ref">Option 2: Install from Source</span></a>.</p>
+<p>All users on ARM chips, as well as all Windows users, may have to
+use the toolbox within Docker (<a class="reference internal" href="#option-3"><span class="std std-ref">Option 3: Use within Docker</span></a>), depending on what tools they intend to use.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The automatic wire cut search in the <code class="docutils literal notranslate"><span class="pre">cutqc</span></code> package depends
+on CPLEX, which is only available on Intel chips and is not yet available
+for Python 3.11.</p></li>
+<li><p>The entanglement forging tool requires PySCF, which does not support Windows.</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 
@@ -150,8 +205,11 @@ the only one that will be saved across different container runs.</p>
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#option-1-local-installation">Option 1: Local installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#option-2-use-within-docker">Option 2: Use within Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pre-installation">Pre-Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#option-1-pip-installation">Option 1: Pip Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#option-2-install-from-source">Option 2: Install from Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#option-3-use-within-docker">Option 3: Use within Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#platform-support">Platform Support</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a></li>
