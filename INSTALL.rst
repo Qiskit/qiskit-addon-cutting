@@ -26,7 +26,7 @@ to :ref:`Option 3`.
 Pre-Installation
 ^^^^^^^^^^^^^^^^
 
-Users who wish to install locally (using either :ref:`Option 1` or :ref:`Option 2`) may 
+Users who wish to install locally (using either :ref:`Option 1` or :ref:`Option 2`) are encouraged to
 follow a brief set of common instructions to prepare a Python environment for
 installation of CKT:
 
