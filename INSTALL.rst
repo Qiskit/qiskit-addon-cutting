@@ -62,7 +62,7 @@ Upgrade pip and install the CKT package.
     pip install --upgrade pip
     pip install circuit-knitting-toolbox
 
-Users intending to use the entanglement forging tool should install the ``pyscf`` option.
+Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency.
 
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
