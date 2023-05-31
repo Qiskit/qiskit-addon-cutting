@@ -95,7 +95,7 @@ Next, upgrade pip and enter the repository.
 
 The next step is to install CKT to the virtual environment. If you plan on running the tutorials, install the
 notebook dependencies in order to run all the visualizations in the notebooks.
-If you plan on developing in the repo, you may want to install the dev dependencies.
+If you plan on developing in the repository, you may want to install the ``dev`` dependencies.
 
 Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency.
 
