@@ -4,7 +4,7 @@ This directory contains a number of workflows for use with [GitHub Actions](http
 
 ## Styles check (`lint.yml`)
 
-This workflow checks that the code is formatted properly and follows the style guide by installing tox and running the [lint environment](/tests/#lint-environment) (`tox -elint`).
+This workflow checks that the code is formatted properly and follows the style guide by installing tox and running the [lint environment](/tests/#lint-environment) (`tox -e lint`).
 
 ## Latest version tests (`test_latest_versions.yml`)
 
@@ -22,7 +22,7 @@ Under the hood, this workflow uses a regular expression to change each `>=` and 
 
 ## Code coverage (`coverage.yml`)
 
-This workflow tests the [coverage environment](/tests/#coverage-environment) on a single version of Python by installing tox and running `tox -ecoverage`.
+This workflow tests the [coverage environment](/tests/#coverage-environment) on a single version of Python by installing tox and running `tox -e coverage`.
 
 ## Documentation (`docs.yml`)
 
