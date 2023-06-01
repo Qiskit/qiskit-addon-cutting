@@ -51,7 +51,7 @@ The `notebook` and `py##-notebook` environments invoke [nbmake] to ensure that a
 
 ## Coverage environment
 
-The `coverage` environment uses [Coverage.py] to ensure that the fraction of code tested by pytest is above some threshold (currently set to 80% overall, and 100% in all new modules).
+The `coverage` environment uses [Coverage.py] to ensure that the fraction of code tested by pytest is above some threshold (currently set to 80% overall, and 100% in all new modules).  A detailed, line-by-line coverage report can be viewed by navigating to `htmlcov/index.html` in a web browser.
 
 To run:
 
