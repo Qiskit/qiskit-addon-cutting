@@ -27,3 +27,15 @@ This workflow tests the [coverage environment](/tests/#coverage-environment) on 
 ## Citation preview (`citation.yml`)
 
 This workflow is only triggered when the `CITATION.bib` file is changed.  It ensures that the file contains only ASCII characters ([escaped codes](https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes) are preferred, as then the `bib` file will work even when `inputenc` is not used).  It also compiles a sample LaTeX document which includes the citation in its bibliography and uploads the resulting PDF as an artifact so it can be previewed (e.g., before merging a pull request).
+
+## Release (`release.yml`)
+
+This workflow is triggered by a maintainer pushing a tag that represents a release.  It publishes the release to github.com and to [PyPI](https://pypi.org/).
+
+## Documentation (`docs.yml`)
+
+This workflow ensures that the [Sphinx](https://www.sphinx-doc.org/) documentation builds successfully.  It also publishes the resulting build to [GitHub Pages](https://pages.github.com/) if it is from the appropriate branch (e.g., `main`).
+
+## Docker (`docker.yml`)
+
+This workflow runs periodically (weekly, at the time of writing) to ensure that the [`Dockerfile`](/Dockerfile) and [`docker-compose.yml`](/docker-compose.yml) files at the root of the repository result in a successful build with notebooks that execute without error.
