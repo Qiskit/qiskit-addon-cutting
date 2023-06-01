@@ -34,6 +34,10 @@ from qiskit_nature.second_q.operators.tensor_ordering import (
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
 
+from qiskit_nature import settings
+
+settings.use_pauli_sum_op = False
+
 
 def get_cholesky_op(
     l_op: np.ndarray, g: int, converter: JordanWignerMapper, opname: str
@@ -155,7 +159,7 @@ def convert_cholesky_operator(
     paulis_each_op = [
         {
             label: weight
-            for label, weight in op.primitive.to_list()
+            for label, weight in op.to_list()
             if np.abs(weight) > 0
         }
         for op in [op1] + list(cholesky_ops)
