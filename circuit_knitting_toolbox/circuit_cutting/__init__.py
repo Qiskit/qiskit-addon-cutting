@@ -14,6 +14,51 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
 
 .. currentmodule:: circuit_knitting_toolbox.circuit_cutting
 
+Circuit Cutting
+===============
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+
+    partition_circuit_qubits
+    partition_problem
+    decompose_gates
+    execute_experiments
+    reconstruct_expectation_values
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+    :template: autosummary/class_no_inherited_members.rst
+
+    PartitionedCuttingProblem
+    CuttingExperimentResults
+
+Quasi-Probability Decomposition (QPD)
+=====================================
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+    :template: autosummary/class_no_inherited_members.rst
+
+    qpd.QPDBasis
+    qpd.BaseQPDGate
+    qpd.SingleQubitQPDGate
+    qpd.TwoQubitQPDGate
+    qpd.WeightType
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+
+    qpd.generate_qpd_samples
+    qpd.decompose_qpd_instructions
+
+CutQC
+=====
+
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
@@ -25,10 +70,23 @@ Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
     cutqc.cut_circuit_wires
     cutqc.evaluate_subcircuits
     cutqc.reconstruct_full_distribution
-    partition_circuit_qubits
 """
-from .cutting_decomposition import partition_circuit_qubits
+
+from .cutting_decomposition import (
+    partition_circuit_qubits,
+    partition_problem,
+    decompose_gates,
+    PartitionedCuttingProblem,
+)
+from .cutting_evaluation import execute_experiments, CuttingExperimentResults
+from .cutting_reconstruction import reconstruct_expectation_values
 
 __all__ = [
     "partition_circuit_qubits",
+    "partition_problem",
+    "decompose_gates",
+    "execute_experiments",
+    "reconstruct_expectation_values",
+    "PartitionedCuttingProblem",
+    "CuttingExperimentResults",
 ]

@@ -9,19 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-r"""
-Quantum circuit :class:`~qiskit.Instruction`\ s for repesenting quasiprobability decompositions.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   BaseQPDGate
-   SingleQubitQPDGate
-   TwoQubitQPDGate
-   QPDMeasure
-   Move
-"""
+r"""Quantum circuit :class:`~qiskit.Instruction`\ s for repesenting quasiprobability decompositions."""
 
 from .qpd_gate import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
 from .qpd_measure import QPDMeasure

@@ -9,25 +9,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Main quasiprobability decomposition functionality.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   QPDBasis
-   generate_qpd_samples
-   decompose_qpd_instructions
-
-Instructions (:mod:`circuit_knitting_toolbox.qpd.instructions`)
-======================================
-
-.. automodule:: circuit_knitting_toolbox.qpd.instructions
-"""
+"""Main quasiprobability decomposition functionality."""
 
 from .qpd_basis import QPDBasis
-from .qpd import generate_qpd_samples, decompose_qpd_instructions
+from .qpd import generate_qpd_samples, decompose_qpd_instructions, WeightType
 from .instructions import (
     BaseQPDGate,
     SingleQubitQPDGate,
@@ -44,4 +29,5 @@ __all__ = [
     "TwoQubitQPDGate",
     "SingleQubitQPDGate",
     "QPDMeasure",
+    "WeightType",
 ]

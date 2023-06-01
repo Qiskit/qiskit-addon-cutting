@@ -1,5 +1,9 @@
 #############################
 Circuit Cutting How-To Guides
 #############################
+.. include:: README.rst
 
-[none yet]
+.. nbgallery::
+    :glob:
+
+    *

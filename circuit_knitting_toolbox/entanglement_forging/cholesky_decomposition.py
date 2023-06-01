@@ -17,7 +17,8 @@ import copy
 from typing import Sequence
 
 import numpy as np
-from qiskit.opflow import ListOp, PauliSumOp
+
+from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import QubitConverter, JordanWignerMapper
@@ -61,17 +62,17 @@ def cholesky_decomposition(
     problem: ElectronicStructureProblem,
     mo_coeff: np.ndarray | None = None,
     orbitals_to_reduce: Sequence[int] | None = None,
-) -> tuple[ListOp, float]:
+) -> tuple[list[PauliSumOp], float]:
     """
     Construct the decomposed Hamiltonian from an input ``ElectronicStructureProblem``.
 
     Args:
         problem: An ``ElectronicStructureProblem`` from which the decomposed Hamiltonian
-          will be calculated
+            will be calculated
         mo_coeff: The coefficients for mapping to the MO basis. If ``None``, the input
-          integrals will be assumed to be in the MO basis
+            integrals will be assumed to be in the MO basis
         orbitals_to_reduce: A list of orbital indices to remove from the problem
-          before decomposition
+            before decomposition
 
     Returns:
         Tuple containing the cholesky operator and the energy shift resulting from decomposition
@@ -117,24 +118,24 @@ def cholesky_decomposition(
     )
 
     op_list = [h_1_op] + h_chol_ops
-    operator = ListOp(op_list)
+    operator = op_list
 
     return operator, nuclear_repulsion_energy + freeze_shift
 
 
 def convert_cholesky_operator(
-    operator: ListOp,
+    operator: list[PauliSumOp],
     ansatz: EntanglementForgingAnsatz,
 ) -> EntanglementForgingOperator:
     """
-    Convert the Cholesky operator (ListOp) into the entanglement forging format.
+    Convert the Cholesky operator (List[PauliSumOp]) into the entanglement forging format.
 
     Args:
-        operator: A `ListOp` containing the single-body Hamiltonian followed
-          by the Cholesky operators
-          shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
+        operator: A `List[PauliSumOp]` containing the single-body Hamiltonian followed
+            by the Cholesky operators
+            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
         ansatz: The ansatz for which to compute expectation values of operator. The
-          `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem
+            `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem
 
     Returns:
         An `EntanglementForgingOperator` object describing the
@@ -248,11 +249,11 @@ def _get_fermionic_ops_with_cholesky(
     Args:
         mo_coeff: 2D array representing coefficients for converting from AO to MO basis
         h1: 2D array representing operator
-          coefficients of one-body integrals in the AO basis
+            coefficients of one-body integrals in the AO basis
         h2: 4D array representing operator coefficients
-          of two-body integrals in the AO basis
+            of two-body integrals in the AO basis
         halve_transformed_h2: Should be set to True for Hamiltonian
-          operator to agree with Qiskit conventions
+            operator to agree with Qiskit conventions
         occupied_orbitals_to_reduce: A list of occupied orbitals that will be removed
         virtual_orbitals_to_reduce: A list of virtual orbitals that will be removed
         epsilon_cholesky: The threshold for the decomposition (typically a number close to 0)

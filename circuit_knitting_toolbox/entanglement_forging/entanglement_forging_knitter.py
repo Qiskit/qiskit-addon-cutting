@@ -51,7 +51,7 @@ class EntanglementForgingKnitter:
 
         Args:
             ansatz: The container for the circuit structure and bitstrings to be used
-              (and generate the stateprep circuits)
+                (and generate the stateprep circuits)
             service: The service used to spawn Qiskit primitives and runtime jobs
             backend_names: Names of the backends to use for calculating expectation values
             options: Options to use with the backends
@@ -169,7 +169,7 @@ class EntanglementForgingKnitter:
 
         Args:
             ansatz_parameters: the parameters to be used by the ansatz circuit,
-              must be the same length as the circuit's parameters
+                must be the same length as the circuit's parameters
             forged_operator: the operator from which to forge the expectation value
 
         Returns:
@@ -307,11 +307,11 @@ class EntanglementForgingKnitter:
 
         Args:
             forged_operator: The operator with which the forged expectation values are
-              computed
+                computed
             tensor_expvals: The expectation values for the tensor circuits
-              (i.e. same Schmidt coefficients)
+                (i.e. same Schmidt coefficients)
             superpos_expvals: The expectation values for the superposition circuits
-              (i.e. different Schmidt coefficients)
+                (i.e. different Schmidt coefficients)
 
         Returns:
            The Schmidt matrix
@@ -536,7 +536,7 @@ def _prepare_bitstring(
 
     Args:
         bitstring: The container for the bitstring information. Must contain 0s and 1s, and
-          the 1s are used to determine where to put the X gates
+            the 1s are used to determine where to put the X gates
         name: The name of the circuit
 
     Returns:
@@ -580,19 +580,17 @@ def _estimate_expvals(
 ) -> tuple[list[np.ndarray], list[np.ndarray], str | None]:
     """Run quantum circuits to generate the expectation values.
 
-    Function to estimate the exepctation value of some observables on the
+    Function to estimate the expectation value of some observables on the
     tensor and superposition circuits used for reconstructing the full
-    expectation value from the Schmidt decomposed circuit. The ray decorator
-    indicates that this is an actor function (that runs its own python
-    process).
+    expectation value from the Schmidt decomposed circuit.
 
     Args:
         tensor_ansatze: The circuits that have the same Schmidt coefficient
         tensor_paulis: The pauli operators to measure and calculate
-          the expectation values from for the circuits with the same Schmidt coefficient
+            the expectation values from for the circuits with the same Schmidt coefficient
         superposition_ansatze: The circuits with different Schmidt coefficients
         superposition_paulis: The pauli operators to measure and calculate
-          the expectation values from for the circuits with different Schmidt coefficients
+            the expectation values from for the circuits with different Schmidt coefficients
         service_args: The service account used to spawn Qiskit primitives
         backend_name: The backend to use to evaluate the grouped experiments
         options: The options to use with the backend
