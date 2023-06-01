@@ -157,11 +157,7 @@ def convert_cholesky_operator(
     tensor_paulis = set()
     superpos_paulis = set()
     paulis_each_op = [
-        {
-            label: weight
-            for label, weight in op.to_list()
-            if np.abs(weight) > 0
-        }
+        {label: weight for label, weight in op.to_list() if np.abs(weight) > 0}
         for op in [op1] + list(cholesky_ops)
     ]
 
