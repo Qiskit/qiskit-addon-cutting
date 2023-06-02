@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Support for running with Python 3.7 has been removed. To run the
+    Circuit Knitting Toolbox, you now need Python version 3.8 or
+    higher.

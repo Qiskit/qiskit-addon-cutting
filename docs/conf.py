@@ -23,7 +23,7 @@ import sys
 from importlib_metadata import version as metadata_version
 
 project = "Circuit Knitting Toolbox"
-copyright = "2022"  # pylint: disable=redefined-builtin
+copyright = "2023"  # pylint: disable=redefined-builtin
 author = "IBM Quantum"
 
 _rootdir = Path(__file__).parent.parent
@@ -32,7 +32,7 @@ sys.path.insert(0, str(_rootdir))
 # The full version, including alpha/beta/rc tags
 release = metadata_version("circuit_knitting_toolbox")
 # The short X.Y version
-version = version = ".".join(release.split(".")[:2])
+version = ".".join(release.split(".")[:2])
 
 extensions = [
     "sphinx.ext.napoleon",
@@ -44,7 +44,7 @@ extensions = [
     # "sphinx.ext.autosectionlabel",
     "jupyter_sphinx",
     "sphinx_autodoc_typehints",
-    # "reno.sphinxext",
+    "reno.sphinxext",
     "nbsphinx",
     "sphinx_copybutton",
 ]
@@ -55,7 +55,7 @@ language = "en"
 pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting_toolbox."]
-html_css_files = ["gallery.css"]
+html_css_files = ["style.css"]
 
 # html theme options
 html_static_path = ["_static"]

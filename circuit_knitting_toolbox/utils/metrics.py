@@ -9,7 +9,20 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for comparing array distances."""
+"""
+Functions for comparing array distances.
+
+.. currentmodule:: circuit_knitting_toolbox.utils.metrics
+
+.. autosummary::
+   :toctree: ../stubs
+
+   chi2_distance
+   MSE
+   MAPE
+   cross_entropy
+   HOP
+"""
 
 import copy
 
@@ -31,15 +44,14 @@ def chi2_distance(target, obs):  # noqa: D301
     0
 
     Args:
-        - target (NDArray): the target feature vector
-        - obs (NDArray): the actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
-        - (float): the computed distance
+        The computed distance
 
     Raises:
-        - Exception: if the target is not a numpy array or dictionary, an exception
-            is raised
+        Exception: The target is not a numpy array or dictionary
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -77,16 +89,16 @@ def MSE(target, obs):  # noqa: D301
     0.0275
 
     Args:
-        - target (NDArray): the target feature vector
-        - obs (NDArray): the actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
-        - (float): the computed MSE
+        The computed MSE
 
     Raises:
-        - Exception: if the target is not a dict, or if the target and obs are not
-            numpy arrays or if the target is not a numpy array and the obs are not
-            a dict an expection is raised
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -128,16 +140,16 @@ def MAPE(target, obs):  # noqa: D301
     91.66666666666659
 
     Args:
-        - target (NDArray): the target feature vector
-        - obs (NDArray): the actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
-        - (float): the computed MAPE
+        The computed MAPE
 
     Raises:
-        - Exception: if the target is not a dict, or if the target and obs are not
-            numpy arrays or if the target is not a numpy array and the obs are not
-            a dict an expection is raised
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -176,7 +188,7 @@ def MAPE(target, obs):  # noqa: D301
 
 def cross_entropy(target, obs):  # noqa: D301
     r"""
-    Compue the cross entropy between two distributions.
+    Compute the cross entropy between two distributions.
 
     The cross entropy is a measure of the difference between two probability
     distributions, defined via:
@@ -187,16 +199,16 @@ def cross_entropy(target, obs):  # noqa: D301
     1.3862943611198906
 
     Args:
-        - target (NDArray): the target feature vector
-        - obs (NDArray): the actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
-        - (float): the computed cross entropy
+        The computed cross entropy
 
     Raises:
-        - Exception: if the target is not a dict, or if the target and obs are not
-            numpy arrays or if the target is not a numpy array and the obs are not
-            a dict an expection is raised
+        Exception: The target is not a dict
+        Exception: The target and obs are not numpy arrays
+        Exception: The target is not a numpy array and the obs are not a dict
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)
@@ -226,7 +238,7 @@ def cross_entropy(target, obs):  # noqa: D301
 
 def HOP(target, obs):
     """
-    Compue the Heavy Output Probability (HOP).
+    Compute the Heavy Output Probability (HOP).
 
     The HOP is an important metric for quantum volume experiments and is defined at the
     probability that one measures a bitstring above the median target probability.
@@ -236,11 +248,11 @@ def HOP(target, obs):
     0.5
 
     Args:
-        - target (NDArray): the target feature vector
-        - obs (NDArray): the actually observed feature vector
+        target: The target feature vector
+        obs: The actually observed feature vector
 
     Returns:
-        - (float): the computed HOP
+        The computed HOP
     """
     target = copy.deepcopy(target)
     obs = copy.deepcopy(obs)

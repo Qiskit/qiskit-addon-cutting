@@ -1,0 +1,23 @@
+name: Docker notebook tests
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['Dockerfile', 'docker-compose.yml']
+  pull_request:
+    branches: [ main ]
+    paths: ['Dockerfile', 'docker-compose.yml']
+  schedule:
+    - cron: '0 20 * * 3'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build image
+        run: docker-compose build
+      - name: Test notebooks
+        shell: bash
+        run: docker-compose run notebook "bash" "-c" "pip install pytest nbmake && pytest --nbmake docs"

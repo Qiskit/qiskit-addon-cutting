@@ -13,15 +13,15 @@
 
 import os
 import unittest
+import pytest
+
 import numpy as np
 from qiskit.circuit import Parameter, QuantumCircuit
 from qiskit.circuit.library import TwoLocal
-from qiskit_nature import settings
-from qiskit_nature.drivers import Molecule
-from qiskit_nature.drivers.second_quantization import PySCFDriver
-from qiskit_nature.problems.second_quantization import ElectronicStructureProblem
-
-settings.dict_aux_operators = True
+from qiskit_nature.second_q.drivers import PySCFDriver
+from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis
+from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
+from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
 
 from circuit_knitting_toolbox.entanglement_forging import (
     EntanglementForgingAnsatz,
@@ -29,7 +29,6 @@ from circuit_knitting_toolbox.entanglement_forging import (
     cholesky_decomposition,
     convert_cholesky_operator,
 )
-from circuit_knitting_toolbox.utils import IntegralDriver
 
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
@@ -78,17 +77,11 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         Test to apply Entanglement Forging to compute the energy of a H2 molecule,
         given the optimial ansatz parameters.
         """
-
-        # Specify molecule
-        molecule = Molecule(
-            geometry=[("H", [0.0, 0.0, 0.0]), ("H", [0.0, 0.0, 0.735])],
-            charge=0,
-            multiplicity=1,
-        )
-
         # Set up the ELectrionicStructureProblem
-        driver = PySCFDriver.from_molecule(molecule)
-        problem = ElectronicStructureProblem(driver)
+        driver = PySCFDriver("H 0.0 0.0 0.0; H 0.0 0.0 0.735")
+        driver.run()
+        problem = driver.to_problem(basis=ElectronicBasis.AO)
+        qcschema = driver.to_qcschema()
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
@@ -101,7 +94,10 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         forging_knitter = EntanglementForgingKnitter(ansatz)
 
         # Specify the decomposition method and get the forged operator
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem)
+        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
+        hamiltonian_terms, energy_shift = cholesky_decomposition(
+            problem, mo_coeff=mo_coeff
+        )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
         # Hard-coded optimal ansatz parameters
@@ -114,7 +110,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
-        Test to apply Entanglement Forging to compute the energy of a H20 molecule,
+        Test to apply Entanglement Forging to compute the energy of a H2O molecule,
         given optimal ansatz parameters.
         """
         # setup problem
@@ -126,17 +122,11 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         h2_x = radius_2 * np.cos(np.pi / 180 * thetas_in_deg)
         h2_y = radius_2 * np.sin(np.pi / 180 * thetas_in_deg)
 
-        molecule = Molecule(
-            geometry=[
-                ("O", [0.0, 0.0, 0.0]),
-                ("H", [h1_x, 0.0, 0.0]),
-                ("H", [h2_x, h2_y, 0.0]),
-            ],
-            charge=0,
-            multiplicity=1,
-        )
-        driver = PySCFDriver.from_molecule(molecule, basis="sto6g")
-        problem = ElectronicStructureProblem(driver)
+        molecule = f"O 0.0 0.0 0.0; H {h1_x} 0.0 0.0; H {h2_x} {h2_y} 0.0"
+        driver = PySCFDriver(molecule, basis="sto6g")
+        driver.run()
+        problem = driver.to_problem(basis=ElectronicBasis.AO)
+        qcschema = driver.to_qcschema()
 
         # solution
         orbitals_to_reduce = [0, 3]
@@ -179,8 +169,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         )
 
         # Specify the decomposition method and get the forged operator
+        mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
         hamiltonian_terms, energy_shift = cholesky_decomposition(
-            problem, orbitals_to_reduce=orbitals_to_reduce
+            problem, mo_coeff=mo_coeff, orbitals_to_reduce=orbitals_to_reduce
         )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
@@ -211,16 +202,11 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
             ]
         )
 
-        driver = IntegralDriver(
-            hcore=hcore,
-            mo_coeff=mo_coeff,
-            eri=eri,
-            num_alpha=1,
-            num_beta=1,
-            nuclear_repulsion_energy=0.7199689944489797,
-        )
-
-        problem = ElectronicStructureProblem(driver)
+        hamiltonian = ElectronicEnergy.from_raw_integrals(hcore, eri)
+        hamiltonian.nuclear_repulsion_energy = 0.7199689944489797
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.num_particles = (1, 1)
+        problem.basis = ElectronicBasis.AO
 
         ansatz = EntanglementForgingAnsatz(
             bitstrings_u=[(1, 0), (0, 1)],
@@ -228,7 +214,9 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         )
 
         # Specify the decomposition method and get the forged operator
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem)
+        hamiltonian_terms, energy_shift = cholesky_decomposition(
+            problem, mo_coeff=mo_coeff
+        )
         forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
 
         # Set up the forging knitter object
@@ -240,18 +228,13 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.1219365445030705)
 
+    @pytest.mark.slow
     def test_asymmetric_bitstrings_O2(self):
         """Test for entanglement forging driver."""
-        driver = IntegralDriver(
-            hcore=self.hcore_o2,
-            mo_coeff=np.eye(8, 8),
-            eri=self.eri_o2,
-            num_alpha=6,
-            num_beta=6,
-            nuclear_repulsion_energy=self.energy_shift_o2,
-        )
-
-        problem = ElectronicStructureProblem(driver)
+        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_o2, self.eri_o2)
+        hamiltonian.nuclear_repulsion_energy = self.energy_shift_o2
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.num_particles = (6, 6)
 
         ansatz = EntanglementForgingAnsatz(
             circuit_u=self.create_mock_ansatz_circuit(8),
@@ -284,16 +267,10 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
     def test_asymmetric_bitstrings_CH3(self):
         """Test for entanglement forging driver."""
-        driver = IntegralDriver(
-            hcore=self.hcore_ch3,
-            mo_coeff=np.eye(6, 6),
-            eri=self.eri_ch3,
-            num_alpha=3,
-            num_beta=2,
-            nuclear_repulsion_energy=self.energy_shift_ch3,
-        )
-
-        problem = ElectronicStructureProblem(driver)
+        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_ch3, self.eri_ch3)
+        hamiltonian.nuclear_repulsion_energy = self.energy_shift_ch3
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.num_particles = (3, 2)
 
         ansatz = EntanglementForgingAnsatz(
             circuit_u=self.create_mock_ansatz_circuit(6),
@@ -326,18 +303,13 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -39.09031477502881)
 
+    @pytest.mark.slow
     def test_asymmetric_bitstrings_CN(self):
         """Test for asymmetric bitstrings with hybrid cross terms."""
-        driver = IntegralDriver(
-            hcore=self.hcore_cn,
-            mo_coeff=np.eye(8, 8),
-            eri=self.eri_cn,
-            num_alpha=5,
-            num_beta=4,
-            nuclear_repulsion_energy=self.energy_shift_cn,
-        )
-
-        problem = ElectronicStructureProblem(driver)
+        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_cn, self.eri_cn)
+        hamiltonian.nuclear_repulsion_energy = self.energy_shift_cn
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.num_particles = (5, 4)
 
         ansatz = EntanglementForgingAnsatz(
             circuit_u=self.create_mock_ansatz_circuit(8),

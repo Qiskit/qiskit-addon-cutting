@@ -12,20 +12,57 @@
 """
 Utility functions.
 
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
+=================================================================
+Bitwise utilities (:mod:`circuit_knitting_toolbox.utils.bitwise`)
+=================================================================
 
-   conversion
-   metrics
-   integral_driver.IntegralDriver
-   orbital_reduction.reduce_bitstrings
+.. automodule:: circuit_knitting_toolbox.utils.bitwise
+
+=============================================================
+Conversion (:mod:`circuit_knitting_toolbox.utils.conversion`)
+=============================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.conversion
+
+=====================================================================
+Iteration utilities (:mod:`circuit_knitting_toolbox.utils.iteration`)
+=====================================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.iteration
+
+=======================================================
+Metrics (:mod:`circuit_knitting_toolbox.utils.metrics`)
+=======================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.metrics
+
+===============================================================================
+Observable grouping (:mod:`circuit_knitting_toolbox.utils.observable_grouping`)
+===============================================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.observable_grouping
+
+===========================================================================
+Orbital reduction (:mod:`circuit_knitting_toolbox.utils.orbital_reduction`)
+===========================================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.orbital_reduction
+
+=============================================================
+Simulation (:mod:`circuit_knitting_toolbox.utils.simulation`)
+=============================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.simulation
+
+=============================================================
+Transforms (:mod:`circuit_knitting_toolbox.utils.transforms`)
+=============================================================
+
+.. automodule:: circuit_knitting_toolbox.utils.transforms
 """
 
-from .integral_driver import IntegralDriver
 from .orbital_reduction import reduce_bitstrings
 
 __all__ = [
-    "IntegralDriver",
     "reduce_bitstrings",
 ]
