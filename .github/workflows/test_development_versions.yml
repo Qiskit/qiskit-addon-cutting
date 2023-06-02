@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip tox
-          python -m pip install toml fire
+          python -m pip install toml typer
           python tools/extremal_dependency_versions.py pin_dependencies dev --inplace
       - name: Modify tox.ini for more thorough check
         shell: bash
