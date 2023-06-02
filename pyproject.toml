@@ -1,6 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
@@ -101,6 +101,3 @@ omit = [
     # deprecated import location(s)
     "circuit_knitting_toolbox/circuit_cutting/wire_cutting.py",
 ]
-
-[tool.flit.module]
-name = "circuit_knitting_toolbox"
