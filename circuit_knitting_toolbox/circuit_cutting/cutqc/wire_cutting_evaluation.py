@@ -42,20 +42,22 @@ def run_subcircuit_instances(
     subcircuit_instance_probs[subcircuit_idx][subcircuit_instance_idx] = measured probability
 
     Args:
-        - subcircuits (Sequence[QuantumCircuit]): the list of subcircuits to execute
-        - subcircuit_instances (dict): dictionary containing information about each of the
+        subcircuits: The list of subcircuits to execute
+        subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
-        - service (QiskitRuntimeService | None): the runtime service
-        - backend_names (Sequence[str] | None): the backend(s) used to execute the subcircuits
-        - options (Sequence[Options] | None): options for the runtime execution of subcircuits
+        service: The runtime service
+        backend_names: The backend(s) used to execute the subcircuits
+        options: Options for the runtime execution of subcircuits
 
     Returns:
-        - (dict): the probability vectors from each of the subcircuit instances
+        The probability vectors from each of the subcircuit instances
     """
     if backend_names and options:
         if len(backend_names) != len(options):
             raise AttributeError(
-                f"The list of backend names is length ({len(backend_names)}), but the list of options is length ({len(options)}). It is ambiguous how these options should be applied."
+                f"The list of backend names is length ({len(backend_names)}), "
+                f"but the list of options is length ({len(options)}). It is ambiguous "
+                "how these options should be applied."
             )
     if service:
         if backend_names:
@@ -108,10 +110,10 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     I and Z measurement basis correspond to the same logical circuit.
 
     Args:
-        - meas (tuple): the current measurement bases
+        meas: The current measurement bases
 
     Returns:
-        - (tuple): the update measurement bases
+        The update measurement bases
     """
     if all(x != "I" for x in meas):
         return [meas]
@@ -134,16 +136,16 @@ def modify_subcircuit_instance(
     Modify the initialization and measurement bases for a given subcircuit.
 
     Args:
-        - subcircuit (QuantumCircuit): the subcircuit to be modified
-        - init (tuple): the current initializations
-        - meas (tuple): the current measement bases
+        subcircuit: The subcircuit to be modified
+        init: The current initializations
+        meas: The current measement bases
 
     Returns:
-        - (QuantumCircuit): the updated circuit, modified so the initialziation
-            and measurement operators are all in the standard computational basis
+        The updated circuit, modified so the initialziation
+        and measurement operators are all in the standard computational basis
 
     Raises:
-        - Exeption: if one of the init's or meas's are not an acceptable string
+        Exeption: One of the inits or meas's are not an acceptable string
     """
     subcircuit_dag = circuit_to_dag(subcircuit)
     subcircuit_instance_dag = copy.deepcopy(subcircuit_dag)
@@ -215,11 +217,11 @@ def run_subcircuits_using_sampler(
     Execute the subcircuit(s).
 
     Args:
-        - subcircuit (QuantumCircuit): the subcircuits to be executed
-        - sampler (BaseSampler): the Sampler to use for executions
+        subcircuit: The subcircuits to be executed
+        sampler: The Sampler to use for executions
 
     Returns:
-        - (np.ndarray): the probability distributions
+        The probability distributions
     """
     for subcircuit in subcircuits:
         if subcircuit.num_clbits == 0:
@@ -249,13 +251,13 @@ def run_subcircuits(
     Execute the subcircuit(s).
 
     Args:
-        - subcircuit (QuantumCircuit): the subcircuits to be executed
-        - service (QiskitRuntimeService | None): the runtime service
-        - backend_name (str | None): the backend used to execute the subcircuits
-        - options (Options | None): options for the runtime execution of subcircuits
+        subcircuit: The subcircuits to be executed
+        service: The runtime service
+        backend_name: The backend used to execute the subcircuits
+        options: Options for the runtime execution of subcircuits
 
     Returns:
-        - (np.ndarray): the probability distributions
+        The probability distributions
     """
     if service is not None:
         session = Session(service=service, backend=backend_name)
@@ -271,11 +273,11 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
     Compute the effective probability distribution from the subcircuit distribution.
 
     Args:
-        - unmeasured_prob (Sequence[float]): the outputs of the subcircuit execution
-        - meas (tuple): the measurement bases
+        unmeasured_prob: The outputs of the subcircuit execution
+        meas: The measurement bases
 
     Returns:
-        - (np.ndarray): the updated measured probability distribution
+        The updated measured probability distribution
     """
     if meas.count("comp") == len(meas):
         return np.array(unmeasured_prob)
@@ -296,12 +298,12 @@ def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     Measured in basis `meas`. Returns sigma (int), effective_state (int) where sigma = +-1
 
     Args:
-        - full_state (int): the current state (in decimal form)
-        - meas (tuple): the measurement bases
+        full_state: The current state (in decimal form)
+        meas: The measurement bases
 
     Returns:
-        - (tuple): sigma (defined by the parity of non computational basis 1 measurements) and
-            the effective state (defined by the measurements in the computational basis)
+        Sigma (defined by the parity of non computational basis 1 measurements) and
+        the effective state (defined by the measurements in the computational basis)
     """
     bin_full_state = bin(full_state)[2:].zfill(len(meas))
     sigma = 1
@@ -327,16 +329,16 @@ def _run_subcircuit_batch(
     Execute a circuit using qiskit runtime.
 
     Args:
-        - subcircuit_instances (dict): dictionary containing information about each of the
+        subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
-        - subcircuit (QuantumCircuit): the subcircuit to execute
-        - service (QiskitRuntimeService): the runtime service
-        - backend_name (str): the backends used to execute the subcircuit
-        - options (Options): options for the runtime execution of subcircuit
+        subcircuit: The subcircuit to execute
+        service: The runtime service
+        backend_name: The backends used to execute the subcircuit
+        options: Options for the runtime execution of subcircuit
 
     Returns:
-        - (dict): the measurement probabilities for the subcircuit batch, as calculated from the
-            runtime execution
+        The measurement probabilities for the subcircuit batch, as calculated from the
+        runtime execution
     """
     subcircuit_instance_probs = {}
     circuits_to_run = []

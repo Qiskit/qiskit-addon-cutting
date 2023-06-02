@@ -30,20 +30,6 @@ class EntanglementForgingAnsatz:
     For a 2N-qubit operator, the circuit should act on N qubits and the bitstrings
     should be of length N. This class functions as a container for information about
     the circuit and bitstrings, and is required for the EntanglementForgingGroundStateSolver.
-
-    Attributes:
-        - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to
-            find the minimum energy of the original problem. It represents the
-            unitary U for both N-qubit subsystems in the Schmidt decomposition.
-        - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit
-            subsystem. The bitstrings represent the computational basis states
-            contributing to the Schmidt decomposition. List must contain less than
-            or equal to 2^N elements and each bitstring must have length N. These
-            bitstrings are used for each subsystem unless bitstrings_v is provided.
-        - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be
-            used for the second subsystem in the Schmidt decomposition. Must be the
-            same shape as bitstrings_u. If not provided, then bitstrings_u is used
-            for both subsystems.
     """
 
     def __init__(
@@ -56,24 +42,24 @@ class EntanglementForgingAnsatz:
         Assign the necessary member variables and check for shaping errors.
 
         Args:
-            - circuit_u (QuantumCircuit): the parameterized circuit that is optimized to
+            circuit_u: the parameterized circuit that is optimized to
                 find the minimum energy of the original problem. It represents the
                 unitary U for both N-qubit subsystems in the Schmidt decomposition.
-            - bitstrings_u (list[tuple[Int]]): the input bitstrings for each N-qubit
+            bitstrings_u: the input bitstrings for each N-qubit
                 subsystem. The bitstrings represent the computational basis states
                 contributing to the Schmidt decomposition. List must contain less than
                 or equal to 2^N elements and each bitstring must have length N. These
                 bitstrings are used for each subsystem unless bitstrings_v is provided.
-            - bitstrings_v (list[tuple[Int]], optional): specifies the bitstrings to be
+            bitstrings_v: specifies the bitstrings to be
                 used for the second subsystem in the Schmidt decomposition. Must be the
                 same shape as bitstrings_u. If not provided, then bitstrings_u is used
                 for both subsystems.
 
         Returns:
-            - None
+            None
 
         Raises:
-            - ValueError: If the input bitstrings are of incorrect shapes (as defined above).
+            ValueError: The input bitstrings are of incorrect shapes.
         """
         if any(len(bitstring) != circuit_u.num_qubits for bitstring in bitstrings_u):
             raise ValueError(
@@ -99,61 +85,31 @@ class EntanglementForgingAnsatz:
 
     @property
     def circuit_u(self) -> QuantumCircuit:
-        """
-        Property function for the circuit.
-
-        Returns:
-            - (QuantumCircuit): the _circuit_u member variable
-        """
+        """Property function for the circuit."""
         return self._circuit_u
 
     @property
     def bitstrings_u(self) -> list[tuple[int, ...]]:
-        """
-        Property function for the first bitstrings.
-
-        Returns:
-            - (list[tuple[int, ...]]): the _bitstrings_u member variable
-        """
+        """Property function for the first bitstrings."""
         return self._bitstrings_u
 
     @property
     def bitstrings_v(self) -> list[tuple[int, ...]]:
-        """
-        Property function for the second bitstrings.
-
-        Returns:
-            - (list[tuple[int, ...]]): the _bitstrings_v member variable
-        """
+        """Property function for the second bitstrings."""
         return self._bitstrings_v
 
     @property
     def bitstrings_are_symmetric(self) -> bool:
-        """
-        Property function for the symmetry of bitstrings.
-
-        Returns:
-            - (bool): whether the first and second set of bitstrings are the same
-        """
+        """Property function for the symmetry of bitstrings."""
         return self._bitstrings_v == self._bitstrings_u
 
     @property
     def subspace_dimension(self) -> int:
-        """
-        Property function for the length of bitstrings.
-
-        Returns:
-            - (int): the number of bitstrings
-        """
+        """Property function for the length of bitstrings."""
         return len(self._bitstrings_u)
 
     def __repr__(self) -> str:
-        """
-        Representation function for EntanglementForgingAnsatz.
-
-        Returns:
-            - (str): printable repesentation of class
-        """
+        """Representation function for EntanglementForgingAnsatz."""
         repr = "EntanglementForgingAnsatz\nCircuit:\n"
         repr += str(self._circuit_u.draw())
         repr += "\nBitstrings U:\n"

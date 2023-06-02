@@ -90,6 +90,12 @@ class CLI:
             d = toml.load(f)
         process_dependencies_in_place(d, mapfunc)
 
+        # Modify pyproject.toml so hatchling will allow direct references
+        # as dependencies.
+        d.setdefault("tool", {}).setdefault("hatch", {}).setdefault("metadata", {})[
+            "allow-direct-references"
+        ] = True
+
         if inplace:
             with open("pyproject.toml", "w") as f:
                 toml.dump(d, f)

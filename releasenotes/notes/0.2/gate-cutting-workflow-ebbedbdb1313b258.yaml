@@ -1,0 +1,38 @@
+---
+prelude: |
+    0.2.0 is centered around the addition of functions which allow for the easy
+    implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
+    :ref:`explanation guide <circuit cutting explanation>`.
+
+    The foundation of the :mod:`~circuit_knitting_toolbox.circuit_cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
+    sub-package. The :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package allows for easy transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
+    See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
+
+    Additionally, 0.2.0 includes a set of functions which allow for easy implementation of gate cutting workflows.
+    These functions are built on top of the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd` package. Like all
+    circuit knitting techniques, gate cutting can be described as three consecutive stages: *decomposition* of a problem,
+    *execution* of many subexperiments, and *reconstruction* of a simulated output of the original problem.
+    These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` package using only a few primary
+    functions, namely, the :func:`.partition_problem`, :func:`.decompose_gates`, :func:`.execute_experiments`, and :func:`.reconstruct_expectation_values` functions.
+    Check out the :ref:`tutorials <circuit cutting tutorials>` for a look at a couple of example circuit cutting workflows.
+
+features:
+  - |
+    Addition of a :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package which allows for easy
+    transformation of :class:`~qiskit.QuantumCircuit` gates and wires into elements which may be decomposed to a
+    probabilistic set of basis gates. See :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis` and :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` classes for more information.
+  - |
+    Addition of :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_decomposition`, :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_execution`,
+    and :mod:`~circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction` modules. These modules
+    provide several functions which allow for easy implementation of gate cutting workflows, namely,
+    the :func:`.partition_problem`, :func:`.decompose_gates`, :func:`.execute_experiments`, and :func:`.reconstruct_expectation_values` functions.
+
+issues:
+  - |
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package only supports :class:`~qiskit.quantum_info.PauliList` observables for calculating expectation values. Support for calculating
+    expectation values for more observable types, including :class:`~qiskit.quantum_info.SparsePauliOp`, is expected no sooner than 0.3.0.
+  - |
+    The ``Sampler``\ s from Qiskit and Qiskit Aer do not support mid-circuit measurements in statevector mode. For more on generating exact quasi-distributions using the :class:`~qiskit.primitives.BaseSampler` interface, check out our `how-to guide <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb>`_.
+  - |
+    The :mod:`~circuit_knitting_toolbox.circuit_cutting` package generally does not yet support input circuits with user-added
+    classical bits, so by extension, it does not yet support dynamic circuits.
