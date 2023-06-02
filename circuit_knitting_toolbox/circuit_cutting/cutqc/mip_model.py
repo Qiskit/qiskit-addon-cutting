@@ -20,7 +20,7 @@ import numpy as np
 try:
     from docplex.mp.model import Model
     from docplex.mp.utils import DOcplexException
-except ModuleNotFoundError as ex:
+except ModuleNotFoundError as ex:  # pragma: no cover
     raise ModuleNotFoundError(
         "DOcplex is not installed.  For automatic cut finding to work, both "
         "DOcplex and cplex must be available."
