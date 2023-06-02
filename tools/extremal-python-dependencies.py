@@ -14,7 +14,7 @@ import re
 import configparser
 
 import toml
-import fire
+import typer
 
 
 def mapfunc_dev(dep):
@@ -70,38 +70,41 @@ def process_dependencies_in_place(d: dict, mapfunc):
             inplace_map(mapfunc, build_system_requires)
 
 
-class CLI:
-    """Command-line interface class for Fire"""
+app = typer.Typer()
 
-    def get_tox_minversion(self):
-        """Extract tox minversion from `tox.ini`"""
-        config = configparser.ConfigParser()
-        config.read("tox.ini")
-        print(config["tox"]["minversion"])
 
-    def pin_dependencies(self, strategy, inplace: bool = False):
-        """Pin the dependencies in `pyproject.toml` according to `strategy`"""
-        mapfunc = {
-            "dev": mapfunc_dev,
-            "min": mapfunc_min,
-        }[strategy]
+@app.command()
+def get_tox_minversion():
+    """Extract tox minversion from `tox.ini`"""
+    config = configparser.ConfigParser()
+    config.read("tox.ini")
+    print(config["tox"]["minversion"])
 
-        with open("pyproject.toml") as f:
-            d = toml.load(f)
-        process_dependencies_in_place(d, mapfunc)
 
-        # Modify pyproject.toml so hatchling will allow direct references
-        # as dependencies.
-        d.setdefault("tool", {}).setdefault("hatch", {}).setdefault("metadata", {})[
-            "allow-direct-references"
-        ] = True
+@app.command()
+def pin_dependencies(strategy, inplace: bool = False):
+    """Pin the dependencies in `pyproject.toml` according to `strategy`"""
+    mapfunc = {
+        "dev": mapfunc_dev,
+        "min": mapfunc_min,
+    }[strategy]
 
-        if inplace:
-            with open("pyproject.toml", "w") as f:
-                toml.dump(d, f)
-        else:
-            print(toml.dumps(d))
+    with open("pyproject.toml") as f:
+        d = toml.load(f)
+    process_dependencies_in_place(d, mapfunc)
+
+    # Modify pyproject.toml so hatchling will allow direct references
+    # as dependencies.
+    d.setdefault("tool", {}).setdefault("hatch", {}).setdefault("metadata", {})[
+        "allow-direct-references"
+    ] = True
+
+    if inplace:
+        with open("pyproject.toml", "w") as f:
+            toml.dump(d, f)
+    else:
+        print(toml.dumps(d))
 
 
 if __name__ == "__main__":
-    fire.Fire(CLI)
+    app()
