@@ -17,6 +17,7 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
+from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
@@ -104,7 +105,55 @@ def partition_circuit_qubits(
     return circuit
 
 
+@deprecate_func(
+    since="0.3",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no earlier than v0.4.0",
+    additional_msg=(
+        "Instead, use :func:`~circuit_knitting_toolbox.circuit_cutting.cut_gates` "
+        "to automatically transform specified gates into "
+        ":class:`~circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate` instances."
+    )
+)
 def decompose_gates(
+    circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
+) -> tuple[QuantumCircuit, list[QPDBasis]]: # pragma: no cover
+    r"""
+    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
+
+    Args:
+        circuit: The circuit containing gates to be decomposed
+        gate_ids: The indices of the gates to decompose
+        inplace: Flag denoting whether to copy the input circuit before acting on it
+
+    Returns:
+        A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
+        and a list of :class:`QPDBasis` instances -- one for each decomposed gate.
+
+    Raises:
+        ValueError: The input circuit should contain no classical bits or registers.
+    """
+    if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
+        raise ValueError(
+            "Circuits input to execute_experiments should contain no classical registers or bits."
+        )
+    # Replace specified gates with TwoQubitQPDGates
+    if not inplace:
+        circuit = circuit.copy()
+
+    bases = []
+    for gate_id in gate_ids:
+        gate = circuit.data[gate_id]
+        qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
+        decomposition = QPDBasis.from_gate(gate.operation)
+        bases.append(decomposition)
+        qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
+        circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
+
+    return circuit, bases
+
+
+def cut_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:
     r"""
