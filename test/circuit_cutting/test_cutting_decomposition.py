@@ -45,8 +45,8 @@ class TestCuttingDecomposition(unittest.TestCase):
 
         # Create two QPDGates and specify each of their bases
         # Labels are only used for visualizations
-        qpd_gate1 = TwoQubitQPDGate(rxx_decomp, label=f"qpd_{rxx_gate.name}")
-        qpd_gate2 = TwoQubitQPDGate(rxx_decomp, label=f"qpd_{rxx_gate.name}")
+        qpd_gate1 = TwoQubitQPDGate(rxx_decomp, label=f"cut_{rxx_gate.name}")
+        qpd_gate2 = TwoQubitQPDGate(rxx_decomp, label=f"cut_{rxx_gate.name}")
         qpd_gate1.basis_id = 0
         qpd_gate2.basis_id = 0
 
