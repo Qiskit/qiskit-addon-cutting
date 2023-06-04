@@ -4,5 +4,5 @@ upgrade:
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` instances in subcircuits
     returned from :func:`~circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits`
     and :func:`~circuit_knitting_toolbox.circuit_cutting.partition_problem` will now have
-    labels with prefix "cut_" rather than "qpd_".
+    labels prefixed with cut, rather than qpd.
 
