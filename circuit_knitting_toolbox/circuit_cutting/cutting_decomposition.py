@@ -118,39 +118,8 @@ def partition_circuit_qubits(
 def decompose_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
-    r"""
-    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
-
-    Args:
-        circuit: The circuit containing gates to be decomposed
-        gate_ids: The indices of the gates to decompose
-        inplace: Flag denoting whether to copy the input circuit before acting on it
-
-    Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
-        and a list of :class:`QPDBasis` instances -- one for each decomposed gate.
-
-    Raises:
-        ValueError: The input circuit should contain no classical bits or registers.
-    """
-    if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
-        raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
-        )
-    # Replace specified gates with TwoQubitQPDGates
-    if not inplace:
-        circuit = circuit.copy()
-
-    bases = []
-    for gate_id in gate_ids:
-        gate = circuit.data[gate_id]
-        qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
-        decomposition = QPDBasis.from_gate(gate.operation)
-        bases.append(decomposition)
-        qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
-        circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
-
-    return circuit, bases
+    """Deprecated wrapper for cut_gates function."""
+    return cut_gates(circuit, gate_ids, inplace=inplace)
 
 
 def cut_gates(
