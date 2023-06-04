@@ -113,11 +113,11 @@ def partition_circuit_qubits(
         "Instead, use :func:`~circuit_knitting_toolbox.circuit_cutting.cut_gates` "
         "to automatically transform specified gates into "
         ":class:`~circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate` instances."
-    )
+    ),
 )
 def decompose_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
-) -> tuple[QuantumCircuit, list[QPDBasis]]: # pragma: no cover
+) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
     r"""
     Transform specified gates into :class:`TwoQubitQPDGate`\ s.
 
