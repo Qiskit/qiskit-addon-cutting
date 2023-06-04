@@ -1,5 +1,5 @@
 ---
-upgrades:
+upgrade:
   - |
     :class:`~circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate` instances in subcircuits
     returned from :func:`~circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits`
