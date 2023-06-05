@@ -118,7 +118,7 @@ def partition_circuit_qubits(
 def decompose_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
-    """Transform specified gates into :class:`TwoQubitQPDGate`\ s."""
+    r"""Transform specified gates into :class:`TwoQubitQPDGate`\ s."""
     return cut_gates(circuit, gate_ids, inplace)
 
 
