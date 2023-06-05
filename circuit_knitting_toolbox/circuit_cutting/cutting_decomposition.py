@@ -97,7 +97,7 @@ def partition_circuit_qubits(
 
         decomposition = QPDBasis.from_gate(instruction.operation)
         qpd_gate = TwoQubitQPDGate(
-            decomposition, label=f"qpd_{instruction.operation.name}"
+            decomposition, label=f"cut_{instruction.operation.name}"
         )
         circuit.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
