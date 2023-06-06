@@ -54,7 +54,3 @@ __all__ = [
     "cholesky_decomposition",
     "convert_cholesky_operator",
 ]
-
-from qiskit_nature import settings
-
-settings.use_pauli_sum_op = False
