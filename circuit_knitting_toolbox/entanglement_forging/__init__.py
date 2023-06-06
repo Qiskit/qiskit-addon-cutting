@@ -28,6 +28,10 @@ from circuit_knitting.forging import (
 )
 import circuit_knitting.forging.cholesky_decomposition as cholesky_module
 
+from qiskit_nature import settings
+
+settings.use_pauli_sum_op = False
+
 __all__ = [
     "EntanglementForgingAnsatz",
     "EntanglementForgingKnitter",
