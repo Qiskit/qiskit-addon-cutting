@@ -439,7 +439,7 @@ def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> 
 def _aer_sampler_error() -> None:
     raise ValueError(
         "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
-        "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+        "Use circuit_knitting.utils.simulation.ExactSampler to generate exact distributions "
         "for each subexperiment.",
     )
 
@@ -447,7 +447,7 @@ def _aer_sampler_error() -> None:
 def _terra_sampler_error() -> None:
     raise ValueError(
         "qiskit.primitives.Sampler does not support mid-circuit measurements. "
-        "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+        "Use circuit_knitting.utils.simulation.ExactSampler to generate exact distributions "
         "for each subexperiment."
     )
 

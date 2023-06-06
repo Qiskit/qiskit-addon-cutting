@@ -12,7 +12,7 @@
 """
 Helper functions for reducing orbitals.
 
-.. currentmodule:: circuit_knitting_toolbox.utils.orbital_reduction
+.. currentmodule:: circuit_knitting.utils.orbital_reduction
 
 .. autosummary::
    :toctree: ../stubs

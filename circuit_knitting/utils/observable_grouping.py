@@ -12,7 +12,7 @@
 """
 Module for conducting Pauli observable grouping.
 
-.. currentmodule:: circuit_knitting_toolbox.utils.observable_grouping
+.. currentmodule:: circuit_knitting.utils.observable_grouping
 
 .. autosummary::
    :toctree: ../stubs

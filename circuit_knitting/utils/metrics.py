@@ -12,7 +12,7 @@
 """
 Functions for comparing array distances.
 
-.. currentmodule:: circuit_knitting_toolbox.utils.metrics
+.. currentmodule:: circuit_knitting.utils.metrics
 
 .. autosummary::
    :toctree: ../stubs

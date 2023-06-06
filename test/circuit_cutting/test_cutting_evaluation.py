@@ -147,7 +147,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "qiskit.primitives.Sampler does not support mid-circuit measurements. "
-                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact "
+                "Use circuit_knitting.utils.simulation.ExactSampler to generate exact "
                 "distributions for each subexperiment."
             )
             with pytest.raises(ValueError) as e_info:
@@ -162,7 +162,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
-                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+                "Use circuit_knitting.utils.simulation.ExactSampler to generate exact distributions "
                 "for each subexperiment."
             )
         with self.subTest("Terra sampler"):
@@ -175,7 +175,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "qiskit.primitives.Sampler does not support mid-circuit measurements. "
-                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact "
+                "Use circuit_knitting.utils.simulation.ExactSampler to generate exact "
                 "distributions for each subexperiment."
             )
         with self.subTest("Aer sampler no shots"):
@@ -188,7 +188,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert e_info.value.args[0] == (
                 "qiskit_aer.primitives.Sampler does not support mid-circuit measurements when shots is None. "
-                "Use circuit_knitting_toolbox.utils.simulation.ExactSampler to generate exact distributions "
+                "Use circuit_knitting.utils.simulation.ExactSampler to generate exact distributions "
                 "for each subexperiment."
             )
         with self.subTest("Bad samplers"):

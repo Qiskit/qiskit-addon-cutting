@@ -12,7 +12,7 @@
 """
 Code for converting types of distributions.
 
-.. currentmodule:: circuit_knitting_toolbox.utils.conversion
+.. currentmodule:: circuit_knitting.utils.conversion
 
 .. autosummary::
    :toctree: ../stubs/

@@ -23,8 +23,8 @@ from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
 from qiskit_aer import Aer
 
-from circuit_knitting_toolbox.utils.conversion import quasi_to_real
-from circuit_knitting_toolbox.utils.metrics import (
+from ...utils.conversion import quasi_to_real
+from ...utils.metrics import (
     chi2_distance,
     MSE,
     MAPE,

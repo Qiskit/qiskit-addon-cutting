@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 
 from qiskit.circuit import QuantumCircuit, Instruction, CircuitInstruction
 
-from circuit_knitting_toolbox.circuit_cutting.qpd import QPDBasis
+from ..qpd_basis import QPDBasis
 
 
 class BaseQPDGate(Instruction, ABC):

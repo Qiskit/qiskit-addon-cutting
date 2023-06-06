@@ -13,52 +13,52 @@
 Utility functions.
 
 =================================================================
-Bitwise utilities (:mod:`circuit_knitting_toolbox.utils.bitwise`)
+Bitwise utilities (:mod:`circuit_knitting.utils.bitwise`)
 =================================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.bitwise
+.. automodule:: circuit_knitting.utils.bitwise
 
 =============================================================
-Conversion (:mod:`circuit_knitting_toolbox.utils.conversion`)
+Conversion (:mod:`circuit_knitting.utils.conversion`)
 =============================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.conversion
+.. automodule:: circuit_knitting.utils.conversion
 
 =====================================================================
-Iteration utilities (:mod:`circuit_knitting_toolbox.utils.iteration`)
+Iteration utilities (:mod:`circuit_knitting.utils.iteration`)
 =====================================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.iteration
+.. automodule:: circuit_knitting.utils.iteration
 
 =======================================================
-Metrics (:mod:`circuit_knitting_toolbox.utils.metrics`)
+Metrics (:mod:`circuit_knitting.utils.metrics`)
 =======================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.metrics
+.. automodule:: circuit_knitting.utils.metrics
 
 ===============================================================================
-Observable grouping (:mod:`circuit_knitting_toolbox.utils.observable_grouping`)
+Observable grouping (:mod:`circuit_knitting.utils.observable_grouping`)
 ===============================================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.observable_grouping
+.. automodule:: circuit_knitting.utils.observable_grouping
 
 ===========================================================================
-Orbital reduction (:mod:`circuit_knitting_toolbox.utils.orbital_reduction`)
+Orbital reduction (:mod:`circuit_knitting.utils.orbital_reduction`)
 ===========================================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.orbital_reduction
+.. automodule:: circuit_knitting.utils.orbital_reduction
 
 =============================================================
-Simulation (:mod:`circuit_knitting_toolbox.utils.simulation`)
+Simulation (:mod:`circuit_knitting.utils.simulation`)
 =============================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.simulation
+.. automodule:: circuit_knitting.utils.simulation
 
 =============================================================
-Transforms (:mod:`circuit_knitting_toolbox.utils.transforms`)
+Transforms (:mod:`circuit_knitting.utils.transforms`)
 =============================================================
 
-.. automodule:: circuit_knitting_toolbox.utils.transforms
+.. automodule:: circuit_knitting.utils.transforms
 """
 
 from .orbital_reduction import reduce_bitstrings

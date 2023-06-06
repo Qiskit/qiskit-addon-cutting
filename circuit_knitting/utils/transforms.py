@@ -12,7 +12,7 @@
 """
 Functions for manipulating quantum circuits.
 
-.. currentmodule:: circuit_knitting_toolbox.utils.transforms
+.. currentmodule:: circuit_knitting.utils.transforms
 
 .. autosummary::
    :toctree: ../stubs
