@@ -4,7 +4,7 @@
 Entanglement Forging
 ####################
 
-.. automodule:: circuit_knitting_toolbox.entanglement_forging
+.. automodule:: circuit_knitting.forging
    :no-members:
    :no-inherited-members:
    :no-special-members:

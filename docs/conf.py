@@ -47,6 +47,7 @@ extensions = [
     "reno.sphinxext",
     "nbsphinx",
     "sphinx_copybutton",
+    "sphinx_reredirects",
 ]
 templates_path = ["_templates"]
 numfig = True
@@ -54,7 +55,7 @@ numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
 add_module_names = False
-modindex_common_prefix = ["circuit_knitting_toolbox."]
+modindex_common_prefix = ["circuit_knitting."]
 html_css_files = ["style.css"]
 
 # html theme options
@@ -76,3 +77,9 @@ exclude_patterns = [
     "test_notebooks",
     "**/README.rst",
 ]
+
+# Redirects for pages that have moved
+redirects = {
+    "circuit_cutting/tutorials/gate_cutting_to_reduce_circuit_width.html": "01_gate_cutting_to_reduce_circuit_width.html",
+    "circuit_cutting/tutorials/gate_cutting_to_reduce_circuit_depth.html": "02_gate_cutting_to_reduce_circuit_depth.html",
+}
