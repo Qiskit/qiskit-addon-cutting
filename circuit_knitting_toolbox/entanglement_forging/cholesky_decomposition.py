@@ -128,10 +128,10 @@ def convert_cholesky_operator(
     ansatz: EntanglementForgingAnsatz,
 ) -> EntanglementForgingOperator:
     """
-    Convert the Cholesky operator (List[PauliSumOp]) into the entanglement forging format.
+    Convert the Cholesky operator (List[SparsePauliOp]) into the entanglement forging format.
 
     Args:
-        operator: A `List[PauliSumOp]` containing the single-body Hamiltonian followed
+        operator: A `List[SparsePauliOp]` containing the single-body Hamiltonian followed
             by the Cholesky operators
             shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
         ansatz: The ansatz for which to compute expectation values of operator. The
