@@ -31,8 +31,8 @@ from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
 
-from circuit_knitting_toolbox.utils.simulation import ExactSampler
-from circuit_knitting_toolbox.circuit_cutting import (
+from circuit_knitting.utils.simulation import ExactSampler
+from circuit_knitting.cutting import (
     partition_problem,
     execute_experiments,
     reconstruct_expectation_values,

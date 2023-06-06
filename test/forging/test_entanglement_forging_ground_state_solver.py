@@ -23,7 +23,7 @@ from qiskit_nature.second_q.problems import (
 )
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
 
-from circuit_knitting_toolbox.entanglement_forging import (
+from circuit_knitting.forging import (
     EntanglementForgingAnsatz,
     EntanglementForgingGroundStateSolver,
 )

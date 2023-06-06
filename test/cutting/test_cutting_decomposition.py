@@ -21,12 +21,12 @@ from qiskit.circuit.library import EfficientSU2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
 from qiskit.quantum_info import PauliList
 
-from circuit_knitting_toolbox.circuit_cutting import (
+from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     decompose_gates,
 )
-from circuit_knitting_toolbox.circuit_cutting.qpd import (
+from circuit_knitting.cutting.qpd import (
     QPDBasis,
     TwoQubitQPDGate,
     BaseQPDGate,

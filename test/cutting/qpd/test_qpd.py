@@ -30,14 +30,14 @@ from qiskit.circuit.library import (
     RZZGate,
 )
 
-from circuit_knitting_toolbox.utils.iteration import unique_by_eq
-from circuit_knitting_toolbox.circuit_cutting.qpd import (
+from circuit_knitting.utils.iteration import unique_by_eq
+from circuit_knitting.cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
     generate_qpd_samples,
 )
-from circuit_knitting_toolbox.circuit_cutting.qpd.qpd import *
+from circuit_knitting.cutting.qpd.qpd import *
 
 
 @ddt

@@ -21,19 +21,19 @@ from qiskit_aer.primitives import Sampler as AerSampler
 from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction, Clbit
 from qiskit.circuit.library.standard_gates import XGate
 
-from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
-from circuit_knitting_toolbox.utils.simulation import ExactSampler
-from circuit_knitting_toolbox.circuit_cutting.qpd import (
+from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
+from circuit_knitting.utils.simulation import ExactSampler
+from circuit_knitting.cutting.qpd import (
     SingleQubitQPDGate,
     TwoQubitQPDGate,
     QPDBasis,
 )
-from circuit_knitting_toolbox.circuit_cutting.cutting_evaluation import (
+from circuit_knitting.cutting.cutting_evaluation import (
     _append_measurement_circuit,
     execute_experiments,
 )
-from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
-from circuit_knitting_toolbox.circuit_cutting import partition_problem
+from circuit_knitting.cutting.qpd import WeightType
+from circuit_knitting.cutting import partition_problem
 
 
 class TestCuttingEvaluation(unittest.TestCase):

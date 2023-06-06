@@ -18,9 +18,9 @@ from qiskit.result import QuasiDistribution
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
-from circuit_knitting_toolbox.utils.observable_grouping import CommutingObservableGroup
-from circuit_knitting_toolbox.circuit_cutting.qpd import WeightType
-from circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction import (
+from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
+from circuit_knitting.cutting.qpd import WeightType
+from circuit_knitting.cutting.cutting_reconstruction import (
     _process_outcome,
     reconstruct_expectation_values,
 )
