@@ -1,5 +1,5 @@
 ---
-upgrade:
+deprecations:
   - |
     The top-level name for imports has been renamed from
     ``circuit_knitting_toolbox`` to ``circuit_knitting``.
