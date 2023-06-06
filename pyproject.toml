@@ -93,6 +93,12 @@ notebook-dependencies = [
 "Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
 "Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
 
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "circuit_knitting",
+    "circuit_knitting_toolbox",
+]
+
 [tool.autoflake]
 remove-unused-variables = true
 remove-all-unused-imports = true
@@ -100,5 +106,5 @@ remove-all-unused-imports = true
 [tool.coverage.run]
 omit = [
     # deprecated import location(s)
-    "circuit_knitting_toolbox/circuit_cutting/wire_cutting.py",
+    "circuit_knitting/cutting/wire_cutting.py",
 ]

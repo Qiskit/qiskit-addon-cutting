@@ -15,7 +15,7 @@ import pytest
 import numpy as np
 from qiskit import QuantumCircuit
 
-from circuit_knitting_toolbox.utils.simulation import (
+from circuit_knitting.utils.simulation import (
     simulate_statevector_outcomes,
     ExactSampler,
 )
