@@ -1,0 +1,14 @@
+---
+deprecations:
+  - |
+    The top-level name for imports has been renamed from
+    ``circuit_knitting_toolbox`` to ``circuit_knitting``.
+    Furthermore, the following renames have occurred one level deeper:
+
+    - ``circuit_knitting_toolbox.entanglement_forging`` has been moved
+      to ``circuit_knitting.forging``.
+    - ``circuit_knitting_toolbox.circuit_cutting`` has been moved
+      to ``circuit_knitting.cutting``.
+
+    The old import locations are now deprecated and will be removed in
+    a future release of the Circuit Knitting Toolbox.

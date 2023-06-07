@@ -1,6 +1,6 @@
-.. circuit_knitting_toolbox:
+.. circuit_knitting:
 
-.. module:: circuit_knitting_toolbox
+.. module:: circuit_knitting
 
 =======================================
 Circuit Knitting Toolbox API References

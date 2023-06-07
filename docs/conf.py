@@ -55,7 +55,7 @@ numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
 add_module_names = False
-modindex_common_prefix = ["circuit_knitting_toolbox."]
+modindex_common_prefix = ["circuit_knitting."]
 html_css_files = ["style.css"]
 
 # html theme options
