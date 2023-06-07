@@ -53,6 +53,7 @@ from qiskit_nature import settings
 # Nature 0.7. Here, we modify the global state to opt into the new behavior early.
 # Unfortunately, this means that any code that calls Qiskit Nature in the same
 # process as entanglement forging will need to be updated to use SparsePauliOp as well.
+
 settings.use_pauli_sum_op = False
 
 __all__ = [
