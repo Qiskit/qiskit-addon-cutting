@@ -14,6 +14,7 @@
 import sys
 from warnings import warn
 
+from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
