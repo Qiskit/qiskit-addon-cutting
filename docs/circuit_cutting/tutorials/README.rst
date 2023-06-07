@@ -1,12 +1,8 @@
-#########################
 Circuit Cutting Tutorials
-#########################
+-------------------------
 
-- `Tutorial 1 <tutorial_1_automatic_cut_finding.ipynb>`__:
-  Perform circuit cutting with automated cut finding, using a
-  mixed-integer programming model.
-- `Tutorial 2 <tutorial_2_manual_cutting.ipynb>`__:
-  Perform circuit cutting by manually specifying wire cut locations.
-- `Tutorial 3 <tutorial_3_cutting_with_quantum_serverless.ipynb>`__:
-  Use Quantum Serverless to allocate steps of the circuit cutting
-  workflow to various compute resources (e.g., the cloud).
+- `Tutorial 1 <01_gate_cutting_to_reduce_circuit_width.ipynb>`__:
+  Separate sets of qubits by cutting nonlocal gates and run the
+  subexperiments for each qubit partition in parallel.
+- `Tutorial 2 <02_gate_cutting_to_reduce_circuit_depth.ipynb>`__:
+  Cut gates requiring many SWAPs to decrease circuit depth.

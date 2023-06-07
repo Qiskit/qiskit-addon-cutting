@@ -16,7 +16,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: Publish release
-        uses: eloquent/github-release-action@v3
+        uses: ghalactic/github-release-from-tag@v4
         if: github.ref_type == 'tag'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,13 +31,17 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref_name }}
-      - name: Install flit
+      - name: Install hatch
         run: |
           python -m pip install --upgrade pip
-          pip install flit
+          pip install hatch
+      - name: Build using hatch
+        run: |
+          hatch build
       - name: Publish release
         env:
-          FLIT_INDEX_URL: https://upload.pypi.org/legacy/
-          FLIT_USERNAME: __token__
-          FLIT_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: flit publish
+          HATCH_INDEX_REPO: https://upload.pypi.org/legacy/
+          HATCH_INDEX_USER: __token__
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          hatch publish

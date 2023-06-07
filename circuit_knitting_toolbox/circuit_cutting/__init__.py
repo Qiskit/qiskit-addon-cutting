@@ -1,6 +1,6 @@
 # This code is a Qiskit project.
 
-# (C) Copyright IBM 2022.
+# (C) Copyright IBM 2023.
 
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -9,20 +9,65 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Circuit Cutting (:mod:`circuit_knitting_toolbox.circuit_cutting`).
+"""Deprecated import location ``circuit_knitting_toolbox.circuit_cutting``."""
 
-.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
+import sys
+from warnings import warn
 
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
+from circuit_knitting.cutting import (
+    partition_circuit_qubits,
+    partition_problem,
+    decompose_gates,
+    execute_experiments,
+    reconstruct_expectation_values,
+    PartitionedCuttingProblem,
+    CuttingExperimentResults,
+    qpd,
+    cutqc,
+    cutting_decomposition,
+    cutting_evaluation,
+    cutting_reconstruction,
+    wire_cutting,
+)
 
-    wire_cutting.run_subcircuit_instances
-    wire_cutting.generate_summation_terms
-    wire_cutting.build
-    wire_cutting.verify
-    wire_cutting.cut_circuit_wires
-    wire_cutting.evaluate_subcircuits
-    wire_cutting.reconstruct_full_distribution
-"""
+__all__ = [
+    "partition_circuit_qubits",
+    "partition_problem",
+    "decompose_gates",
+    "execute_experiments",
+    "reconstruct_expectation_values",
+    "PartitionedCuttingProblem",
+    "CuttingExperimentResults",
+]
+
+sys.modules["circuit_knitting_toolbox.circuit_cutting.qpd"] = qpd
+sys.modules["circuit_knitting_toolbox.circuit_cutting.qpd.qpd"] = qpd.qpd
+sys.modules["circuit_knitting_toolbox.circuit_cutting.qpd.qpd_basis"] = qpd.qpd_basis
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.qpd.instructions"
+] = qpd.instructions
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.qpd.instructions.qpd_gate"
+] = qpd.instructions.qpd_gate
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.qpd.instructions.qpd_measure"
+] = qpd.instructions.qpd_measure
+sys.modules["circuit_knitting_toolbox.circuit_cutting.cutqc"] = cutqc
+sys.modules["circuit_knitting_toolbox.circuit_cutting.wire_cutting"] = wire_cutting
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.cutting_decomposition"
+] = cutting_decomposition
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.cutting_evaluation"
+] = cutting_evaluation
+sys.modules[
+    "circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction"
+] = cutting_reconstruction
+
+warn(
+    f"The package namespace {__name__} is deprecated and will be removed "
+    "no sooner than Circuit Knitting Toolbox 0.4.0. Use namespace "
+    "circuit_knitting.cutting instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)

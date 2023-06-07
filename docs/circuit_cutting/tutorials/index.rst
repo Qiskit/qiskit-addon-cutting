@@ -1,12 +1,11 @@
+.. _circuit cutting tutorials:
+
+#########################
+Circuit Cutting Tutorials
+#########################
 .. include:: README.rst
 
 .. nbgallery::
     :glob:
 
     *
-
-
-.. Hiding - Indices and tables
-   :ref:`genindex`
-   :ref:`modindex`
-   :ref:`search`
