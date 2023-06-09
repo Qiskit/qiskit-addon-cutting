@@ -29,6 +29,14 @@ def mapfunc_dev(dep):
 
 def mapfunc_min(dep):
     """Set each dependency to its minimum version"""
+    for clause in dep.split(","):
+        if "*" in clause and "==" in clause:
+            raise ValueError(
+                "Asterisks in version specifiers are not currently supported "
+                "by the minimum version tests.  We recommend using the "
+                "'compatible release' operator instead: "
+                "https://peps.python.org/pep-0440/#compatible-release"
+            )
     return re.sub(r"[>~]=", r"==", dep)
 
 
