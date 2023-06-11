@@ -2,7 +2,7 @@
 <div align="left">
 
   [![Stability](https://img.shields.io/badge/Stability-alpha-f4d03f.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/releases)
-  ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-informational)
+  ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-informational)
   [![Python](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-informational)](https://www.python.org/)
   [![Qiskit](https://img.shields.io/badge/Qiskit-%E2%89%A5%200.43.0-6133BD)](https://github.com/Qiskit/qiskit)
   [![Qiskit Nature](https://img.shields.io/badge/Qiskit%20Nature-%E2%89%A5%200.5.2-6133BD)](https://github.com/Qiskit/qiskit-nature)

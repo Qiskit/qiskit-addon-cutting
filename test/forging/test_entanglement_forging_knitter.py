@@ -12,6 +12,7 @@
 """Tests for EntanglementForgingKnitter module."""
 
 import os
+import importlib.util
 import unittest
 import pytest
 
@@ -29,6 +30,8 @@ from circuit_knitting.forging import (
     cholesky_decomposition,
     convert_cholesky_operator,
 )
+
+pyscf_available = importlib.util.find_spec("pyscf") is not None
 
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
@@ -72,6 +75,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         return ansatz
 
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_H2(self):
         """
         Test to apply Entanglement Forging to compute the energy of a H2 molecule,
@@ -108,6 +112,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.121936544469326)
 
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
         Test to apply Entanglement Forging to compute the energy of a H2O molecule,
