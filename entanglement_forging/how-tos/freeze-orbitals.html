@@ -54,14 +54,22 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicBasis</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span> <span class="n">ElectronicBasis</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.algorithms</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">GroundStateEigensolver</span><span class="p">,</span>
+    <span class="n">NumPyMinimumEigensolverFactory</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.entanglement_forging</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">EntanglementForgingAnsatz</span><span class="p">,</span>
+    <span class="n">EntanglementForgingGroundStateSolver</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.utils</span> <span class="kn">import</span> <span class="n">reduce_bitstrings</span>
 </pre></div>
@@ -176,7 +184,7 @@ q_4: ┤1              ├┤1             ├┤1              ├
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>  <span class="c1"># noqa: F401</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 </pre></div>

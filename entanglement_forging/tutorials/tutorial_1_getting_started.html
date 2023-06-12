@@ -77,7 +77,7 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_nature.second_q.drivers</span> <span class="kn">import</span> <span class="n">PySCFDriver</span>
 <span class="kn">from</span> <span class="nn">qiskit_nature.second_q.formats</span> <span class="kn">import</span> <span class="n">get_ao_to_mo_from_qcschema</span>
-<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicBasis</span>
+<span class="kn">from</span> <span class="nn">qiskit_nature.second_q.problems</span> <span class="kn">import</span> <span class="n">ElectronicStructureProblem</span><span class="p">,</span> <span class="n">ElectronicBasis</span>
 
 <span class="n">driver</span> <span class="o">=</span> <span class="n">PySCFDriver</span><span class="p">(</span><span class="s2">&quot;H 0.0 0.0 0.0; H 0.0 0.0 0.735&quot;</span><span class="p">)</span>
 <span class="n">driver</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -126,7 +126,7 @@ q_1: ┤1                     ├
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Options</span>  <span class="c1"># noqa: F401</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span><span class="p">,</span> <span class="n">Options</span>
 
 <span class="c1"># By default, use a local simulator to implement the Qiskit Runtime Primitives</span>
 <span class="n">service</span> <span class="o">=</span> <span class="kc">None</span>
@@ -269,7 +269,7 @@ Parameters:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>  <span class="c1"># noqa: F401</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 </pre></div>

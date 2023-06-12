@@ -30,14 +30,22 @@
    },
    "outputs": [],
    "source": [
+    "from matplotlib import pyplot as plt\n",
     "import numpy as np\n",
     "\n",
     "from qiskit.circuit import QuantumCircuit, Parameter\n",
+    "from qiskit.circuit.library import TwoLocal\n",
+    "from qiskit.algorithms.optimizers import COBYLA\n",
     "from qiskit_nature.second_q.drivers import PySCFDriver\n",
-    "from qiskit_nature.second_q.problems import ElectronicBasis\n",
+    "from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis\n",
+    "from qiskit_nature.second_q.algorithms import (\n",
+    "    GroundStateEigensolver,\n",
+    "    NumPyMinimumEigensolverFactory,\n",
+    ")\n",
     "\n",
     "from circuit_knitting_toolbox.entanglement_forging import (\n",
     "    EntanglementForgingAnsatz,\n",
+    "    EntanglementForgingGroundStateSolver,\n",
     ")\n",
     "from circuit_knitting_toolbox.utils import reduce_bitstrings"
    ]
@@ -223,7 +231,7 @@
     }
    ],
    "source": [
-    "import qiskit.tools.jupyter  # noqa: F401\n",
+    "import qiskit.tools.jupyter\n",
     "\n",
     "%qiskit_version_table"
    ]

@@ -99,7 +99,7 @@
     }
    ],
    "source": [
-    "from quantum_serverless import QuantumServerless\n",
+    "from quantum_serverless import QuantumServerless, get\n",
     "\n",
     "serverless = QuantumServerless()\n",
     "serverless.providers()"
@@ -339,7 +339,10 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from qiskit_ibm_runtime import QiskitRuntimeService  # noqa: F401\n",
+    "from qiskit_ibm_runtime import (\n",
+    "    QiskitRuntimeService,\n",
+    "    Options,\n",
+    ")\n",
     "\n",
     "# Use local versions of the primitives by default.\n",
     "service = None\n",
@@ -622,7 +625,7 @@
     }
    ],
    "source": [
-    "import qiskit.tools.jupyter  # noqa: F401\n",
+    "import qiskit.tools.jupyter\n",
     "\n",
     "%qiskit_version_table"
    ]
