@@ -110,9 +110,9 @@ def partition_circuit_qubits(
     package_name="circuit-knitting-toolbox",
     removal_timeline="no earlier than v0.4.0",
     additional_msg=(
-        "Instead, use :func:`~circuit_knitting_toolbox.circuit_cutting.cut_gates` "
+        "Instead, use ``circuit_knitting.cutting.cut_gates`` "
         "to automatically transform specified gates into "
-        ":class:`~circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate` instances."
+        "``TwoQubitQPDGate`` instances."
     ),
 )
 def decompose_gates(
