@@ -13,9 +13,11 @@
 
 from __future__ import annotations
 
+import copy
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
+from multiprocessing import ThreadPool
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
@@ -131,18 +133,20 @@ def execute_experiments(
     # Create a list of samplers -- one for each qubit partition
     num_partitions = len(subexperiments[0])
     if isinstance(samplers, BaseSampler):
-        samplers_by_partition = [samplers] * num_partitions
+        samplers_by_partition = [copy.deepcopy(samplers) for _ in range(num_partitions)]
     else:
         samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
 
     # Run each partition's sub-experiments
-    quasi_dists_by_partition = [
-        _run_experiments_batch(
-            [sample[i] for sample in subexperiments],
-            samplers_by_partition[i],
-        )
-        for i in range(num_partitions)
-    ]
+    with ThreadPool() as pool:
+        args = [
+            [
+                [sample[i] for sample in subexperiments],
+                samplers_by_partition[i],
+            ]
+            for i in range(num_partitions)
+        ]
+        quasi_dists_by_partition = pool.starmap(_run_experiments_batch, args)
 
     # Reformat the counts to match the shape of the input before returning
     num_unique_samples = len(subexperiments)
