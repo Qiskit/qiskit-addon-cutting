@@ -17,6 +17,7 @@ from warnings import warn
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
+    cut_gates,
     decompose_gates,
     execute_experiments,
     reconstruct_expectation_values,
@@ -33,6 +34,7 @@ from circuit_knitting.cutting import (
 __all__ = [
     "partition_circuit_qubits",
     "partition_problem",
+    "cut_gates",
     "decompose_gates",
     "execute_experiments",
     "reconstruct_expectation_values",

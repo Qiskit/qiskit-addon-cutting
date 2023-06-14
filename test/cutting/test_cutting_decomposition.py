@@ -24,7 +24,7 @@ from qiskit.quantum_info import PauliList
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
-    decompose_gates,
+    cut_gates,
 )
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
@@ -224,7 +224,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 == "An input observable has a phase not equal to 1."
             )
 
-    def test_decompose_gates(self):
+    def test_cut_gates(self):
         with self.subTest("simple circuit"):
             compare_qc = QuantumCircuit(2)
             compare_qc.append(
@@ -236,13 +236,13 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             qc = QuantumCircuit(2)
             qc.cx(0, 1)
-            qpd_qc, _ = decompose_gates(qc, [0])
+            qpd_qc, _ = cut_gates(qc, [0])
             self.assertEqual(qpd_qc, compare_qc)
         with self.subTest("classical bit on input"):
             qc = QuantumCircuit(2, 1)
             qc.cx(0, 1)
             with pytest.raises(ValueError) as e_info:
-                decompose_gates(qc, [0])
+                cut_gates(qc, [0])
             assert (
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
