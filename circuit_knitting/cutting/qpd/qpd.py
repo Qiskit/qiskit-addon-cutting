@@ -79,8 +79,9 @@ def _min_filter_nonzero(vals: npt.NDArray[np.float64], *, atol=_NONZERO_ATOL):
 def __update_running_product_after_increment(
     running_product, state, coeff_probabilities
 ):
-    # This snippet is used twice in _some_new_generator; hence, we write it
-    # only once here.
+    # This snippet is used twice in
+    # _generate_exact_weights_and_conditional_probabilities_assume_sorted;
+    # hence, we write it only once here.
     try:
         prev = running_product[-2]
     except IndexError:
