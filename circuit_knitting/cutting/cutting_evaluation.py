@@ -17,7 +17,7 @@ import copy
 from typing import Any, NamedTuple
 from collections.abc import Sequence
 from itertools import chain
-from multiprocessing import ThreadPool
+from multiprocessing.pool import ThreadPool
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
