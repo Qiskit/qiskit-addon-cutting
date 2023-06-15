@@ -14,11 +14,14 @@
 from __future__ import annotations
 
 from collections.abc import Sequence, Callable
+from collections import Counter
 from enum import Enum
 import itertools
+import logging
 import math
 
 import numpy as np
+import numpy.typing as npt
 from qiskit.circuit import (
     QuantumCircuit,
     Gate,
@@ -51,6 +54,14 @@ from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
 from ...utils.iteration import unique_by_id, strict_zip
 
 
+logger = logging.getLogger(__name__)
+
+
+# math.sin(math.pi) is just above 1e-16, so at 1e-14, we are well above that.
+# Numbers like this can often come up in the QPD coefficients.
+_NONZERO_ATOL = 1e-14
+
+
 class WeightType(Enum):
     """Type of weight associated with a QPD sample."""
 
@@ -59,6 +70,141 @@ class WeightType(Enum):
 
     #: A weight that was determined through some sampling procedure
     SAMPLED = 2
+
+
+def _min_filter_nonzero(vals: npt.NDArray[np.float64], *, atol=_NONZERO_ATOL):
+    return np.min(vals[np.logical_not(np.isclose(vals, 0, atol=atol))])
+
+
+def __update_running_product_after_increment(
+    running_product, state, coeff_probabilities
+):
+    # This snippet is used twice in _some_new_generator; hence, we write it
+    # only once here.
+    try:
+        prev = running_product[-2]
+    except IndexError:
+        prev = 1.0
+    running_product[-1] = prev * coeff_probabilities[len(state) - 1][state[-1]]
+
+
+def _generate_exact_weights_and_conditional_probabilities_assume_sorted(
+    coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
+):
+    """Yield each combination whose product is above some threshold.
+
+    Also yields conditional probabilities that can be used to sample the
+    remaining possibilities.  These will all be normalized _except_ the
+    top-level one.
+
+    This function assumes each element of `coeff_probabilities` contains non-negative
+    numbers, ordered largest to smallest.
+
+    """
+    assert len(coeff_probabilities) > 0
+
+    next_pop = False  # Stores whether the next move is a pop or not
+    state = [0]
+    running_product = [coeff_probabilities[0][0]]
+    running_conditional_probabilities: list[npt.NDArray[np.float64]] = []
+    while True:
+        if next_pop:
+            # Pop
+            state.pop()
+            if len(state) + 1 == len(running_conditional_probabilities):
+                # There were some exact weights found below us, so we likely
+                # need to yield the conditional probabilities.
+                current_condprobs = running_conditional_probabilities.pop()
+                current_condprobs[
+                    np.isclose(current_condprobs, 0, atol=_NONZERO_ATOL)
+                ] = 0.0
+                if not state:
+                    # Don't renormalize the top-level one.
+                    yield (), current_condprobs
+                else:
+                    norm = np.sum(current_condprobs)
+                    if norm != 0:
+                        # Some, but not all, weights below us are exact.  If,
+                        # instead, _all_ weights had been exact, we could have
+                        # skipped this yield, as there is zero probability of
+                        # reaching this partial state when sampling.
+                        yield tuple(state), current_condprobs / norm
+                    # Update the factor one level up from the popped one.
+                    running_conditional_probabilities[-1][state[-1]] *= norm
+            if not state:
+                # We're all done
+                return
+            running_product.pop()
+            # Increment the state counter.
+            state[-1] += 1
+            if state[-1] != len(coeff_probabilities[len(state) - 1]):
+                # Increment successful (no overflow).  We don't need to pop again.
+                next_pop = False
+                __update_running_product_after_increment(
+                    running_product, state, coeff_probabilities
+                )
+        else:
+            if running_product[-1] < threshold:
+                next_pop = True
+            elif len(state) < len(coeff_probabilities):
+                # Append 0 to work toward a "full" `state`
+                running_product.append(
+                    running_product[-1] * coeff_probabilities[len(state)][0]
+                )
+                state.append(0)
+            else:
+                # `state` is full.  Yield first.
+                yield tuple(state), running_product[-1]
+                # Since we found something exact, we need to update running_conditional_probabilities.
+                while len(running_conditional_probabilities) < len(coeff_probabilities):
+                    running_conditional_probabilities.append(
+                        np.array(
+                            coeff_probabilities[len(running_conditional_probabilities)],
+                            dtype=float,
+                        )
+                    )
+                # It's exact, so we want no probability of sampling it going forward.
+                running_conditional_probabilities[-1][state[-1]] = 0
+                # Increment the state counter.
+                state[-1] += 1
+                if state[-1] == len(coeff_probabilities[-1]):
+                    # The state counter has overflowed, so our next move should be a
+                    # pop.
+                    next_pop = True
+                else:
+                    __update_running_product_after_increment(
+                        running_product, state, coeff_probabilities
+                    )
+
+
+def _invert_permutation(p):
+    # https://stackoverflow.com/questions/11649577/how-to-invert-a-permutation-array-in-numpy
+    s = np.empty(p.size, p.dtype)
+    s[p] = np.arange(p.size)
+    return s
+
+
+def _generate_exact_weights_and_conditional_probabilities(
+    coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
+):
+    # No assumption on the order or on the sign.
+    permutations = [np.argsort(cp)[::-1] for cp in coeff_probabilities]
+    sorted_coeff_probabilities = [
+        cp[permutation] for cp, permutation in zip(coeff_probabilities, permutations)
+    ]
+    ipermutations = [_invert_permutation(p) for p in permutations]
+    for (
+        coeff_indices,
+        probability,
+    ) in _generate_exact_weights_and_conditional_probabilities_assume_sorted(
+        sorted_coeff_probabilities, threshold
+    ):
+        orig_coeff_indices = tuple(
+            perm[idx] for perm, idx in zip(permutations, coeff_indices)
+        )
+        if len(coeff_indices) != len(sorted_coeff_probabilities):
+            probability = probability[ipermutations[len(coeff_indices)]]
+        yield orig_coeff_indices, probability
 
 
 def generate_qpd_samples(
@@ -80,47 +226,166 @@ def generate_qpd_samples(
         weight of the contribution.  The second element is the :class:`WeightType`,
         either ``EXACT`` or ``SAMPLED``.
     """
+    independent_probabilities = [np.asarray(basis.probabilities) for basis in qpd_bases]
+    return _generate_qpd_samples(independent_probabilities, num_samples)
+
+
+def _generate_qpd_samples(
+    independent_probabilities: Sequence[npt.NDArray[np.float64]],
+    num_samples: float = 1000,
+    *,
+    _samples_multiplier: int = 1,
+) -> dict[tuple[int, ...], tuple[float, WeightType]]:
     if not num_samples >= 1:
         raise ValueError("num_samples must be at least 1.")
 
-    # Determine if the smallest probability is above the threshold implied by
+    retval: dict[tuple[int, ...], tuple[float, WeightType]] = {}
+
+    threshold = 1 / num_samples
+
+    # Determine if the smallest *nonzero* probability is above the threshold implied by
     # num_samples.  If so, then we can evaluate all weights exactly.
-    probabilities_by_basis = [basis.probabilities for basis in qpd_bases]
-    smallest_probability = np.prod([min(probs) for probs in probabilities_by_basis])
-    if smallest_probability >= 1 / num_samples:
+    smallest_probability = np.prod(
+        [_min_filter_nonzero(probs) for probs in independent_probabilities]
+    )
+    if smallest_probability >= threshold:
+        # All weights exactly
+        logger.info("All exact weights")
         multiplier = num_samples if math.isfinite(num_samples) else 1.0
-        retval: dict[tuple[int, ...], tuple[float, WeightType]] = {}
         for map_ids in itertools.product(
-            *[range(len(probs)) for probs in probabilities_by_basis]
+            *[range(len(probs)) for probs in independent_probabilities]
         ):
             probability = np.prod(
-                [probs[i] for i, probs in strict_zip(map_ids, probabilities_by_basis)]
+                [
+                    probs[i]
+                    for i, probs in strict_zip(map_ids, independent_probabilities)
+                ]
             )
+            if probability < _NONZERO_ATOL:
+                continue
             retval[map_ids] = (multiplier * probability, WeightType.EXACT)
         return retval
 
-    # Loop through each gate and sample from its distribution num_samples times
-    samples_by_decomp = []
-    sample_multiplier = num_samples / math.ceil(num_samples)
-    for basis in qpd_bases:
-        samples_by_decomp.append(
-            np.random.choice(
-                range(len(basis.probabilities)),
-                math.ceil(num_samples),
-                p=basis.probabilities,
-            )
-        )
+    conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]] = {}
+    weight_to_sample = 1.0
 
-    # Form the joint samples, collecting them into a dict with counts for each
+    largest_probability = np.prod(
+        [np.max(probs) for probs in independent_probabilities]
+    )
+    if not largest_probability >= threshold:
+        logger.info("No exact weights")
+    else:
+        logger.info("Some exact weights")
+        for (
+            map_ids,
+            probability,
+        ) in _generate_exact_weights_and_conditional_probabilities(
+            independent_probabilities, threshold
+        ):
+            if len(map_ids) == len(independent_probabilities):
+                weight = probability * num_samples
+                retval[map_ids] = (weight, WeightType.EXACT)
+            else:
+                # Despite the variable name, `probability` is the sequence of
+                # conditional probabilities, not a *single* probability
+                conditional_probabilities[map_ids] = probability
+                if map_ids == ():
+                    weight_to_sample = np.sum(probability)
+                    conditional_probabilities[map_ids] /= weight_to_sample
+
+    # Loop through each gate and sample from the remainder of the distribution.
+
+    # Start by rescaling.
+    weight_to_sample *= num_samples
+    # The following variable, `samples_needed`, must be integer and at least 1.
+    # `_samples_multiplier` will typically be 1, but we set it higher in
+    # testing to collect additional statistics, faster.
+    samples_needed = math.ceil(weight_to_sample) * _samples_multiplier
+    # At the time of writing, the below assert should never fail.  But if
+    # future code changes result in inputs where it _may_ fail, then the only
+    # thing that should be needed if this is reached is to return `retval` in
+    # this case, since presumably it must contain all weights as exact weights.
+    assert samples_needed >= 1
+    single_sample_weight = weight_to_sample / samples_needed
+
+    # Figure out if we've reached the special case where everything except
+    # *one* weight has been calculated exactly, so there's only one thing left
+    # to sample.  If that's the case, then we can calculate that one remaining
+    # weight exactly as well and skip sampling.
+    if conditional_probabilities:
+        running_state: tuple[int, ...] = ()
+        while len(running_state) < len(independent_probabilities):
+            # If it's missing from `conditional_probabilities`, that just means
+            # to use the corresponding entry in `independent_probabilities`.
+            try:
+                probs = conditional_probabilities[running_state]
+            except KeyError:
+                probs = independent_probabilities[len(running_state)]
+            x = np.flatnonzero(probs)
+            assert len(x) != 0
+            if len(x) > 1:
+                break
+            running_state += (x[0],)
+        else:
+            assert running_state not in retval
+            retval[running_state] = (weight_to_sample, WeightType.EXACT)
+            return retval
+
+    # Form the joint samples, collecting them into a dict with counts for each.
     random_samples: dict[tuple[int, ...], int] = {}
-    for decomp_ids in zip(*samples_by_decomp):
-        # Increment the counter for this basis selection
-        random_samples[decomp_ids] = random_samples.setdefault(decomp_ids, 0) + 1
+    _populate_samples(
+        random_samples,
+        samples_needed,
+        independent_probabilities,
+        conditional_probabilities,
+    )
+    # Insert the samples in the dict we are about to return.
+    for outcome, count in random_samples.items():
+        assert outcome not in retval
+        retval[outcome] = (count * single_sample_weight, WeightType.SAMPLED)
 
-    return {
-        k: (v * sample_multiplier, WeightType.SAMPLED)
-        for k, v in random_samples.items()
-    }
+    return retval
+
+
+def _populate_samples(
+    random_samples: dict[tuple[int, ...], int],
+    num_desired: int,
+    independent_probabilities: Sequence,
+    conditional_probabilities,
+    runner: tuple[int, ...] = (),
+) -> None:
+    if runner not in conditional_probabilities:
+        # Everything below us is sampled, so we can sample directly from the
+        # remaining independent probability distributions.
+        samples_by_decomp = []
+        for probs in independent_probabilities[len(runner) :]:
+            samples_by_decomp.append(
+                np.random.choice(range(len(probs)), num_desired, p=probs)
+            )
+        for outcome, count in Counter(zip(*samples_by_decomp)).items():
+            assert (runner + outcome) not in random_samples
+            random_samples[runner + outcome] = count
+        return
+
+    # There is some exact stuff below us, so we must consider the conditional
+    # probabilities at the current level.
+    probs = conditional_probabilities[runner]
+    current_outcomes = np.random.choice(range(len(probs)), num_desired, p=probs)
+    for current_outcome, count in Counter(current_outcomes).items():
+        outcome = runner + (current_outcome,)
+        if len(outcome) == len(independent_probabilities):
+            # It's a full one
+            assert outcome not in random_samples
+            random_samples[outcome] = count
+        else:
+            # Recurse
+            _populate_samples(
+                random_samples,
+                count,
+                independent_probabilities,
+                conditional_probabilities,
+                outcome,
+            )
 
 
 def decompose_qpd_instructions(

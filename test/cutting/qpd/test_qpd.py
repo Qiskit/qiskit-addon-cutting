@@ -13,9 +13,12 @@
 
 import unittest
 import math
+from collections import Counter
+import itertools
 
 import pytest
 import numpy as np
+import numpy.typing as npt
 from ddt import ddt, data, unpack
 from qiskit.circuit import CircuitInstruction
 from qiskit.circuit.library import (
@@ -38,6 +41,10 @@ from circuit_knitting.cutting.qpd import (
     generate_qpd_samples,
 )
 from circuit_knitting.cutting.qpd.qpd import *
+from circuit_knitting.cutting.qpd.qpd import (
+    _generate_qpd_samples,
+    _generate_exact_weights_and_conditional_probabilities,
+)
 
 
 @ddt
@@ -90,7 +97,7 @@ class TestQPDFunctions(unittest.TestCase):
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
             samples = generate_qpd_samples(bases, num_samples=100)
-            self.assertEqual(100, sum(w for w, t in samples.values()))
+            assert sum(w for w, t in samples.values()) == pytest.approx(100)
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
                 self.assertTrue(0 <= decomp_ids[1] < len(self.qpd_gate2.basis.maps))
@@ -269,3 +276,106 @@ class TestQPDFunctions(unittest.TestCase):
         ]
         assert len(unique_by_eq(a for (a, b) in relevant_maps)) == q0_num_unique
         assert len(unique_by_eq(b for (a, b) in relevant_maps)) == q1_num_unique
+
+    @data(
+        ([RZZGate(np.pi)], 1e4, 1, 0),
+        ([RZZGate(np.pi + 0.02)], 200, 6, 0),
+        ([RZZGate(np.pi + 0.02)], 100, 1),
+        ([RXXGate(0.1), RXXGate(0.1)], 100, 9),
+        ([CXGate(), CXGate()], 1e4, 36, 0),
+        ([CXGate(), CXGate()], 30, 0),
+        # The follow two check either side of the exact/sampled threshold.
+        ([CXGate()], 6, 6, 0),
+        ([CXGate()], math.nextafter(6, -math.inf), 0),
+    )
+    @unpack
+    def test_generate_qpd_samples_from_gates(
+        self, gates, num_samples, expected_exact, expected_sampled=None
+    ):
+        bases = [QPDBasis.from_gate(gate) for gate in gates]
+        samples = generate_qpd_samples(bases, num_samples)
+
+        counts = Counter(weight_type for _, weight_type in samples.values())
+        assert counts[WeightType.EXACT] == expected_exact
+        if expected_sampled is not None:
+            assert counts[WeightType.SAMPLED] == expected_sampled
+
+        total_weight = sum(weight for weight, _ in samples.values())
+        assert total_weight == pytest.approx(
+            num_samples if math.isfinite(num_samples) else 1
+        )
+
+        independent_probabilities = [basis.probabilities for basis in bases]
+
+        # Test conditional probabilities from
+        # _generate_exact_weights_and_conditional_probabilities
+        probs1: dict[tuple[int, ...], float] = {}
+        conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]] = {}
+        for (
+            map_ids,
+            probability,
+        ) in _generate_exact_weights_and_conditional_probabilities(
+            independent_probabilities, 1 / num_samples
+        ):
+            if len(map_ids) == len(bases):
+                assert map_ids not in probs1
+                probs1[map_ids] = probability
+            else:
+                conditional_probabilities[map_ids] = probability
+        stack = [(1.0, ())]
+        while stack:
+            running_prob, map_ids_partial = stack.pop()
+            # If it's missing from `conditional_probabilities`, that just means
+            # to use the corresponding entry in `independent_probabilities`.
+            try:
+                vec = conditional_probabilities[map_ids_partial]
+            except KeyError:
+                vec = independent_probabilities[len(map_ids_partial)]
+            for i, prob in enumerate(vec):
+                pp = running_prob * prob
+                if pp == 0:
+                    continue
+                map_ids = map_ids_partial + (i,)
+                if len(map_ids) == len(bases):
+                    assert map_ids not in probs1
+                    probs1[map_ids] = pp
+                else:
+                    stack.append((pp, map_ids))
+        # Now, systematically generate each exact weight, and compare with what
+        # we generated above.
+        for map_ids in itertools.product(
+            *[range(len(probs)) for probs in independent_probabilities]
+        ):
+            exact = np.prod(
+                [
+                    probs[i]
+                    for i, probs in strict_zip(map_ids, independent_probabilities)
+                ]
+            )
+            assert probs1.get(map_ids, 0.0) == pytest.approx(exact, abs=1e-14)
+
+    def test_statistics_of_generate_qpd_samples(self):
+        # Values inspired by the R[XX,YY,ZZ]Gate rotations
+        def from_theta(theta):
+            v = np.array(
+                [
+                    np.cos(theta) ** 2,
+                    np.sin(theta) ** 2,
+                    4 * np.cos(theta) * np.sin(theta),
+                ]
+            )
+            return v / np.sum(v)
+
+        probs = [from_theta(0.1), from_theta(0.2)]
+        num_samples = 200
+        weights = _generate_qpd_samples(probs, num_samples, _samples_multiplier=10000)
+        for map_ids in [(0, 0), (0, 2), (0, 1), (2, 0), (2, 2), (2, 1)]:
+            assert weights[map_ids][0] / num_samples == pytest.approx(
+                probs[0][map_ids[0]] * probs[1][map_ids[1]]
+            )
+            assert weights[map_ids][1] == WeightType.EXACT
+        for map_ids in [(1, 2), (1, 0), (1, 1)]:
+            assert weights[map_ids][0] / num_samples == pytest.approx(
+                probs[0][map_ids[0]] * probs[1][map_ids[1]], rel=0.5
+            )
+            assert weights[map_ids][1] == WeightType.SAMPLED
