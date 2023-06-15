@@ -286,7 +286,7 @@ class TestQPDFunctions(unittest.TestCase):
         ([CXGate(), CXGate()], 30, 0),
         # The follow two check either side of the exact/sampled threshold.
         ([CXGate()], 6, 6, 0),
-        ([CXGate()], math.nextafter(6, -math.inf), 0),
+        ([CXGate()], np.nextafter(6, -math.inf), 0),
     )
     @unpack
     def test_generate_qpd_samples_from_gates(
