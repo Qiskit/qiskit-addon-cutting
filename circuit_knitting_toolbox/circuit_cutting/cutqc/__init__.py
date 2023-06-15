@@ -18,6 +18,8 @@ from .wire_cutting import (
     cut_circuit_wires,
     evaluate_subcircuits,
     reconstruct_full_distribution,
+    create_dd_bin,
+    reconstruct_dd_full_distribute,
 )
 
 __all__ = [
@@ -28,4 +30,6 @@ __all__ = [
     "cut_circuit_wires",
     "evaluate_subcircuits",
     "reconstruct_full_distribution",
+    "create_dd_bin",
+    "reconstruct_dd_full_distribute",
 ]
