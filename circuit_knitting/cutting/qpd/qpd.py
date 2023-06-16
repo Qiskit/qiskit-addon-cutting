@@ -228,7 +228,15 @@ def generate_qpd_samples(
         either ``EXACT`` or ``SAMPLED``.
     """
     independent_probabilities = [np.asarray(basis.probabilities) for basis in qpd_bases]
-    return _generate_qpd_samples(independent_probabilities, num_samples)
+    # In Python 3.7 and higher, dicts are guaranteed to remember their
+    # insertion order.  For user convenience, we sort by exact weights first,
+    # then sampled weights.  Within each, values are sorted largest to
+    # smallest.
+    lst = sorted(
+        _generate_qpd_samples(independent_probabilities, num_samples).items(),
+        key=lambda x: ((v := x[1])[1].value, -v[0]),
+    )
+    return dict(lst)
 
 
 def _generate_qpd_samples(

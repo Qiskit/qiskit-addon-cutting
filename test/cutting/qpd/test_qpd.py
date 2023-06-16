@@ -305,10 +305,22 @@ class TestQPDFunctions(unittest.TestCase):
             num_samples if math.isfinite(num_samples) else 1
         )
 
-        independent_probabilities = [basis.probabilities for basis in bases]
+        # Test that the dictionary is actually in the expected order: exact
+        # weights first, and largest to smallest within each type of weight.
+        last_type = WeightType.EXACT
+        upper_bound = math.inf
+        for weight, weight_type in samples.values():
+            if last_type != weight_type:
+                # We allow one transition, from exact weights to sampled.
+                assert weight_type == WeightType.SAMPLED
+                last_type = weight_type
+                upper_bound = math.inf
+            assert weight <= upper_bound
+            upper_bound = weight
 
         # Test conditional probabilities from
         # _generate_exact_weights_and_conditional_probabilities
+        independent_probabilities = [basis.probabilities for basis in bases]
         probs1: dict[tuple[int, ...], float] = {}
         conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]] = {}
         for (
