@@ -318,7 +318,7 @@ class EntanglementForgingGroundStateSolver:
         # results of eigenvalue minimization and other meta information
         result = EntanglementForgingResult()
         result.eigenvalues = np.asarray([optimal_evaluation.eigenvalue])
-        result.eigenstates = [optimal_evaluation.eigenstate]
+        result.eigenstates = [(optimal_evaluation.eigenstate, None)]
         result.history = self._history.evaluations
         result.energy_shift = self._energy_shift
         result.elapsed_time = elapsed_time
