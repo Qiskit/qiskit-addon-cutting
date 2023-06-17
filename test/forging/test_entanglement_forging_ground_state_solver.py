@@ -70,6 +70,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         # Solve for the ground state energy
         results = solver.solve(problem)
         ground_state_energy = results.groundenergy + results.energy_shift
-
+        print(results.groundenergy)
+        print(results.energy_shift)
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(ground_state_energy, -1.121936544469326)

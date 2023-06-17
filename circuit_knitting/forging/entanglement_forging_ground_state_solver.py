@@ -320,6 +320,7 @@ class EntanglementForgingGroundStateSolver:
         result.eigenvalues = np.asarray([optimal_evaluation.eigenvalue])
         result.eigenstates = [optimal_evaluation.eigenstate]
         result.history = self._history.evaluations
+        result.energy_shift = self._energy_shift
         result.elapsed_time = elapsed_time
 
         # Close any runtime sessions
