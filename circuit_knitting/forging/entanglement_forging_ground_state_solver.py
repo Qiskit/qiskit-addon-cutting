@@ -25,7 +25,6 @@ from typing import (
 import scipy
 import numpy as np
 
-from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit_nature.second_q.problems import (
     ElectronicStructureProblem,
@@ -317,13 +316,9 @@ class EntanglementForgingGroundStateSolver:
 
         # Create the EntanglementForgingResult from the results from the
         # results of eigenvalue minimization and other meta information
-        min_eigsolver_result = MinimumEigensolverResult()
-        min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
-        min_eigsolver_result.eigenstate = optimal_evaluation.eigenstate
-        result = EntanglementForgingResult.from_minimum_eigensolver_result(
-            min_eigsolver_result
-        )
-        result.energy_shift = self._energy_shift
+        result = EntanglementForgingResult()
+        result.eigenvalues = np.asarray([optimal_evaluation.eigenvalue])
+        result.eigenstates = [optimal_evaluation.eigenstate]
         result.history = self._history.evaluations
         result.elapsed_time = elapsed_time
 
