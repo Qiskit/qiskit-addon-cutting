@@ -19,7 +19,7 @@ from typing import Sequence
 import numpy as np
 
 from qiskit.quantum_info import Pauli
-from qiskit.quantum_info.operators.symplectic import SparsePauliOp
+from qiskit.quantum_info import SparsePauliOp
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
 from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_nature.second_q.operators import (
