@@ -12,7 +12,12 @@
 """Main quasiprobability decomposition functionality."""
 
 from .qpd_basis import QPDBasis
-from .qpd import generate_qpd_samples, decompose_qpd_instructions, WeightType
+from .qpd import (
+    generate_qpd_samples,
+    decompose_qpd_instructions,
+    WeightType,
+    qpdbasis_from_gate,
+)
 from .instructions import (
     BaseQPDGate,
     SingleQubitQPDGate,
