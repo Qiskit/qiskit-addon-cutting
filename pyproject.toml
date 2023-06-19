@@ -111,3 +111,4 @@ omit = [
 [tool.pytest.ini_options]
 testpaths = ["./test/"]
 filterwarnings = ["ignore:::.*opflow*"]
+addopts = "--doctest-modules -rs --durations=10"
