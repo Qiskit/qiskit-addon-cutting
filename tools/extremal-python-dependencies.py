@@ -10,10 +10,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from __future__ import annotations
-
 import re
 import configparser
+from typing import List
 
 import toml
 import typer
@@ -23,7 +22,7 @@ import typer
 _name_re = re.compile(r"^([A-Z0-9][A-Z0-9._-]*[A-Z0-9])", re.IGNORECASE)
 
 
-def mapfunc_replace(replacements: list[str]):
+def mapfunc_replace(replacements: List[str]):
     """Use the provided version(s) of certain packages"""
     d: dict[str, str] = {}
     for r in replacements:
@@ -126,7 +125,7 @@ def pin_dependencies_to_minimum(inplace: bool = False):
 
 
 @app.command()
-def pin_dependencies(replacements: list[str], inplace: bool = False):
+def pin_dependencies(replacements: List[str], inplace: bool = False):
     """Pin dependencies in `pyproject.toml` to the provided versions."""
     _pin_dependencies(mapfunc_replace(replacements), inplace)
 
