@@ -130,6 +130,8 @@ class EntanglementForgingGroundStateSolver:
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
         mo_coeff: np.ndarray | None = None,
+        fix_first_bitstring: bool = False,
+        hf_energy: Optional[float] = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -160,6 +162,8 @@ class EntanglementForgingGroundStateSolver:
         self.options = options
         self._mo_coeff = mo_coeff
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
+        self._fix_first_bitstring: bool = fix_first_bitstring
+        self._hf_energy: Optional[float] = hf_energy
 
     @property
     def ansatz(self) -> EntanglementForgingAnsatz | None:
@@ -246,6 +250,25 @@ class EntanglementForgingGroundStateSolver:
     def mo_coeff(self, mo_coeff: np.ndarray | None) -> None:
         """Set the coefficients for converting integrals to the MO basis."""
         self._mo_coeff = mo_coeff
+
+    def fix_first_bitstring(self) -> bool:
+        """Return the value of fix_first_bitstring flag."""
+        return self._fix_first_bitstring
+
+    @fix_first_bitstring.setter
+    def fix_first_bitstring(self, fix_first_bitstring: bool) -> None:
+        """Set the fix_first_bitstring flag."""
+        self._fix_first_bitstring = fix_first_bitstring
+
+    @property
+    def hf_energy(self) -> Optional[float]:
+        """Return the value of the Hartree-Fock energy."""
+        return self._hf_energy
+
+    @hf_energy.setter
+    def hf_energy(self, hf_energy: Optional[float]) -> None:
+        """Set the Hartree-Fock energy field."""
+        self._hf_energy = hf_energy
 
     def solve(
         self,
