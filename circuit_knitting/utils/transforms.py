@@ -27,7 +27,7 @@ from collections import defaultdict
 from collections.abc import Sequence, Iterable, Hashable, MutableMapping
 from typing import NamedTuple
 
-from rustworkx import PyGraph, connected_components
+from rustworkx import PyGraph, connected_components  # type: ignore[attr-defined]
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
@@ -99,7 +99,7 @@ def separate_circuit(
 def _partition_labels_from_circuit(circuit: QuantumCircuit) -> list[int]:
     """Generate partition labels from the connectivity of a quantum circuit."""
     # Determine connectivity structure of the circuit
-    graph = PyGraph()
+    graph: PyGraph = PyGraph()
     graph.add_nodes_from(range(circuit.num_qubits))
     for instruction in circuit.data:
         qubits = instruction.qubits

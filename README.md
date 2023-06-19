@@ -2,7 +2,7 @@
 <div align="left">
 
   [![Stability](https://img.shields.io/badge/Stability-alpha-f4d03f.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/releases)
-  ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-informational)
+  ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-informational)
   [![Python](https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-informational)](https://www.python.org/)
   [![Qiskit](https://img.shields.io/badge/Qiskit-%E2%89%A5%200.43.0-6133BD)](https://github.com/Qiskit/qiskit)
   [![Qiskit Nature](https://img.shields.io/badge/Qiskit%20Nature-%E2%89%A5%200.6.0-6133BD)](https://github.com/Qiskit/qiskit-nature)
@@ -19,6 +19,7 @@
 
 * [About](#about)
 * [Documentation](#documentation)
+* [Installation](#installation)
 * [Deprecation Policy](#deprecation-policy)
 * [References](#references)
 * [License](#license)
@@ -41,7 +42,19 @@ The toolbox currently contains the following tools:
   
 ### Documentation
 
-The documentation, including installation instructions, is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
+All CKT documentation is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
+
+----------------------------------------------------------------------------------------------------
+  
+### Installation
+
+We encourage installing CKT via ``pip``, when possible. Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency. Users intending to use the automatic cut finding functionality in the ``CutQC`` package should install the ``cplex`` optional dependency.
+
+```bash
+pip install 'circuit-knitting-toolbox[cplex,pyscf]'
+```
+
+For information on installing from source, running CKT in a container, and platform support, refer to the [installation instructions](https://qiskit-extensions.github.io/circuit-knitting-toolbox/install.html) in the CKT documentation.
 
 ----------------------------------------------------------------------------------------------------
 
