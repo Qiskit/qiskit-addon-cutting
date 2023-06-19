@@ -107,3 +107,8 @@ omit = [
     # deprecated import location(s)
     "circuit_knitting/cutting/wire_cutting.py",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["./test/"]
+filterwarnings = ["ignore:::.*qiskit.opflow*"]
+addopts = "--doctest-modules -rs --durations=10"
