@@ -19,6 +19,7 @@
 
 * [About](#about)
 * [Documentation](#documentation)
+* [Installation](#installation)
 * [Deprecation Policy](#deprecation-policy)
 * [References](#references)
 * [License](#license)
@@ -41,7 +42,19 @@ The toolbox currently contains the following tools:
   
 ### Documentation
 
-The documentation, including installation instructions, is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
+All CKT documentation is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
+
+----------------------------------------------------------------------------------------------------
+  
+### Installation
+
+We encourage installing CKT via ``pip``, when possible. Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency. Users intending to use the automatic cut finding functionality in the ``CutQC`` package should install the ``cplex`` optional dependency.
+
+```bash
+pip install 'circuit-knitting-toolbox[cplex,pyscf]'
+```
+
+For information on installing from source, running CKT in a container, and platform support, refer to the [installation instructions](https://qiskit-extensions.github.io/circuit-knitting-toolbox/install.html) in the CKT documentation.
 
 ----------------------------------------------------------------------------------------------------
 
