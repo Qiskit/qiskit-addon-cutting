@@ -31,7 +31,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip tox
           python -m pip install toml typer
-          python tools/extremal-python-dependencies.py pin-dependencies dev --inplace
+          python tools/extremal-python-dependencies.py pin-dependencies \
+              "qiskit-terra @ git+https://github.com/Qiskit/qiskit-terra.git" \
+              "qiskit-nature @ git+https://github.com/qiskit-community/qiskit-nature.git" \
+              "qiskit-ibm-runtime @ git+https://github.com/Qiskit/qiskit-ibm-runtime.git" \
+              --inplace
       - name: Modify tox.ini for more thorough check
         shell: bash
         run: |

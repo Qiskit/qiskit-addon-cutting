@@ -30,7 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install toml typer
           pip install "tox==$(python tools/extremal-python-dependencies.py get-tox-minversion)"
-          python tools/extremal-python-dependencies.py pin-dependencies min --inplace
+          python tools/extremal-python-dependencies.py pin-dependencies-to-minimum --inplace
       - name: Modify tox.ini for more thorough check
         shell: bash
         run: |
