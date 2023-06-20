@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The dependency on the :mod:`qiskit.opflow` module has been removed from entanglement forging.
+    With this change, Qiskit Nature 0.6.0 is now required.
+    However, Qiskit Nature 0.6.0 is incompatible with Quantum Serverless, so users that wish to
+    use entanglement forging with Quantum Serverless must remain on version 0.2 of the Circuit
+    Knitting Toolbox until `issue #108 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/108>`__ is resolved.
