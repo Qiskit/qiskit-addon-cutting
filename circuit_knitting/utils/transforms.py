@@ -48,7 +48,7 @@ class SeparatedCircuits(NamedTuple):
     """Named tuple for result of :func:`separate_circuit`.
 
     ``subcircuits`` is a dict of circuits, keyed by each partition label.
-    ``qubit_map`` is a list of length number of qubits in the original circuit.
+    ``qubit_map`` is a list with length equal to the number of qubits in the original circuit.
     Each element of that list is a 2-tuple which includes the partition label
     of that qubit, together with the index of that qubit in the corresponding
     subcircuit.
