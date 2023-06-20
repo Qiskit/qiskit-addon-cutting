@@ -181,7 +181,7 @@ new M1 or M2 chips), everything should work natively, so we
 recommend either :ref:`Option 1` or :ref:`Option 2`.
 
 All users on ARM chips, as well as all Windows users, may have to
-take care when installing the toolbox, depending on what tools they
+take care when installing the toolbox, depending on which tools they
 intend to use.
   
   - The automatic wire cut search in the ``cutqc`` package depends
@@ -189,15 +189,16 @@ intend to use.
     for Python 3.11.
   - The entanglement forging tool requires PySCF, which does not support Windows.
 
-In each case, one method that is guaranteed to work is to use the
-toolbox within Docker (:ref:`Option 3`).  Other methods include:
+In each case, one method that is guaranteed to work is to :ref:`use
+the toolbox within Docker <Option 3>`.  Other methods include:
 
   - Users on Apple's M series of chips may wish to install an x86
     version of Python.  For instance, `conda
     <https://docs.conda.io/en/latest/miniconda.html>`__ users can run
     ``CONDA_SUBDIR=osx-64 conda create -n x86_venv python=3`` to
     create a virtual environment that uses Python compiled for the x86
-    instruction set (at the cost of performance due to emulation).
+    instruction set.  No matter the installation method, there is a
+    performance cost due to emulation.
   - Advanced Windows users may wish to attempt to install PySCF using
     the `Windows Subsystem for Linux
     <https://learn.microsoft.com/en-us/windows/wsl/install>`__.  If
