@@ -2,5 +2,5 @@
 fixes:
   - |
     Fixed a bug in :class:`~circuit_knitting.forging.EntanglementForgingGroundStateSolver` which was causing
-    AttributeErrors when instantiating the `~circuit_knitting.forging.EntanglementForgingResult` in certain
+    ``AttributeError``\ s when instantiating the `~circuit_knitting.forging.EntanglementForgingResult` in certain
     conditions, such as when reducing the orbitals over which to solve.
