@@ -18,6 +18,11 @@ Functions for manipulating quantum circuits.
    :toctree: ../stubs
 
    separate_circuit
+
+.. autosummary::
+   :toctree: ../stubs
+   :template: autosummary/class_no_inherited_members.rst
+
    SeparatedCircuits
 """
 from __future__ import annotations
@@ -40,7 +45,14 @@ from .iteration import unique_by_eq
 
 
 class SeparatedCircuits(NamedTuple):
-    """Named tuple for result of :class:`separate_circuit`."""
+    """Named tuple for result of :func:`separate_circuit`.
+
+    ``subcircuits`` is a dict of circuits, keyed by each partition label.
+    ``qubit_map`` is a list with length equal to the number of qubits in the original circuit.
+    Each element of that list is a 2-tuple which includes the partition label
+    of that qubit, together with the index of that qubit in the corresponding
+    subcircuit.
+    """
 
     subcircuits: dict[Hashable, QuantumCircuit]
     qubit_map: list[tuple[Hashable, int]]
@@ -52,15 +64,41 @@ def separate_circuit(
 ) -> SeparatedCircuits:
     """Separate the circuit into its disconnected components.
 
+    If ``partition_labels`` is provided, then the circuit will be separated
+    according to those labels.  If it is ``None``, then the circuit will be
+    fully separated into its disconnected components, each of which will be
+    labeled with consecutive integers starting with 0.
+
+    >>> qc = QuantumCircuit(4)
+    >>> _ = qc.x(0)
+    >>> _ = qc.cx(1, 2)
+    >>> _ = qc.h(3)
+    >>> separate_circuit(qc, "ABBA").subcircuits.keys()
+    dict_keys(['A', 'B'])
+    >>> separate_circuit(qc, "ABBA").qubit_map
+    [('A', 0), ('B', 0), ('B', 1), ('A', 1)]
+    >>> separate_circuit(qc, "BAAC").subcircuits.keys()
+    dict_keys(['B', 'A', 'C'])
+    >>> separate_circuit(qc, "BAAC").qubit_map
+    [('B', 0), ('A', 0), ('A', 1), ('C', 0)]
+    >>> separate_circuit(qc).subcircuits.keys()
+    dict_keys([0, 1, 2])
+    >>> separate_circuit(qc).qubit_map
+    [(0, 0), (1, 0), (1, 1), (2, 0)]
+
     Args:
         circuit: The circuit to separate into disconnected subcircuits
+        partition_labels: A sequence of length ``num_qubits``.  Qubits with the
+            same label will end up in the same subcircuit.
 
     Returns:
-        A named tuple containing the subcircuits and qubit map
+        A :class:`SeparatedCircuits` named tuple containing the ``subcircuits``
+        and ``qubit_map``.
 
     Raises:
         ValueError: The number of partition labels does not equal the number of
             qubits in the input circuit.
+        ValueError: Operation spans more than one partition.
     """
     # Split barriers into single-qubit barriers before separating
     new_qc = circuit.copy()
