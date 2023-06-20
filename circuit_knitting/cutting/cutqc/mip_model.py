@@ -17,15 +17,6 @@ from typing import Sequence, Any
 
 import numpy as np
 
-try:
-    from docplex.mp.model import Model
-    from docplex.mp.utils import DOcplexException
-except ModuleNotFoundError as ex:  # pragma: no cover
-    raise ModuleNotFoundError(
-        "DOcplex is not installed.  For automatic cut finding to work, both "
-        "DOcplex and cplex must be available."
-    ) from ex
-
 
 class MIPModel(object):
     """
@@ -99,6 +90,14 @@ class MIPModel(object):
                 if int(qarg.split("]")[1]) == 0:
                     num_in_qubits += 1
             self.vertex_weight[node] = num_in_qubits
+
+        try:
+            from docplex.mp.model import Model
+        except ModuleNotFoundError as ex:  # pragma: no cover
+            raise ModuleNotFoundError(
+                "DOcplex is not installed.  For automatic cut finding to work, both "
+                "DOcplex and cplex must be available."
+            ) from ex
 
         self.model = Model("docplex_cutter")
         self.model.log_output = False
@@ -465,6 +464,8 @@ class MIPModel(object):
         # print('solving for %d subcircuits'%self.num_subcircuit)
         # print('model has %d variables, %d linear constraints,%d quadratic constraints, %d general constraints'
         # % (self.model.NumVars,self.model.NumConstrs, self.model.NumQConstrs, self.model.NumGenConstrs))
+        from docplex.mp.utils import DOcplexException
+
         print(
             "Exporting as a LP file to let you check the model that will be solved : ",
             min_postprocessing_cost,
