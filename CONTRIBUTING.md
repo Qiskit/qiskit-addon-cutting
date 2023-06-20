@@ -8,6 +8,8 @@ Project configuration, including information about dependencies, is stored in [`
 
 We use [Sphinx] for documentation and [reno] for release notes.
 
+We require 100% coverage in all new code.  In rare cases where it is not possible to test a code block, we mark it with ``# pragma: no cover`` so that the ``coverage`` tests will pass.
+
 [Qiskit]: https://qiskit.org/
 [Qiskit Ecosystem]: https://qiskit.org/ecosystem/
 [Python]: https://www.python.org/
