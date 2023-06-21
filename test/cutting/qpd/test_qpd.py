@@ -288,7 +288,7 @@ class TestQPDFunctions(unittest.TestCase):
         ([CXGate()], 6, 6, 0),
         ([CXGate()], np.nextafter(6, -math.inf), 0),
         # The following makes sure memory does not blow up with many cuts.
-        ([RXXGate(0.1)] * 16, 10000, 2001)
+        ([RXXGate(0.1)] * 16, 10000, 2001),
     )
     @unpack
     def test_generate_qpd_weights_from_gates(
