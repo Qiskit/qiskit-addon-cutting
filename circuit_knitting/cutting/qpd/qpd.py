@@ -217,10 +217,10 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
 
 def supported_gates() -> set[str]:
     """
-    Return a list of gate names which are supported for automatic decomposition.
+    Return a set of gate names supported for automatic decomposition.
 
     Returns:
-        Tuple containing names of gates which are supported for automatic decomposition.
+        Set of gate names supported for automatic decomposition.
     """
     return {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}
 
