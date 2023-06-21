@@ -436,6 +436,8 @@ def _decompose_qpd_instructions(
             continue  # pragma: no cover
         if isinstance(circuit.data[decomp[0]].operation, TwoQubitQPDGate):
             qpdgate_ids_2q.append(decomp[0])
+
+    qpdgate_ids_2q = sorted(qpdgate_ids_2q)
     data_id_offset = 0
     for i in qpdgate_ids_2q:
         inst = circuit.data[i + data_id_offset]
