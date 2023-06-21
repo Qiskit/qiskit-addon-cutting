@@ -181,7 +181,6 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "Each decomposition must contain either one or two elements. Found a decomposition with (0) elements."
             )
-
         with self.subTest("test_mismatching_qpd_ids"):
             decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(basis=decomp)
