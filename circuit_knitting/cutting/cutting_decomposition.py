@@ -188,6 +188,10 @@ def find_gate_cuts(
             - A list of indices where the new :class:`TwoQubitGate`\ s are located in the output circuit
     """
     circ_copy = circuit.copy()
+
+    # For each cut, find the gate that results in the biggest reduction in depth, given
+    # the cuts chosen in previous steps. Given some layout, this multi-sweep, greedy approach is more powerful
+    # than picking all the cuts in a single sweep.
     cut_indices = []
     for cuts in range(num_cuts):
         cut_scores = _evaluate_cuts(circ_copy, **transpilation_options)
@@ -318,6 +322,7 @@ def _evaluate_cuts(
 
     input_depth = transpile(circuit, **transpilation_options).depth()
 
+    # For each supported gate in the circuit, assign a score based on the gate's SWAP overhead
     cut_scores = []
     for i, inst in enumerate(circuit.data):
         if inst.operation.name not in supported_gates:
