@@ -1,6 +1,6 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
@@ -28,7 +28,7 @@ requires-python = ">=3.8"
 dependencies = [
     "qiskit-aer>=0.12.0",
     "qiskit-terra>=0.24.0",
-    "qiskit-nature>=0.5.2",
+    "qiskit-nature>=0.6.0",
     "qiskit-ibm-runtime>=0.9.2",
 ]
 
@@ -61,6 +61,7 @@ style = [
     "autoflake==2.1.1",
     "black[jupyter]==23.3.0",
     "ruff>=0.0.246",
+    "nbqa>=1.6.0",
 ]
 lint = [
     "circuit-knitting-toolbox[style]",
@@ -73,6 +74,7 @@ lint = [
 docs = [
     "Sphinx>=3.0.0",
     "sphinx-autodoc-typehints>=1.12.0",
+    "sphinx-reredirects",
     "jupyter-sphinx>=0.3.2",
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
@@ -84,12 +86,17 @@ notebook-dependencies = [
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
-    "qiskit-nature<0.6.0",
 ]
 
 [project.urls]
 "Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
 "Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "circuit_knitting",
+    "circuit_knitting_toolbox",
+]
 
 [tool.autoflake]
 remove-unused-variables = true
@@ -98,8 +105,10 @@ remove-all-unused-imports = true
 [tool.coverage.run]
 omit = [
     # deprecated import location(s)
-    "circuit_knitting_toolbox/circuit_cutting/wire_cutting.py",
+    "circuit_knitting/cutting/wire_cutting.py",
 ]
 
-[tool.flit.module]
-name = "circuit_knitting_toolbox"
+[tool.pytest.ini_options]
+testpaths = ["./circuit_knitting/", "./test/"]
+filterwarnings = ["ignore:::.*qiskit.opflow*"]
+addopts = "--doctest-modules -rs --durations=10"
