@@ -6,7 +6,7 @@ The toolbox is written in [Python] and uses [tox] as a testing framework.  A des
 
 Project configuration, including information about dependencies, is stored in [`pyproject.toml`](pyproject.toml).
 
-We use [Sphinx] for documentation and [reno] for release notes.  We use [Google style docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html), except we omit the type of each argument, as type information is redundant when Python [type hints](https://docs.python.org/3/library/typing.html) are given.
+We use [Sphinx] for documentation and [reno] for release notes.  We use [Google style docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html), except we omit the type of each argument, as type information is redundant with Python [type hints](https://docs.python.org/3/library/typing.html).
 
 We require 100% coverage in all new code.  In rare cases where it is not possible to test a code block, we mark it with ``# pragma: no cover`` so that the ``coverage`` tests will pass.
 
