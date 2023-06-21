@@ -164,6 +164,17 @@ def cut_gates(
     return circuit, bases
 
 
+def find_gate_cuts(circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict) -> tuple[QuantumCircuit, list[QPDBasis]]:
+    circuit = circuit.copy()
+
+    input_depth = transpile(circuit, **transpilation_options).depth()
+
+    cut_scores = []
+    for i, inst in circuit:
+        if inst.operation.name not in supported_gates:
+            continue
+
+
 def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
