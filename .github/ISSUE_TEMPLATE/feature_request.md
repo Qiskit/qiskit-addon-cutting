@@ -8,3 +8,5 @@ labels: 'type: feature request'
 <!-- ⚠️ Make sure to browse the opened and closed issues to confirm this idea does not exist. -->
 
 ### What feature would you like to see added?
+Tell us about a feature you would like to see added to CKT. Give as much context on your use case
+as possible.
