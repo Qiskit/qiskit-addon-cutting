@@ -12,22 +12,41 @@
 
 import re
 import configparser
+from typing import List
 
 import toml
 import typer
 
 
-def mapfunc_dev(dep):
-    """Load the development version(s) of certain Qiskit-related packages"""
-    # https://peps.python.org/pep-0440/#direct-references
-    return re.sub(
-        r"^(qiskit-(?:terra|ibm-runtime)).*$",
-        r"\1 @ git+https://github.com/Qiskit/\1.git",
-        dep,
-    )
+# https://peps.python.org/pep-0508/#names
+_name_re = re.compile(r"^([A-Z0-9][A-Z0-9._-]*[A-Z0-9])", re.IGNORECASE)
 
 
-def mapfunc_min(dep):
+def mapfunc_replace(replacements: List[str]):
+    """Use the provided version(s) of certain packages"""
+    d: dict[str, str] = {}
+    for r in replacements:
+        match = _name_re.match(r)
+        if match is None:
+            raise RuntimeError(f"Replacement dependency does not match PEP 508: {r}")
+        name = match.group()
+        if name in d:
+            raise RuntimeError("Duplicate name")
+        d[name] = r
+
+    def _mapfunc_replace(dep):
+        # Replace https://peps.python.org/pep-0508/#names with provided
+        # version, often a https://peps.python.org/pep-0440/#direct-references
+        match = _name_re.match(dep)
+        if match is None:
+            raise RuntimeError(f"Dependency does not match PEP 508: `{dep}`")
+        dep_name = match.group()
+        return d.get(dep_name, dep)
+
+    return _mapfunc_replace
+
+
+def mapfunc_minimum(dep):
     """Set each dependency to its minimum version"""
     return re.sub(r"[>~]=", r"==", dep)
 
@@ -81,14 +100,7 @@ def get_tox_minversion():
     print(config["tox"]["minversion"])
 
 
-@app.command()
-def pin_dependencies(strategy, inplace: bool = False):
-    """Pin the dependencies in `pyproject.toml` according to `strategy`"""
-    mapfunc = {
-        "dev": mapfunc_dev,
-        "min": mapfunc_min,
-    }[strategy]
-
+def _pin_dependencies(mapfunc, inplace: bool):
     with open("pyproject.toml") as f:
         d = toml.load(f)
     process_dependencies_in_place(d, mapfunc)
@@ -104,6 +116,18 @@ def pin_dependencies(strategy, inplace: bool = False):
             toml.dump(d, f)
     else:
         print(toml.dumps(d))
+
+
+@app.command()
+def pin_dependencies_to_minimum(inplace: bool = False):
+    """Pin all dependencies in `pyproject.toml` to their minimum versions."""
+    _pin_dependencies(mapfunc_minimum, inplace)
+
+
+@app.command()
+def pin_dependencies(replacements: List[str], inplace: bool = False):
+    """Pin dependencies in `pyproject.toml` to the provided versions."""
+    _pin_dependencies(mapfunc_replace(replacements), inplace)
 
 
 if __name__ == "__main__":
