@@ -25,6 +25,7 @@ from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
+    find_gate_cuts,
 )
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
@@ -256,3 +257,18 @@ class TestCuttingDecomposition(unittest.TestCase):
         )
         assert subcircuits.keys() == {"A", "B"}
         assert subobservables.keys() == {"A", "B"}
+
+    def test_find_gate_cuts(self):
+        with self.subTest("find cuts"):
+            transpilation_options = {}
+            qpd_circuit, bases, cut_indices = find_gate_cuts(
+                self.circuit, 2, **transpilation_options
+            )
+            qpd_gates = [
+                inst
+                for inst in qpd_circuit
+                if isinstance(inst.operation, TwoQubitQPDGate)
+            ]
+            self.assertEqual(2, len(qpd_gates))
+            self.assertEqual(2, len(bases))
+            self.assertEqual(2, len(cut_indices))
