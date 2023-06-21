@@ -164,15 +164,37 @@ def cut_gates(
     return circuit, bases
 
 
-def find_gate_cuts(circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict) -> tuple[QuantumCircuit, list[QPDBasis]]:
-    circuit = circuit.copy()
+def find_gate_cuts(
+    circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict
+) -> tuple[QuantumCircuit, list[QPDBasis]]:
+    """
+    Find an optimized set of gates to cut, given a transpilation context.
 
-    input_depth = transpile(circuit, **transpilation_options).depth()
+    This function seeks to reduce the depth of the transpiled
+    sub-experiments by cutting gates which result in the highest swap overhead.
 
-    cut_scores = []
-    for i, inst in circuit:
-        if inst.operation.name not in supported_gates:
-            continue
+    Args:
+        circuit: The circuit to cut
+        num_cuts: The number of cuts to make
+        transpilation_options: A dictionary of kwargs to be passed to the Qiskit
+            ``transpile`` function.
+
+    Returns:
+        A copy of the input circuit with SWAP-costly gates replaced with :class:`TwoQubitGate`\ s
+        and a list of :class:`QPDBasis` instances -- one for each QPD gate in the circuit.
+    """
+    circ_copy = circuit.copy()
+    cut_indices = []
+    for cuts in range(num_cuts):
+        cut_scores = _evaluate_cuts(circ_copy, **transpilation_options)
+        best_idx = cut_scores[0][0]
+        cut_indices.append(best_idx)
+
+        # Put a single qubit placeholder in place of this gate
+        qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
+        circ_copy.data[best_idx] = CircuitInstruction(IGate(), qubits=(qubit0,))
+
+    return cut_gates(circuit, cut_indices)
 
 
 def partition_problem(
@@ -280,3 +302,21 @@ def decompose_observables(
     }
 
     return subobservables_by_subsystem
+
+
+def _evaluate_cuts(circuit: QuantumCircuit, **transpilation_options: dict) -> list[tuple[int, int]]:
+    """Return the index and cut score for each supported gate in the circuit."""
+    supported_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}
+
+    input_depth = transpile(circuit, **transpilation_options).depth()
+
+    cut_scores = []
+    for i, inst in enumerate(circuit.data):
+        if inst.operation.name not in supported_gates:
+            continue
+        del circuit.data[i]
+        cut_score = input_depth - transpile(circuit, **transpilation_options).depth()
+        cut_scores.append((idx, cut_score))
+        circuit.data.insert(idx, inst_to_check)
+
+    return sorted(cut_scores, key=lambda x: x[1], reverse=True)
