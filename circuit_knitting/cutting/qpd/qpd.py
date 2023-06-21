@@ -382,9 +382,16 @@ def _populate_samples(
     random_samples: dict[tuple[int, ...], int],
     num_desired: int,
     independent_probabilities: Sequence,
-    conditional_probabilities,
+    conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]],
     runner: tuple[int, ...] = (),
 ) -> None:
+    """Generate random samples from the conditional probabilitity distributions.
+
+    Items get populated into the ``random_samples`` dict, rather than returned.
+
+    This function is designed to call itself recursively.  The number of
+    elements in ``runner`` will match the recursion depth.
+    """
     if runner not in conditional_probabilities:
         # Everything below us is sampled, so we can sample directly from the
         # remaining independent probability distributions.
