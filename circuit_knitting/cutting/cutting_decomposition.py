@@ -17,12 +17,14 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
+from qiskit import transpile
 from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
     Barrier,
 )
+from qiskit.circuit.library.standard_gates import IGate
 from qiskit.quantum_info import PauliList
 
 from ..utils.observable_grouping import observables_restricted_to_subsystem
@@ -166,7 +168,7 @@ def cut_gates(
 
 def find_gate_cuts(
     circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict
-) -> tuple[QuantumCircuit, list[QPDBasis]]:
+) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
     """
     Find an optimized set of gates to cut, given a transpilation context.
 
@@ -180,8 +182,10 @@ def find_gate_cuts(
             ``transpile`` function.
 
     Returns:
-        A copy of the input circuit with SWAP-costly gates replaced with :class:`TwoQubitGate`\ s
-        and a list of :class:`QPDBasis` instances -- one for each QPD gate in the circuit.
+        A tuple containing:
+            - A copy of the input circuit with SWAP-costly gates replaced with :class:`TwoQubitGate`\ s
+            - A list of :class:`QPDBasis` instances -- one for each QPD gate in the circuit
+            - A list of indices where the new :class:`TwoQubitGate`\ s are located in the output circuit
     """
     circ_copy = circuit.copy()
     cut_indices = []
@@ -194,7 +198,9 @@ def find_gate_cuts(
         qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
         circ_copy.data[best_idx] = CircuitInstruction(IGate(), qubits=(qubit0,))
 
-    return cut_gates(circuit, cut_indices)
+    qpd_circuit, bases = cut_gates(circuit, cut_indices)
+
+    return qpd_circuit, bases, cut_indices
 
 
 def partition_problem(
@@ -304,7 +310,9 @@ def decompose_observables(
     return subobservables_by_subsystem
 
 
-def _evaluate_cuts(circuit: QuantumCircuit, **transpilation_options: dict) -> list[tuple[int, int]]:
+def _evaluate_cuts(
+    circuit: QuantumCircuit, **transpilation_options: dict
+) -> list[tuple[int, int]]:
     """Return the index and cut score for each supported gate in the circuit."""
     supported_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}
 
@@ -316,7 +324,7 @@ def _evaluate_cuts(circuit: QuantumCircuit, **transpilation_options: dict) -> li
             continue
         del circuit.data[i]
         cut_score = input_depth - transpile(circuit, **transpilation_options).depth()
-        cut_scores.append((idx, cut_score))
-        circuit.data.insert(idx, inst_to_check)
+        cut_scores.append((i, cut_score))
+        circuit.data.insert(i, inst)
 
     return sorted(cut_scores, key=lambda x: x[1], reverse=True)
