@@ -38,11 +38,11 @@ from circuit_knitting.cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
-    generate_qpd_samples,
+    generate_qpd_weights,
 )
 from circuit_knitting.cutting.qpd.qpd import *
 from circuit_knitting.cutting.qpd.qpd import (
-    _generate_qpd_samples,
+    _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
 )
 
@@ -76,27 +76,27 @@ class TestQPDFunctions(unittest.TestCase):
         self.qpd_gate2 = qpd_gate2
         self.qpd_circuit = qpd_circuit
 
-    def test_generate_qpd_samples(self):
+    def test_generate_qpd_weights(self):
         with self.subTest("Negative number of samples"):
             with pytest.raises(ValueError) as e_info:
-                generate_qpd_samples([], -100)
+                generate_qpd_weights([], -100)
             assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("num_samples == NaN"):
             with pytest.raises(ValueError) as e_info:
-                generate_qpd_samples([], math.nan)
+                generate_qpd_weights([], math.nan)
             assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("Zero samples requested"):
             with pytest.raises(ValueError) as e_info:
-                generate_qpd_samples([], 0)
+                generate_qpd_weights([], 0)
             assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("Empty case"):
             empty_samples = {(): (1000, WeightType.EXACT)}
-            samples = generate_qpd_samples([])
+            samples = generate_qpd_weights([])
             self.assertEqual(samples, empty_samples)
         with self.subTest("HWEA 100 samples"):
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
-            samples = generate_qpd_samples(bases, num_samples=100)
+            samples = generate_qpd_weights(bases, num_samples=100)
             assert sum(w for w, t in samples.values()) == pytest.approx(100)
             for decomp_ids in samples.keys():
                 self.assertTrue(0 <= decomp_ids[0] < len(self.qpd_gate1.basis.maps))
@@ -104,13 +104,13 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("HWEA 100.5 samples"):
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
-            samples = generate_qpd_samples(bases, num_samples=100.5)
+            samples = generate_qpd_weights(bases, num_samples=100.5)
             assert sum(w for w, t in samples.values()) == pytest.approx(100.5)
         with self.subTest("HWEA exact weights"):
             # Do the same thing with num_samples above the threshold for exact weights
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
-            samples = generate_qpd_samples(bases, num_samples=1000)
+            samples = generate_qpd_weights(bases, num_samples=1000)
             assert sum(w for w, t in samples.values()) == pytest.approx(1000)
             assert all(t == WeightType.EXACT for w, t in samples.values())
             for decomp_ids in samples.keys():
@@ -119,7 +119,7 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("HWEA exact weights via 'infinite' num_samples"):
             basis_ids = [9, 20]
             bases = [self.qpd_circuit.data[i].operation.basis for i in basis_ids]
-            samples = generate_qpd_samples(bases, num_samples=math.inf)
+            samples = generate_qpd_weights(bases, num_samples=math.inf)
             assert sum(w for w, t in samples.values()) == pytest.approx(1)
             assert all(t == WeightType.EXACT for w, t in samples.values())
 
@@ -291,11 +291,11 @@ class TestQPDFunctions(unittest.TestCase):
         ([RXXGate(0.1)] * 16, 10000, 2001)
     )
     @unpack
-    def test_generate_qpd_samples_from_gates(
+    def test_generate_qpd_weights_from_gates(
         self, gates, num_samples, expected_exact, expected_sampled=None
     ):
         bases = [QPDBasis.from_gate(gate) for gate in gates]
-        samples = generate_qpd_samples(bases, num_samples)
+        samples = generate_qpd_weights(bases, num_samples)
 
         counts = Counter(weight_type for _, weight_type in samples.values())
         assert counts[WeightType.EXACT] == expected_exact
@@ -373,7 +373,7 @@ class TestQPDFunctions(unittest.TestCase):
             )
             assert probs1.get(map_ids, 0.0) == pytest.approx(exact, abs=1e-14)
 
-    def test_statistics_of_generate_qpd_samples(self):
+    def test_statistics_of_generate_qpd_weights(self):
         # Values inspired by the R[XX,YY,ZZ]Gate rotations
         def from_theta(theta):
             v = np.array(
@@ -387,7 +387,7 @@ class TestQPDFunctions(unittest.TestCase):
 
         probs = [from_theta(0.1), from_theta(0.2)]
         num_samples = 200
-        weights = _generate_qpd_samples(probs, num_samples, _samples_multiplier=10000)
+        weights = _generate_qpd_weights(probs, num_samples, _samples_multiplier=10000)
         for map_ids in [(0, 0), (0, 2), (0, 1), (2, 0), (2, 2), (2, 1)]:
             assert weights[map_ids][0] / num_samples == pytest.approx(
                 probs[0][map_ids[0]] * probs[1][map_ids[1]]

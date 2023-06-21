@@ -48,6 +48,7 @@ from qiskit.circuit.library.standard_gates import (
     CRYGate,
     CRZGate,
 )
+from qiskit.utils import deprecate_func
 
 from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
@@ -208,7 +209,28 @@ def _generate_exact_weights_and_conditional_probabilities(
         yield orig_coeff_indices, probability
 
 
+@deprecate_func(
+    since="0.3.0",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no earlier than v0.4.0",
+    additional_msg=(
+        "This function has been renamed to "
+        "``circuit_knitting.cutting.qpd.generate_qpd_weights()``."
+    ),
+)
 def generate_qpd_samples(
+    qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
+) -> dict[tuple[int, ...], tuple[float, WeightType]]:
+    """
+    Generate random quasiprobability decompositions.
+
+    Deprecated since CKT 0.3.0.  This function has been renamed to
+    :func:`.generate_qpd_weights`.
+    """
+    return generate_qpd_weights(qpd_bases, num_samples)
+
+
+def generate_qpd_weights(
     qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
     """
@@ -233,13 +255,13 @@ def generate_qpd_samples(
     # then sampled weights.  Within each, values are sorted largest to
     # smallest.
     lst = sorted(
-        _generate_qpd_samples(independent_probabilities, num_samples).items(),
+        _generate_qpd_weights(independent_probabilities, num_samples).items(),
         key=lambda x: ((v := x[1])[1].value, -v[0]),
     )
     return dict(lst)
 
 
-def _generate_qpd_samples(
+def _generate_qpd_weights(
     independent_probabilities: Sequence[npt.NDArray[np.float64]],
     num_samples: float = 1000,
     *,
