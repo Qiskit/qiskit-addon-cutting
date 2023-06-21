@@ -169,7 +169,7 @@ def cut_gates(
 def find_gate_cuts(
     circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict
 ) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
-    """
+    r"""
     Find an optimized set of gates to cut, given a transpilation context.
 
     This function seeks to reduce the depth of the transpiled
