@@ -279,3 +279,7 @@ class TestQPDFunctions(unittest.TestCase):
         ]
         assert len(unique_by_eq(a for (a, b) in relevant_maps)) == q0_num_unique
         assert len(unique_by_eq(b for (a, b) in relevant_maps)) == q1_num_unique
+
+    def test_supported_gates(self):
+        gates = supported_gates()
+        self.assertEqual({"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}, gates)
