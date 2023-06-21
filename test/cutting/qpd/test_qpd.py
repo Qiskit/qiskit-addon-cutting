@@ -284,9 +284,11 @@ class TestQPDFunctions(unittest.TestCase):
         ([RXXGate(0.1), RXXGate(0.1)], 100, 9),
         ([CXGate(), CXGate()], 1e4, 36, 0),
         ([CXGate(), CXGate()], 30, 0),
-        # The follow two check either side of the exact/sampled threshold.
+        # The following two check either side of the exact/sampled threshold.
         ([CXGate()], 6, 6, 0),
         ([CXGate()], np.nextafter(6, -math.inf), 0),
+        # The following makes sure memory does not blow up with many cuts.
+        ([RXXGate(0.1)] * 16, 10000, 2001)
     )
     @unpack
     def test_generate_qpd_samples_from_gates(
@@ -317,6 +319,11 @@ class TestQPDFunctions(unittest.TestCase):
                 upper_bound = math.inf
             assert weight <= upper_bound
             upper_bound = weight
+
+        # All tests that follow require time & memory that scales exponentially
+        # with number of gates cut, so skip them when the number is too high.
+        if len(gates) > 3:
+            return
 
         # Test conditional probabilities from
         # _generate_exact_weights_and_conditional_probabilities
