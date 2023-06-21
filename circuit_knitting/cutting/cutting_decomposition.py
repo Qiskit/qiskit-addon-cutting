@@ -189,16 +189,15 @@ def find_gate_cuts(
     """
     circ_copy = circuit.copy()
 
-    # For each cut, find the gate that results in the biggest reduction in depth, given
-    # the cuts chosen in previous steps. Given some layout, this multi-sweep, greedy approach is more powerful
-    # than picking all the cuts in a single sweep.
+    # Sweep the circuit num_cuts times. In each sweep, find the gate that results in the biggest
+    # reduction in depth, and replace it with a local, placeholder gate. Given some layout, this
+    # multi-sweep, greedy approach is more powerfull than picking all the cuts in a single sweep.
     cut_indices = []
     for cuts in range(num_cuts):
         cut_scores = _evaluate_cuts(circ_copy, **transpilation_options)
         best_idx = cut_scores[0][0]
         cut_indices.append(best_idx)
-
-        # Put a single qubit placeholder in place of this gate
+        # Put a single qubit placeholder in place of the optimal gate
         qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
         circ_copy.data[best_idx] = CircuitInstruction(IGate(), qubits=(qubit0,))
 
