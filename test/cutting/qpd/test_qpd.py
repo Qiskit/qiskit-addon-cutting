@@ -148,7 +148,7 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "The number of map IDs (1) must equal the number of decompositions in the circuit (2)."
             )
-        with self.subTest("test_unordered_indices"):
+        with self.subTest("Test unordered indices"):
             decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
             qpd_gate1 = TwoQubitQPDGate(basis=decomp)
             qpd_gate2 = TwoQubitQPDGate(basis=decomp)
