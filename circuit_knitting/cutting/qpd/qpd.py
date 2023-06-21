@@ -222,7 +222,7 @@ def supported_gates() -> set[str]:
     Returns:
         Set of gate names supported for automatic decomposition.
     """
-    return {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}
+    return set(_qpdbasis_from_gate_funcs)
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
