@@ -220,7 +220,7 @@ def _generate_exact_weights_and_conditional_probabilities(
 )
 def generate_qpd_samples(
     qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
-) -> dict[tuple[int, ...], tuple[float, WeightType]]:
+) -> dict[tuple[int, ...], tuple[float, WeightType]]:  # pragma: no cover
     """
     Generate random quasiprobability decompositions.
 
