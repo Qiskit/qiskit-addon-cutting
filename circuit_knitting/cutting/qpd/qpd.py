@@ -423,7 +423,7 @@ def _populate_samples(
     num_desired: int,
     independent_probabilities: Sequence,
     conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]],
-    runner: tuple[int, ...] = (),
+    running_state: tuple[int, ...] = (),
 ) -> None:
     """
     Generate random samples from the conditional probabilitity distributions.
@@ -431,27 +431,27 @@ def _populate_samples(
     Items get populated into the ``random_samples`` dict, rather than returned.
 
     This function is designed to call itself recursively.  The number of
-    elements in ``runner`` will match the recursion depth.
+    elements in ``running_state`` will match the recursion depth.
     """
-    if runner not in conditional_probabilities:
+    if running_state not in conditional_probabilities:
         # Everything below us is sampled, so we can sample directly from the
         # remaining independent probability distributions.
         samples_by_decomp = []
-        for probs in independent_probabilities[len(runner) :]:
+        for probs in independent_probabilities[len(running_state) :]:
             samples_by_decomp.append(
                 np.random.choice(range(len(probs)), num_desired, p=probs)
             )
         for outcome, count in Counter(zip(*samples_by_decomp)).items():
-            assert (runner + outcome) not in random_samples
-            random_samples[runner + outcome] = count
+            assert (running_state + outcome) not in random_samples
+            random_samples[running_state + outcome] = count
         return
 
     # There are some exact weight(s) below us, so we must consider the
     # conditional probabilities at the current level.
-    probs = conditional_probabilities[runner]
+    probs = conditional_probabilities[running_state]
     current_outcomes = np.random.choice(range(len(probs)), num_desired, p=probs)
     for current_outcome, count in Counter(current_outcomes).items():
-        outcome = runner + (current_outcome,)
+        outcome = running_state + (current_outcome,)
         if len(outcome) == len(independent_probabilities):
             # It's a full one
             assert outcome not in random_samples
