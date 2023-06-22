@@ -20,7 +20,7 @@ Sphinx documentation builder
 from pathlib import Path
 import sys
 
-from importlib_metadata import version as metadata_version
+from importlib.metadata import version as metadata_version
 
 project = "Circuit Knitting Toolbox"
 copyright = "2023"  # pylint: disable=redefined-builtin
