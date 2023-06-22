@@ -240,6 +240,8 @@ def _generate_exact_weights_and_conditional_probabilities(
             perm[idx] for perm, idx in zip(permutations, coeff_indices)
         )
         if len(coeff_indices) != len(sorted_coeff_probabilities):
+            # In this case, `probability` is actually a vector of conditional
+            # probabilities, so apply the inverse permutation.
             probability = probability[ipermutations[len(coeff_indices)]]
         yield orig_coeff_indices, probability
 
@@ -269,14 +271,17 @@ def generate_qpd_weights(
     qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
     """
-    Generate random quasiprobability decompositions.
+    Generate weights from the joint quasiprobability distribution.
+
+    All weights above ``1 / num_samples`` will be returned exactly, while the
+    remaining weights will be sampled from.
 
     Args:
         qpd_bases: The :class:`QPDBasis` objects from which to generate weights
-        num_samples: Number of random samples to generate
+        num_samples: Maximum number of weights to generate
 
     Returns:
-        A mapping from a given decomposition to its sampled weight.
+        A mapping from a given decomposition to its weight.
         Keys are tuples of indices -- one index per input :class:`QPDBasis`. The indices
         correspond to a specific decomposition mapping in the basis.
 
@@ -420,7 +425,8 @@ def _populate_samples(
     conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]],
     runner: tuple[int, ...] = (),
 ) -> None:
-    """Generate random samples from the conditional probabilitity distributions.
+    """
+    Generate random samples from the conditional probabilitity distributions.
 
     Items get populated into the ``random_samples`` dict, rather than returned.
 
