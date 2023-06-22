@@ -155,6 +155,17 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "The number of map IDs (1) must equal the number of decompositions in the circuit (2)."
             )
+        with self.subTest("Test unordered indices"):
+            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_gate1 = TwoQubitQPDGate(basis=decomp)
+            qpd_gate2 = TwoQubitQPDGate(basis=decomp)
+
+            qc = QuantumCircuit(2)
+            qc.append(CircuitInstruction(qpd_gate1, qubits=[0, 1]))
+            qc.x([0, 1])
+            qc.y([0, 1])
+            qc.append(CircuitInstruction(qpd_gate2, qubits=[0, 1]))
+            decompose_qpd_instructions(qc, [[5], [0]], map_ids=[0, 0])
         with self.subTest("Test measurement"):
             qpd_circ = QuantumCircuit(2)
             qpd_inst = CircuitInstruction(self.qpd_gate1, qubits=[0, 1])
@@ -177,7 +188,6 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "Each decomposition must contain either one or two elements. Found a decomposition with (0) elements."
             )
-
         with self.subTest("test_mismatching_qpd_ids"):
             decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(basis=decomp)
@@ -398,3 +408,7 @@ class TestQPDFunctions(unittest.TestCase):
                 probs[0][map_ids[0]] * probs[1][map_ids[1]], rel=0.5
             )
             assert weights[map_ids][1] == WeightType.SAMPLED
+
+    def test_supported_gates(self):
+        gates = supported_gates()
+        self.assertEqual({"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}, gates)
