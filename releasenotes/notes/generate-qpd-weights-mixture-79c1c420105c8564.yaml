@@ -1,0 +1,15 @@
+---
+features:
+  - |
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_weights` now
+    returns a mixture of exact and sampled weights when appropriate.
+    Previously, it would only return exact weights if *all* weights
+    were below ``1 / num_samples``; otherwise, all weights were
+    sampled.
+deprecations:
+  - |
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_samples` has
+    been renamed to
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_weights`.  The
+    original name will be removed no sooner than version 0.4 of the
+    Circuit Knitting Toolbox.
