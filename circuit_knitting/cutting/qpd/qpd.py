@@ -410,7 +410,7 @@ def _generate_qpd_weights(
         independent_probabilities,
         conditional_probabilities,
     )
-    # Insert the samples in the dict we are about to return.
+    # Insert the samples into the dict we are about to return.
     for outcome, count in random_samples.items():
         assert outcome not in retval
         retval[outcome] = (count * single_sample_weight, WeightType.SAMPLED)
@@ -446,8 +446,8 @@ def _populate_samples(
             random_samples[runner + outcome] = count
         return
 
-    # There is some exact stuff below us, so we must consider the conditional
-    # probabilities at the current level.
+    # There are some exact weight(s) below us, so we must consider the
+    # conditional probabilities at the current level.
     probs = conditional_probabilities[runner]
     current_outcomes = np.random.choice(range(len(probs)), num_desired, p=probs)
     for current_outcome, count in Counter(current_outcomes).items():
