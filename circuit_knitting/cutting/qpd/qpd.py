@@ -78,11 +78,17 @@ def _min_filter_nonzero(vals: npt.NDArray[np.float64], *, atol=_NONZERO_ATOL):
 
 
 def __update_running_product_after_increment(
-    running_product, state, coeff_probabilities
+    running_product: list[float],
+    state: Sequence[int],
+    coeff_probabilities: Sequence[npt.NDArray[np.float64]],
 ):
-    # This snippet is used twice in
-    # _generate_exact_weights_and_conditional_probabilities_assume_sorted;
-    # hence, we write it only once here.
+    """
+    Update the ``running_product`` list after the ``state`` has been incremented.
+
+    This snippet is used twice in
+    :func:`_generate_exact_weights_and_conditional_probabilities_assume_sorted`;
+    hence, we write it only once here.
+    """
     try:
         prev = running_product[-2]
     except IndexError:
@@ -93,15 +99,37 @@ def __update_running_product_after_increment(
 def _generate_exact_weights_and_conditional_probabilities_assume_sorted(
     coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
 ):
-    """Yield each combination whose product is above some threshold.
+    r"""
+    Determine all exact weights above ``threshold`` and the conditional probabilities necessary to sample efficiently from all other weights.
 
-    Also yields conditional probabilities that can be used to sample the
-    remaining possibilities.  These will all be normalized _except_ the
-    top-level one.
+    Each yielded element will be a 2-tuple, the first element of which will be
+    a ``state``, represented by a tuple of ``int``\ s.
 
-    This function assumes each element of `coeff_probabilities` contains non-negative
-    numbers, ordered largest to smallest.
+    If ``state`` contains the same number of elements as
+    ``coeff_probabilities``, then the second element will be a ``float``,
+    greater than or equal to ``threshold``, that contains the exact probability
+    of this ``state``.
 
+    If, on the other hand, ``state`` contains fewer elements than
+    ``coeff_probabilities``, then the second element is a 1D ``np.ndarray`` of
+    the conditional probabilities that can be used to sample the remaining
+    weights that have not been evaluated exactly (i.e., are below
+    ``threshold``).  These will all be normalized _except_ the
+    top-level one, which is given by ``state == ()``.
+
+    If there are no exact weights below a given level, then the conditional
+    probabilities at that level are equivalent to the corresponding element of
+    `coeff_probabilities``, and this generator does not yield them.  Skipping
+    redundant conditional probabilities, like this, allows for efficient
+    sampling without traversing the entire tree, which is desirable since the
+    tree grows exponentially with the number of cut gates.  By contrast, the
+    performance with the provided strategy is no worse than linear in
+    ``threshold``, in both time and memory.
+
+    This function assumes each element of ``coeff_probabilities`` contains
+    non-negative numbers, ordered largest to smallest.  For a generalization
+    that allows ``coeff_probabilities`` to be provided in any order, see
+    :func:`_generate_exact_weights_and_conditional_probabilities`.
     """
     assert len(coeff_probabilities) > 0
 
@@ -114,14 +142,15 @@ def _generate_exact_weights_and_conditional_probabilities_assume_sorted(
             # Pop
             state.pop()
             if len(state) + 1 == len(running_conditional_probabilities):
-                # There were some exact weights found below us, so we likely
-                # need to yield the conditional probabilities.
+                # There were some exact weights found below us, so we need to
+                # yield the conditional probabilities, unless all probabilities
+                # at this level are zero *and* it's not the top level.
                 current_condprobs = running_conditional_probabilities.pop()
                 current_condprobs[
                     np.isclose(current_condprobs, 0, atol=_NONZERO_ATOL)
                 ] = 0.0
                 if not state:
-                    # Don't renormalize the top-level one.
+                    # Don't normalize the top-level conditional probabilities.
                     yield (), current_condprobs
                 else:
                     norm = np.sum(current_condprobs)
@@ -189,7 +218,13 @@ def _invert_permutation(p):
 def _generate_exact_weights_and_conditional_probabilities(
     coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
 ):
-    # No assumption on the order or on the sign.
+    """
+    Generate exact weights and conditional probabilities.
+
+    This is identical in behavior to
+    :func:`_generate_exact_weights_and_conditional_probabilities_assume_sorted`,
+    except it makes no assumption on the order of the coefficients.
+    """
     permutations = [np.argsort(cp)[::-1] for cp in coeff_probabilities]
     sorted_coeff_probabilities = [
         cp[permutation] for cp, permutation in zip(coeff_probabilities, permutations)
@@ -237,7 +272,7 @@ def generate_qpd_weights(
     Generate random quasiprobability decompositions.
 
     Args:
-        qpd_bases: The :class:`QPDBasis` objects from which to sample
+        qpd_bases: The :class:`QPDBasis` objects from which to generate weights
         num_samples: Number of random samples to generate
 
     Returns:
