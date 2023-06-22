@@ -338,7 +338,7 @@ class TestQPDFunctions(unittest.TestCase):
         # Test conditional probabilities from
         # _generate_exact_weights_and_conditional_probabilities
         independent_probabilities = [basis.probabilities for basis in bases]
-        probs1: dict[tuple[int, ...], float] = {}
+        probs: dict[tuple[int, ...], float] = {}
         conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]] = {}
         for (
             map_ids,
@@ -347,8 +347,8 @@ class TestQPDFunctions(unittest.TestCase):
             independent_probabilities, 1 / num_samples
         ):
             if len(map_ids) == len(bases):
-                assert map_ids not in probs1
-                probs1[map_ids] = probability
+                assert map_ids not in probs
+                probs[map_ids] = probability
             else:
                 conditional_probabilities[map_ids] = probability
         stack = [(1.0, ())]
@@ -366,8 +366,8 @@ class TestQPDFunctions(unittest.TestCase):
                     continue
                 map_ids = map_ids_partial + (i,)
                 if len(map_ids) == len(bases):
-                    assert map_ids not in probs1
-                    probs1[map_ids] = pp
+                    assert map_ids not in probs
+                    probs[map_ids] = pp
                 else:
                     stack.append((pp, map_ids))
         # Now, systematically generate each exact weight, and compare with what
@@ -381,7 +381,7 @@ class TestQPDFunctions(unittest.TestCase):
                     for i, probs in strict_zip(map_ids, independent_probabilities)
                 ]
             )
-            assert probs1.get(map_ids, 0.0) == pytest.approx(exact, abs=1e-14)
+            assert probs.get(map_ids, 0.0) == pytest.approx(exact, abs=1e-14)
 
     def test_statistics_of_generate_qpd_weights(self):
         # Values inspired by the R[XX,YY,ZZ]Gate rotations
