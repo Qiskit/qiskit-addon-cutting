@@ -21,6 +21,8 @@ from circuit_knitting_toolbox.circuit_cutting.cutqc import (
     cut_circuit_wires,
     evaluate_subcircuits,
     reconstruct_full_distribution,
+    create_dd_bin,
+    reconstruct_dd_full_distribute,
     verify,
 )
 
@@ -82,5 +84,28 @@ class TestCircuitCutting(unittest.TestCase):
         )
 
         metrics, _ = verify(qc, reconstructed_probabilities)
+
+        self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
+
+    def test_circuit_cutting_dynamic_definition(self):
+        qc = self.circuit
+
+        cuts = cut_circuit_wires(
+            circuit=qc,
+            method="automatic",
+            max_subcircuit_width=3,
+            max_subcircuit_cuts=10,
+            max_subcircuit_size=12,
+            max_cuts=10,
+            num_subcircuits=[2],
+        )
+        subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
+
+        dd_bins = create_dd_bin(
+            subcircuit_instance_probabilities, cuts, 4, 15 
+        )
+
+        dd_prob = reconstruct_dd_full_distribute(self.circuit, cuts, dd_bins)
+        metrics, _ = verify(qc, dd_prob)
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
