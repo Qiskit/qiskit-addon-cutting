@@ -353,12 +353,18 @@ def _generate_qpd_weights(
         ) in _generate_exact_weights_and_conditional_probabilities(
             independent_probabilities, threshold
         ):
+            # As described in the docstring to
+            # _generate_exact_weights_and_conditional_probabilities_assume_sorted,
+            # there are two possible pieces of information that might be
+            # yielded by the generator.  The following branch distinguishes
+            # between them.
             if len(map_ids) == len(independent_probabilities):
+                # The generator produced a state together with its exact probability.
                 weight = probability * num_samples
                 retval[map_ids] = (weight, WeightType.EXACT)
             else:
-                # Despite the variable name, `probability` is the sequence of
-                # conditional probabilities, not a *single* probability
+                # The generator produced a partial state along with a vector of
+                # conditional probabilities.
                 conditional_probabilities[map_ids] = probability
                 if map_ids == ():
                     weight_to_sample = np.sum(probability)
