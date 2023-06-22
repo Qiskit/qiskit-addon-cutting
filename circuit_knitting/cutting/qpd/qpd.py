@@ -215,6 +215,16 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         return f(gate)
 
 
+def supported_gates() -> set[str]:
+    """
+    Return a set of gate names supported for automatic decomposition.
+
+    Returns:
+        Set of gate names supported for automatic decomposition.
+    """
+    return set(_qpdbasis_from_gate_funcs)
+
+
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
 def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
@@ -426,6 +436,8 @@ def _decompose_qpd_instructions(
             continue  # pragma: no cover
         if isinstance(circuit.data[decomp[0]].operation, TwoQubitQPDGate):
             qpdgate_ids_2q.append(decomp[0])
+
+    qpdgate_ids_2q = sorted(qpdgate_ids_2q)
     data_id_offset = 0
     for i in qpdgate_ids_2q:
         inst = circuit.data[i + data_id_offset]

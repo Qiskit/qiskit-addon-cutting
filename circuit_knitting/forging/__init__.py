@@ -25,6 +25,7 @@ Classes
    EntanglementForgingOperator
    EntanglementForgingAnsatz
    EntanglementForgingGroundStateSolver
+   EntanglementForgingResult
 
 Decomposition Functions
 =======================
@@ -43,6 +44,7 @@ from .entanglement_forging_knitter import EntanglementForgingKnitter
 from .entanglement_forging_operator import EntanglementForgingOperator
 from .entanglement_forging_ground_state_solver import (
     EntanglementForgingGroundStateSolver,
+    EntanglementForgingResult,
 )
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
 from qiskit_nature import settings
@@ -61,6 +63,7 @@ __all__ = [
     "EntanglementForgingKnitter",
     "EntanglementForgingOperator",
     "EntanglementForgingGroundStateSolver",
+    "EntanglementForgingResult",
     "cholesky_decomposition",
     "convert_cholesky_operator",
 ]

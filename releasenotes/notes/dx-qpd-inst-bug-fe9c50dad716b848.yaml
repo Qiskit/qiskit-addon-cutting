@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixed a bug in :func:`~circuit_knitting.cutting.qpd.decompose_qpd_instructions` which would
+    cause index errors if :class:`~circuit_knitting.cutting.qpd.TwoQubitQPDGate` indices were
+    not specified in ascending order.
