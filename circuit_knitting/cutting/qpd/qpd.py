@@ -114,7 +114,7 @@ def _generate_exact_weights_and_conditional_probabilities_assume_sorted(
     ``coeff_probabilities``, then the second element is a 1D ``np.ndarray`` of
     the conditional probabilities that can be used to sample the remaining
     weights that have not been evaluated exactly (i.e., are below
-    ``threshold``).  These will all be normalized _except_ the
+    ``threshold``).  These will all be normalized *except* the
     top-level one, which is given by ``state == ()``.
 
     If there are no exact weights below a given level, then the conditional
