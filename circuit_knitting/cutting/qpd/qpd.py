@@ -303,7 +303,7 @@ def generate_qpd_weights(
 
 def _generate_qpd_weights(
     independent_probabilities: Sequence[npt.NDArray[np.float64]],
-    num_samples: float = 1000,
+    num_samples: float,
     *,
     _samples_multiplier: int = 1,
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
