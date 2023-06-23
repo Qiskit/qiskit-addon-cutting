@@ -20,7 +20,7 @@ Sphinx documentation builder
 from pathlib import Path
 import sys
 
-from importlib_metadata import version as metadata_version
+from importlib.metadata import version as metadata_version
 
 project = "Circuit Knitting Toolbox"
 copyright = "2023"  # pylint: disable=redefined-builtin
@@ -55,7 +55,7 @@ numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
 add_module_names = False
-modindex_common_prefix = ["circuit_knitting_toolbox."]
+modindex_common_prefix = ["circuit_knitting."]
 html_css_files = ["style.css"]
 
 # html theme options

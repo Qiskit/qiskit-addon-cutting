@@ -28,7 +28,7 @@ requires-python = ">=3.8"
 dependencies = [
     "qiskit-aer>=0.12.0",
     "qiskit-terra>=0.24.0",
-    "qiskit-nature>=0.5.2",
+    "qiskit-nature>=0.6.0",
     "qiskit-ibm-runtime>=0.9.2",
 ]
 
@@ -86,12 +86,17 @@ notebook-dependencies = [
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
-    "qiskit-nature<0.6.0",
 ]
 
 [project.urls]
 "Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
 "Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "circuit_knitting",
+    "circuit_knitting_toolbox",
+]
 
 [tool.autoflake]
 remove-unused-variables = true
@@ -100,5 +105,10 @@ remove-all-unused-imports = true
 [tool.coverage.run]
 omit = [
     # deprecated import location(s)
-    "circuit_knitting_toolbox/circuit_cutting/wire_cutting.py",
+    "circuit_knitting/cutting/wire_cutting.py",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["./circuit_knitting/", "./test/"]
+filterwarnings = ["ignore:::.*qiskit.opflow*"]
+addopts = "--doctest-modules -rs --durations=10"

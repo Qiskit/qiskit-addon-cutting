@@ -24,6 +24,8 @@ jobs:
         include:
           - os: macos-latest
             python-version: "3.8"
+          - os: windows-latest
+            python-version: "3.10"
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -44,9 +46,13 @@ jobs:
         run: |
           pver=${{ matrix.python-version }}
           tox -epy${pver/./} -- --run-slow
+          notebook_flags=""
           if [ "$pver" = "3.11" ]; then
             echo Skipping tutorials that require cplex
-            tox -epy${pver/./}-notebook  -- --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_1_automatic_cut_finding.ipynb --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_3_cutting_with_quantum_serverless.ipynb
-          else
-            tox -epy${pver/./}-notebook
+            notebook_flags="${notebook_flags} --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_1_automatic_cut_finding.ipynb --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_3_cutting_with_quantum_serverless.ipynb"
           fi
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            echo Skipping tutorials \& how-tos that require pyscf
+            notebook_flags="${notebook_flags} --ignore=docs/entanglement_forging --ignore=docs/_build/jupyter_execute/entanglement_forging/how-tos"
+          fi
+          tox -epy${pver/./}-notebook -- ${notebook_flags}
