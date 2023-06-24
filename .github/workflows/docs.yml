@@ -11,6 +11,10 @@ on:
       - main
       - 'stable/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   build_and_deploy_docs:
     runs-on: ubuntu-latest

@@ -8,6 +8,10 @@ on:
     branches: [ main ]
     paths: ['CITATION.bib', '.github/workflows/citation.yml']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
 jobs:
   build-preview:
     runs-on: ubuntu-latest
