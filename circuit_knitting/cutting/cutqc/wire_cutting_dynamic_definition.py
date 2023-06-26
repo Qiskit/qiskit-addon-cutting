@@ -250,8 +250,6 @@ def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, in
         while total_load > 0 and loads[slot_idx] < capacities[slot_idx]:
             loads[slot_idx] += 1
             total_load -= 1
-    # print('capacities = {}. total_capacity = {:d}'.format(capacities,total_capacity))
-    # print('loads = {}. remaining total_load = {:d}'.format(loads,total_load))
     assert total_load == 0
     return loads
 
