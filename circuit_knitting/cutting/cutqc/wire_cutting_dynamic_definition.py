@@ -38,7 +38,7 @@ def dd_build(
     num_threads: int,
 ) -> dict[int, dict[str, Any]]:
     """
-    Create bins of Dynamic Definition
+    Create bins of dynamic definition.
 
     Args:
         summation_terms: The summation terms used to generate the full
