@@ -186,7 +186,6 @@ def _next_dynamic_definition_schedule(
         ].count("active")
 
     binary_bin_idx = bin(bin_id)[2:].zfill(num_active)
-    # print('binary_bin_idx = %s'%(binary_bin_idx))
     smart_order = dd_bins[recursion_layer]["smart_order"]
     next_dd_schedule = {
         "subcircuit_state": copy.deepcopy(dd_bins[recursion_layer]["subcircuit_state"])
