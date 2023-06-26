@@ -469,12 +469,6 @@ def read_dd_bins(
                     full_state = "".join(binary_full_state)[::-1]
                     full_state_idx = int(full_state, 2)
                     reconstructed_prob[full_state_idx] = average_state_prob
-                    #print(
-                    #    "--> full state {} {:d}. p = {:.3e}".format(
-                    #        full_state, full_state_idx, average_state_prob
-                    #    )
-                    #)
-                #print()
     return reconstructed_prob
 
 
