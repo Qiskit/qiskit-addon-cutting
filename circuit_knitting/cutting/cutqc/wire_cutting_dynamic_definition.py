@@ -272,9 +272,6 @@ def _merge_prob_vector(
     num_merged = qubit_states.count("merged")
     merged_prob_vector = np.zeros(2**num_active, dtype="float32")
 
-    # print('merging with qubit states {}. {:d}-->{:d}'.format(
-    #    qubit_states,
-    #    len(unmerged_prob_vector),len(merged_prob_vector)))
 
     for active_qubit_states in itertools.product(["0", "1"], repeat=num_active):
         if len(active_qubit_states) > 0:
