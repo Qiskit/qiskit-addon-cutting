@@ -398,7 +398,7 @@ def read_dd_bins(
     subcircuit_out_qubits: dict[int, list[int]], dd_bins: dict[int, dict[str, Any]]
 ) -> np.ndarray:
     """
-    Reconstruct a probability vector for th original circuit by dd's bin
+    Reconstruct a probability vector for the original circuit by DD's bin.
 
     Args:
         subcircuit_out_qubits: The order information of the probability
