@@ -303,7 +303,7 @@ def _merge_state_into_bins_parallel(
     rank: int,
 ) -> dict[int, dict[int, np.ndarray]]:
     """
-    Merge the probability vector for each rank
+    Merge the probability vector for each rank.
 
     Args:
         subcircuit_instances: The dictionary containing the index information for each
