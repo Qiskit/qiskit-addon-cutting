@@ -486,7 +486,7 @@ def get_reconstruction_qubit_order(
     subcircuits: list[QuantumCircuit],
 ) -> dict[int, list[int]]:
     """
-    Get the output qubit in the full circuit for each subcircuit
+    Get the output qubit in the full circuit for each subcircuit.
 
     Args:
         full_circuit: The original quantum circuit
