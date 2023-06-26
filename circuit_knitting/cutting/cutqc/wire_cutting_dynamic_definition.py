@@ -236,7 +236,7 @@ def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, in
         mem_limit: Memory limit size
 
     Returns:
-        The number of each bit dd can use
+        The number of each bit DD can use
     """
     total_load = min(sum(capacities.values()), mem_limit)
     total_capacity = sum(capacities.values())
