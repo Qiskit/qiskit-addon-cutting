@@ -204,7 +204,7 @@ def create_dd_bin(
     num_threads: int = 1,
 ) -> dict[int, Any]:
     """
-    Create a bin for Dynamic Definition
+    Create a bin for Dynamic Definition.
 
     Args:
         subcircuit_instance_probabilities: The probability vectors from each
