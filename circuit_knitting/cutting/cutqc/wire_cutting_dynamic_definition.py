@@ -345,7 +345,7 @@ def _merge_states_into_bins(
     num_workers: int,
 ) -> dict[int, dict[int, np.ndarray]]:
     """
-    Submit tasks to the function that merges the probability vector for each rank
+    Submit tasks to the function that merges the probability vector for each rank.
 
     Args:
         subcircuit_instances: The dictionary containing the index information for each
