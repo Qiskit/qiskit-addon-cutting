@@ -98,7 +98,6 @@ def dd_build(
         dd_bins[recursion_layer]["smart_order"] = smart_order
         dd_bins[recursion_layer]["bins"] = reconstructed_prob
         dd_bins[recursion_layer]["expanded_bins"] = []
-        # [print(field,dd_bins[recursion_layer][field]) for field in dd_bins[recursion_layer]]
 
         #  Sort and truncate the largest bins
         has_merged_states = False
