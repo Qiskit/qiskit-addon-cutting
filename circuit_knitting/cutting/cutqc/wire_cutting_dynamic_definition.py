@@ -67,7 +67,6 @@ def dd_build(
 
     while recursion_layer < recursion_depth:
         #  Get qubit states
-        # print('-'*10,'Recursion Layer %d'%(recursion_layer),'-'*10)
         if recursion_layer == 0:
             dd_schedule = _initialize_dynamic_definition_schedule(counter, mem_limit)
         elif len(largest_bins) == 0:
