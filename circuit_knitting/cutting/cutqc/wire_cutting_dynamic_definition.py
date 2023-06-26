@@ -55,7 +55,7 @@ def dd_build(
         num_threads: The number of threads to use for multithreading
 
     Returns:
-        The bin for Dynamic Definition
+        The bin for dynamic definition
     """
 
     dd_bins: dict[int, dict[str, Any]] = {}
