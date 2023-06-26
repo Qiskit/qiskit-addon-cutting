@@ -454,7 +454,6 @@ def read_dd_bins(
                             binary_bin_id = binary_bin_id[1:]
                         else:
                             binary_full_state[qubit_idx] = "%s" % qubit_state
-                #print("reordered qubit state = {}".format(binary_full_state))
                 merged_qubit_indices = []
                 for qubit, qubit_state in enumerate(binary_full_state):
                     if qubit_state == "merged":
