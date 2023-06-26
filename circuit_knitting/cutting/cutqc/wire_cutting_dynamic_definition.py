@@ -229,7 +229,7 @@ def _next_dynamic_definition_schedule(
 
 def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, int]:
     """
-    Determine the size to merge bit depending on memory size
+    Determine the size to merge bit depending on memory size.
 
     Args:
         capacities: The number of bit that can be used
