@@ -243,7 +243,7 @@ def reconstruct_dd_full_distribute(
     dd_bins: dict[int, Any],
 ) -> np.ndarray:
     """
-    Reconstruct the full probabilities from bis of dynamic definition
+    Reconstruct the full probabilities from bins of dynamic definition.
 
     Args:
         circuit: The original full circuit
