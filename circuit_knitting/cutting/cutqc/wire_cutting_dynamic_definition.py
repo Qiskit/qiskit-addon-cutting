@@ -179,7 +179,6 @@ def _next_dynamic_definition_schedule(
     Returns:
         The schedule after second iteration of DD
     """
-    # print('Zoom in recursion layer %d bin %d'%(recursion_layer,bin_id))
     num_active = 0
     for subcircuit_idx in dd_bins[recursion_layer]["subcircuit_state"]:
         num_active += dd_bins[recursion_layer]["subcircuit_state"][
