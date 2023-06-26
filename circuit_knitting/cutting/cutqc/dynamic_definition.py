@@ -270,7 +270,6 @@ def _merge_prob_vector(
     num_merged = qubit_states.count("merged")
     merged_prob_vector = np.zeros(2**num_active, dtype="float32")
 
-
     for active_qubit_states in itertools.product(["0", "1"], repeat=num_active):
         if len(active_qubit_states) > 0:
             merged_bin_id = int("".join(active_qubit_states), 2)
@@ -427,7 +426,7 @@ def read_dd_bins(
         for bin_id, bin_prob in enumerate(dd_bins[recursion_layer]["bins"]):
             if bin_prob > 0 and bin_id not in dd_bins[recursion_layer]["expanded_bins"]:
                 binary_bin_id = bin(bin_id)[2:].zfill(num_active)
-                #print("dd bin %s" % binary_bin_id)
+                # print("dd bin %s" % binary_bin_id)
                 binary_full_state = ["" for _ in range(num_qubits)]
                 for subcircuit_idx in dd_bins[recursion_layer]["smart_order"]:
                     subcircuit_state = dd_bins[recursion_layer]["subcircuit_state"][
@@ -478,7 +477,7 @@ def get_reconstruction_qubit_order(
     Returns:
         The output qubit for the original circuit
     """
-    subcircuit_out_qubits: dict[int, list[int]] = {
+    subcircuit_out_qubits: dict[int, list[Qubit]] = {
         subcircuit_idx: [] for subcircuit_idx in range(len(subcircuits))
     }
     for input_qubit in complete_path_map:
@@ -488,15 +487,15 @@ def get_reconstruction_qubit_order(
             (
                 output_qubit["subcircuit_qubit"],
                 full_circuit.qubits.index(input_qubit),
-            )  # type:ignore
+            )
         )
     for subcircuit_idx in subcircuit_out_qubits:
         subcircuit_out_qubits[subcircuit_idx] = sorted(
             subcircuit_out_qubits[subcircuit_idx],
-            key=lambda x: subcircuits[subcircuit_idx].qubits.index(x[0]),  # type:ignore
+            key=lambda x: subcircuits[subcircuit_idx].qubits.index(x[0]),
             reverse=True,
         )
         subcircuit_out_qubits[subcircuit_idx] = [
-            x[1] for x in subcircuit_out_qubits[subcircuit_idx]  # type:ignore
+            x[1] for x in subcircuit_out_qubits[subcircuit_idx]
         ]
     return subcircuit_out_qubits

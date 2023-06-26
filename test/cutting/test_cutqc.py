@@ -101,11 +101,30 @@ class TestCircuitCutting(unittest.TestCase):
         )
         subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
 
-        dd_bins = create_dd_bin(
-            subcircuit_instance_probabilities, cuts, 4, 15 
-        )
+        dd_bins = create_dd_bin(subcircuit_instance_probabilities, cuts, 4, 15)
 
         dd_prob = reconstruct_dd_full_distribute(self.circuit, cuts, dd_bins)
         metrics, _ = verify(qc, dd_prob)
 
+        self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
+
+    def test_circuit_cutting_dynamic_definition_ghz(self):
+        qc = QuantumCircuit(20, name="ghz")
+        qc.h(0)
+        for i in range(20 - 1):
+            qc.cx(i, i + 1)
+
+        cuts = cut_circuit_wires(
+            circuit=qc,
+            method="automatic",
+            max_subcircuit_width=5,
+            max_cuts=8,
+            num_subcircuits=[3, 4, 5],
+        )
+
+        subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
+        dd_bins = create_dd_bin(subcircuit_instance_probabilities, cuts, 10, 5, 4)
+
+        dd_prob = reconstruct_dd_full_distribute(qc, cuts, dd_bins)
+        metrics, _ = verify(qc, dd_prob)
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
