@@ -57,7 +57,6 @@ def dd_build(
     Returns:
         The bin for dynamic definition
     """
-
     dd_bins: dict[int, dict[str, Any]] = {}
     dd_schedule: dict[str, dict[int, str]] = {}
     overhead = {"additions": 0, "multiplications": 0}
