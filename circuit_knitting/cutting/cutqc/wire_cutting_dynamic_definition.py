@@ -258,7 +258,7 @@ def _merge_prob_vector(
     unmerged_prob_vector: np.ndarray, qubit_states: str
 ) -> np.ndarray:
     """
-    Merge the probability vector
+    Merge the probability vector.
 
     Args:
         umperged_prob_vector: Original probability vector
