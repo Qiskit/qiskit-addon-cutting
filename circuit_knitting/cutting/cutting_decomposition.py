@@ -24,7 +24,7 @@ from qiskit.circuit import (
     CircuitInstruction,
     Barrier,
 )
-from qiskit.circuit.library.standard_gates import IGate
+from qiskit.circuit.library.standard_gates import XGate
 from qiskit.quantum_info import PauliList
 
 from ..utils.observable_grouping import observables_restricted_to_subsystem
@@ -167,7 +167,7 @@ def cut_gates(
 
 
 def find_gate_cuts(
-    circuit: QuantumCircuit, num_cuts: int, **transpilation_options: dict
+    circuit: QuantumCircuit, num_cuts: int, transpilation_options: dict
 ) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
     r"""
     Find an optimized set of gates to cut, given a transpilation context.
@@ -194,12 +194,14 @@ def find_gate_cuts(
     # multi-sweep, greedy approach is more powerfull than picking all the cuts in a single sweep.
     cut_indices = []
     for cuts in range(num_cuts):
-        cut_scores = _evaluate_cuts(circ_copy, **transpilation_options)
+        cut_scores = _evaluate_cuts(circ_copy, transpilation_options)
         best_idx = cut_scores[0][0]
         cut_indices.append(best_idx)
         # Put a single qubit placeholder in place of the optimal gate
         qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
-        circ_copy.data[best_idx] = CircuitInstruction(IGate(), qubits=(qubit0,))
+        # Use XGate as a placeholder since it will transpile to all our backends.
+        # IGate cannot transpile to Eagle backends.
+        circ_copy.data[best_idx] = CircuitInstruction(XGate(), qubits=(qubit0,))
 
     qpd_circuit, bases = cut_gates(circuit, cut_indices)
 
@@ -314,21 +316,28 @@ def decompose_observables(
 
 
 def _evaluate_cuts(
-    circuit: QuantumCircuit, **transpilation_options: dict
+    circuit: QuantumCircuit, transpilation_options: dict
 ) -> list[tuple[int, int]]:
     """Return the index and cut score for each supported gate in the circuit."""
     supported_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}
 
     input_depth = transpile(circuit, **transpilation_options).depth()
 
-    # For each supported gate in the circuit, assign a score based on the gate's SWAP overhead
+    # For each supported gate in the circuit, assign a score based on the gate's
+    # average SWAP overhead across num_reps transpilation runs
     cut_scores = []
     for i, inst in enumerate(circuit.data):
         if inst.operation.name not in supported_gates:
             continue
+        cut_score = 0
         del circuit.data[i]
-        cut_score = input_depth - transpile(circuit, **transpilation_options).depth()
-        cut_scores.append((i, cut_score))
+        # Try three times to mitigate outlier layouts from affecting the cutting scheme
+        num_reps = 3
+        for _ in range(num_reps):
+            cut_score += (
+                input_depth - transpile(circuit, **transpilation_options).depth()
+            )
+        cut_scores.append((i, cut_score / num_reps))
         circuit.data.insert(i, inst)
 
     return sorted(cut_scores, key=lambda x: x[1], reverse=True)
