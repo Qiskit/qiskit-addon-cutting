@@ -426,11 +426,6 @@ def read_dd_bins(
     reconstructed_prob = np.zeros(2**num_qubits, dtype=np.float32)
 
     for recursion_layer in dd_bins:
-        #print("-" * 20, "Verify Recursion Layer %d" % recursion_layer, "-" * 20)
-        #[
-        #    print(field, dd_bins[recursion_layer][field])
-        #    for field in dd_bins[recursion_layer]
-        #]
         num_active = sum(
             [
                 dd_bins[recursion_layer]["subcircuit_state"][subcircuit_idx].count(
