@@ -39,6 +39,7 @@ from qiskit.circuit.library.standard_gates import (
     CXGate,
     CYGate,
     CZGate,
+    CHGate,
     RXXGate,
     RYYGate,
     RZZGate,
@@ -306,8 +307,8 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("cx", "cy", "cz")
-def _(gate: CXGate | CYGate | CZGate):
+@_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
+def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     measurement_0 = [SdgGate(), QPDMeasure()]
@@ -325,7 +326,7 @@ def _(gate: CXGate | CYGate | CZGate):
         ([ZGate()], measurement_1),
     ]
 
-    if gate.name != "cz":
+    if gate.name in ("cx", "cy"):
         # Modify `maps` to sandwich the target operations inside of basis rotations
         for operations in {id(m[1]): m[1] for m in maps}.values():
             if operations:
@@ -334,6 +335,11 @@ def _(gate: CXGate | CYGate | CZGate):
                 if gate.name == "cy":
                     operations.insert(0, SdgGate())
                     operations.append(SGate())
+    elif gate.name == "ch":
+        for operations in {id(m[1]): m[1] for m in maps}.values():
+            if operations:
+                operations.insert(0, RYGate(-np.pi / 4))
+                operations.append(RYGate(np.pi / 4))
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 

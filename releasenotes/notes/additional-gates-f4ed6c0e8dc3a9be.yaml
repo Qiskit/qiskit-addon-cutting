@@ -1,4 +1,6 @@
 ---
 features:
   - |
-    Added support for cut :class:`~qiskit.circuit.library.CYGate`\ s.
+    This release adds support for additional cut gates:
+    - :class:`~qiskit.circuit.library.CHGate`
+    - :class:`~qiskit.circuit.library.CYGate`
