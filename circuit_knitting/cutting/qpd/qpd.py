@@ -37,7 +37,9 @@ from qiskit.circuit.library.standard_gates import (
     RYGate,
     RZGate,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
     RXXGate,
     RYYGate,
     RZZGate,
@@ -191,7 +193,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 8 operations:
+    This method currently supports 10 operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -199,7 +201,9 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CRYGate`
         - :class:`~qiskit.circuit.library.CRZGate`
         - :class:`~qiskit.circuit.library.CXGate`
+        - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
+        - :class:`~qiskit.circuit.library.CHGate`
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -304,8 +308,8 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("cz", "cx")
-def _(gate: CZGate | CXGate):
+@_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
+def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     measurement_0 = [SdgGate(), QPDMeasure()]
@@ -323,12 +327,19 @@ def _(gate: CZGate | CXGate):
         ([ZGate()], measurement_1),
     ]
 
-    if gate.name == "cx":
-        # Modify `maps` to sandwich the target operations inside of Hadamards
+    if gate.name != "cz":
+        # Modify `maps` to sandwich the target operations inside of basis rotations
         for operations in {id(m[1]): m[1] for m in maps}.values():
             if operations:
-                operations.insert(0, HGate())
-                operations.append(HGate())
+                if gate.name in ("cx", "cy"):
+                    operations.insert(0, HGate())
+                    operations.append(HGate())
+                    if gate.name == "cy":
+                        operations.insert(0, SdgGate())
+                        operations.append(SGate())
+                elif gate.name == "ch":
+                    operations.insert(0, RYGate(-np.pi / 4))
+                    operations.append(RYGate(np.pi / 4))
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
