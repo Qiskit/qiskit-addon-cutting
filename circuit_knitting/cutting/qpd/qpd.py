@@ -203,6 +203,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CXGate`
         - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
+        - :class:`~qiskit.circuit.library.CHGate`
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
