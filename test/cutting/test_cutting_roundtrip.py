@@ -22,6 +22,7 @@ from qiskit.circuit.library.standard_gates import (
     RYYGate,
     RZZGate,
     CXGate,
+    CYGate,
     CZGate,
     CRXGate,
     CRYGate,
@@ -49,6 +50,7 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
 @pytest.fixture(
     params=[
         [CXGate()],
+        [CYGate()],
         [CZGate()],
         [RYYGate(0.0)],
         [RZZGate(np.pi)],

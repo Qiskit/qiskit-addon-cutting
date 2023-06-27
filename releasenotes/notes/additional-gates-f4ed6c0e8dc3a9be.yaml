@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added support for cut :class:``~qiskit.circuit.library.CYGate`\ s.
