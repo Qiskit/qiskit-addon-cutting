@@ -1,4 +1,4 @@
 ---
 features:
   - |
-    Added support for cut :class:``~qiskit.circuit.library.CYGate`\ s.
+    Added support for cut :class:`~qiskit.circuit.library.CYGate`\ s.
