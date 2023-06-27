@@ -193,7 +193,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 8 operations:
+    This method currently supports 10 operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
