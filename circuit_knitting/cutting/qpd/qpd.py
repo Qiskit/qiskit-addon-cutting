@@ -327,20 +327,19 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
         ([ZGate()], measurement_1),
     ]
 
-    if gate.name in ("cx", "cy"):
+    if gate.name != "cz":
         # Modify `maps` to sandwich the target operations inside of basis rotations
         for operations in {id(m[1]): m[1] for m in maps}.values():
             if operations:
-                operations.insert(0, HGate())
-                operations.append(HGate())
-                if gate.name == "cy":
-                    operations.insert(0, SdgGate())
-                    operations.append(SGate())
-    elif gate.name == "ch":
-        for operations in {id(m[1]): m[1] for m in maps}.values():
-            if operations:
-                operations.insert(0, RYGate(-np.pi / 4))
-                operations.append(RYGate(np.pi / 4))
+                if gate.name in ("cx", "cy"):
+                    operations.insert(0, HGate())
+                    operations.append(HGate())
+                    if gate.name == "cy":
+                        operations.insert(0, SdgGate())
+                        operations.append(SGate())
+                elif gate.name == "ch":
+                    operations.insert(0, RYGate(-np.pi / 4))
+                    operations.append(RYGate(np.pi / 4))
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
