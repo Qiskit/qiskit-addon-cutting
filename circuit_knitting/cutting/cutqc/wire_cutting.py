@@ -25,7 +25,7 @@ from qiskit_ibm_runtime import Options, QiskitRuntimeService
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import generate_reconstructed_output
-from .wire_cutting_dynamic_definition import (
+from .dynamic_definition import (
     dd_build,
     get_reconstruction_qubit_order,
     read_dd_bins,
@@ -253,7 +253,6 @@ def reconstruct_dd_full_distribute(
     Returns:
         The reconstructed probability vector
     """
-
     subcircuit_out_qubits = get_reconstruction_qubit_order(
         full_circuit=circuit,
         complete_path_map=cuts["complete_path_map"],

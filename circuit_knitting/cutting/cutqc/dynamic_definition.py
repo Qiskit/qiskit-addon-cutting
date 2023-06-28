@@ -131,7 +131,7 @@ def _initialize_dynamic_definition_schedule(
     counter: dict[int, dict[str, int]], mem_limit: int
 ) -> dict[str, dict[int, str]]:
     """
-    Create schedule to merge each simulation result in first iteration for DD
+    Create schedule to merge each simulation result in first iteration for DD.
 
     Args:
         counter: The dictionary containing all meta information regarding
@@ -169,7 +169,7 @@ def _next_dynamic_definition_schedule(
     mem_limit: int,
 ) -> dict[str, dict[int, str]]:
     """
-    Create schedule to merge each simulation result after second iteration for DD
+    Create schedule to merge each simulation result after second iteration for DD.
 
     Args:
         counter: The dictionary containing all meta information regarding
@@ -315,7 +315,6 @@ def _merge_state_into_bins_parallel(
     Returns:
         The merged probability vector
     """
-
     merged_subcircuit_entry_probs: dict[int, dict[int, np.ndarray]] = {}
     for subcircuit_idx in subcircuit_instances:
         merged_subcircuit_entry_probs[subcircuit_idx] = {}
