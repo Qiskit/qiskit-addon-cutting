@@ -297,6 +297,7 @@ class TestQPDFunctions(unittest.TestCase):
                 "csx",
                 "cs",
                 "csdg",
+                "cp",
             },
             gates,
         )

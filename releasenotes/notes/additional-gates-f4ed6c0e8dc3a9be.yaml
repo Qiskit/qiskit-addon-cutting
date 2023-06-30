@@ -7,3 +7,4 @@ features:
     - :class:`~qiskit.circuit.library.CSXGate`
     - :class:`~qiskit.circuit.library.CSGate`
     - :class:`~qiskit.circuit.library.CSdgGate`
+    - :class:`~qiskit.circuit.library.CPhaseGate`
