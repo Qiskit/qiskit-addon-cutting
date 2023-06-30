@@ -42,6 +42,8 @@ from qiskit.circuit.library.standard_gates import (
     CYGate,
     CZGate,
     CHGate,
+    CSGate,
+    CSdgGate,
     RXXGate,
     RYYGate,
     RZZGate,
@@ -315,9 +317,15 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("csx")
-def _(gate: CSXGate):
-    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+@_register_qpdbasis_from_gate("csx", "cs", "csdg")
+def _(gate: CSXGate | CSGate | CSdgGate):
+    theta = np.pi / 2
+    if gate.name == "csdg":
+        theta *= -1
+    if gate.name == "csx":
+        retval = qpdbasis_from_gate(CRXGate(theta))
+    else:
+        retval = qpdbasis_from_gate(CRZGate(theta))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TGate())
     return retval
