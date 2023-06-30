@@ -231,11 +231,11 @@ def supported_gates() -> set[str]:
     return set(_qpdbasis_from_gate_funcs)
 
 
-@_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz", "csx")
-def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate):
+@_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
+def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
-    if gate.name in ("rxx", "crx", "csx"):
+    if gate.name in ("rxx", "crx"):
         pauli = XGate()
         r_plus = RXGate(0.5 * np.pi)
         # x basis measurement (and back again)
@@ -265,17 +265,13 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate)
         ([r_minus], measurement_1),
     ]
 
-    if gate.name == "csx":
-        theta = np.pi / 2
-
     # If theta is a bound ParameterExpression, convert to float, else raise error.
-    else:
-        try:
-            theta = float(gate.params[0])
-        except TypeError as err:
-            raise ValueError(
-                f"Cannot decompose ({gate.name}) gate with unbound parameters."
-            ) from err
+    try:
+        theta = float(gate.params[0])
+    except TypeError as err:
+        raise ValueError(
+            f"Cannot decompose ({gate.name}) gate with unbound parameters."
+        ) from err
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
@@ -292,8 +288,6 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate)
                 operations.append(HGate())
         rot = type(r_plus)(-theta)
         for operations in unique_by_id(m[1] for m in maps):
-            if gate.name == "csx":
-                operations.insert(0, TGate())
             operations.append(rot)
 
     # Generate QPD coefficients for gates specified by Mitarai et al -
@@ -314,6 +308,14 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate)
     ]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("csx")
+def _(gate: CSXGate):
+    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TGate())
+    return retval
 
 
 @_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
