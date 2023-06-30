@@ -32,6 +32,7 @@ from qiskit.circuit.library.standard_gates import (
     ZGate,
     HGate,
     SGate,
+    TGate,
     SdgGate,
     RXGate,
     RYGate,
@@ -291,6 +292,8 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate)
                 operations.append(HGate())
         rot = type(r_plus)(-theta)
         for operations in unique_by_id(m[1] for m in maps):
+            if gate.name == "csx":
+                operations.insert(0, TGate())
             operations.append(rot)
 
     # Generate QPD coefficients for gates specified by Mitarai et al -
