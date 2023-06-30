@@ -373,18 +373,21 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
 
 
 def _theta_from_gate(gate: Gate) -> float:
+    param_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}
+    set_rot_gates = {"cs", "csdg", "csx"}
+
+    # Internal function should only be called for supported gates
+    assert gate.name in param_gates.union(set_rot_gates)
+
     # If theta is a bound ParameterExpression, convert to float, else raise error.
-    if gate.name in {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}:
+    if gate.name in param_gates:
         try:
             theta = float(gate.params[0])
         except TypeError as err:
             raise ValueError(
                 f"Cannot decompose ({gate.name}) gate with unbound parameters."
             ) from err
-
     else:
-        # Internal function. Should only be called for supported gates
-        assert gate.name in {"cs", "csdg", "csx"}
         theta = np.pi / 2
         if gate.name == "csdg":
             theta *= -1
