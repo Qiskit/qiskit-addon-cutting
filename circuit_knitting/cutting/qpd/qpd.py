@@ -41,6 +41,8 @@ from qiskit.circuit.library.standard_gates import (
     CYGate,
     CZGate,
     CHGate,
+    CSGate,
+    CSdgGate,
     RXXGate,
     RYYGate,
     RZZGate,
@@ -195,7 +197,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 10 operations:
+    This method currently supports the following operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -206,6 +208,9 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
         - :class:`~qiskit.circuit.library.CHGate`
+        - :class:`~qiskit.circuit.library.CSXGate`
+        - :class:`~qiskit.circuit.library.CSGate`
+        - :class:`~qiskit.circuit.library.CSdgGate`
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -310,11 +315,22 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("csx")
-def _(gate: CSXGate):
-    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
-    for operations in unique_by_id(m[0] for m in retval.maps):
-        operations.insert(0, TGate())
+@_register_qpdbasis_from_gate("csx", "cs", "csdg")
+def _(gate: CSXGate | CSGate | CSdgGate):
+    theta = np.pi / 2
+    if gate.name == "csdg":
+        theta *= -1
+    if gate.name == "csx":
+        retval = qpdbasis_from_gate(CRXGate(theta))
+    else:
+        retval = qpdbasis_from_gate(CRZGate(theta))
+    if gate.name != "csdg":
+        for operations in unique_by_id(m[0] for m in retval.maps):
+            operations.insert(0, TGate())
+    else:
+        for operations in unique_by_id(m[0] for m in retval.maps):
+            operations.insert(0, TdgGate())
+
     return retval
 
 
