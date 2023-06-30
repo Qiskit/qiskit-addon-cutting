@@ -286,6 +286,6 @@ class TestQPDFunctions(unittest.TestCase):
     def test_supported_gates(self):
         gates = supported_gates()
         self.assertEqual(
-            {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cy", "cz", "ch", "ecr"},
+            {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cy", "cz", "ch", "csx", "ecr"},
             gates,
         )
