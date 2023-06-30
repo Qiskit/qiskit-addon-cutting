@@ -46,6 +46,7 @@ from qiskit.circuit.library.standard_gates import (
     CRXGate,
     CRYGate,
     CRZGate,
+    CSXGate,
 )
 
 from .qpd_basis import QPDBasis
@@ -229,11 +230,11 @@ def supported_gates() -> set[str]:
     return set(_qpdbasis_from_gate_funcs)
 
 
-@_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
-def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
+@_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz", "csx")
+def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate | CSXGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
-    if gate.name in ("rxx", "crx"):
+    if gate.name in ("rxx", "crx", "csx"):
         pauli = XGate()
         r_plus = RXGate(0.5 * np.pi)
         # x basis measurement (and back again)
@@ -263,13 +264,17 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         ([r_minus], measurement_1),
     ]
 
+    if gate.name == "csx":
+        theta = np.pi / 2
+
     # If theta is a bound ParameterExpression, convert to float, else raise error.
-    try:
-        theta = float(gate.params[0])
-    except TypeError as err:
-        raise ValueError(
-            f"Cannot decompose ({gate.name}) gate with unbound parameters."
-        ) from err
+    else:
+        try:
+            theta = float(gate.params[0])
+        except TypeError as err:
+            raise ValueError(
+                f"Cannot decompose ({gate.name}) gate with unbound parameters."
+            ) from err
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
