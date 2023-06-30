@@ -33,6 +33,7 @@ from qiskit.circuit.library.standard_gates import (
     HGate,
     SGate,
     SdgGate,
+    SXGate,
     RXGate,
     RYGate,
     RZGate,
@@ -46,6 +47,7 @@ from qiskit.circuit.library.standard_gates import (
     CRXGate,
     CRYGate,
     CRZGate,
+    SwapGate,
 )
 
 from .qpd_basis import QPDBasis
@@ -227,6 +229,93 @@ def supported_gates() -> set[str]:
         Set of gate names supported for automatic decomposition.
     """
     return set(_qpdbasis_from_gate_funcs)
+
+
+def _nonlocal_qpd_basis_from_u(
+    u: np.typing.NDArray[np.float64] | Sequence[float], /
+) -> QPDBasis:
+    u = np.asarray(u)
+    if u.shape != (4,):
+        raise ValueError("wrong shape")
+    # The following operations are described in Sec. 2.3 of
+    # https://quantum-journal.org/papers/q-2021-01-28-388/
+    Axyp = [SGate(), YGate()]
+    Axym = [ZGate()] + Axyp
+    Ayzp = [SXGate(), ZGate()]
+    Ayzm = [XGate()] + Ayzp
+    Azxp = [HGate()]
+    Azxm = [YGate()] + Azxp
+    A0x = [HGate(), QPDMeasure(), HGate()]
+    A0y = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+    A0z = [QPDMeasure()]
+    Bxy = A0z + [XGate()]
+    Byz = A0x + [YGate()]
+    Bzx = A0y + [ZGate()]
+    B0xp = [RXGate(0.5 * np.pi)]
+    B0xm = [RXGate(-0.5 * np.pi)]
+    B0yp = [RYGate(0.5 * np.pi)]
+    B0ym = [RYGate(-0.5 * np.pi)]
+    B0zp = [RZGate(0.5 * np.pi)]
+    B0zm = [RZGate(-0.5 * np.pi)]
+    coeffs, maps1, maps2 = zip(
+        # First line of Eq. (19) in
+        # https://quantum-journal.org/papers/q-2021-01-28-388/
+        (np.abs(u[0]) ** 2, [], []),  # Identity
+        (np.abs(u[1]) ** 2, [XGate()], [XGate()]),
+        (np.abs(u[2]) ** 2, [YGate()], [YGate()]),
+        (np.abs(u[3]) ** 2, [ZGate()], [ZGate()]),
+        # Second line
+        (2 * np.real(u[0] * np.conj(u[1])), A0x, A0x),
+        (2 * np.real(u[0] * np.conj(u[2])), A0y, A0y),
+        (2 * np.real(u[0] * np.conj(u[3])), A0z, A0z),
+        (0.5 * np.real(u[1] * np.conj(u[2])), Axyp, Axyp),
+        (-0.5 * np.real(u[1] * np.conj(u[2])), Axyp, Axym),
+        (-0.5 * np.real(u[1] * np.conj(u[2])), Axym, Axyp),
+        (0.5 * np.real(u[1] * np.conj(u[2])), Axym, Axym),
+        (0.5 * np.real(u[2] * np.conj(u[3])), Ayzp, Ayzp),
+        (-0.5 * np.real(u[2] * np.conj(u[3])), Ayzp, Ayzm),
+        (-0.5 * np.real(u[2] * np.conj(u[3])), Ayzm, Ayzp),
+        (0.5 * np.real(u[2] * np.conj(u[3])), Ayzm, Ayzm),
+        (0.5 * np.real(u[3] * np.conj(u[1])), Azxp, Azxp),
+        (-0.5 * np.real(u[3] * np.conj(u[1])), Azxp, Azxm),
+        (-0.5 * np.real(u[3] * np.conj(u[1])), Azxm, Azxp),
+        (0.5 * np.real(u[3] * np.conj(u[1])), Azxm, Azxm),
+        (-0.5 * np.real(u[0] * np.conj(u[1])), B0xp, B0xp),
+        (0.5 * np.real(u[0] * np.conj(u[1])), B0xp, B0xm),
+        (0.5 * np.real(u[0] * np.conj(u[1])), B0xm, B0xp),
+        (-0.5 * np.real(u[0] * np.conj(u[1])), B0xm, B0xm),
+        (-0.5 * np.real(u[0] * np.conj(u[2])), B0yp, B0yp),
+        (0.5 * np.real(u[0] * np.conj(u[2])), B0yp, B0ym),
+        (0.5 * np.real(u[0] * np.conj(u[2])), B0ym, B0yp),
+        (-0.5 * np.real(u[0] * np.conj(u[2])), B0ym, B0ym),
+        (-0.5 * np.real(u[0] * np.conj(u[3])), B0zp, B0zp),
+        (0.5 * np.real(u[0] * np.conj(u[3])), B0zp, B0zm),
+        (0.5 * np.real(u[0] * np.conj(u[3])), B0zm, B0zp),
+        (-0.5 * np.real(u[0] * np.conj(u[3])), B0zm, B0zm),
+        (-2 * np.real(u[1] * np.conj(u[2])), Bxy, Bxy),
+        (-2 * np.real(u[2] * np.conj(u[3])), Byz, Byz),
+        (-2 * np.real(u[3] * np.conj(u[1])), Bzx, Bzx),
+        # Third line
+        (np.imag(u[0] * np.conj(u[1])), A0x, B0xp),
+        (-np.imag(u[0] * np.conj(u[1])), A0x, B0xm),
+        (np.imag(u[0] * np.conj(u[2])), A0y, B0yp),
+        (-np.imag(u[0] * np.conj(u[2])), A0y, B0ym),
+        (np.imag(u[0] * np.conj(u[3])), A0z, B0zp),
+        (-np.imag(u[0] * np.conj(u[3])), A0z, B0zm),
+        (np.imag(u[0] * np.conj(u[1])), B0xp, A0x),
+        (-np.imag(u[0] * np.conj(u[1])), B0xm, A0x),
+        (np.imag(u[0] * np.conj(u[2])), B0yp, A0y),
+        (-np.imag(u[0] * np.conj(u[2])), B0ym, A0y),
+        (np.imag(u[0] * np.conj(u[3])), B0zp, A0z),
+        (-np.imag(u[0] * np.conj(u[3])), B0zm, A0z),
+    )
+    maps = list(zip(maps1, maps2))
+    return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("swap")
+def _(gate: SwapGate):
+    return _nonlocal_qpd_basis_from_u([(1 + 1j) / np.sqrt(8)] * 4)
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")

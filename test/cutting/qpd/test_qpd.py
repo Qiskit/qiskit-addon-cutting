@@ -245,6 +245,7 @@ class TestQPDFunctions(unittest.TestCase):
         (RXXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RYYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RZZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
+        (SwapGate(), 7),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):
@@ -283,5 +284,6 @@ class TestQPDFunctions(unittest.TestCase):
     def test_supported_gates(self):
         gates = supported_gates()
         self.assertEqual(
-            {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cy", "cz", "ch"}, gates
+            {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cy", "cz", "ch", "swap"},
+            gates,
         )
