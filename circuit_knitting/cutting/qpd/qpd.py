@@ -49,6 +49,7 @@ from qiskit.circuit.library.standard_gates import (
     CRYGate,
     CRZGate,
     SwapGate,
+    iSwapGate,
     ECRGate,
     CSXGate,
 )
@@ -343,6 +344,12 @@ def _nonlocal_qpd_basis_from_u(
 @_register_qpdbasis_from_gate("swap")
 def _(gate: SwapGate):
     return _nonlocal_qpd_basis_from_u([(1 + 1j) / np.sqrt(8)] * 4)
+
+
+@_register_qpdbasis_from_gate("iswap")
+def _(gate: iSwapGate):
+    retval = _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
+    return retval
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
