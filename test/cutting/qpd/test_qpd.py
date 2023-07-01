@@ -38,6 +38,7 @@ from circuit_knitting.cutting.qpd import (
     generate_qpd_samples,
 )
 from circuit_knitting.cutting.qpd.qpd import *
+from circuit_knitting.cutting.qpd.qpd import _nonlocal_qpd_basis_from_u
 
 
 @ddt
@@ -304,3 +305,12 @@ class TestQPDFunctions(unittest.TestCase):
             },
             gates,
         )
+
+    def test_nonlocal_qpd_basis_from_u(self):
+        with self.subTest("Invalid shape"):
+            with pytest.raises(ValueError) as e_info:
+                _nonlocal_qpd_basis_from_u([1,2,3])
+            assert (
+                e_info.value.args[0]
+                == "u vector has wrong shape: (3,) (1D vector of length 4 expected)"
+            )

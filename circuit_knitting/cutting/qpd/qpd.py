@@ -242,7 +242,9 @@ def _nonlocal_qpd_basis_from_u(
 ) -> QPDBasis:
     u = np.asarray(u)
     if u.shape != (4,):
-        raise ValueError("wrong shape")
+        raise ValueError(
+            f"u vector has wrong shape: {u.shape} (1D vector of length 4 expected)"
+        )
     # The following operations are described in Sec. 2.3 of
     # https://quantum-journal.org/papers/q-2021-01-28-388/
     Axyp = [SGate(), YGate()]
