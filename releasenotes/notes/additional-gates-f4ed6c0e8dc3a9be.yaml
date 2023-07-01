@@ -8,3 +8,4 @@ features:
     - :class:`~qiskit.circuit.library.ECRGate`
     - :class:`~qiskit.circuit.library.SwapGate`
     - :class:`~qiskit.circuit.library.iSwapGate`
+    - :class:`~qiskit.circuit.library.DCXGate`
