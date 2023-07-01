@@ -6,3 +6,5 @@ features:
     - :class:`~qiskit.circuit.library.CYGate`
     - :class:`~qiskit.circuit.library.SXGate`
     - :class:`~qiskit.circuit.library.ECRGate`
+    - :class:`~qiskit.circuit.library.SwapGate`
+    - :class:`~qiskit.circuit.library.iSwapGate`
