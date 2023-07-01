@@ -249,24 +249,31 @@ def _nonlocal_qpd_basis_from_u(
         )
     # The following operations are described in Sec. 2.3 of
     # https://quantum-journal.org/papers/q-2021-01-28-388/
+    #
+    # Projective measurements in each basis
+    A0x = [HGate(), QPDMeasure(), HGate()]
+    A0y = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+    A0z = [QPDMeasure()]
+    # Single qubit rotations that swap two axes.  There are "plus" and "minus"
+    # versions of these rotations.  The "minus" rotations also flip the sign
+    # along that axis.
     Axyp = [SGate(), YGate()]
     Axym = [ZGate()] + Axyp
     Ayzp = [SXGate(), ZGate()]
     Ayzm = [XGate()] + Ayzp
     Azxp = [HGate()]
     Azxm = [YGate()] + Azxp
-    A0x = [HGate(), QPDMeasure(), HGate()]
-    A0y = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
-    A0z = [QPDMeasure()]
-    Bxy = A0z + [XGate()]
-    Byz = A0x + [YGate()]
-    Bzx = A0y + [ZGate()]
+    # Single qubit rotations by ±pi/4 about an axis.
     B0xp = [SXGate()]
     B0xm = [SXdgGate()]
     B0yp = [RYGate(0.5 * np.pi)]
     B0ym = [RYGate(-0.5 * np.pi)]
     B0zp = [SGate()]
     B0zm = [SdgGate()]
+    # Projective measurements, each followed by the proper flip.
+    Bxy = A0z + [XGate()]
+    Byz = A0x + [YGate()]
+    Bzx = A0y + [ZGate()]
     # The following values occur repeatedly in the coefficients
     uu01 = u[0] * np.conj(u[1])
     uu02 = u[0] * np.conj(u[2])
