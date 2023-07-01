@@ -32,9 +32,10 @@ from qiskit.circuit.library.standard_gates import (
     ZGate,
     HGate,
     SGate,
-    TGate,
     SdgGate,
     SXGate,
+    SXdgGate,
+    TGate,
     RXGate,
     RYGate,
     RZGate,
@@ -260,12 +261,12 @@ def _nonlocal_qpd_basis_from_u(
     Bxy = A0z + [XGate()]
     Byz = A0x + [YGate()]
     Bzx = A0y + [ZGate()]
-    B0xp = [RXGate(0.5 * np.pi)]
-    B0xm = [RXGate(-0.5 * np.pi)]
+    B0xp = [SXGate()]
+    B0xm = [SXdgGate()]
     B0yp = [RYGate(0.5 * np.pi)]
     B0ym = [RYGate(-0.5 * np.pi)]
-    B0zp = [RZGate(0.5 * np.pi)]
-    B0zm = [RZGate(-0.5 * np.pi)]
+    B0zp = [SGate()]
+    B0zm = [SdgGate()]
     # The following values occur repeatedly in the coefficients
     uu01 = u[0] * np.conj(u[1])
     uu02 = u[0] * np.conj(u[2])
