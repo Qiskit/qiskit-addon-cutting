@@ -349,8 +349,7 @@ def _(gate: SwapGate):
 
 @_register_qpdbasis_from_gate("iswap")
 def _(gate: iSwapGate):
-    retval = _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
-    return retval
+    return _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
