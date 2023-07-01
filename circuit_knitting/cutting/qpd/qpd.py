@@ -239,6 +239,22 @@ def supported_gates() -> set[str]:
     return set(_qpdbasis_from_gate_funcs)
 
 
+def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
+    """
+    Copy each list in a sequence of lists while preserving uniqueness.
+
+    This is useful to ensure that the two sets of ``maps`` in a
+    :class:`QPDBasis` will be independent of each other.  This enables one to
+    subsequently edit the ``maps`` independently of each other (e.g., to apply
+    single-qubit pre- or post-rotations.
+    """
+    copy_by_id: dict[int, list] = {}
+    for lst in lsts:
+        if id(lst) not in copy_by_id:
+            copy_by_id[id(lst)] = lst.copy()
+    return tuple(copy_by_id[id(lst)] for lst in lsts)
+
+
 def _nonlocal_qpd_basis_from_u(
     u: np.typing.NDArray[np.complex128] | Sequence[complex], /
 ) -> QPDBasis:
@@ -345,7 +361,7 @@ def _nonlocal_qpd_basis_from_u(
         (np.imag(uu31), Bzx, Azxp),
         (-np.imag(uu31), Bzx, Azxm),
     )
-    maps = list(zip(maps1, maps2))
+    maps = list(zip(maps1, _copy_unique_sublists(maps2)))
     return QPDBasis(maps, coeffs)
 
 
