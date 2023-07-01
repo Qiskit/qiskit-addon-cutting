@@ -251,6 +251,7 @@ class TestQPDFunctions(unittest.TestCase):
         (RZZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (SwapGate(), 7),
         (iSwapGate(), 7),
+        (DCXGate(), 7),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):

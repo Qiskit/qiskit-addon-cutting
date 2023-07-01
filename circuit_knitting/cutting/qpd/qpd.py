@@ -280,7 +280,7 @@ def _nonlocal_qpd_basis_from_u(
     Ayzm = [XGate()] + Ayzp
     Azxp = [HGate()]
     Azxm = [YGate()] + Azxp
-    # Single qubit rotations by ±pi/4 about an axis.
+    # Single qubit rotations by ±pi/4 about each axis.
     B0xp = [SXGate()]
     B0xm = [SXdgGate()]
     B0yp = [RYGate(0.5 * np.pi)]
