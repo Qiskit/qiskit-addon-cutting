@@ -298,14 +298,14 @@ def _nonlocal_qpd_basis_from_u(
         # Third line
         (np.imag(u[0] * np.conj(u[1])), A0x, B0xp),
         (-np.imag(u[0] * np.conj(u[1])), A0x, B0xm),
-        (np.imag(u[0] * np.conj(u[2])), A0y, B0yp),
-        (-np.imag(u[0] * np.conj(u[2])), A0y, B0ym),
-        (np.imag(u[0] * np.conj(u[3])), A0z, B0zp),
-        (-np.imag(u[0] * np.conj(u[3])), A0z, B0zm),
         (np.imag(u[0] * np.conj(u[1])), B0xp, A0x),
         (-np.imag(u[0] * np.conj(u[1])), B0xm, A0x),
+        (np.imag(u[0] * np.conj(u[2])), A0y, B0yp),
+        (-np.imag(u[0] * np.conj(u[2])), A0y, B0ym),
         (np.imag(u[0] * np.conj(u[2])), B0yp, A0y),
         (-np.imag(u[0] * np.conj(u[2])), B0ym, A0y),
+        (np.imag(u[0] * np.conj(u[3])), A0z, B0zp),
+        (-np.imag(u[0] * np.conj(u[3])), A0z, B0zm),
         (np.imag(u[0] * np.conj(u[3])), B0zp, A0z),
         (-np.imag(u[0] * np.conj(u[3])), B0zm, A0z),
     )
