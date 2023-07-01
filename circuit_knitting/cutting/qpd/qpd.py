@@ -239,7 +239,7 @@ def supported_gates() -> set[str]:
 
 
 def _nonlocal_qpd_basis_from_u(
-    u: np.typing.NDArray[np.float64] | Sequence[float], /
+    u: np.typing.NDArray[np.complex128] | Sequence[complex], /
 ) -> QPDBasis:
     u = np.asarray(u)
     if u.shape != (4,):
