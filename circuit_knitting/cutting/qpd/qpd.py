@@ -49,10 +49,11 @@ from qiskit.circuit.library.standard_gates import (
     CRXGate,
     CRYGate,
     CRZGate,
-    SwapGate,
-    iSwapGate,
     ECRGate,
     CSXGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 
 from .qpd_basis import QPDBasis
@@ -373,6 +374,20 @@ def _(gate: SwapGate):
 @_register_qpdbasis_from_gate("iswap")
 def _(gate: iSwapGate):
     return _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
+
+
+@_register_qpdbasis_from_gate("dcx")
+def _(gate: DCXGate):
+    retval = qpdbasis_from_gate(iSwapGate())
+    # Modify basis according to DCXGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SdgGate())
+        operations.insert(0, HGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SdgGate())
+        operations.append(HGate())
+    return retval
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")

@@ -304,6 +304,7 @@ class TestQPDFunctions(unittest.TestCase):
                 "ecr",
                 "swap",
                 "iswap",
+                "dcx",
             },
             gates,
         )
