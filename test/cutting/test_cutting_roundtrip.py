@@ -29,6 +29,8 @@ from qiskit.circuit.library.standard_gates import (
     CRYGate,
     CRZGate,
     SwapGate,
+    ECRGate,
+    CSXGate,
 )
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
@@ -56,6 +58,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CYGate()],
         [CZGate()],
         [CHGate()],
+        [ECRGate()],
+        [CSXGate()],
         [RYYGate(0.0)],
         [RZZGate(np.pi)],
         [RXXGate(np.pi / 3)],

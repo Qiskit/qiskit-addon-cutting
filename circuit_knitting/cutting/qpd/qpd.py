@@ -32,6 +32,7 @@ from qiskit.circuit.library.standard_gates import (
     ZGate,
     HGate,
     SGate,
+    TGate,
     SdgGate,
     SXGate,
     RXGate,
@@ -48,6 +49,8 @@ from qiskit.circuit.library.standard_gates import (
     CRYGate,
     CRZGate,
     SwapGate,
+    ECRGate,
+    CSXGate,
 )
 
 from .qpd_basis import QPDBasis
@@ -195,7 +198,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 10 operations:
+    This method currently supports the following operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -206,6 +209,9 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
         - :class:`~qiskit.circuit.library.CHGate`
+
+    The above gate names can also be determined by calling
+    :func:`supported_gates`.
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -409,6 +415,14 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
+@_register_qpdbasis_from_gate("csx")
+def _(gate: CSXGate):
+    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TGate())
+    return retval
+
+
 @_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
 def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
@@ -430,7 +444,7 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
 
     if gate.name != "cz":
         # Modify `maps` to sandwich the target operations inside of basis rotations
-        for operations in {id(m[1]): m[1] for m in maps}.values():
+        for operations in unique_by_id(m[1] for m in maps):
             if operations:
                 if gate.name in ("cx", "cy"):
                     operations.insert(0, HGate())
@@ -445,6 +459,19 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("ecr")
+def _(gate: ECRGate):
+    retval = qpdbasis_from_gate(CXGate())
+    # Modify basis according to ECRGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SGate())
+        operations.append(XGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SXGate())
+    return retval
 
 
 def _validate_qpd_instructions(
