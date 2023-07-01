@@ -308,6 +308,18 @@ def _nonlocal_qpd_basis_from_u(
         (-np.imag(u[0] * np.conj(u[3])), A0z, B0zm),
         (np.imag(u[0] * np.conj(u[3])), B0zp, A0z),
         (-np.imag(u[0] * np.conj(u[3])), B0zm, A0z),
+        (np.imag(u[1] * np.conj(u[2])), Axyp, Bxy),
+        (-np.imag(u[1] * np.conj(u[2])), Axym, Bxy),
+        (np.imag(u[1] * np.conj(u[2])), Bxy, Axyp),
+        (-np.imag(u[1] * np.conj(u[2])), Bxy, Axym),
+        (np.imag(u[2] * np.conj(u[3])), Ayzp, Byz),
+        (-np.imag(u[2] * np.conj(u[3])), Ayzm, Byz),
+        (np.imag(u[2] * np.conj(u[3])), Byz, Ayzp),
+        (-np.imag(u[2] * np.conj(u[3])), Byz, Ayzm),
+        (np.imag(u[3] * np.conj(u[1])), Azxp, Bzx),
+        (-np.imag(u[3] * np.conj(u[1])), Azxm, Bzx),
+        (np.imag(u[3] * np.conj(u[1])), Bzx, Azxp),
+        (-np.imag(u[3] * np.conj(u[1])), Bzx, Azxm),
     )
     maps = list(zip(maps1, maps2))
     return QPDBasis(maps, coeffs)
