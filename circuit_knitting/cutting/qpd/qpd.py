@@ -325,7 +325,7 @@ def _(gate: CSXGate | CSGate | CSdgGate | CPhaseGate):
         retval = qpdbasis_from_gate(CRXGate(theta))
     else:
         retval = qpdbasis_from_gate(CRZGate(theta))
-    if gate.name in {"csx", "cs"}:
+    if gate.name in ("csx", "cs"):
         for operations in unique_by_id(m[0] for m in retval.maps):
             operations.insert(0, TGate())
     elif gate.name in {"csdg"}:
