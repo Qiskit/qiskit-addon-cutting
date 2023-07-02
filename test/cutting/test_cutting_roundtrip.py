@@ -76,6 +76,7 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CRYGate(np.pi / 7)],
         [CRZGate(np.pi / 11)],
         [RXXGate(np.pi / 3), CRYGate(np.pi / 7)],
+        [UnitaryGate(random_unitary(2**2))],
     ]
 )
 def example_circuit(

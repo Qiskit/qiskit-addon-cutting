@@ -38,7 +38,10 @@ from circuit_knitting.cutting.qpd import (
     generate_qpd_samples,
 )
 from circuit_knitting.cutting.qpd.qpd import *
-from circuit_knitting.cutting.qpd.qpd import _nonlocal_qpd_basis_from_u
+from circuit_knitting.cutting.qpd.qpd import (
+    _nonlocal_qpd_basis_from_u,
+    _u_from_thetavec,
+)
 
 
 @ddt
@@ -317,4 +320,21 @@ class TestQPDFunctions(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "u vector has wrong shape: (3,) (1D vector of length 4 expected)"
+            )
+
+    @data(
+        ([np.pi / 4] * 3, [(1 + 1j) / np.sqrt(8)] * 4),
+        ([np.pi / 4, np.pi / 4, 0], [0.5, 0.5j, 0.5j, 0.5]),
+    )
+    @unpack
+    def test_u_from_thetavec(self, theta, expected):
+        assert _u_from_thetavec(theta) == pytest.approx(expected)
+
+    def test_u_from_thetavec_exceptions(self):
+        with self.subTest("Invalid shape"):
+            with pytest.raises(ValueError) as e_info:
+                _u_from_thetavec([0, 1, 2, 3])
+            assert (
+                e_info.value.args[0]
+                == "theta vector has wrong shape: (4,) (1D vector of length 3 expected)"
             )

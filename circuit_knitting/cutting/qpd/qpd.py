@@ -55,6 +55,8 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
+from qiskit.extensions import UnitaryGate
+from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomposition
 
 from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
@@ -225,9 +227,24 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
     except KeyError:
-        raise ValueError(f"Gate not supported: {gate.name}") from None
+        pass
     else:
         return f(gate)
+
+    if isinstance(gate, Gate) and gate.num_qubits == 2:
+        mat = gate.to_matrix()
+        d = TwoQubitWeylDecomposition(mat)
+        u = _u_from_thetavec([d.a, d.b, d.c])
+        retval = _nonlocal_qpd_basis_from_u(u)
+        for operations in unique_by_id(m[0] for m in retval.maps):
+            operations.insert(0, UnitaryGate(d.K2r))
+            operations.append(UnitaryGate(d.K1r))
+        for operations in unique_by_id(m[1] for m in retval.maps):
+            operations.insert(0, UnitaryGate(d.K2l))
+            operations.append(UnitaryGate(d.K1l))
+        return retval
+
+    raise ValueError(f"Gate not supported: {gate.name}") from None
 
 
 def supported_gates() -> set[str]:
@@ -254,6 +271,26 @@ def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
         if id(lst) not in copy_by_id:
             copy_by_id[id(lst)] = lst.copy()
     return tuple(copy_by_id[id(lst)] for lst in lsts)
+
+
+def _u_from_thetavec(
+    theta: np.typing.NDArray[np.float64] | Sequence[float], /
+) -> np.ndarray[np.float64]:
+    theta = np.asarray(theta)
+    if theta.shape != (3,):
+        raise ValueError(
+            f"theta vector has wrong shape: {theta.shape} (1D vector of length 3 expected)"
+        )
+    eigvals = np.array(
+        [
+            -np.sum(theta),
+            -theta[0] + theta[1] + theta[2],
+            -theta[1] + theta[2] + theta[0],
+            -theta[2] + theta[0] + theta[1],
+        ]
+    )
+    eigvecs = np.ones([1, 1]) / 2 - np.eye(4)
+    return np.transpose(eigvecs) @ (np.exp(1j * eigvals) * eigvecs[:, 0])
 
 
 def _nonlocal_qpd_basis_from_u(
