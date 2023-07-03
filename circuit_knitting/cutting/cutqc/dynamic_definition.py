@@ -355,7 +355,6 @@ def _merge_states_into_bins(
     Returns:
         The merged probability vector
     """
-
     #  The first merge of subcircuit probs using the target number of bins
     #  Saves the overhead of writing many states in the first SM recursion
     workers_merge_subcircuit_entry_probs = []
