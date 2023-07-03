@@ -81,7 +81,7 @@ from .cutting_decomposition import (
     cut_gates,
     decompose_gates,
     PartitionedCuttingProblem,
-    CutInfo
+    CutInfo,
 )
 from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
