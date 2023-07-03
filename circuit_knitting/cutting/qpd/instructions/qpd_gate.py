@@ -201,6 +201,11 @@ class SingleQubitQPDGate(BaseQPDGate):
             qc.append(CircuitInstruction(op, [qc.qubits[0]], []))
         self.definition = qc
 
+    @property
+    def _directive(self):
+        """``True`` if the ``basis_id`` is unassigned, which implies this instruction cannot be decomposed."""
+        return self.basis_id is None
+
     def __eq__(self, other):
         """Check equivalence for SingleQubitQPDGate class."""
         return super().__eq__(other) and self.qubit_id == other.qubit_id
