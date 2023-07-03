@@ -51,9 +51,10 @@ def test_v0_2_cutting_width_workflow():
     circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII", "IZZI", "IIZZ", "XIXI", "ZIZZ", "IXIX"])
-    subcircuits, bases, subobservables = partition_problem(
+    subcircuits, cuts, subobservables = partition_problem(
         circuit=circuit, partition_labels="AABB", observables=observables
     )
+    bases = [cut_info.basis for cut_info in cuts]
     assert np.prod([basis.overhead for basis in bases]) == pytest.approx(81)
 
     samplers = {
