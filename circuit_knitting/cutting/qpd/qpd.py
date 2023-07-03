@@ -275,7 +275,7 @@ def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
 
 def _u_from_thetavec(
     theta: np.typing.NDArray[np.float64] | Sequence[float], /
-) -> np.ndarray[np.float64]:
+) -> np.typing.NDArray[np.complex128]:
     theta = np.asarray(theta)
     if theta.shape != (3,):
         raise ValueError(
