@@ -28,6 +28,7 @@ from qiskit.circuit.library import (
     RXXGate,
     RYYGate,
     RZZGate,
+    RZXGate,
 )
 
 from circuit_knitting.utils.iteration import unique_by_eq
@@ -252,6 +253,7 @@ class TestQPDFunctions(unittest.TestCase):
         (RXXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RYYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RZZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
+        (RZXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),

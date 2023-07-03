@@ -21,6 +21,9 @@ from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
     RZZGate,
+    RZXGate,
+    XXPlusYYGate,
+    XXMinusYYGate,
     CHGate,
     CXGate,
     CYGate,
@@ -77,6 +80,9 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CRZGate(np.pi / 11)],
         [RXXGate(np.pi / 3), CRYGate(np.pi / 7)],
         [UnitaryGate(random_unitary(2**2))],
+        [RZXGate(np.pi / 5)],
+        [XXPlusYYGate(7 * np.pi / 11)],
+        [XXMinusYYGate(11 * np.pi / 17)],
     ]
 )
 def example_circuit(
