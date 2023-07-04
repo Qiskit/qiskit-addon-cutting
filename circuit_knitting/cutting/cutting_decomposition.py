@@ -40,7 +40,19 @@ class PartitionedCuttingProblem(NamedTuple):
 
 
 class CutInfo(NamedTuple):
-    """The decomposition and location information associated with one cut."""
+    """
+    The decomposition and circuit index information associated with one cut.
+
+    If the cut is associated with more than one subcircuit, the ``gates`` field should
+    be represented as a list of length-2 tuples containing the partition labels and
+    subcircuit instruction indices to the associated gates.
+
+    If the cut is associated with more than one :class:`~SingleQubitQPDGate` in a single
+    circuit, the ``gates`` may be specified as a list of circuit indices to those gates.
+
+    If the cut is associated with a single :class:`~BaseQPDGate` instance, the ``gates``
+    may be specified by a single index to the gate.
+    """
 
     basis: QPDBasis
     gates: list[tuple[Hashable, int]] | list[int] | int
