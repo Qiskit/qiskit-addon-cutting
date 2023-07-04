@@ -13,7 +13,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence, Hashable
+from collections.abc import Sequence
 
 import numpy as np
 from qiskit.quantum_info import PauliList
@@ -28,7 +28,7 @@ from .qpd import WeightType
 def reconstruct_expectation_values(
     quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
     coefficients: Sequence[tuple[float, WeightType]],
-    observables: PauliList | dict[Hashable, PauliList],
+    observables: PauliList | dict[str | int, PauliList],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
@@ -72,7 +72,7 @@ def reconstruct_expectation_values(
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
-        subobservables_by_subsystem = observables
+        subobservables_by_subsystem = observables  # type: ignore
         expvals = np.zeros(len(list(observables.values())[0]))
 
     subsystem_observables = {
