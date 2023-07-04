@@ -47,10 +47,10 @@ class CutInfo(NamedTuple):
     be represented as a list of length-2 tuples containing the partition labels and
     subcircuit instruction indices to the associated gates.
 
-    If the cut is associated with more than one :class:`~SingleQubitQPDGate` in a single
+    If the cut is associated with more than one :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` in a single
     circuit, the ``gates`` may be specified as a list of circuit indices to those gates.
 
-    If the cut is associated with a single :class:`~BaseQPDGate` instance, the ``gates``
+    If the cut is associated with a single :class:`~circuit_knitting.cutting.qpd.BaseQPDGate` instance, the ``gates``
     may be specified by a single index to the gate.
     """
 
