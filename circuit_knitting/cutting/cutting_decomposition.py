@@ -34,9 +34,9 @@ from .qpd.instructions import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
-    subcircuits: dict[str | int, QuantumCircuit]
+    subcircuits: dict[Hashable, QuantumCircuit]
     cuts: list[CutInfo]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    subobservables: dict[Hashable, QuantumCircuit] | None = None
 
 
 class CutInfo(NamedTuple):
@@ -47,10 +47,10 @@ class CutInfo(NamedTuple):
     be represented as a list of length-2 tuples containing the partition labels and
     subcircuit instruction indices to the associated gates.
 
-    If the cut is associated with more than one :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` in a single
+    If the cut is associated with more than one :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` in an unseparated
     circuit, the ``gates`` may be specified as a list of circuit indices to those gates.
 
-    If the cut is associated with a single :class:`~circuit_knitting.cutting.qpd.BaseQPDGate` instance, the ``gates``
+    If the cut is associated with a single :class:`~circuit_knitting.cutting.qpd.BaseQPDGate` instance in an unseparated circuit, the ``gates``
     may be specified by a single index to the gate.
     """
 
@@ -214,7 +214,7 @@ def partition_problem(
         ValueError: An input observable acts on a different number of qubits than the input circuit.
         ValueError: An input observable has a phase not equal to 1.
         ValueError: The input circuit should contain no classical bits or registers.
-        ValueError: The input circuit should contain no SingleQubitQPDGate instances.
+        ValueError: The input circuit should contain no :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` instances.
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -272,15 +272,15 @@ def partition_problem(
         )
 
     return PartitionedCuttingProblem(
-        subcircuits,  # type: ignore
+        subcircuits,
         cuts,
         subobservables=subobservables_by_subsystem,
     )
 
 
 def decompose_observables(
-    observables: PauliList, partition_labels: Sequence[str | int]
-) -> dict[str | int, PauliList]:
+    observables: PauliList, partition_labels: Sequence[Hashable]
+) -> dict[Hashable, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 
