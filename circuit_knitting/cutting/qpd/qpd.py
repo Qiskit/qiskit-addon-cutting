@@ -39,10 +39,14 @@ from qiskit.circuit.library.standard_gates import (
     RXGate,
     RYGate,
     RZGate,
+    PhaseGate,
     CXGate,
     CYGate,
     CZGate,
     CHGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
     RXXGate,
     RYYGate,
     RZZGate,
@@ -50,7 +54,7 @@ from qiskit.circuit.library.standard_gates import (
     CRYGate,
     CRZGate,
     ECRGate,
-    CSXGate,
+    CPhaseGate,
     SwapGate,
     iSwapGate,
     DCXGate,
@@ -212,6 +216,10 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
         - :class:`~qiskit.circuit.library.CHGate`
+        - :class:`~qiskit.circuit.library.CSXGate`
+        - :class:`~qiskit.circuit.library.CSGate`
+        - :class:`~qiskit.circuit.library.CSdgGate`
+        - :class:`~qiskit.circuit.library.CPhaseGate`
 
     The above gate names can also be determined by calling
     :func:`supported_gates`.
@@ -424,13 +432,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         ([r_minus], measurement_1),
     ]
 
-    # If theta is a bound ParameterExpression, convert to float, else raise error.
-    try:
-        theta = float(gate.params[0])
-    except TypeError as err:
-        raise ValueError(
-            f"Cannot decompose ({gate.name}) gate with unbound parameters."
-        ) from err
+    theta = _theta_from_gate(gate)
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
@@ -467,6 +469,28 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     ]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("cs", "csdg")
+def _(gate: CSGate | CSdgGate):
+    theta = np.pi / 2
+    rot_gate = TGate()
+    if gate.name == "csdg":
+        theta *= -1
+        rot_gate = rot_gate.inverse()
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, rot_gate)
+    return retval
+
+
+@_register_qpdbasis_from_gate("cp")
+def _(gate: CPhaseGate):
+    theta = _theta_from_gate(gate)
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, PhaseGate(theta / 2))
+    return retval
 
 
 @_register_qpdbasis_from_gate("csx")
@@ -526,6 +550,23 @@ def _(gate: ECRGate):
     for operations in unique_by_id(m[1] for m in retval.maps):
         operations.insert(0, SXGate())
     return retval
+
+
+def _theta_from_gate(gate: Gate) -> float:
+    param_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}
+
+    # Internal function should only be called for supported gates
+    assert gate.name in param_gates
+
+    # If theta is a bound ParameterExpression, convert to float, else raise error.
+    try:
+        theta = float(gate.params[0])
+    except TypeError as err:
+        raise ValueError(
+            f"Cannot decompose ({gate.name}) gate with unbound parameters."
+        ) from err
+
+    return theta
 
 
 def _validate_qpd_instructions(
