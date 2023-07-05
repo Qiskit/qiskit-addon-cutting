@@ -120,8 +120,8 @@ class TestQPDBasis(unittest.TestCase):
 
     def test_unsupported_gate(self):
         with pytest.raises(ValueError) as e_info:
-            QPDBasis.from_gate(SwapGate())
-        assert e_info.value.args[0] == "Gate not supported: swap"
+            QPDBasis.from_gate(XXMinusYYGate(0.1))
+        assert e_info.value.args[0] == "Gate not supported: xx_minus_yy"
 
     def test_unbound_parameter(self):
         with pytest.raises(ValueError) as e_info:
