@@ -129,6 +129,7 @@ class EntanglementForgingGroundStateSolver:
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
         mo_coeff: np.ndarray | None = None,
+        hf_energy: float | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -143,6 +144,8 @@ class EntanglementForgingGroundStateSolver:
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
+            hf_energy: If set, this energy will be used instead of calculating the Hartree-Fock
+                energy at each iteration.
 
         Returns:
             None
@@ -158,6 +161,7 @@ class EntanglementForgingGroundStateSolver:
         self.backend_names = backend_names  # type: ignore
         self.options = options
         self._mo_coeff = mo_coeff
+        self._hf_energy = hf_energy
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
@@ -246,6 +250,16 @@ class EntanglementForgingGroundStateSolver:
         """Set the coefficients for converting integrals to the MO basis."""
         self._mo_coeff = mo_coeff
 
+    @property
+    def hf_energy(self) -> float | None:
+        """Return the Hartree-Fock energy."""
+        return self._hf_energy
+
+    @hf_energy.setter
+    def hf_energy(self, hf_energy: float | None) -> None:
+        """Set the Hartree-Fock energy."""
+        self._hf_energy = hf_energy
+
     def solve(
         self,
         problem: ElectronicStructureProblem,
@@ -289,13 +303,14 @@ class EntanglementForgingGroundStateSolver:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
+                hf_energy=self._hf_energy,
                 service=self._service,
                 backend_names=backend_names,
                 options=self._options,
             )
         else:
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz, options=self._options
+                self._ansatz, hf_energy=self._hf_energy, options=self._options
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0

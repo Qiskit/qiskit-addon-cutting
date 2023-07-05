@@ -38,6 +38,7 @@ class EntanglementForgingKnitter:
     def __init__(
         self,
         ansatz: EntanglementForgingAnsatz,
+        hf_energy: float | None = None,
         service: QiskitRuntimeService | None = None,
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
@@ -48,6 +49,7 @@ class EntanglementForgingKnitter:
         Args:
             ansatz: The container for the circuit structure and bitstrings to be used
                 (and generate the stateprep circuits)
+            hf_energy: If set, this energy will be used instead of calculating the Hartre    e-Fock energy.
             service: The service used to spawn Qiskit primitives and runtime jobs
             backend_names: Names of the backends to use for calculating expectation values
             options: Options to use with the backends
@@ -59,6 +61,7 @@ class EntanglementForgingKnitter:
         self._session_ids: list[str | None] | None = None
         self._backend_names: list[str] | None = None
         self._options: list[Options] | None = None
+        self._hf_energy = hf_energy
         # Call constructors
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -140,6 +143,16 @@ class EntanglementForgingKnitter:
     def service(self, service: QiskitRuntimeService | None) -> None:
         """Change the service class field."""
         self._service = service.active_account() if service is not None else service
+
+    @property
+    def hf_energy(self) -> float | None:
+        """Return the Hartree-Fock energy."""
+        return self._hf_energy
+
+    @hf_energy.setter
+    def hf_energy(self, hf_energy: float | None) -> None:
+        """Set the Hartree-Fock energy."""
+        self._hf_energy = hf_energy
 
     def __call__(
         self,
@@ -256,6 +269,7 @@ class EntanglementForgingKnitter:
                         tensor_pauli_list,
                         superposition_ansatze_partition,
                         superposition_pauli_list,
+                        self._hf_energy,
                         service_args,
                         backend_name,
                         options,
@@ -282,10 +296,25 @@ class EntanglementForgingKnitter:
                     )
                 self._session_ids[i] = job_id
 
+        if self._hf_energy is not None:
+            nans_u = np.empty(np.shape(tensor_expvals[0]))
+            nans_u[:] = np.nan
+            if not self._ansatz.bitstrings_are_symmetric:
+                num_tensor_terms = int(np.shape(tensor_expvals)[0] / 2)
+                nans_v = np.empty(np.shape(tensor_expvals[num_tensor_terms]))
+                nans_v[:] = np.nan
+                tensor_expvals.insert(num_tensor_terms, nans_v)
+            tensor_expvals.insert(0, nans_u)
+
         # Compute the Schmidt matrix
         h_schmidt = self._compute_h_schmidt(
             forged_operator, np.array(tensor_expvals), np.array(superposition_expvals)
         )
+
+        # Hard-code the Hartree-Fock energy, if desired
+        if self._hf_energy is not None:
+            h_schmidt[0, 0] = self._hf_energy
+
         evals, evecs = np.linalg.eigh(h_schmidt)
         schmidt_coeffs = evecs[:, 0]
         energy = evals[0]
@@ -569,10 +598,11 @@ def _estimate_expvals(
     tensor_paulis: list[Pauli],
     superposition_ansatze: list[QuantumCircuit],
     superposition_paulis: list[Pauli],
-    service_args: dict[str, Any] | None = None,
-    backend_name: str | None = None,
-    options: Options | None = None,
-    session_id: str | None = None,
+    hf_energy: float | None,
+    service_args: dict[str, Any] | None,
+    backend_name: str | None,
+    options: Options | None,
+    session_id: str | None,
 ) -> tuple[list[np.ndarray], list[np.ndarray], str | None]:
     """Run quantum circuits to generate the expectation values.
 
@@ -587,6 +617,7 @@ def _estimate_expvals(
         superposition_ansatze: The circuits with different Schmidt coefficients
         superposition_paulis: The pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt coefficients
+        hf_energy: The Hartree-Fock energy to be hard-coded in the Schmidt matrix
         service_args: The service account used to spawn Qiskit primitives
         backend_name: The backend to use to evaluate the grouped experiments
         options: The options to use with the backend
@@ -595,6 +626,12 @@ def _estimate_expvals(
     Returns:
         The expectation values for the tensor circuits and superposition circuits
     """
+    # Ignore HF energy calculation. We will hard-code it later.
+    if hf_energy is not None:
+        tensor_ansatze = tensor_ansatze[1:]
+    all_circuits = tensor_ansatze + superposition_ansatze
+    all_observables = tensor_paulis + superposition_paulis
+
     ansatz_t: list[QuantumCircuit] = []
     observables_t: list[Pauli] = []
     for i, circuit in enumerate(tensor_ansatze):
@@ -646,6 +683,9 @@ def _estimate_expvals(
     # Post-process the results to get our expectation values in the right format
     num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
     estimator_results_t = results[:num_tensor_expvals]
+    if hf_energy is not None:
+        for _ in enumerate(tensor_paulis):
+            np.insert(estimator_results_t, 0, np.nan)
     estimator_results_s = results[num_tensor_expvals:]
 
     tensor_expval_list = list(
