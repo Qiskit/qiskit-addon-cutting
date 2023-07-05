@@ -273,12 +273,14 @@ def generate_qpd_weights(
     """
     Generate weights from the joint quasiprobability distribution.
 
-    All weights above ``1 / num_samples`` will be returned exactly, while the
-    remaining weights will be sampled from.
+    Each weight whose absolute value is above a threshold of ``1 /
+    num_samples`` will be evaluated exactly. The remaining weights -- those in
+    the tail of the distribution -- will then be sampled from, resulting in at
+    most ``num_samples`` unique weights.
 
     Args:
         qpd_bases: The :class:`QPDBasis` objects from which to generate weights
-        num_samples: Maximum number of weights to generate
+        num_samples: Controls the number of weights to generate
 
     Returns:
         A mapping from a given decomposition to its weight.
