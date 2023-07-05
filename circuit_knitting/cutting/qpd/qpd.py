@@ -32,18 +32,28 @@ from qiskit.circuit.library.standard_gates import (
     ZGate,
     HGate,
     SGate,
+    TGate,
     SdgGate,
+    SXGate,
     RXGate,
     RYGate,
     RZGate,
+    PhaseGate,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
+    CSGate,
+    CSdgGate,
     RXXGate,
     RYYGate,
     RZZGate,
     CRXGate,
     CRYGate,
     CRZGate,
+    ECRGate,
+    CSXGate,
+    CPhaseGate,
 )
 
 from .qpd_basis import QPDBasis
@@ -191,7 +201,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 8 operations:
+    This method currently supports the following operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -199,7 +209,16 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CRYGate`
         - :class:`~qiskit.circuit.library.CRZGate`
         - :class:`~qiskit.circuit.library.CXGate`
+        - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
+        - :class:`~qiskit.circuit.library.CHGate`
+        - :class:`~qiskit.circuit.library.CSXGate`
+        - :class:`~qiskit.circuit.library.CSGate`
+        - :class:`~qiskit.circuit.library.CSdgGate`
+        - :class:`~qiskit.circuit.library.CPhaseGate`
+
+    The above gate names can also be determined by calling
+    :func:`supported_gates`.
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -213,6 +232,16 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         raise ValueError(f"Gate not supported: {gate.name}") from None
     else:
         return f(gate)
+
+
+def supported_gates() -> set[str]:
+    """
+    Return a set of gate names supported for automatic decomposition.
+
+    Returns:
+        Set of gate names supported for automatic decomposition.
+    """
+    return set(_qpdbasis_from_gate_funcs)
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
@@ -249,13 +278,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         ([r_minus], measurement_1),
     ]
 
-    # If theta is a bound ParameterExpression, convert to float, else raise error.
-    try:
-        theta = float(gate.params[0])
-    except TypeError as err:
-        raise ValueError(
-            f"Cannot decompose ({gate.name}) gate with unbound parameters."
-        ) from err
+    theta = _theta_from_gate(gate)
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
@@ -294,8 +317,38 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("cz", "cx")
-def _(gate: CZGate | CXGate):
+@_register_qpdbasis_from_gate("cs", "csdg")
+def _(gate: CSGate | CSdgGate):
+    theta = np.pi / 2
+    rot_gate = TGate()
+    if gate.name == "csdg":
+        theta *= -1
+        rot_gate = rot_gate.inverse()
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, rot_gate)
+    return retval
+
+
+@_register_qpdbasis_from_gate("cp")
+def _(gate: CPhaseGate):
+    theta = _theta_from_gate(gate)
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, PhaseGate(theta / 2))
+    return retval
+
+
+@_register_qpdbasis_from_gate("csx")
+def _(gate: CSXGate):
+    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TGate())
+    return retval
+
+
+@_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
+def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     measurement_0 = [SdgGate(), QPDMeasure()]
@@ -313,16 +366,53 @@ def _(gate: CZGate | CXGate):
         ([ZGate()], measurement_1),
     ]
 
-    if gate.name == "cx":
-        # Modify `maps` to sandwich the target operations inside of Hadamards
-        for operations in {id(m[1]): m[1] for m in maps}.values():
+    if gate.name != "cz":
+        # Modify `maps` to sandwich the target operations inside of basis rotations
+        for operations in unique_by_id(m[1] for m in maps):
             if operations:
-                operations.insert(0, HGate())
-                operations.append(HGate())
+                if gate.name in ("cx", "cy"):
+                    operations.insert(0, HGate())
+                    operations.append(HGate())
+                    if gate.name == "cy":
+                        operations.insert(0, SdgGate())
+                        operations.append(SGate())
+                elif gate.name == "ch":
+                    operations.insert(0, RYGate(-np.pi / 4))
+                    operations.append(RYGate(np.pi / 4))
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("ecr")
+def _(gate: ECRGate):
+    retval = qpdbasis_from_gate(CXGate())
+    # Modify basis according to ECRGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SGate())
+        operations.append(XGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SXGate())
+    return retval
+
+
+def _theta_from_gate(gate: Gate) -> float:
+    param_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}
+
+    # Internal function should only be called for supported gates
+    assert gate.name in param_gates
+
+    # If theta is a bound ParameterExpression, convert to float, else raise error.
+    try:
+        theta = float(gate.params[0])
+    except TypeError as err:
+        raise ValueError(
+            f"Cannot decompose ({gate.name}) gate with unbound parameters."
+        ) from err
+
+    return theta
 
 
 def _validate_qpd_instructions(
@@ -426,6 +516,8 @@ def _decompose_qpd_instructions(
             continue  # pragma: no cover
         if isinstance(circuit.data[decomp[0]].operation, TwoQubitQPDGate):
             qpdgate_ids_2q.append(decomp[0])
+
+    qpdgate_ids_2q = sorted(qpdgate_ids_2q)
     data_id_offset = 0
     for i in qpdgate_ids_2q:
         inst = circuit.data[i + data_id_offset]

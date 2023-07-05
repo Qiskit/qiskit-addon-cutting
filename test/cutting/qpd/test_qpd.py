@@ -148,6 +148,17 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "The number of map IDs (1) must equal the number of decompositions in the circuit (2)."
             )
+        with self.subTest("Test unordered indices"):
+            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_gate1 = TwoQubitQPDGate(basis=decomp)
+            qpd_gate2 = TwoQubitQPDGate(basis=decomp)
+
+            qc = QuantumCircuit(2)
+            qc.append(CircuitInstruction(qpd_gate1, qubits=[0, 1]))
+            qc.x([0, 1])
+            qc.y([0, 1])
+            qc.append(CircuitInstruction(qpd_gate2, qubits=[0, 1]))
+            decompose_qpd_instructions(qc, [[5], [0]], map_ids=[0, 0])
         with self.subTest("Test measurement"):
             qpd_circ = QuantumCircuit(2)
             qpd_inst = CircuitInstruction(self.qpd_gate1, qubits=[0, 1])
@@ -170,7 +181,6 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "Each decomposition must contain either one or two elements. Found a decomposition with (0) elements."
             )
-
         with self.subTest("test_mismatching_qpd_ids"):
             decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(basis=decomp)
@@ -228,7 +238,10 @@ class TestQPDFunctions(unittest.TestCase):
     # Optimal values from https://arxiv.org/abs/2205.00016v2 Corollary 4.4 (page 10)
     @data(
         (CXGate(), 3),
+        (CYGate(), 3),
         (CZGate(), 3),
+        (CHGate(), 3),
+        (ECRGate(), 3),
         (CRXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
@@ -269,3 +282,26 @@ class TestQPDFunctions(unittest.TestCase):
         ]
         assert len(unique_by_eq(a for (a, b) in relevant_maps)) == q0_num_unique
         assert len(unique_by_eq(b for (a, b) in relevant_maps)) == q1_num_unique
+
+    def test_supported_gates(self):
+        gates = supported_gates()
+        self.assertEqual(
+            {
+                "rxx",
+                "ryy",
+                "rzz",
+                "crx",
+                "cry",
+                "crz",
+                "cx",
+                "cy",
+                "cz",
+                "ch",
+                "csx",
+                "cs",
+                "csdg",
+                "cp",
+                "ecr",
+            },
+            gates,
+        )
