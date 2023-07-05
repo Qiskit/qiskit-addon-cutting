@@ -318,28 +318,38 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("csx", "cs", "csdg", "cp")
-def _(gate: CSXGate | CSGate | CSdgGate | CPhaseGate):
-    if gate.name in ("cp"):
-        theta = _theta_from_gate(gate)
+@_register_qpdbasis_from_gate("cs", "csdg")
+def _(gate: CSXGate | CSGate | CSdgGate):
+    # pi/2 and -pi/2 rotations around Z axis
+    theta = np.pi / 2
+    if gate.name == "csdg":
+        theta *= -1
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    if gate.name == "cs":
+        rot_gate = TGate()
     else:
-        theta = np.pi / 2
-        if gate.name == "csdg":
-            theta *= -1
-    if gate.name == "csx":
-        retval = qpdbasis_from_gate(CRXGate(theta))
-    else:
-        retval = qpdbasis_from_gate(CRZGate(theta))
-    if gate.name in ("csx", "cs"):
-        for operations in unique_by_id(m[0] for m in retval.maps):
-            operations.insert(0, TGate())
-    elif gate.name in {"csdg"}:
-        for operations in unique_by_id(m[0] for m in retval.maps):
-            operations.insert(0, TdgGate())
-    else:
-        assert gate.name in {"cp"}
-        for operations in unique_by_id(m[0] for m in retval.maps):
-            operations.insert(0, PhaseGate(theta / 2))
+        rot_gate = TdgGate()
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, rot_gate)
+
+    return retval
+
+
+@_register_qpdbasis_from_gate("cp")
+def _(gate: CPhaseGate):
+    theta = _theta_from_gate(gate)
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, PhaseGate(theta / 2))
+
+    return retval
+
+
+@_register_qpdbasis_from_gate("csx")
+def _(gate: CSXGate):
+    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TGate())
 
     return retval
 
