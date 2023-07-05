@@ -277,13 +277,16 @@ def find_gate_cuts(
 ) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
     r"""
     Find an optimized set of gates to cut, given a transpilation context.
+
     This function seeks to reduce the depth of the transpiled
     sub-experiments by cutting gates which result in the highest swap overhead.
+
     Args:
         circuit: The circuit to cut
         num_cuts: The number of cuts to make
         transpilation_options: A dictionary of kwargs to be passed to the Qiskit
             ``transpile`` function.
+
     Returns:
         A tuple containing:
             - A copy of the input circuit with SWAP-costly gates replaced with :class:`TwoQubitGate`\ s
