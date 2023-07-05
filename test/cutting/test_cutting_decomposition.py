@@ -260,9 +260,9 @@ class TestCuttingDecomposition(unittest.TestCase):
 
     def test_find_gate_cuts(self):
         with self.subTest("find cuts"):
-            transpilation_options = {}
+            transpilation_options = {"optimization_level": 1}
             qpd_circuit, bases, cut_indices = find_gate_cuts(
-                self.circuit, 2, **transpilation_options
+                self.circuit, 2, transpilation_options
             )
             qpd_gates = [
                 inst

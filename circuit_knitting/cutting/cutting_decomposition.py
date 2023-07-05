@@ -331,7 +331,7 @@ def _evaluate_cuts(
             cut_score += (
                 input_depth - transpile(circuit, **transpilation_options).depth()
             )
-        cut_scores.append((i, cut_score / num_reps))
+        cut_scores.append((i, cut_score))
         circuit.data.insert(i, inst)
 
     return sorted(cut_scores, key=lambda x: x[1], reverse=True)
