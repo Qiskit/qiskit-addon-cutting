@@ -21,11 +21,21 @@ from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
     RZZGate,
+    CHGate,
     CXGate,
+    CYGate,
     CZGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
     CRXGate,
     CRYGate,
     CRZGate,
+    CPhaseGate,
+    ECRGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
@@ -48,8 +58,17 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
 
 @pytest.fixture(
     params=[
+        [SwapGate()],
+        [iSwapGate()],
+        [DCXGate()],
         [CXGate()],
+        [CYGate()],
         [CZGate()],
+        [CHGate()],
+        [ECRGate()],
+        [CSXGate()],
+        [CSGate()],
+        [CSdgGate()],
         [RYYGate(0.0)],
         [RZZGate(np.pi)],
         [RXXGate(np.pi / 3)],
@@ -62,6 +81,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CRYGate(np.pi / 7)],
         [CRZGate(np.pi / 11)],
         [RXXGate(np.pi / 3), CRYGate(np.pi / 7)],
+        [CPhaseGate(np.pi / 3)],
+        [RXXGate(np.pi / 3), CPhaseGate(np.pi / 7)],
     ]
 )
 def example_circuit(
@@ -118,7 +139,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
         subobservables=subobservables,
-        num_samples=1500,
+        num_samples=np.inf,
         samplers=sampler,
     )
     simulated_expvals = reconstruct_expectation_values(

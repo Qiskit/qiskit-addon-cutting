@@ -36,17 +36,31 @@ from qiskit.circuit.library.standard_gates import (
     HGate,
     SGate,
     SdgGate,
+    SXGate,
+    SXdgGate,
+    TGate,
     RXGate,
     RYGate,
     RZGate,
+    PhaseGate,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
     RXXGate,
     RYYGate,
     RZZGate,
     CRXGate,
     CRYGate,
     CRZGate,
+    ECRGate,
+    CPhaseGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 from qiskit.utils import deprecate_func
 
@@ -543,7 +557,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports 8 operations:
+    This method currently supports the following operations:
         - :class:`~qiskit.circuit.library.RXXGate`
         - :class:`~qiskit.circuit.library.RYYGate`
         - :class:`~qiskit.circuit.library.RZZGate`
@@ -551,7 +565,19 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CRYGate`
         - :class:`~qiskit.circuit.library.CRZGate`
         - :class:`~qiskit.circuit.library.CXGate`
+        - :class:`~qiskit.circuit.library.CYGate`
         - :class:`~qiskit.circuit.library.CZGate`
+        - :class:`~qiskit.circuit.library.CHGate`
+        - :class:`~qiskit.circuit.library.CSXGate`
+        - :class:`~qiskit.circuit.library.CSGate`
+        - :class:`~qiskit.circuit.library.CSdgGate`
+        - :class:`~qiskit.circuit.library.CPhaseGate`
+        - :class:`~qiskit.circuit.library.SwapGate`
+        - :class:`~qiskit.circuit.library.iSwapGate`
+        - :class:`~qiskit.circuit.library.DCXGate`
+
+    The above gate names can also be determined by calling
+    :func:`supported_gates`.
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -575,6 +601,156 @@ def supported_gates() -> set[str]:
         Set of gate names supported for automatic decomposition.
     """
     return set(_qpdbasis_from_gate_funcs)
+
+
+def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
+    """
+    Copy each list in a sequence of lists while preserving uniqueness.
+
+    This is useful to ensure that the two sets of ``maps`` in a
+    :class:`QPDBasis` will be independent of each other.  This enables one to
+    subsequently edit the ``maps`` independently of each other (e.g., to apply
+    single-qubit pre- or post-rotations.
+    """
+    copy_by_id: dict[int, list] = {}
+    for lst in lsts:
+        if id(lst) not in copy_by_id:
+            copy_by_id[id(lst)] = lst.copy()
+    return tuple(copy_by_id[id(lst)] for lst in lsts)
+
+
+def _nonlocal_qpd_basis_from_u(
+    u: np.typing.NDArray[np.complex128] | Sequence[complex], /
+) -> QPDBasis:
+    u = np.asarray(u)
+    if u.shape != (4,):
+        raise ValueError(
+            f"u vector has wrong shape: {u.shape} (1D vector of length 4 expected)"
+        )
+    # The following operations are described in Sec. 2.3 of
+    # https://quantum-journal.org/papers/q-2021-01-28-388/
+    #
+    # Projective measurements in each basis
+    A0x = [HGate(), QPDMeasure(), HGate()]
+    A0y = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+    A0z = [QPDMeasure()]
+    # Single qubit rotations that swap two axes.  There are "plus" and "minus"
+    # versions of these rotations.  The "minus" rotations also flip the sign
+    # along that axis.
+    Axyp = [SGate(), YGate()]
+    Axym = [ZGate()] + Axyp
+    Ayzp = [SXGate(), ZGate()]
+    Ayzm = [XGate()] + Ayzp
+    Azxp = [HGate()]
+    Azxm = [YGate()] + Azxp
+    # Single qubit rotations by ±pi/4 about each axis.
+    B0xp = [SXGate()]
+    B0xm = [SXdgGate()]
+    B0yp = [RYGate(0.5 * np.pi)]
+    B0ym = [RYGate(-0.5 * np.pi)]
+    B0zp = [SGate()]
+    B0zm = [SdgGate()]
+    # Projective measurements, each followed by the proper flip.
+    Bxy = A0z + [XGate()]
+    Byz = A0x + [YGate()]
+    Bzx = A0y + [ZGate()]
+    # The following values occur repeatedly in the coefficients
+    uu01 = u[0] * np.conj(u[1])
+    uu02 = u[0] * np.conj(u[2])
+    uu03 = u[0] * np.conj(u[3])
+    uu12 = u[1] * np.conj(u[2])
+    uu23 = u[2] * np.conj(u[3])
+    uu31 = u[3] * np.conj(u[1])
+    coeffs, maps1, maps2 = zip(
+        # First line of Eq. (19) in
+        # https://quantum-journal.org/papers/q-2021-01-28-388/
+        (np.abs(u[0]) ** 2, [], []),  # Identity
+        (np.abs(u[1]) ** 2, [XGate()], [XGate()]),
+        (np.abs(u[2]) ** 2, [YGate()], [YGate()]),
+        (np.abs(u[3]) ** 2, [ZGate()], [ZGate()]),
+        # Second line
+        (2 * np.real(uu01), A0x, A0x),
+        (2 * np.real(uu02), A0y, A0y),
+        (2 * np.real(uu03), A0z, A0z),
+        (0.5 * np.real(uu12), Axyp, Axyp),
+        (-0.5 * np.real(uu12), Axyp, Axym),
+        (-0.5 * np.real(uu12), Axym, Axyp),
+        (0.5 * np.real(uu12), Axym, Axym),
+        (0.5 * np.real(uu23), Ayzp, Ayzp),
+        (-0.5 * np.real(uu23), Ayzp, Ayzm),
+        (-0.5 * np.real(uu23), Ayzm, Ayzp),
+        (0.5 * np.real(uu23), Ayzm, Ayzm),
+        (0.5 * np.real(uu31), Azxp, Azxp),
+        (-0.5 * np.real(uu31), Azxp, Azxm),
+        (-0.5 * np.real(uu31), Azxm, Azxp),
+        (0.5 * np.real(uu31), Azxm, Azxm),
+        (-0.5 * np.real(uu01), B0xp, B0xp),
+        (0.5 * np.real(uu01), B0xp, B0xm),
+        (0.5 * np.real(uu01), B0xm, B0xp),
+        (-0.5 * np.real(uu01), B0xm, B0xm),
+        (-0.5 * np.real(uu02), B0yp, B0yp),
+        (0.5 * np.real(uu02), B0yp, B0ym),
+        (0.5 * np.real(uu02), B0ym, B0yp),
+        (-0.5 * np.real(uu02), B0ym, B0ym),
+        (-0.5 * np.real(uu03), B0zp, B0zp),
+        (0.5 * np.real(uu03), B0zp, B0zm),
+        (0.5 * np.real(uu03), B0zm, B0zp),
+        (-0.5 * np.real(uu03), B0zm, B0zm),
+        (-2 * np.real(uu12), Bxy, Bxy),
+        (-2 * np.real(uu23), Byz, Byz),
+        (-2 * np.real(uu31), Bzx, Bzx),
+        # Third line
+        (np.imag(uu01), A0x, B0xp),
+        (-np.imag(uu01), A0x, B0xm),
+        (np.imag(uu01), B0xp, A0x),
+        (-np.imag(uu01), B0xm, A0x),
+        (np.imag(uu02), A0y, B0yp),
+        (-np.imag(uu02), A0y, B0ym),
+        (np.imag(uu02), B0yp, A0y),
+        (-np.imag(uu02), B0ym, A0y),
+        (np.imag(uu03), A0z, B0zp),
+        (-np.imag(uu03), A0z, B0zm),
+        (np.imag(uu03), B0zp, A0z),
+        (-np.imag(uu03), B0zm, A0z),
+        (np.imag(uu12), Axyp, Bxy),
+        (-np.imag(uu12), Axym, Bxy),
+        (np.imag(uu12), Bxy, Axyp),
+        (-np.imag(uu12), Bxy, Axym),
+        (np.imag(uu23), Ayzp, Byz),
+        (-np.imag(uu23), Ayzm, Byz),
+        (np.imag(uu23), Byz, Ayzp),
+        (-np.imag(uu23), Byz, Ayzm),
+        (np.imag(uu31), Azxp, Bzx),
+        (-np.imag(uu31), Azxm, Bzx),
+        (np.imag(uu31), Bzx, Azxp),
+        (-np.imag(uu31), Bzx, Azxm),
+    )
+    maps = list(zip(maps1, _copy_unique_sublists(maps2)))
+    return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("swap")
+def _(gate: SwapGate):
+    return _nonlocal_qpd_basis_from_u([(1 + 1j) / np.sqrt(8)] * 4)
+
+
+@_register_qpdbasis_from_gate("iswap")
+def _(gate: iSwapGate):
+    return _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
+
+
+@_register_qpdbasis_from_gate("dcx")
+def _(gate: DCXGate):
+    retval = qpdbasis_from_gate(iSwapGate())
+    # Modify basis according to DCXGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SdgGate())
+        operations.insert(0, HGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SdgGate())
+        operations.append(HGate())
+    return retval
 
 
 @_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
@@ -611,13 +787,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         ([r_minus], measurement_1),
     ]
 
-    # If theta is a bound ParameterExpression, convert to float, else raise error.
-    try:
-        theta = float(gate.params[0])
-    except TypeError as err:
-        raise ValueError(
-            f"Cannot decompose ({gate.name}) gate with unbound parameters."
-        ) from err
+    theta = _theta_from_gate(gate)
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
@@ -656,8 +826,38 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("cz", "cx")
-def _(gate: CZGate | CXGate):
+@_register_qpdbasis_from_gate("cs", "csdg")
+def _(gate: CSGate | CSdgGate):
+    theta = np.pi / 2
+    rot_gate = TGate()
+    if gate.name == "csdg":
+        theta *= -1
+        rot_gate = rot_gate.inverse()
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, rot_gate)
+    return retval
+
+
+@_register_qpdbasis_from_gate("cp")
+def _(gate: CPhaseGate):
+    theta = _theta_from_gate(gate)
+    retval = qpdbasis_from_gate(CRZGate(theta))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, PhaseGate(theta / 2))
+    return retval
+
+
+@_register_qpdbasis_from_gate("csx")
+def _(gate: CSXGate):
+    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TGate())
+    return retval
+
+
+@_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
+def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     measurement_0 = [SdgGate(), QPDMeasure()]
@@ -675,16 +875,53 @@ def _(gate: CZGate | CXGate):
         ([ZGate()], measurement_1),
     ]
 
-    if gate.name == "cx":
-        # Modify `maps` to sandwich the target operations inside of Hadamards
-        for operations in {id(m[1]): m[1] for m in maps}.values():
+    if gate.name != "cz":
+        # Modify `maps` to sandwich the target operations inside of basis rotations
+        for operations in unique_by_id(m[1] for m in maps):
             if operations:
-                operations.insert(0, HGate())
-                operations.append(HGate())
+                if gate.name in ("cx", "cy"):
+                    operations.insert(0, HGate())
+                    operations.append(HGate())
+                    if gate.name == "cy":
+                        operations.insert(0, SdgGate())
+                        operations.append(SGate())
+                elif gate.name == "ch":
+                    operations.insert(0, RYGate(-np.pi / 4))
+                    operations.append(RYGate(np.pi / 4))
 
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("ecr")
+def _(gate: ECRGate):
+    retval = qpdbasis_from_gate(CXGate())
+    # Modify basis according to ECRGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SGate())
+        operations.append(XGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SXGate())
+    return retval
+
+
+def _theta_from_gate(gate: Gate) -> float:
+    param_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}
+
+    # Internal function should only be called for supported gates
+    assert gate.name in param_gates
+
+    # If theta is a bound ParameterExpression, convert to float, else raise error.
+    try:
+        theta = float(gate.params[0])
+    except TypeError as err:
+        raise ValueError(
+            f"Cannot decompose ({gate.name}) gate with unbound parameters."
+        ) from err
+
+    return theta
 
 
 def _validate_qpd_instructions(

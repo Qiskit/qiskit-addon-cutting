@@ -44,6 +44,7 @@ from circuit_knitting.cutting.qpd.qpd import *
 from circuit_knitting.cutting.qpd.qpd import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
+    _nonlocal_qpd_basis_from_u,
 )
 
 
@@ -245,13 +246,23 @@ class TestQPDFunctions(unittest.TestCase):
     # Optimal values from https://arxiv.org/abs/2205.00016v2 Corollary 4.4 (page 10)
     @data(
         (CXGate(), 3),
+        (CYGate(), 3),
         (CZGate(), 3),
+        (CHGate(), 3),
+        (ECRGate(), 3),
         (CRXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (RXXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RYYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RZZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
+        (CPhaseGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
+        (CSGate(), 1 + np.sqrt(2)),
+        (CSdgGate(), 1 + np.sqrt(2)),
+        (CSXGate(), 1 + np.sqrt(2)),
+        (SwapGate(), 7),
+        (iSwapGate(), 7),
+        (DCXGate(), 7),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):
@@ -264,6 +275,8 @@ class TestQPDFunctions(unittest.TestCase):
         (CRXGate(np.pi / 7), 5, 5),
         (CRYGate(np.pi / 7), 5, 5),
         (CRZGate(np.pi / 7), 5, 5),
+        (CPhaseGate(np.pi / 7), 5, 5),
+        (ECRGate(), 5, 5),
         (CXGate(), 5, 5),
         (CZGate(), 5, 5),
         (RZZGate(0), 1, 1),
@@ -411,4 +424,35 @@ class TestQPDFunctions(unittest.TestCase):
 
     def test_supported_gates(self):
         gates = supported_gates()
-        self.assertEqual({"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}, gates)
+        self.assertEqual(
+            {
+                "rxx",
+                "ryy",
+                "rzz",
+                "crx",
+                "cry",
+                "crz",
+                "cx",
+                "cy",
+                "cz",
+                "ch",
+                "csx",
+                "cs",
+                "csdg",
+                "cp",
+                "ecr",
+                "swap",
+                "iswap",
+                "dcx",
+            },
+            gates,
+        )
+
+    def test_nonlocal_qpd_basis_from_u(self):
+        with self.subTest("Invalid shape"):
+            with pytest.raises(ValueError) as e_info:
+                _nonlocal_qpd_basis_from_u([1, 2, 3])
+            assert (
+                e_info.value.args[0]
+                == "u vector has wrong shape: (3,) (1D vector of length 4 expected)"
+            )
