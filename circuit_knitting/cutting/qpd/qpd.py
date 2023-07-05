@@ -287,11 +287,36 @@ def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
 def _u_from_thetavec(
     theta: np.typing.NDArray[np.float64] | Sequence[float], /
 ) -> np.typing.NDArray[np.complex128]:
+    r"""
+    Exponentiate the non-local portion of a KAK decomposition.
+
+    This implements Eq. (6) of https://arxiv.org/abs/2006.11174v2:
+
+    .. math::
+
+       \exp [ i ( \sum_\alpha^3 \theta_\alpha \, \sigma_\alpha \otimes \sigma_\alpha ) ]
+       =
+       \sum_{\alpha=0}^3 u_\alpha \, \sigma_\alpha \otimes \sigma_\alpha
+
+    where each :math:`\theta_\alpha` is assumed to be real, and
+    :math:`u_\alpha` is complex in general.
+    """
     theta = np.asarray(theta)
     if theta.shape != (3,):
         raise ValueError(
             f"theta vector has wrong shape: {theta.shape} (1D vector of length 3 expected)"
         )
+    # First, we note that if we choose the basis vectors II, XX, YY, and ZZ,
+    # then the following matrix represents one application of the summation in
+    # the exponential:
+    #
+    #   0   θx  θy  θz
+    #   θx  0  -θz -θy
+    #   θy -θz  0  -θx
+    #   θz -θy -θx  0
+    #
+    # This matrix is symmetric and can be exponentiated by diagonalizing it.
+    # Its eigendecomposition is given by:
     eigvals = np.array(
         [
             -np.sum(theta),
@@ -301,6 +326,9 @@ def _u_from_thetavec(
         ]
     )
     eigvecs = np.ones([1, 1]) / 2 - np.eye(4)
+    # Finally, we exponentiate the eigenvalues of the matrix in diagonal form.
+    # We also project to the vector [1,0,0,0] on the right, since the
+    # multiplicative identity is given by II.
     return np.transpose(eigvecs) @ (np.exp(1j * eigvals) * eigvecs[:, 0])
 
 
