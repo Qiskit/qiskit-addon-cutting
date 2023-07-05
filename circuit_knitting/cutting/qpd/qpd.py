@@ -319,7 +319,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
 
 
 @_register_qpdbasis_from_gate("cs", "csdg")
-def _(gate: CSXGate | CSGate | CSdgGate):
+def _(gate: CSGate | CSdgGate):
     # pi/2 and -pi/2 rotations around Z axis
     theta = np.pi / 2
     if gate.name == "csdg":
