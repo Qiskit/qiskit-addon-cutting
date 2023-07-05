@@ -182,7 +182,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 )
             )
             with pytest.raises(ValueError) as e_info:
-                _ = partition_problem(circuit, partition_labels)
+                partition_problem(circuit, partition_labels)
             assert (
                 e_info.value.args[0]
                 == "Input circuit may not contain SingleQubitQPDGate instances."
