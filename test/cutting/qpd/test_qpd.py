@@ -238,7 +238,10 @@ class TestQPDFunctions(unittest.TestCase):
     # Optimal values from https://arxiv.org/abs/2205.00016v2 Corollary 4.4 (page 10)
     @data(
         (CXGate(), 3),
+        (CYGate(), 3),
         (CZGate(), 3),
+        (CHGate(), 3),
+        (ECRGate(), 3),
         (CRXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CRZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
@@ -282,4 +285,20 @@ class TestQPDFunctions(unittest.TestCase):
 
     def test_supported_gates(self):
         gates = supported_gates()
-        self.assertEqual({"rxx", "ryy", "rzz", "crx", "cry", "crz", "cx", "cz"}, gates)
+        self.assertEqual(
+            {
+                "rxx",
+                "ryy",
+                "rzz",
+                "crx",
+                "cry",
+                "crz",
+                "cx",
+                "cy",
+                "cz",
+                "ch",
+                "csx",
+                "ecr",
+            },
+            gates,
+        )
