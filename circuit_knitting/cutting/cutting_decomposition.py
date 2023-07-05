@@ -293,8 +293,7 @@ def find_gate_cuts(
     circ_copy = circuit.copy()
 
     # Sweep the circuit num_cuts times. In each sweep, find the gate that results in the biggest
-    # reduction in depth, and replace it with a local, placeholder gate. Given some layout, this
-    # multi-sweep, greedy approach is more powerfull than picking all the cuts in a single sweep.
+    # reduction in depth, and replace it with a local, placeholder gate.
     cut_indices = []
     for cuts in range(num_cuts):
         cut_scores = _evaluate_cuts(circ_copy, transpilation_options)
@@ -306,6 +305,7 @@ def find_gate_cuts(
         # IGate cannot transpile to Eagle backends.
         circ_copy.data[best_idx] = CircuitInstruction(XGate(), qubits=(qubit0,))
 
+    # Cut the deepest gates found in each step
     qpd_circuit, bases = cut_gates(circuit, cut_indices)
 
     return qpd_circuit, bases, cut_indices
