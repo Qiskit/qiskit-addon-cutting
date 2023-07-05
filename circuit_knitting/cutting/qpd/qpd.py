@@ -348,19 +348,6 @@ def _(gate: CSXGate):
     return retval
 
 
-@_register_qpdbasis_from_gate("ecr")
-def _(gate: ECRGate):
-    retval = qpdbasis_from_gate(CXGate())
-    # Modify basis according to ECRGate definition in Qiskit circuit library
-    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
-    for operations in unique_by_id(m[0] for m in retval.maps):
-        operations.insert(0, SGate())
-        operations.append(XGate())
-    for operations in unique_by_id(m[1] for m in retval.maps):
-        operations.insert(0, SXGate())
-    return retval
-
-
 @_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
 def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
@@ -397,6 +384,19 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
     coeffs = [0.5, 0.5, 0.5, -0.5, 0.5, -0.5]
 
     return QPDBasis(maps, coeffs)
+
+
+@_register_qpdbasis_from_gate("ecr")
+def _(gate: ECRGate):
+    retval = qpdbasis_from_gate(CXGate())
+    # Modify basis according to ECRGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SGate())
+        operations.append(XGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SXGate())
+    return retval
 
 
 def _theta_from_gate(gate: Gate) -> float:
