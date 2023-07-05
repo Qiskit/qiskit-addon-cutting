@@ -87,6 +87,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
+    @unittest.skipIf(not cplex_available, "cplex is not installed")
     def test_circuit_cutting_dynamic_definition(self):
         qc = self.circuit
 
@@ -108,6 +109,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
+    @unittest.skipIf(not cplex_available, "cplex is not installed")
     def test_circuit_cutting_dynamic_definition_ghz(self):
         qc = QuantumCircuit(20, name="ghz")
         qc.h(0)
