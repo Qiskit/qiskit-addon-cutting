@@ -220,6 +220,9 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         - :class:`~qiskit.circuit.library.CSGate`
         - :class:`~qiskit.circuit.library.CSdgGate`
         - :class:`~qiskit.circuit.library.CPhaseGate`
+        - :class:`~qiskit.circuit.library.SwapGate`
+        - :class:`~qiskit.circuit.library.iSwapGate`
+        - :class:`~qiskit.circuit.library.DCXGate`
 
     The above gate names can also be determined by calling
     :func:`supported_gates`.
