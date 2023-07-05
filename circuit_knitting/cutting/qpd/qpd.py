@@ -33,7 +33,6 @@ from qiskit.circuit.library.standard_gates import (
     HGate,
     SGate,
     TGate,
-    TdgGate,
     SdgGate,
     SXGate,
     RXGate,
