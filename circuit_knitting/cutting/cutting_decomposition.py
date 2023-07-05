@@ -17,18 +17,19 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
+from qiskit import transpile
 from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
     Barrier,
 )
+from qiskit.circuit.library.standard_gates import XGate
 from qiskit.quantum_info import PauliList
 
 from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit
-from .qpd.qpd_basis import QPDBasis
-from .qpd.instructions import TwoQubitQPDGate
+from .qpd import QPDBasis, TwoQubitQPDGate, supported_gates
 
 
 class PartitionedCuttingProblem(NamedTuple):
@@ -269,3 +270,68 @@ def decompose_observables(
     }
 
     return subobservables_by_subsystem
+
+
+def find_gate_cuts(
+    circuit: QuantumCircuit, num_cuts: int, transpilation_options: dict
+) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
+    r"""
+    Find an optimized set of gates to cut, given a transpilation context.
+    This function seeks to reduce the depth of the transpiled
+    sub-experiments by cutting gates which result in the highest swap overhead.
+    Args:
+        circuit: The circuit to cut
+        num_cuts: The number of cuts to make
+        transpilation_options: A dictionary of kwargs to be passed to the Qiskit
+            ``transpile`` function.
+    Returns:
+        A tuple containing:
+            - A copy of the input circuit with SWAP-costly gates replaced with :class:`TwoQubitGate`\ s
+            - A list of :class:`QPDBasis` instances -- one for each QPD gate in the circuit
+            - A list of indices where the new :class:`TwoQubitGate`\ s are located in the output circuit
+    """
+    circ_copy = circuit.copy()
+
+    # Sweep the circuit num_cuts times. In each sweep, find the gate that results in the biggest
+    # reduction in depth, and replace it with a local, placeholder gate. Given some layout, this
+    # multi-sweep, greedy approach is more powerfull than picking all the cuts in a single sweep.
+    cut_indices = []
+    for cuts in range(num_cuts):
+        cut_scores = _evaluate_cuts(circ_copy, transpilation_options)
+        best_idx = cut_scores[0][0]
+        cut_indices.append(best_idx)
+        # Put a single qubit placeholder in place of the optimal gate
+        qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
+        # Use XGate as a placeholder since it will transpile to all our backends.
+        # IGate cannot transpile to Eagle backends.
+        circ_copy.data[best_idx] = CircuitInstruction(XGate(), qubits=(qubit0,))
+
+    qpd_circuit, bases = cut_gates(circuit, cut_indices)
+
+    return qpd_circuit, bases, cut_indices
+
+
+def _evaluate_cuts(
+    circuit: QuantumCircuit, transpilation_options: dict
+) -> list[tuple[int, int]]:
+    """Return the index and cut score for each supported gate in the circuit."""
+    input_depth = transpile(circuit, **transpilation_options).depth()
+
+    # For each supported gate in the circuit, assign a score based on the gate's
+    # average SWAP overhead across num_reps transpilation runs
+    cut_scores = []
+    for i, inst in enumerate(circuit.data):
+        if inst.operation.name not in supported_gates():
+            continue
+        cut_score = 0
+        del circuit.data[i]
+        # Try three times to mitigate outlier layouts from affecting the cutting scheme
+        num_reps = 3
+        for _ in range(num_reps):
+            cut_score += (
+                input_depth - transpile(circuit, **transpilation_options).depth()
+            )
+        cut_scores.append((i, cut_score / num_reps))
+        circuit.data.insert(i, inst)
+
+    return sorted(cut_scores, key=lambda x: x[1], reverse=True)
