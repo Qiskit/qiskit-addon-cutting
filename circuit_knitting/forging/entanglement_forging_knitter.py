@@ -629,8 +629,6 @@ def _estimate_expvals(
     # Ignore HF energy calculation. We will hard-code it later.
     if hf_energy is not None:
         tensor_ansatze = tensor_ansatze[1:]
-    all_circuits = tensor_ansatze + superposition_ansatze
-    all_observables = tensor_paulis + superposition_paulis
 
     ansatz_t: list[QuantumCircuit] = []
     observables_t: list[Pauli] = []
