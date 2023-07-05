@@ -4,5 +4,8 @@ features:
     This release adds support for additional cut gates:
     - :class:`~qiskit.circuit.library.CHGate`
     - :class:`~qiskit.circuit.library.CYGate`
-    - :class:`~qiskit.circuit.library.SXGate`
+    - :class:`~qiskit.circuit.library.CSGate`
+    - :class:`~qiskit.circuit.library.CSXGate`
+    - :class:`~qiskit.circuit.library.CSdgGate`
+    - :class:`~qiskit.circuit.library.CPhaseGate`
     - :class:`~qiskit.circuit.library.ECRGate`
