@@ -320,15 +320,12 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
 
 @_register_qpdbasis_from_gate("cs", "csdg")
 def _(gate: CSGate | CSdgGate):
-    # pi/2 and -pi/2 rotations around Z axis
     theta = np.pi / 2
+    rot_gate = TGate()
     if gate.name == "csdg":
         theta *= -1
+        rot_gate = rot_gate.inverse()
     retval = qpdbasis_from_gate(CRZGate(theta))
-    if gate.name == "cs":
-        rot_gate = TGate()
-    else:
-        rot_gate = TdgGate()
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, rot_gate)
 
