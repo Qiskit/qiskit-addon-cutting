@@ -328,7 +328,6 @@ def _(gate: CSGate | CSdgGate):
     retval = qpdbasis_from_gate(CRZGate(theta))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, rot_gate)
-
     return retval
 
 
@@ -338,7 +337,6 @@ def _(gate: CPhaseGate):
     retval = qpdbasis_from_gate(CRZGate(theta))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, PhaseGate(theta / 2))
-
     return retval
 
 
@@ -347,7 +345,19 @@ def _(gate: CSXGate):
     retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TGate())
+    return retval
 
+
+@_register_qpdbasis_from_gate("ecr")
+def _(gate: ECRGate):
+    retval = qpdbasis_from_gate(CXGate())
+    # Modify basis according to ECRGate definition in Qiskit circuit library
+    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, SGate())
+        operations.append(XGate())
+    for operations in unique_by_id(m[1] for m in retval.maps):
+        operations.insert(0, SXGate())
     return retval
 
 
@@ -404,19 +414,6 @@ def _theta_from_gate(gate: Gate) -> float:
         ) from err
 
     return theta
-
-
-@_register_qpdbasis_from_gate("ecr")
-def _(gate: ECRGate):
-    retval = qpdbasis_from_gate(CXGate())
-    # Modify basis according to ECRGate definition in Qiskit circuit library
-    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
-    for operations in unique_by_id(m[0] for m in retval.maps):
-        operations.insert(0, SGate())
-        operations.append(XGate())
-    for operations in unique_by_id(m[1] for m in retval.maps):
-        operations.insert(0, SXGate())
-    return retval
 
 
 def _validate_qpd_instructions(
