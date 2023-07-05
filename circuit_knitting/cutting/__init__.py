@@ -24,6 +24,7 @@ Circuit Cutting
     partition_circuit_qubits
     partition_problem
     cut_gates
+    find_gate_cuts
     decompose_gates
     execute_experiments
     reconstruct_expectation_values
@@ -78,6 +79,7 @@ from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
+    find_gate_cuts,
     decompose_gates,
     PartitionedCuttingProblem,
 )
@@ -88,6 +90,7 @@ __all__ = [
     "partition_circuit_qubits",
     "partition_problem",
     "cut_gates",
+    "find_gate_cuts",
     "decompose_gates",
     "execute_experiments",
     "reconstruct_expectation_values",
