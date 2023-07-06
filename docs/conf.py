@@ -85,7 +85,7 @@ redirects = {
     "circuit_cutting/tutorials/gate_cutting_to_reduce_circuit_depth.html": "02_gate_cutting_to_reduce_circuit_depth.html",
 }
 
-intersphinx_mapping ={
+intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
