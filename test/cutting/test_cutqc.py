@@ -109,7 +109,6 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
-    @unittest.skipIf(not cplex_available, "cplex is not installed")
     def test_circuit_cutting_dynamic_definition_ghz(self):
         qc = QuantumCircuit(20, name="ghz")
         qc.h(0)
@@ -118,10 +117,12 @@ class TestCircuitCutting(unittest.TestCase):
 
         cuts = cut_circuit_wires(
             circuit=qc,
-            method="automatic",
-            max_subcircuit_width=5,
-            max_cuts=8,
-            num_subcircuits=[3, 4, 5],
+            method="manual",
+            subcircuit_vertices=[
+                [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                [9, 10, 11, 12, 13, 14, 15, 16, 17],
+                [18],
+            ],
         )
 
         subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
