@@ -303,7 +303,7 @@ class EntanglementForgingGroundStateSolver:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
-                hf_energy=self._hf_energy,
+                hf_energy=self._hf_energy - self._energy_shift,
                 service=self._service,
                 backend_names=backend_names,
                 options=self._options,
