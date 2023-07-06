@@ -35,13 +35,13 @@ def test_transpile_before_realizing_basis_id():
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.
     backend = FakeLagosV2()
-    backend = deepcopy(backend)
+    target = deepcopy(backend.target)
     sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 1)
-    backend.target.add_instruction(
+    target.add_instruction(
         sample_qpd_instruction,
-        {(i,): None for i in range(backend.target.num_qubits)},
+        {(i,): None for i in range(target.num_qubits)},
     )
-    pass_manager = generate_preset_pass_manager(3, backend)
+    pass_manager = generate_preset_pass_manager(3, target=target)
 
     # Pass each subcircuit through the pass manager.
     subcircuits = {
