@@ -92,6 +92,6 @@ intersphinx_mapping = {
     "qiskit": ("https://qiskit.org/documentation/", None),
     "qiskit-ibm-runtime": ("https://qiskit.org/ecosystem/ibm-runtime/", None),
     "qiskit-aer": ("https://qiskit.org/ecosystem/aer/", None),
-    "qiskit-nature": ("https://qiskit.org/ecosystem/nature/", None), 
+    "qiskit-nature": ("https://qiskit.org/ecosystem/nature/", None),
     "rustworkx": ("https://qiskit.org/documentation/rustworkx/", None),
 }
