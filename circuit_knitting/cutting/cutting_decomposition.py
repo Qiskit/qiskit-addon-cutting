@@ -138,7 +138,7 @@ def cut_gates(
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`.TwoQubitGate`\ s
+        A copy of the input circuit with the specified gates replaced with :class:`.TwoQubitQPDGate`\ s
         and a list of :class:`.QPDBasis` instances -- one for each decomposed gate.
 
     Raises:

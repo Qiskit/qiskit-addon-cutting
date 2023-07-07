@@ -22,9 +22,9 @@ from qiskit.quantum_info import Pauli
 class EntanglementForgingOperator:  # noqa: D301
     r"""Operator class for Entanglement Forging.
 
-    A class that contains the :math:`2N` qubit Pauli operator :math:`\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i, j} \otimes \sum_{a, b} \hat{S}_{a, b}`
-    and associated weights. These operators are knitted by the :class:`.EntanglementForgingKnitter` to provide esimates of the
-    energy for the :class:`.EntanglementForgingVQE`.
+    A class that contains the :math:`2N` qubit Pauli operator :math:`\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i,
+    j} \otimes \sum_{a, b} \hat{S}_{a, b}` and associated weights. These operators are knitted by the
+    :class:`.EntanglementForgingKnitter` to provide estimates of the energy for the :class:`.EntanglementForgingVQE`.
     """
 
     def __init__(
@@ -55,7 +55,7 @@ class EntanglementForgingOperator:  # noqa: D301
         Representation function for EntanglementForgingOperator.
 
         Returns:
-            Printable repesentation of class
+            Printable representation of class
         """
         repr = "EntanglementForgingOperator\nTensor Paulis:\n"
         repr += str(self.tensor_paulis)

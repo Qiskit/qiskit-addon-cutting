@@ -337,7 +337,7 @@ class EntanglementForgingGroundStateSolver:
         Args:
             operator: The decomposed Hamiltonian in entanglement forging format
         Returns:
-            Callable function which provides an estimation of the mihnimum eigenvalue
+            Callable function which provides an estimation of the minimum eigenvalue
             of the input operator given some ansatz circuit parameters.
         """
 
