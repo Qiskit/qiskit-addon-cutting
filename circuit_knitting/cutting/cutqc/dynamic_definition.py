@@ -11,6 +11,7 @@
 
 # The code in this file was ported from CutQC at https://github.com/weiT1993/CutQC
 # (C) Copyright 2022 Wei Tang (weit@princeton.edu), released under the MIT License.
+# See https://opensource.org/license/mit/
 
 """Functions of Dynamic Definition for CutQC."""
 
