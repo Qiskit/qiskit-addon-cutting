@@ -9,8 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-# This code was ported from CutQC at https://github.com/weiT1993/CutQC
-# (C) Copyright 2022 Wei Tang (weit@princeton.edu)
+# The code in this file was ported from CutQC at https://github.com/weiT1993/CutQC
+# (C) Copyright 2022 Wei Tang (weit@princeton.edu), released under the MIT License.
 
 """Functions of Dynamic Definition for CutQC."""
 
