@@ -56,8 +56,8 @@ def execute_experiments(
     Args:
         circuits: The circuit(s) resulting from decomposing nonlocal gates
         subobservables: The subobservable(s) corresponding to the circuit(s). If
-            a :external:class:`~qiskit.circuit.QuantumCircuit` is submitted for the ``circuits`` argument,
-            a :external:class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
+            a :class:`~qiskit.circuit.QuantumCircuit` is submitted for the ``circuits`` argument,
+            a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
             from partition label to subobservables is expected.
         num_samples: The number of samples to draw from the quasiprobability distribution
         samplers: Sampler(s) on which to run the sub-experiments.
