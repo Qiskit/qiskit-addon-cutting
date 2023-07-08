@@ -298,12 +298,15 @@ class EntanglementForgingGroundStateSolver:
         hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
-        # Set the knitter class field
+        # Shift the hf value so it can be entered into the Schmidt matrix
+        fixed_hf_value = None
+        if self._hf_energy is not None:
+            fixed_hf_value = self._hf_energy - self._energy_shift
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
-                hf_energy=self._hf_energy - self._energy_shift,
+                fixed_hf_value=fixed_hf_value,
                 service=self._service,
                 backend_names=backend_names,
                 options=self._options,
@@ -311,7 +314,7 @@ class EntanglementForgingGroundStateSolver:
         else:
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
-                hf_energy=self._hf_energy - self._energy_shift,
+                fixed_hf_value=fixed_hf_value,
                 options=self._options,
             )
         self._history = EntanglementForgingHistory()
