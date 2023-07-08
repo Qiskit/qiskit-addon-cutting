@@ -11,18 +11,24 @@
 
 """Tests for EntanglementForgingVQE module."""
 
+import os
 import unittest
 import importlib.util
-import numpy as np
 
+import numpy as np
 from qiskit.algorithms.optimizers import SPSA
+from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.circuit.library import TwoLocal
+from qiskit.algorithms.optimizers import COBYLA
 from qiskit_nature.units import DistanceUnit
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import (
     ElectronicBasis,
+    ElectronicStructureProblem,
 )
+from qiskit_nature.second_q.transformers import ActiveSpaceTransformer
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
+from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
 
 from circuit_knitting.forging import (
     EntanglementForgingAnsatz,
@@ -73,3 +79,71 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
 
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(ground_state_energy, -1.121936544469326)
+
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
+    def test_fixed_hf_h2o(self):
+        """Test for fixing the HF value in computing the energy of a H2O molecule."""
+        # Set up the ElectronicStructureProblem
+        HF = -14.09259461609392
+        orb_act = list(range(0, 5))
+        num_alpha = num_beta = 3
+        hcore = np.load(
+            os.path.join(os.path.dirname(__file__), "test_data", "H2O_one_body.npy"),
+        )
+        eri = np.load(
+            os.path.join(os.path.dirname(__file__), "test_data", "H2O_two_body.npy"),
+        )
+        hamiltonian = ElectronicEnergy.from_raw_integrals(hcore, eri)
+        hamiltonian.nuclear_repulsion_energy = -61.57756706745154
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.basis = ElectronicBasis.MO
+        problem.num_particles = (num_alpha, num_beta)
+        transformer = ActiveSpaceTransformer(
+            num_electrons=6, num_spatial_orbitals=len(orb_act), active_orbitals=orb_act
+        )
+        problem_reduced = transformer.transform(problem)
+
+        theta = Parameter("θ")
+
+        hop_gate = QuantumCircuit(2, name="hop_gate")
+        hop_gate.h(0)
+        hop_gate.cx(1, 0)
+        hop_gate.cx(0, 1)
+        hop_gate.ry(-theta, 0)
+        hop_gate.ry(-theta, 1)
+        hop_gate.cx(0, 1)
+        hop_gate.h(0)
+
+        theta_1, theta_2, theta_3, theta_4 = (
+            Parameter("θ1"),
+            Parameter("θ2"),
+            Parameter("θ3"),
+            Parameter("θ4"),
+        )
+
+        circuit = QuantumCircuit(5)
+        circuit.append(hop_gate.to_gate({theta: theta_1}), [0, 1])
+        circuit.append(hop_gate.to_gate({theta: theta_2}), [3, 4])
+        circuit.append(hop_gate.to_gate({theta: 0}), [1, 4])
+        circuit.append(hop_gate.to_gate({theta: theta_3}), [0, 2])
+        circuit.append(hop_gate.to_gate({theta: theta_4}), [3, 4])
+
+        bitstrings = [(1, 1, 1, 0, 0), (0, 1, 1, 0, 1), (1, 1, 0, 1, 0)]
+        ansatz = EntanglementForgingAnsatz(
+            circuit_u=circuit,
+            bitstrings_u=bitstrings,
+        )
+
+        optimizer = COBYLA(maxiter=1)
+        initial_point = [-0.83604922, -0.87326138, -0.93964018, 0.55224467]
+        solver = EntanglementForgingGroundStateSolver(
+            ansatz=ansatz,
+            optimizer=optimizer,
+            hf_energy=HF,
+            initial_point=initial_point,
+        )
+        result = solver.solve(problem_reduced)
+
+        assert np.allclose(
+            result.groundstate[0], [-0.00252657, 0.99945784, -0.03282741], atol=1e-8
+        )
