@@ -144,8 +144,8 @@ class EntanglementForgingGroundStateSolver:
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
-            hf_energy: If set, this energy will be used instead of calculating the Hartree-Fock
-                energy at each iteration.
+            hf_energy: The Hartree-Fock energy to use at each iteration. If this is left unset,
+                the energy will be calculated with quantum experiments.
 
         Returns:
             None
