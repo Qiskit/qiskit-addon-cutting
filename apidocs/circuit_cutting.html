@@ -1,51 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html" /><link rel="prev" title="Circuit Knitting Toolbox API References" href="index.html" />
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Circuit Cutting &#8212; Circuit Knitting Toolbox 0.2.0 documentation</title>
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+        <title>Circuit Cutting - Circuit Knitting Toolbox 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/thebelab-helper.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html" />
-    <link rel="prev" title="Circuit Knitting Toolbox API References" href="index.html" />
-   
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
 
-  </head><body>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg><qiskit-ui-shell variant="hide-account"></qiskit-ui-shell><input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>Site contents <i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label>
+    </div>
+    <div class="header-center"></div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search Circuit Knitting Toolbox docs" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Circuit Cutting Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Circuit Cutting How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../circuit_cutting/cutqc/index.html">CutQC (legacy circuit cutting implementation)</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of CutQC (legacy circuit cutting implementation)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/cutqc/tutorials/tutorial_1_automatic_cut_finding.html">CutQC Tutorial 1: Circuit Cutting with Automatic Cut Finding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/cutqc/tutorials/tutorial_2_manual_cutting.html">CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../circuit_cutting/cutqc/tutorials/tutorial_3_cutting_with_quantum_serverless.html">CutQC Tutorial 3: Circuit Cutting with Quantum Serverless</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Entanglement Forging Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../entanglement_forging/tutorials/tutorial_1_getting_started.html">Tutorial 1: Entanglement Forging for estimating the ground state energy of the H2 molecule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../entanglement_forging/tutorials/tutorial_2_forging_with_quantum_serverless.html">Tutorial 2: Entanglement Forging with Quantum Serverless</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Entanglement Forging How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../entanglement_forging/how-tos/specify-problem.html">How to specify the problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API References</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Circuit Cutting</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Circuit Cutting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html">circuit_knitting_toolbox.circuit_cutting.partition_problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html">circuit_knitting_toolbox.circuit_cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html">circuit_knitting_toolbox.circuit_cutting.execute_experiments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html">circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html">circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults.html">circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html">circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.WeightType.html">circuit_knitting_toolbox.circuit_cutting.qpd.WeightType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples.html">circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions.html">circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html">circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms.html">circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.build.html">circuit_knitting_toolbox.circuit_cutting.cutqc.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.verify.html">circuit_knitting_toolbox.circuit_cutting.cutqc.verify</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires.html">circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits.html">circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html">circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="entanglement_forging.html">Entanglement Forging</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Entanglement Forging</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition.html">circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html">circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="utils.html">Utilities</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Utilities</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html">circuit_knitting_toolbox.utils.bitwise.bit_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.quasi_to_real.html">circuit_knitting_toolbox.utils.conversion.quasi_to_real</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.naive_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.naive_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.conversion.dict_to_array.html">circuit_knitting_toolbox.utils.conversion.dict_to_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_id.html">circuit_knitting_toolbox.utils.iteration.unique_by_id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_eq.html">circuit_knitting_toolbox.utils.iteration.unique_by_eq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.chi2_distance.html">circuit_knitting_toolbox.utils.metrics.chi2_distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.MSE.html">circuit_knitting_toolbox.utils.metrics.MSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.MAPE.html">circuit_knitting_toolbox.utils.metrics.MAPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.cross_entropy.html">circuit_knitting_toolbox.utils.metrics.cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.metrics.HOP.html">circuit_knitting_toolbox.utils.metrics.HOP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem.html">circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup.html">circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html">circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html">circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.simulation.ExactSampler.html">circuit_knitting_toolbox.utils.simulation.ExactSampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.transforms.separate_circuit.html">circuit_knitting_toolbox.utils.transforms.separate_circuit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html">circuit_knitting_toolbox.utils.transforms.SeparatedCircuits</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
           
-
-          <div class="body" role="main">
-            
-  <section id="module-circuit_knitting_toolbox.circuit_cutting">
-<span id="id1"></span><span id="circuit-cutting"></span><h1>Circuit Cutting<a class="headerlink" href="#module-circuit_knitting_toolbox.circuit_cutting" title="Permalink to this heading">¶</a></h1>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-circuit_knitting_toolbox.circuit_cutting">
+<span id="id1"></span><span id="circuit-cutting"></span><h1>Circuit Cutting<a class="headerlink" href="#module-circuit_knitting_toolbox.circuit_cutting" title="Permalink to this heading">#</a></h1>
 <p>Circuit Cutting (<a class="reference internal" href="#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting</span></code></a>).</p>
 <section id="id2">
-<h2>Circuit Cutting<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<h2>Circuit Cutting<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html#circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits" title="circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partition_circuit_qubits</span></code></a></p></td>
@@ -65,6 +286,8 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html#circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem" title="circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PartitionedCuttingProblem</span></code></a></p></td>
@@ -75,9 +298,11 @@
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 <section id="quasi-probability-decomposition-qpd">
-<h2>Quasi-Probability Decomposition (QPD)<a class="headerlink" href="#quasi-probability-decomposition-qpd" title="Permalink to this heading">¶</a></h2>
+<h2>Quasi-Probability Decomposition (QPD)<a class="headerlink" href="#quasi-probability-decomposition-qpd" title="Permalink to this heading">#</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html#circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis" title="circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.QPDBasis</span></code></a></p></td>
@@ -97,6 +322,8 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples.html#circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples" title="circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qpd.generate_qpd_samples</span></code></a></p></td>
@@ -107,9 +334,11 @@
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 <section id="cutqc">
-<h2>CutQC<a class="headerlink" href="#cutqc" title="Permalink to this heading">¶</a></h2>
+<h2>CutQC<a class="headerlink" href="#cutqc" title="Permalink to this heading">#</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html#circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances" title="circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cutqc.run_subcircuit_instances</span></code></a></p></td>
@@ -135,91 +364,91 @@
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 </section>
 
-
-          </div>
-          
-        </div>
+        </article>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="../index.html">Circuit Knitting Toolbox</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../circuit_cutting/tutorials/index.html">Circuit Cutting Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../circuit_cutting/explanation/index.html">Circuit Cutting Explanatory Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../circuit_cutting/how-tos/index.html">Circuit Cutting How-To Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../circuit_cutting/cutqc/index.html">CutQC (legacy circuit cutting implementation)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../entanglement_forging/tutorials/index.html">Entanglement Forging Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../entanglement_forging/explanation/index.html">Entanglement Forging Explanatory Material</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../entanglement_forging/how-tos/index.html">Entanglement Forging How-To Guides</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">API References</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Circuit Cutting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="entanglement_forging.html">Entanglement Forging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
+      <footer>
+        <div class="related-pages">
+          <a class="next-page" href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Circuit Knitting Toolbox API References</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Circuit Cutting</a><ul>
+<li><a class="reference internal" href="#id2">Circuit Cutting</a><ul>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+<li><a class="reference internal" href="#quasi-probability-decomposition-qpd">Quasi-Probability Decomposition (QPD)</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#cutqc">CutQC</a></li>
+</ul>
+</li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="index.html">Circuit Knitting Toolbox API References</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Circuit Knitting Toolbox API References</a></li>
-      <li>Next: <a href="../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html" title="next chapter">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
-
-
+          </div>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2023.
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
-      |
-      <a href="../_sources/apidocs/circuit_cutting.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
 </html>
