@@ -30,7 +30,7 @@ from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
-    generate_qpd_samples,
+    generate_qpd_weights,
     decompose_qpd_instructions,
     WeightType,
 )
@@ -259,7 +259,7 @@ def _generate_cutting_experiments(
         }
 
     # Sample the joint quasiprobability decomposition
-    random_samples = generate_qpd_samples(bases, num_samples=num_samples)
+    random_samples = generate_qpd_weights(bases, num_samples=num_samples)
 
     # Calculate terms in coefficient calculation
     kappa = np.prod([basis.kappa for basis in bases])

@@ -13,6 +13,7 @@
 
 from .qpd_basis import QPDBasis
 from .qpd import (
+    generate_qpd_weights,
     generate_qpd_samples,
     decompose_qpd_instructions,
     WeightType,
@@ -28,6 +29,7 @@ from .instructions import (
 
 __all__ = [
     "qpdbasis_from_gate",
+    "generate_qpd_weights",
     "generate_qpd_samples",
     "decompose_qpd_instructions",
     "supported_gates",
