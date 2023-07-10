@@ -222,10 +222,10 @@ In some cases, it is possible to increase the accuracy of simulations and speed 
    result = solver.solve(problem)
 
 This setting requires an ansatz that leaves the Hartree-Fock (HF) state
-unchanged under `var_form`. As a rule of thumb, this can be achieved by
-restricting entanglement between the qubits representing occupied orbitals
-(bits = 1) in the HF state and the qubits representing unoccupied orbitals
-(bits = 0) in the HF state.
+unchanged with respect to the optimization parameters. As a rule of thumb,
+this can be achieved by restricting entanglement between the qubits representing
+occupied orbitals (bits = 1) in the HF state and the qubits representing
+unoccupied orbitals (bits = 0) in the HF state.
 
 For example, this figure from [1] shows the A, B, and C qubits entangled with
 the hop gates, D & E qubits entangled with hop gates, while the partition between
