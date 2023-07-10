@@ -1,4 +1,4 @@
 ---
 features:
   - |
-    Users may now bypass experiments associated with the Hartree-Fock bitstring and replace their results with a specified Hartree-Fock value using the ``hf_energy`` class field in :class:`~circuit_knitting.forging.EntanglementForgingGroundStateSolver`. Refer to the :ref:`explanatory material <Fixing the Hartree-Fock bitstring>` for more information.
+    Users may now bypass experiments associated with the Hartree-Fock bitstring and replace their results with a specified Hartree-Fock value using the ``hf_energy`` class field in :class:`~circuit_knitting.forging.EntanglementForgingGroundStateSolver`. Refer to the :ref:`explanatory material <Fixing the Hartree-Fock Bitstring>` for more information.
