@@ -84,6 +84,7 @@ docs = [
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
     "reno>=3.4.0",
+    "qiskit-sphinx-theme~=1.13.0rc2"
 ]
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex,pyscf]",
