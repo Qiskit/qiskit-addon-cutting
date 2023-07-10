@@ -199,7 +199,7 @@ that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
 
-.. _Fixing the Hartree-Fock Bitstring
+.. _Fixing the Hartree-Fock Bitstring:
 
 Fixing the Hartree-Fock Bitstring
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -216,7 +216,7 @@ In some cases, it is possible to increase the accuracy of simulations and speed 
 
    solver = EntanglementForgingGroundStateSolver(
        ansatz=ansatz,
-       hf_value=hf_energy
+       hf_energy=hf_energy
    )
 
    result = solver.solve(problem)
