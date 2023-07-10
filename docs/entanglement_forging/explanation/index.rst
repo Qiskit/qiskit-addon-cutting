@@ -199,6 +199,42 @@ that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
 
+.. _Fixing the Hartree-Fock Bitstring
+
+Fixing the Hartree-Fock Bitstring
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In some cases, it is possible to increase the accuracy of simulations and speed up the execution by bypassing the experiments associated with the first bitstring and replacing those results with the Hartree-Fock energy value.
+
+.. code-block:: python
+
+   from qiskit_nature.second_q.problems import ElectronicStructureProblem
+   from circuit_knitting.forging import EntanglementForgingGroundStateSolver
+
+   problem = ElectronicStructureProblem(...)
+   hf_energy = ...
+
+   solver = EntanglementForgingGroundStateSolver(
+       ansatz=ansatz,
+       hf_value=hf_energy
+   )
+
+   result = solver.solve(problem)
+
+This setting requires an ansatz that leaves the Hartree-Fock (HF) state
+unchanged under `var_form`. As a rule of thumb, this can be achieved by
+restricting entanglement between the qubits representing occupied orbitals
+(bits = 1) in the HF state and the qubits representing unoccupied orbitals
+(bits = 0) in the HF state.
+
+For example, this figure from [1] shows the A, B, and C qubits entangled with
+the hop gates, D & E qubits entangled with hop gates, while the partition between
+(A,B,C) and (D,E) are only entangled with a CZ gate.
+
+.. figure:: figs/fixed_hf.png
+   :width: 250
+   :alt: Fixing the first bitstring to the HF value
+
 .. _Ansatz design:
 
 Designing the ansatz used in Entanglement Forging
