@@ -88,10 +88,14 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         orb_act = list(range(0, 5))
         num_alpha = num_beta = 3
         hcore = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "H2O_0.90_one_body.npy"),
+            os.path.join(
+                os.path.dirname(__file__), "test_data", "H2O_0.90_one_body.npy"
+            ),
         )
         eri = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "H2O_0.90_two_body.npy"),
+            os.path.join(
+                os.path.dirname(__file__), "test_data", "H2O_0.90_two_body.npy"
+            ),
         )
         hamiltonian = ElectronicEnergy.from_raw_integrals(hcore, eri)
         hamiltonian.nuclear_repulsion_energy = -61.57756706745154
