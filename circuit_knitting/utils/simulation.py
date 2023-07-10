@@ -139,8 +139,8 @@ class ExactSampler(BaseSampler):
     - some (or all) classical bits can remain unused
     - classical bits can be written more than once
 
-    The samplers provided by ``qiskit.primitives`` and
-    ``qiskit_aer.primitives`` do not currently support all of the above
+    The samplers provided by :mod:`~qiskit.primitives` and
+    :mod:`~qiskit_aer.primitives` do not currently support all of the above
     functionality.  Related upstream issues:
 
     - https://github.com/Qiskit/qiskit-terra/issues/9657

@@ -42,7 +42,7 @@ def observables_restricted_to_subsystem(
 ) -> list[Pauli] | PauliList:
     """Restrict each observable to its support on a given subsystem.
 
-    A ``PauliList`` will be returned if a ``PauliList`` is provided; otherwise,
+    A :class:`~qiskit.quantum_info.PauliList` will be returned if a :class:`~qiskit.quantum_info.PauliList` is provided; otherwise,
     a ``list[Pauli]`` will be returned.
 
     Args:
@@ -50,7 +50,7 @@ def observables_restricted_to_subsystem(
         global_observables: The list of observables
 
     Returns:
-        Each Pauli restricted to the subsystem.
+        Each :class:`~qiskit.quantum_info.Pauli` restricted to the subsystem.
 
     >>> observables_restricted_to_subsystem([1, 3], PauliList(["IXYZ", "ZZXX"]))
     PauliList(['IY', 'ZX'])
@@ -131,7 +131,7 @@ class CommutingObservableGroup:
         commuting_observables: Those that can be measured simultaneously
         general_observable: A single Pauli string that contains all
             qubit-wise measurements needed to measure everything in ``commuting_observables``.
-        pauli_indices: The indices of non-identity ``Pauli``\ s in ``general_observable``
+        pauli_indices: The indices of non-identity :class:`~qiskit.quantum_info.Pauli`\ s in ``general_observable``
         pauli_bitmasks: A bitmask for each observable in
             ``commuting_observables``.  Given an element, each bit corresponds to
             whether the corresponding entry in ``pauli_indices`` is relevant to
@@ -174,7 +174,7 @@ class ObservableCollection:
 
     The observables are automatically organized into sets of mutually
     qubit-wise commuting observables, each represented by a
-    ``CommutingObservableGroup``.
+    :class:`.CommutingObservableGroup`.
     """
 
     def __init__(self, observables: PauliList | Iterable[Pauli], /):
@@ -255,19 +255,19 @@ class ObservableCollection:
 
     @property
     def groups(self) -> list[CommutingObservableGroup]:
-        r"""List of ``CommutingObservableGroup``\ s which, together, contain all desired observables."""
+        r"""List of :class:`.CommutingObservableGroup`\ s which, together, contain all desired observables."""
         return self._groups
 
     @property
     def lookup(self) -> dict[Pauli, list[tuple[int, int]]]:
-        r"""Get dict which maps each ``Pauli`` observable to a list of ``(i, j)`` pairs.
+        r"""Get dict which maps each :class:`~qiskit.quantum_info.Pauli` observable to a list of ``(i, j)`` pairs.
 
-        For each element of the list, it means that the ``Pauli`` is given by
+        For each element of the list, it means that the :class:`~qiskit.quantum_info.Pauli` is given by
         the ``j``th commuting observable in the ``i``th group.
 
         This list will be of length 1 at minimum, but may potentially be longer
-        if multiple ``CommutingObservableGroup``\ s are compatible with the given
-        ``Pauli``.
+        if multiple :class:`.CommutingObservableGroup`\ s are compatible with the given
+        :class:`~qiskit.quantum_info.Pauli`.
 
         """
         return self._lookup
