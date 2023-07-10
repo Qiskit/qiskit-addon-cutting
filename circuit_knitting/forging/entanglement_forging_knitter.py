@@ -313,7 +313,7 @@ class EntanglementForgingKnitter:
             forged_operator, np.array(tensor_expvals), np.array(superposition_expvals)
         )
 
-        # Hard-code the Hartree-Fock energy, if desired
+        # Hard-code the shifted Hartree-Fock energy, if desired
         if self._fixed_hf_value is not None:
             h_schmidt[0, 0] = self._fixed_hf_value
 
