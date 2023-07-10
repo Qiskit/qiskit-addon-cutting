@@ -48,6 +48,7 @@ extensions = [
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_reredirects",
+    "qiskit_sphinx_theme",
 ]
 templates_path = ["_templates"]
 numfig = True
@@ -56,11 +57,8 @@ language = "en"
 pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting_toolbox."]
-html_css_files = ["style.css"]
 
-# html theme options
-html_static_path = ["_static"]
-# html_logo = "_static/images/logo.png"
+html_theme = "qiskit"
 
 # autodoc/autosummary options
 autosummary_generate = True
