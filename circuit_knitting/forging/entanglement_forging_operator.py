@@ -24,7 +24,8 @@ class EntanglementForgingOperator:  # noqa: D301
 
     A class that contains the :math:`2N` qubit Pauli operator :math:`\hat{O} = \sum_{i, j} w_{i, j} \hat{T}_{i,
     j} \otimes \sum_{a, b} \hat{S}_{a, b}` and associated weights. These operators are knitted by the
-    :class:`.EntanglementForgingKnitter` to provide estimates of the energy for the :class:`.EntanglementForgingVQE`.
+    :class:`.EntanglementForgingKnitter` to provide estimates of the energy for the
+    :class:`.EntanglementForgingGroundStateSolver`.
     """
 
     def __init__(
