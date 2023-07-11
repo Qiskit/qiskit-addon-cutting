@@ -199,27 +199,29 @@ that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
 
-.. _Fixing the Hartree-Fock Bitstring:
+.. _Fixing the Hartree-Fock bitstring:
 
-Fixing the Hartree-Fock Bitstring
+Fixing the Hartree-Fock bitstring
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In some cases, it is possible to increase the accuracy of simulations and speed up the execution by bypassing the experiments associated with the first bitstring and replacing those results with the Hartree-Fock energy value.
+In some cases, it is possible to increase the accuracy of simulations and speed up
+the execution by bypassing the experiments associated with the first bitstring and
+replacing those results with the Hartree-Fock energy value.
 
 .. code-block:: python
+   :caption: Fixing the HF energy at each iteration
+       from qiskit_nature.second_q.problems import ElectronicStructureProblem
+       from circuit_knitting.forging import EntanglementForgingGroundStateSolver
 
-   from qiskit_nature.second_q.problems import ElectronicStructureProblem
-   from circuit_knitting.forging import EntanglementForgingGroundStateSolver
+       problem = ElectronicStructureProblem(...)
+       hf_energy = ...
 
-   problem = ElectronicStructureProblem(...)
-   hf_energy = ...
+       solver = EntanglementForgingGroundStateSolver(
+           ansatz=ansatz,
+           hf_energy=hf_energy
+       )
 
-   solver = EntanglementForgingGroundStateSolver(
-       ansatz=ansatz,
-       hf_energy=hf_energy
-   )
-
-   result = solver.solve(problem)
+       result = solver.solve(problem)
 
 This setting requires an ansatz that leaves the Hartree-Fock (HF) state
 unchanged with respect to the optimization parameters. As a rule of thumb,
