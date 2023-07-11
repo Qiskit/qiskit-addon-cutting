@@ -271,6 +271,7 @@ class EntanglementForgingKnitter:
                         tensor_pauli_list,
                         superposition_ansatze_partition,
                         superposition_pauli_list,
+                        self._ansatz.bitstrings_are_symmetric,
                         self.fixed_hf_value,
                         service_args,
                         backend_name,
@@ -302,7 +303,9 @@ class EntanglementForgingKnitter:
             nans_u = np.empty(np.shape(tensor_expvals[0]))
             nans_u[:] = np.nan
             if not self._ansatz.bitstrings_are_symmetric:
-                num_tensor_terms = int(np.shape(tensor_expvals)[0] / 2)
+                # Should be equal number of expvals for each subsystem
+                assert len(tensor_expvals) % 2 == 0
+                num_tensor_terms = int(len(tensor_expvals) / 2)
                 nans_v = np.empty(np.shape(tensor_expvals[num_tensor_terms]))
                 nans_v[:] = np.nan
                 tensor_expvals.insert(num_tensor_terms, nans_v)
@@ -600,6 +603,7 @@ def _estimate_expvals(
     tensor_paulis: list[Pauli],
     superposition_ansatze: list[QuantumCircuit],
     superposition_paulis: list[Pauli],
+    bitstrings_are_symmetric: bool,
     fixed_hf_value: float | None,
     service_args: dict[str, Any] | None,
     backend_name: str | None,
@@ -619,6 +623,7 @@ def _estimate_expvals(
         superposition_ansatze: The circuits with different Schmidt coefficients
         superposition_paulis: The pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt coefficients
+        bitstrings_are_symmetric: Whether the same bitstrings are being used for each subsystem
         fixed_hf_value: The shifted Hartree-Fock energy to be hard-coded in the Schmidt matrix
         service_args: The service account used to spawn Qiskit primitives
         backend_name: The backend to use to evaluate the grouped experiments
@@ -630,6 +635,10 @@ def _estimate_expvals(
     """
     # Ignore HF energy calculation. We will hard-code it later.
     if fixed_hf_value is not None:
+        if not bitstrings_are_symmetric:
+            # Should have equal number of bitstrings for each subsystem
+            assert len(tensor_ansatze) % 2 == 0
+            del tensor_ansatze[int(len(tensor_ansatze) / 2)]
         tensor_ansatze = tensor_ansatze[1:]
 
     ansatz_t: list[QuantumCircuit] = []
