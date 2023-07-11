@@ -17,10 +17,11 @@ from typing import Sequence, Any, Dict, cast, no_type_check
 
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
+from qiskit.primitives import BaseSampler
 from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
 from qiskit.converters import circuit_to_dag, dag_to_circuit
-from qiskit_ibm_runtime import Options, QiskitRuntimeService
+from qiskit_ibm_runtime import Options
 
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -93,57 +94,24 @@ def cut_circuit_wires(
 
 def evaluate_subcircuits(
     cuts: dict[str, Any],
-    service: QiskitRuntimeService | None = None,
-    backend_names: str | Sequence[str] | None = None,
-    options: Options | Sequence[Options] | None = None,
+    sampler: BaseSampler | None = None,
 ) -> dict[int, dict[int, np.ndarray]]:
     """
     Evaluate the subcircuits.
 
     Args:
         cuts: The results of cutting
-        service: A service for connecting to Qiskit Runtime Service
-        options: Options to use on each backend
-        backend_names: The name(s) of the backend(s) to be used
+        sampler: A sampler for execution
 
     Returns:
         The dictionary containing the results from running each of the subcircuits
     """
-    # Put backend_names and options in lists to ensure it is unambiguous how to sync them
-    backends_list: Sequence[str] = []
-    options_list: Sequence[Options] = []
-    if backend_names is None or isinstance(backend_names, str):
-        if isinstance(options, Options):
-            options_list = [options]
-        elif isinstance(options, Sequence) and (len(options) != 1):
-            options_list = [options[0]]
-        if isinstance(backend_names, str):
-            backends_list = [backend_names]
-    else:
-        backends_list = backend_names
-        if isinstance(options, Options):
-            options_list = [options] * len(backends_list)
-        elif options is None:
-            options_list = [None] * len(backends_list)
-        else:
-            options_list = options
-
-    if backend_names:
-        if len(backends_list) != len(options_list):
-            raise AttributeError(
-                f"The list of backend names is length ({len(backends_list)}), "
-                f"but the list of options is length ({len(options_list)}). "
-                "It is ambiguous how these options should be applied."
-            )
-
     _, _, subcircuit_instances = _generate_metadata(cuts)
 
     subcircuit_instance_probabilities = _run_subcircuits(
         cuts,
         subcircuit_instances,
-        service=service,
-        backend_names=backends_list,
-        options=options_list,
+        sampler=sampler,
     )
 
     return subcircuit_instance_probabilities
@@ -224,9 +192,7 @@ def _generate_metadata(
 def _run_subcircuits(
     cuts: dict[str, Any],
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
-    service: QiskitRuntimeService | None = None,
-    backend_names: Sequence[str] | None = None,
-    options: Sequence[Options] | None = None,
+    sampler: BaseSampler | None = None,
 ) -> dict[int, dict[int, np.ndarray]]:
     """
     Execute all the subcircuit instances.
@@ -237,9 +203,7 @@ def _run_subcircuits(
         cuts: Results from the cutting step
         subcircuit_instances: The dictionary containing the index information for each
             of the subcircuit instances
-        service: The arguments for the runtime service
-        backend_names: The backend(s) used to run the subcircuits
-        options: Options for the runtime execution of subcircuits
+        sampler: The sampler
 
     Returns:
         The resulting probabilities from each of the subcircuit instances
@@ -247,9 +211,7 @@ def _run_subcircuits(
     subcircuit_instance_probs = run_subcircuit_instances(
         subcircuits=cuts["subcircuits"],
         subcircuit_instances=subcircuit_instances,
-        service=service,
-        backend_names=backend_names,
-        options=options,
+        sampler=sampler,
     )
 
     return subcircuit_instance_probs

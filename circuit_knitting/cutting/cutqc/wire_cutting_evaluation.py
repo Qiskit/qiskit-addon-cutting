@@ -30,9 +30,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
-    service: QiskitRuntimeService | None = None,
-    backend_names: Sequence[str] | None = None,
-    options: Sequence[Options] | None = None,
+    sampler: BaseSampler | None = None,
 ) -> dict[int, dict[int, np.ndarray]]:
     """
     Execute all provided subcircuits.
@@ -45,59 +43,18 @@ def run_subcircuit_instances(
         subcircuits: The list of subcircuits to execute
         subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
-        service: The runtime service
-        backend_names: The backend(s) used to execute the subcircuits
-        options: Options for the runtime execution of subcircuits
+        sampler: The sampler to use
 
     Returns:
         The probability vectors from each of the subcircuit instances
     """
-    if backend_names and options:
-        if len(backend_names) != len(options):
-            raise AttributeError(
-                f"The list of backend names is length ({len(backend_names)}), "
-                f"but the list of options is length ({len(options)}). It is ambiguous "
-                "how these options should be applied."
-            )
-    if service:
-        if backend_names:
-            backend_names_repeated: list[str | None] = [
-                backend_names[i % len(backend_names)] for i, _ in enumerate(subcircuits)
-            ]
-            if options is None:
-                options_repeated: list[Options | None] = [None] * len(
-                    backend_names_repeated
-                )
-            else:
-                options_repeated = [
-                    options[i % len(options)] for i, _ in enumerate(subcircuits)
-                ]
-        else:
-            backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
-            if options:
-                options_repeated = [options[0]] * len(subcircuits)
-            else:
-                options_repeated = [None] * len(subcircuits)
-    else:
-        backend_names_repeated = [None] * len(subcircuits)
-        options_repeated = [None] * len(subcircuits)
-
     subcircuit_instance_probs: dict[int, dict[int, np.ndarray]] = {}
-    with ThreadPool() as pool:
-        args = [
-            [
-                subcircuit_instances[subcircuit_idx],
-                subcircuit,
-                service,
-                backend_names_repeated[subcircuit_idx],
-                options_repeated[subcircuit_idx],
-            ]
-            for subcircuit_idx, subcircuit in enumerate(subcircuits)
-        ]
-        subcircuit_instance_probs_list = pool.starmap(_run_subcircuit_batch, args)
+    subcircuit_instance_probs_list = []
+    for subcircuit_idx, subcircuit in enumerate(subcircuits):
+        subcircuit_instance_probs_list.append(_run_subcircuit_batch(subcircuit_instances[subcircuit_idx], subcircuit, sampler))
 
-        for i, partition_batch in enumerate(subcircuit_instance_probs_list):
-            subcircuit_instance_probs[i] = partition_batch
+    for i, partition_batch in enumerate(subcircuit_instance_probs_list):
+        subcircuit_instance_probs[i] = partition_batch
 
     return subcircuit_instance_probs
 
@@ -243,27 +200,20 @@ def run_subcircuits_using_sampler(
 
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
-    service: QiskitRuntimeService | None = None,
-    backend_name: str | None = None,
-    options: Options | None = None,
+    sampler: BaseSampler | None = None,
 ) -> list[np.ndarray]:
     """
     Execute the subcircuit(s).
 
     Args:
         subcircuit: The subcircuits to be executed
-        service: The runtime service
-        backend_name: The backend used to execute the subcircuits
-        options: Options for the runtime execution of subcircuits
+        sampler: The sampler to use for execution
 
     Returns:
         The probability distributions
     """
-    if service is not None:
-        session = Session(service=service, backend=backend_name)
-        sampler = Sampler(session=session, options=options)
-    else:
-        sampler = TestSampler(options=options)
+    if sampler is None:
+        sampler = TestSampler()
 
     return run_subcircuits_using_sampler(subcircuits, sampler)
 
@@ -321,9 +271,7 @@ def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
 def _run_subcircuit_batch(
     subcircuit_instance: dict[tuple[tuple[str, ...], tuple[Any, ...]], int],
     subcircuit: QuantumCircuit,
-    service: QiskitRuntimeService | None = None,
-    backend_name: str | None = None,
-    options: Options | None = None,
+    sampler: BaseSampler | None = None,
 ):
     """
     Execute a circuit using qiskit runtime.
@@ -332,9 +280,7 @@ def _run_subcircuit_batch(
         subcircuit_instances: Dictionary containing information about each of the
             subcircuit instances
         subcircuit: The subcircuit to execute
-        service: The runtime service
-        backend_name: The backends used to execute the subcircuit
-        options: Options for the runtime execution of subcircuit
+        sampler: The sampler to use for execution
 
     Returns:
         The measurement probabilities for the subcircuit batch, as calculated from the
@@ -368,9 +314,7 @@ def _run_subcircuit_batch(
     # Run all of our circuits in one batch
     subcircuit_inst_probs = run_subcircuits(
         circuits_to_run,
-        service=service,
-        backend_name=backend_name,
-        options=options,
+        sampler=sampler,
     )
 
     # Calculate the measured probabilities
