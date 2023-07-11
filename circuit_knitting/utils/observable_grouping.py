@@ -125,22 +125,17 @@ def most_general_observable(
 
 @dataclass(frozen=True)
 class CommutingObservableGroup:
-    r"""Set of mutually qubit-wise commuting observables.
+    r"""Set of mutually qubit-wise commuting observables."""
 
-    Attributes:
-        commuting_observables: Those that can be measured simultaneously
-        general_observable: A single Pauli string that contains all
-            qubit-wise measurements needed to measure everything in ``commuting_observables``.
-        pauli_indices: The indices of non-identity :class:`~qiskit.quantum_info.Pauli`\ s in ``general_observable``
-        pauli_bitmasks: A bitmask for each observable in
-            ``commuting_observables``.  Given an element, each bit corresponds to
-            whether the corresponding entry in ``pauli_indices`` is relevant to
-            that observable.
-    """
-
+    #: A single Pauli string that contains all qubit-wise measurements needed
+    #: to measure everything in ``commuting_observables``.
     general_observable: Pauli
+    #: Those that can be measured simultaneously
     commuting_observables: list[Pauli]
+    #: The indices of non-identity :class:`~qiskit.quantum_info.Pauli`\ s in ``general_observable``
     pauli_indices: list[int] = field(init=False)
+    #: A bitmask for each observable in ``commuting_observables``; Given an element, each bit corresponds to whether
+    #: the corresponding entry in ``pauli_indices`` is relevant to that observable.
     pauli_bitmasks: list[int] = field(init=False)
 
     def __post_init__(self) -> None:
