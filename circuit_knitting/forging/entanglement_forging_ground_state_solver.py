@@ -161,8 +161,8 @@ class EntanglementForgingGroundStateSolver:
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
+        self.hf_energy = hf_energy
         self._mo_coeff = mo_coeff
-        self._hf_energy = hf_energy
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
@@ -301,8 +301,8 @@ class EntanglementForgingGroundStateSolver:
 
         # Shift the hf value so it can be entered into the Schmidt matrix
         fixed_hf_value = None
-        if self._hf_energy is not None:
-            fixed_hf_value = self._hf_energy - self._energy_shift
+        if self.hf_energy is not None:
+            fixed_hf_value = self.hf_energy - self._energy_shift
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(

@@ -63,7 +63,7 @@ class EntanglementForgingKnitter:
         self._session_ids: list[str | None] | None = None
         self._backend_names: list[str] | None = None
         self._options: list[Options] | None = None
-        self._fixed_hf_value = fixed_hf_value
+        self.fixed_hf_value = fixed_hf_value
         # Call constructors
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -271,7 +271,7 @@ class EntanglementForgingKnitter:
                         tensor_pauli_list,
                         superposition_ansatze_partition,
                         superposition_pauli_list,
-                        self._fixed_hf_value,
+                        self.fixed_hf_value,
                         service_args,
                         backend_name,
                         options,
