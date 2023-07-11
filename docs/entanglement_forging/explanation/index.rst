@@ -262,13 +262,6 @@ Getting good results will require using a quantum backend with good
 properties (qubit fidelity, gate fidelity etc.), as well as a lot of
 fine-tuning of parameters.
 
-Pauli grouping
-~~~~~~~~~~~~~~
-
-There is currently no Pauli grouping for the expectation value experiments
-calculated at each iteration, so expectation values are calculated on the
-full Pauli basis. This can result in long training times for larger systems.
-
 References
 ----------
 
