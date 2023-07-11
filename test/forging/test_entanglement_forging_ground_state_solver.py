@@ -140,7 +140,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             bitstrings_u=bitstrings,
         )
 
-        optimizer = COBYLA(maxiter=0)
+        COBYLA(maxiter=0)
         initial_point = [-0.83604922, -0.87326138, -0.93964018, 0.55224467]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
