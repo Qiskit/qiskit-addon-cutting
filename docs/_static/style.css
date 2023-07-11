@@ -1,4 +1,0 @@
-/* Fix display of nbgallery with Sphinx default css */
-.figure .caption .caption-text a.reference.internal {
-    border: 0;
-}

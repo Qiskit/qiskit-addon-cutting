@@ -54,6 +54,7 @@ Quasi-Probability Decomposition (QPD)
     :toctree: ../stubs/
     :nosignatures:
 
+    qpd.generate_qpd_weights
     qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
     qpd.supported_gates
