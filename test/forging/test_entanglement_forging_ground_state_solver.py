@@ -42,7 +42,54 @@ pyscf_available = importlib.util.find_spec("pyscf") is not None
 class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def setUp(self):
         # Hard-code some ansatz params/lambdas
-        self.optimizer = SPSA(maxiter=0)
+        self.hcore = np.load(
+            os.path.join(
+                os.path.dirname(__file__), "test_data", "H2O_0.90_one_body.npy"
+            ),
+        )
+        self.eri = np.load(
+            os.path.join(
+                os.path.dirname(__file__), "test_data", "H2O_0.90_two_body.npy"
+            ),
+        )
+        orb_act = list(range(0, 5))
+        num_alpha = num_beta = 3
+        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore, self.eri)
+        hamiltonian.nuclear_repulsion_energy = -61.57756706745154
+        problem = ElectronicStructureProblem(hamiltonian)
+        problem.basis = ElectronicBasis.MO
+        problem.num_particles = (num_alpha, num_beta)
+        transformer = ActiveSpaceTransformer(
+            num_electrons=6, num_spatial_orbitals=len(orb_act), active_orbitals=orb_act
+        )
+        self.problem_reduced = transformer.transform(problem)
+
+        theta = Parameter("θ")
+
+        hop_gate = QuantumCircuit(2, name="hop_gate")
+        hop_gate.h(0)
+        hop_gate.cx(1, 0)
+        hop_gate.cx(0, 1)
+        hop_gate.ry(-theta, 0)
+        hop_gate.ry(-theta, 1)
+        hop_gate.cx(0, 1)
+        hop_gate.h(0)
+
+        theta_1, theta_2, theta_3, theta_4 = (
+            Parameter("θ1"),
+            Parameter("θ2"),
+            Parameter("θ3"),
+            Parameter("θ4"),
+        )
+
+        circuit = QuantumCircuit(5)
+        circuit.append(hop_gate.to_gate({theta: theta_1}), [0, 1])
+        circuit.append(hop_gate.to_gate({theta: theta_2}), [3, 4])
+        circuit.append(hop_gate.to_gate({theta: 0}), [1, 4])
+        circuit.append(hop_gate.to_gate({theta: theta_3}), [0, 2])
+        circuit.append(hop_gate.to_gate({theta: theta_4}), [3, 4])
+
+        self.circuit = circuit
 
     @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_vqe_hydrogen(self):
@@ -69,7 +116,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         # Set up the entanglement forging vqe object
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
-            optimizer=self.optimizer,
+            optimizer=SPSA(maxiter=0),
             initial_point=[0.0, np.pi / 2],
             mo_coeff=mo_coeff,
         )
@@ -86,56 +133,10 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         """Test for fixing the HF value in computing the energy of a H2O molecule."""
         # Set up the ElectronicStructureProblem
         HF = -14.09259461609392
-        orb_act = list(range(0, 5))
-        num_alpha = num_beta = 3
-        hcore = np.load(
-            os.path.join(
-                os.path.dirname(__file__), "test_data", "H2O_0.90_one_body.npy"
-            ),
-        )
-        eri = np.load(
-            os.path.join(
-                os.path.dirname(__file__), "test_data", "H2O_0.90_two_body.npy"
-            ),
-        )
-        hamiltonian = ElectronicEnergy.from_raw_integrals(hcore, eri)
-        hamiltonian.nuclear_repulsion_energy = -61.57756706745154
-        problem = ElectronicStructureProblem(hamiltonian)
-        problem.basis = ElectronicBasis.MO
-        problem.num_particles = (num_alpha, num_beta)
-        transformer = ActiveSpaceTransformer(
-            num_electrons=6, num_spatial_orbitals=len(orb_act), active_orbitals=orb_act
-        )
-        problem_reduced = transformer.transform(problem)
-
-        theta = Parameter("θ")
-
-        hop_gate = QuantumCircuit(2, name="hop_gate")
-        hop_gate.h(0)
-        hop_gate.cx(1, 0)
-        hop_gate.cx(0, 1)
-        hop_gate.ry(-theta, 0)
-        hop_gate.ry(-theta, 1)
-        hop_gate.cx(0, 1)
-        hop_gate.h(0)
-
-        theta_1, theta_2, theta_3, theta_4 = (
-            Parameter("θ1"),
-            Parameter("θ2"),
-            Parameter("θ3"),
-            Parameter("θ4"),
-        )
-
-        circuit = QuantumCircuit(5)
-        circuit.append(hop_gate.to_gate({theta: theta_1}), [0, 1])
-        circuit.append(hop_gate.to_gate({theta: theta_2}), [3, 4])
-        circuit.append(hop_gate.to_gate({theta: 0}), [1, 4])
-        circuit.append(hop_gate.to_gate({theta: theta_3}), [0, 2])
-        circuit.append(hop_gate.to_gate({theta: theta_4}), [3, 4])
 
         bitstrings = [(1, 1, 1, 0, 0), (0, 1, 1, 0, 1), (1, 1, 0, 1, 0)]
         ansatz = EntanglementForgingAnsatz(
-            circuit_u=circuit,
+            circuit_u=self.circuit,
             bitstrings_u=bitstrings,
         )
 
@@ -143,11 +144,11 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         initial_point = [-0.83604922, -0.87326138, -0.93964018, 0.55224467]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
-            optimizer=optimizer,
+            optimizer=COBYLA(maxiter=0),
             hf_energy=HF,
             initial_point=initial_point,
         )
-        result = solver.solve(problem_reduced)
+        result = solver.solve(self.problem_reduced)
 
         assert np.allclose(
             result.groundstate[0], [-0.00252657, 0.99945784, -0.03282741], atol=1e-8
@@ -157,57 +158,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def test_fixed_hf_h2o_asymmetric(self):
         """Test for fixing the HF value in two separate subsystems."""
         # Set up the ElectronicStructureProblem
-        import time
-
-        time_start = time.time()
         HF = -14.09259461609392
-        orb_act = list(range(0, 5))
-        num_alpha = num_beta = 3
-        hcore = np.load(
-            os.path.join(
-                os.path.dirname(__file__), "test_data", "H2O_0.90_one_body.npy"
-            ),
-        )
-        eri = np.load(
-            os.path.join(
-                os.path.dirname(__file__), "test_data", "H2O_0.90_two_body.npy"
-            ),
-        )
-        hamiltonian = ElectronicEnergy.from_raw_integrals(hcore, eri)
-        hamiltonian.nuclear_repulsion_energy = -61.57756706745154
-        problem = ElectronicStructureProblem(hamiltonian)
-        problem.basis = ElectronicBasis.MO
-        problem.num_particles = (num_alpha, num_beta)
-        transformer = ActiveSpaceTransformer(
-            num_electrons=6, num_spatial_orbitals=len(orb_act), active_orbitals=orb_act
-        )
-        problem_reduced = transformer.transform(problem)
-
-        theta = Parameter("θ")
-
-        hop_gate = QuantumCircuit(2, name="hop_gate")
-        hop_gate.h(0)
-        hop_gate.cx(1, 0)
-        hop_gate.cx(0, 1)
-        hop_gate.ry(-theta, 0)
-        hop_gate.ry(-theta, 1)
-        hop_gate.cx(0, 1)
-        hop_gate.h(0)
-
-        theta_1, theta_2, theta_3, theta_4 = (
-            Parameter("θ1"),
-            Parameter("θ2"),
-            Parameter("θ3"),
-            Parameter("θ4"),
-        )
-
-        circuit = QuantumCircuit(5)
-        circuit.append(hop_gate.to_gate({theta: theta_1}), [0, 1])
-        circuit.append(hop_gate.to_gate({theta: theta_2}), [3, 4])
-        circuit.append(hop_gate.to_gate({theta: 0}), [1, 4])
-        circuit.append(hop_gate.to_gate({theta: theta_3}), [0, 2])
-        circuit.append(hop_gate.to_gate({theta: theta_4}), [3, 4])
-
         bitstrings_u = [
             (1, 1, 1, 0, 0),
             (0, 1, 1, 0, 1),
@@ -221,23 +172,17 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             (1, 1, 0, 0, 1),
         ]
         ansatz = EntanglementForgingAnsatz(
-            circuit_u=circuit,
+            circuit_u=self.circuit,
             bitstrings_u=bitstrings_u,
             bitstrings_v=bitstrings_v,
         )
-
-        optimizer = COBYLA(maxiter=0)
         initial_point = [-0.83604922, -0.87326138, -0.93964018, 0.55224467]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
-            optimizer=optimizer,
+            optimizer=COBYLA(maxiter=0),
             hf_energy=HF,
             initial_point=initial_point,
         )
-        result = solver.solve(problem_reduced)
-
-        time_end = time.time()
-
-        print(time_end - time_start)
+        result = solver.solve(self.problem_reduced)
 
         assert len(result.groundstate[0]) == 4
