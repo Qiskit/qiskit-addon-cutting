@@ -131,10 +131,10 @@ class CommutingObservableGroup:
     #: to measure everything in ``commuting_observables``.
     general_observable: Pauli
 
-    #: Observables that can be measured simultaneously
+    #: Observables that can be measured simultaneously.
     commuting_observables: list[Pauli]
 
-    #: The indices of non-identity :class:`~qiskit.quantum_info.Pauli`\ s in ``general_observable``
+    #: The indices of non-identity :class:`~qiskit.quantum_info.Pauli`\ s in ``general_observable``.
     pauli_indices: list[int] = field(init=False)
 
     #: A bitmask for each observable in ``commuting_observables``; given an element, each bit corresponds to whether
