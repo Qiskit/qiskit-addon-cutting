@@ -276,8 +276,6 @@ class EntanglementForgingKnitter:
                         tensor_pauli_list,
                         superposition_ansatze_partition,
                         superposition_pauli_list,
-                        self._ansatz.bitstrings_are_symmetric,
-                        self.fixed_hf_value,
                         service_args,
                         backend_name,
                         options,
@@ -303,6 +301,9 @@ class EntanglementForgingKnitter:
                         "be set when a job_id is present."
                     )
                 self._session_ids[i] = job_id
+
+        # Pack NaNs into the expval list in place of the HF bitstring results to
+        # ensure Schmidt matrix is the correct shape
         if self._fixed_hf_value is not None:
             num_paulis = len(forged_operator.tensor_paulis)
             nans_u = np.empty(num_paulis)
@@ -607,8 +608,6 @@ def _estimate_expvals(
     tensor_paulis: list[Pauli],
     superposition_ansatze: list[QuantumCircuit],
     superposition_paulis: list[Pauli],
-    bitstrings_are_symmetric: bool,
-    fixed_hf_value: float | None,
     service_args: dict[str, Any] | None,
     backend_name: str | None,
     options: Options | None,
@@ -627,8 +626,6 @@ def _estimate_expvals(
         superposition_ansatze: The circuits with different Schmidt coefficients
         superposition_paulis: The pauli operators to measure and calculate
             the expectation values from for the circuits with different Schmidt coefficients
-        bitstrings_are_symmetric: Whether the same bitstrings are being used for each subsystem
-        fixed_hf_value: The shifted Hartree-Fock energy to be hard-coded in the Schmidt matrix
         service_args: The service account used to spawn Qiskit primitives
         backend_name: The backend to use to evaluate the grouped experiments
         options: The options to use with the backend
