@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import copy
 from typing import Sequence, Any
 from concurrent.futures import ThreadPoolExecutor
 
@@ -206,6 +207,8 @@ class EntanglementForgingKnitter:
         tensor_ansatze_u = [
             prep_circ.compose(circuit_u) for prep_circ in self._tensor_circuits_u
         ]
+        if self.fixed_hf_value is not None:
+            tensor_ansatze_u = tensor_ansatze_u[1:]
         superposition_ansatze_u = [
             prep_circ.compose(circuit_u) for prep_circ in self._superposition_circuits_u
         ]
@@ -216,6 +219,8 @@ class EntanglementForgingKnitter:
             tensor_ansatze_v = [
                 prep_circ.compose(circuit_u) for prep_circ in self._tensor_circuits_v
             ]
+            if self.fixed_hf_value is not None:
+                tensor_ansatze_v = tensor_ansatze_v[1:]
             superposition_ansatze_v = [
                 prep_circ.compose(circuit_u)
                 for prep_circ in self._superposition_circuits_v
@@ -298,16 +303,15 @@ class EntanglementForgingKnitter:
                         "be set when a job_id is present."
                     )
                 self._session_ids[i] = job_id
-
         if self._fixed_hf_value is not None:
-            nans_u = np.empty(np.shape(tensor_expvals[0]))
+            num_paulis = len(forged_operator.tensor_paulis)
+            nans_u = np.empty(num_paulis)
             nans_u[:] = np.nan
             if not self._ansatz.bitstrings_are_symmetric:
                 # Should be equal number of expvals for each subsystem
                 assert len(tensor_expvals) % 2 == 0
                 num_tensor_terms = int(len(tensor_expvals) / 2)
-                nans_v = np.empty(np.shape(tensor_expvals[num_tensor_terms]))
-                nans_v[:] = np.nan
+                nans_v = copy.deepcopy(nans_u)
                 tensor_expvals.insert(num_tensor_terms, nans_v)
             tensor_expvals.insert(0, nans_u)
 
@@ -633,14 +637,6 @@ def _estimate_expvals(
     Returns:
         The expectation values for the tensor circuits and superposition circuits
     """
-    # Ignore HF energy calculation. We will hard-code it later.
-    if fixed_hf_value is not None:
-        if not bitstrings_are_symmetric:
-            # Should have equal number of bitstrings for each subsystem
-            assert len(tensor_ansatze) % 2 == 0
-            del tensor_ansatze[int(len(tensor_ansatze) / 2)]
-        tensor_ansatze = tensor_ansatze[1:]
-
     ansatz_t: list[QuantumCircuit] = []
     observables_t: list[Pauli] = []
     for i, circuit in enumerate(tensor_ansatze):
@@ -692,9 +688,6 @@ def _estimate_expvals(
     # Post-process the results to get our expectation values in the right format
     num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
     estimator_results_t = results[:num_tensor_expvals]
-    if fixed_hf_value is not None:
-        for _ in tensor_paulis:
-            np.insert(estimator_results_t, 0, np.nan)
     estimator_results_s = results[num_tensor_expvals:]
 
     tensor_expval_list = list(

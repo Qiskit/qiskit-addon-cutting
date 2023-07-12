@@ -155,6 +155,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         )
 
     @pytest.mark.slow
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_fixed_hf_h2o_asymmetric(self):
         """Test for fixing the HF value in two separate subsystems."""
         # Set up the ElectronicStructureProblem
