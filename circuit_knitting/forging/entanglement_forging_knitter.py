@@ -65,7 +65,7 @@ class EntanglementForgingKnitter:
         self._service = service.active_account() if service is not None else service
 
         # Save the parameterized ansatz and bitstrings
-        self.ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
+        self._ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
             circuit_u=ansatz.circuit_u,
             bitstrings_u=ansatz.bitstrings_u,
             bitstrings_v=ansatz.bitstrings_v or ansatz.bitstrings_u,
