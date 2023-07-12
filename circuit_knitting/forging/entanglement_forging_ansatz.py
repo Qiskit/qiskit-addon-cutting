@@ -79,9 +79,9 @@ class EntanglementForgingAnsatz:
                     "There must be the same number of V bitstrings as U bitstrings."
                 )
 
-        self._circuit_u: QuantumCircuit = circuit_u
-        self._bitstrings_u: list[tuple[int, ...]] = bitstrings_u
-        self._bitstrings_v: list[tuple[int, ...]] = bitstrings_v or bitstrings_u
+        self.circuit_u: QuantumCircuit = circuit_u
+        self.bitstrings_u: list[tuple[int, ...]] = bitstrings_u
+        self.bitstrings_v: list[tuple[int, ...]] = bitstrings_v or bitstrings_u
 
     @property
     def circuit_u(self) -> QuantumCircuit:
@@ -101,21 +101,21 @@ class EntanglementForgingAnsatz:
     @property
     def bitstrings_are_symmetric(self) -> bool:
         """Property function for the symmetry of bitstrings."""
-        return self._bitstrings_v == self._bitstrings_u
+        return self.bitstrings_v == self.bitstrings_u
 
     @property
     def subspace_dimension(self) -> int:
         """Property function for the length of bitstrings."""
-        return len(self._bitstrings_u)
+        return len(self.bitstrings_u)
 
     def __repr__(self) -> str:
         """Representation function for EntanglementForgingAnsatz."""
         repr = "EntanglementForgingAnsatz\nCircuit:\n"
-        repr += str(self._circuit_u.draw())
+        repr += str(self.circuit_u.draw())
         repr += "\nBitstrings U:\n"
         repr += str(self.bitstrings_u)
         repr += "\nBitstrings V:\n"
-        repr += str(self._bitstrings_v)
+        repr += str(self.bitstrings_v)
         repr += f"\nBitstring are symmetric: {self.bitstrings_are_symmetric}\n"
         repr += f"Subspace dimension: {self.subspace_dimension}"
         return repr

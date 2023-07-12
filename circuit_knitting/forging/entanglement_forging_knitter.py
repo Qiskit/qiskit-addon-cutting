@@ -57,8 +57,6 @@ class EntanglementForgingKnitter:
         """
         # Call backend_names setter to update the session_ids hidden class field
         self._session_ids: list[str | None] | None = None
-        self._backend_names: list[str] | None = None
-        self._options: list[Options] | None = None
         # Call constructors
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -67,7 +65,7 @@ class EntanglementForgingKnitter:
         self._service = service.active_account() if service is not None else service
 
         # Save the parameterized ansatz and bitstrings
-        self._ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
+        self.ansatz: EntanglementForgingAnsatz = EntanglementForgingAnsatz(
             circuit_u=ansatz.circuit_u,
             bitstrings_u=ansatz.bitstrings_u,
             bitstrings_v=ansatz.bitstrings_v or ansatz.bitstrings_u,
@@ -85,7 +83,7 @@ class EntanglementForgingKnitter:
             self._tensor_circuits_u,
             self._superposition_circuits_u,
         ) = _construct_stateprep_circuits(self._ansatz.bitstrings_u)
-        if self._ansatz.bitstrings_are_symmetric:
+        if self.ansatz.bitstrings_are_symmetric:
             self._tensor_circuits_v, self._superposition_circuits_v = (
                 self._tensor_circuits_u,
                 self._superposition_circuits_u,
@@ -172,18 +170,18 @@ class EntanglementForgingKnitter:
             A tuple containing the energy (i.e. forged expectation value), the Schmidt
             coefficients, and the full Schmidt decomposition matrix
         """
-        if self._backend_names and self._options:
-            if len(self._backend_names) != len(self._options):
-                if len(self._options) == 1:
-                    self._options = [self._options[0]] * len(self._backend_names)
+        if self.backend_names and self.options:
+            if len(self.backend_names) != len(self.options):
+                if len(self.options) == 1:
+                    self.options = [self.options[0]] * len(self.backend_names)
                 else:
                     raise AttributeError(
-                        f"The list of backend names is length ({len(self._backend_names)}), "
-                        f"but the list of options is length ({len(self._options)}). It is "
+                        f"The list of backend names is length ({len(self.backend_names)}), "
+                        f"but the list of options is length ({len(self.options)}). It is "
                         "ambiguous how to combine the options with the backends."
                     )
         # For now, we only assign the parameters to a copy of the ansatz
-        circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
+        circuit_u = self.ansatz.circuit_u.bind_parameters(ansatz_parameters)
 
         # Create the tensor and superposition stateprep circuits
         # tensor_ansatze   = [U|bi⟩      for |bi⟩       in  tensor_circuits]
@@ -197,7 +195,7 @@ class EntanglementForgingKnitter:
 
         tensor_ansatze_v = []
         superposition_ansatze_v = []
-        if not self._ansatz.bitstrings_are_symmetric:
+        if not self.ansatz.bitstrings_are_symmetric:
             tensor_ansatze_v = [
                 prep_circ.compose(circuit_u) for prep_circ in self._tensor_circuits_v
             ]
@@ -207,8 +205,8 @@ class EntanglementForgingKnitter:
             ]
 
         # Partition the expectation values for parallel calculation
-        if self._backend_names:
-            num_partitions = len(self._backend_names)
+        if self.backend_names:
+            num_partitions = len(self.backend_names)
         else:
             num_partitions = 1
 
@@ -241,11 +239,11 @@ class EntanglementForgingKnitter:
             ):
                 backend_name = (
                     None
-                    if self._backend_names is None
-                    else self._backend_names[partition_index]
+                    if self.backend_names is None
+                    else self.backend_names[partition_index]
                 )
                 options = (
-                    None if self._options is None else self._options[partition_index]
+                    None if self.options is None else self.options[partition_index]
                 )
                 tensor_pauli_list = list(forged_operator.tensor_paulis)
                 superposition_pauli_list = list(forged_operator.superposition_paulis)
@@ -315,7 +313,7 @@ class EntanglementForgingKnitter:
         # Calculate the diagonal entries of the Schmidt matrix by
         # summing the expectation values associated with the tensor terms
         # h𝑛𝑛 = Σ_ab 𝑤𝑎𝑏•[ 𝜆𝑛^2•⟨b𝑛|U^t•P𝑎•U|b𝑛⟩⟨b𝑛|V^t•P𝑏•V|b𝑛⟩ ]
-        if self._ansatz.bitstrings_are_symmetric:
+        if self.ansatz.bitstrings_are_symmetric:
             h_schmidt_diagonal = np.einsum(
                 "ij, xi, xj->x",
                 forged_operator.w_ij,  # type: ignore
@@ -340,7 +338,7 @@ class EntanglementForgingKnitter:
         # superpos_expvals[2i+1] = [⟨𝜙^1_𝑏𝑛𝑏𝑚|U^t•𝑃𝑎•U|𝜙^1_𝑏𝑛𝑏𝑚⟩ for 𝑃𝑎 in superpos_paulis]
         superpos_expvals = np.array(superpos_expvals)
 
-        if self._ansatz.bitstrings_are_symmetric:
+        if self.ansatz.bitstrings_are_symmetric:
             p_plus_x = superpos_expvals[0::num_lin_combos, :]
             p_minus_x = superpos_expvals[1::num_lin_combos, :]
             p_delta_x_u = p_plus_x - p_minus_x
@@ -365,8 +363,8 @@ class EntanglementForgingKnitter:
         )
         # Create off diagonal index list
         superpos_indices = []
-        for x in range(self._ansatz.subspace_dimension):
-            for y in range(self._ansatz.subspace_dimension):
+        for x in range(self.ansatz.subspace_dimension):
+            for y in range(self.ansatz.subspace_dimension):
                 if x == y:
                     continue
                 superpos_indices += [(x, y)]
@@ -384,12 +382,12 @@ class EntanglementForgingKnitter:
             return
         else:
             for i, session_id in enumerate(self._session_ids):
-                if self._backend_names is None:
+                if self.backend_names is None:
                     raise ValueError(
                         f"There was a problem closing session id ({session_id}). "
                         "No backend to associate with session."
                     )
-                session = Session(service=self.service, backend=self._backend_names[i])
+                session = Session(service=self.service, backend=self.backend_names[i])
                 session._session_id = session_id
                 session.close()
 

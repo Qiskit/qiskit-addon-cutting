@@ -82,8 +82,8 @@ class EntanglementForgingResult(EigenstateResult):
     def __init__(self) -> None:
         """Initialize `EigenstateResult` parent class and set class fields."""
         super().__init__()
-        self._energy_shift: float = 0.0
-        self._history: list[EntanglementForgingEvaluation] = []
+        self.energy_shift: float = 0.0
+        self.history: list[EntanglementForgingEvaluation] = []
 
     @property
     def history(self) -> list[EntanglementForgingEvaluation]:
@@ -151,14 +151,14 @@ class EntanglementForgingGroundStateSolver:
         self._knitter: EntanglementForgingKnitter | None = None
         self._history: EntanglementForgingHistory = EntanglementForgingHistory()
         self._energy_shift = 0.0
-        self._ansatz: EntanglementForgingAnsatz | None = ansatz
-        self._service: QiskitRuntimeService | None = service
-        self._initial_point: np.ndarray | None = initial_point
-        self._orbitals_to_reduce = orbitals_to_reduce
+        self.ansatz: EntanglementForgingAnsatz | None = ansatz
+        self.service: QiskitRuntimeService | None = service
+        self.initial_point: np.ndarray | None = initial_point
+        self.orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
-        self._mo_coeff = mo_coeff
-        self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
+        self.mo_coeff = mo_coeff
+        self.optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
     @property
     def ansatz(self) -> EntanglementForgingAnsatz | None:
@@ -263,39 +263,39 @@ class EntanglementForgingGroundStateSolver:
                 incompatible lengths
             AttributeError: Ansatz must be set before calling `solve` method
         """
-        if self._backend_names and self._options:
-            if len(self._backend_names) != len(self._options):
-                if len(self._options) == 1:
-                    self._options = [self._options[0]] * len(self._backend_names)
+        if self.backend_names and self.options:
+            if len(self.backend_names) != len(self.options):
+                if len(self.options) == 1:
+                    self.options = [self.options[0]] * len(self.backend_names)
                 else:
                     raise AttributeError(
                         f"The list of backend names is length ({len(self._backend_names)}), "
                         f"but the list of options is length ({len(self._options)}). It is "
                         "ambiguous how to combine the options with the backends."
                     )
-        if self._ansatz is None:
+        if self.ansatz is None:
             raise AttributeError("Ansatz must be set before calling solve.")
-        if self._initial_point is None:
-            self._initial_point = np.array(
-                [0.0 for i in range(len(self._ansatz.circuit_u.parameters))]
+        if self.initial_point is None:
+            self.initial_point = np.array(
+                [0.0 for i in range(len(self.ansatz.circuit_u.parameters))]
             )
 
         # Get the decomposed hamiltonian
         hamiltonian_terms = self.get_qubit_operators(problem)
-        ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
+        ef_operator = convert_cholesky_operator(hamiltonian_terms, self.ansatz)
 
         # Set the knitter class field
-        if self._service is not None:
-            backend_names = self._backend_names or ["ibmq_qasm_simulator"]
+        if self.service is not None:
+            backend_names = self.backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz,
-                service=self._service,
+                self.ansatz,
+                service=self.service,
                 backend_names=backend_names,
-                options=self._options,
+                options=self.options,
             )
         else:
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz, options=self._options
+                self.ansatz, options=self.options
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
@@ -303,10 +303,10 @@ class EntanglementForgingGroundStateSolver:
 
         # Minimize the minimum eigenvalue with respect to the ansatz parameters
         start_time = time()
-        if callable(self._optimizer):
-            self.optimizer(fun=evaluate_eigenvalue, x0=self._initial_point)
+        if callable(self.optimizer):
+            self.optimizer(fun=evaluate_eigenvalue, x0=self.initial_point)
         else:
-            self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self._initial_point)
+            self.optimizer.minimize(fun=evaluate_eigenvalue, x0=self.initial_point)
         elapsed_time = time() - start_time
 
         # Find the minimum eigenvalue found during optimization
@@ -376,7 +376,7 @@ class EntanglementForgingGroundStateSolver:
         self._validate_problem_and_coeffs(problem, self.mo_coeff)
 
         hamiltonian_ops, self._energy_shift = cholesky_decomposition(
-            problem, self.mo_coeff, self._orbitals_to_reduce  # type: ignore
+            problem, self.mo_coeff, self.orbitals_to_reduce  # type: ignore
         )
         return hamiltonian_ops
 
