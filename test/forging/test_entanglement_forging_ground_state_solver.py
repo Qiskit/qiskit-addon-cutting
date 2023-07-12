@@ -186,4 +186,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         )
         result = solver.solve(self.problem_reduced)
 
-        assert len(result.groundstate[0]) == 4
+        # Make sure our masks didn't interfere with the schmidt matrix
+        # in an unintended way
+        assert not np.isnan(result.groundstate[0]).any()
+        assert not np.isnan(result.groundenergy)
