@@ -79,9 +79,9 @@ class EntanglementForgingAnsatz:
                     "There must be the same number of V bitstrings as U bitstrings."
                 )
 
-        self.circuit_u: QuantumCircuit = circuit_u
-        self.bitstrings_u: list[tuple[int, ...]] = bitstrings_u
-        self.bitstrings_v: list[tuple[int, ...]] = bitstrings_v or bitstrings_u
+        self._circuit_u: QuantumCircuit = circuit_u
+        self._bitstrings_u: list[tuple[int, ...]] = bitstrings_u
+        self._bitstrings_v: list[tuple[int, ...]] = bitstrings_v or bitstrings_u
 
     @property
     def circuit_u(self) -> QuantumCircuit:
