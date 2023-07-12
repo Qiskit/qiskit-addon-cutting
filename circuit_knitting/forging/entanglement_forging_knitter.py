@@ -693,7 +693,7 @@ def _estimate_expvals(
     num_tensor_expvals = len(tensor_ansatze) * len(tensor_paulis)
     estimator_results_t = results[:num_tensor_expvals]
     if fixed_hf_value is not None:
-        for _ in enumerate(tensor_paulis):
+        for _ in tensor_paulis:
             np.insert(estimator_results_t, 0, np.nan)
     estimator_results_s = results[num_tensor_expvals:]
 
