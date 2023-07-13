@@ -58,7 +58,7 @@ class EntanglementForgingKnitter:
         # Call backend_names setter to update the session_ids hidden class field
         self._session_ids: list[str | None] | None = None
         # Call constructors
-        self.backend_names = backend_names  # type: ignore
+        self.backend_names = backend_names # type: ignore
         self.options = options
 
         # The service hidden class field is a json representing the QiskitRuntimeService object
@@ -112,7 +112,7 @@ class EntanglementForgingKnitter:
         if isinstance(backend_names, str):
             self._backend_names = [backend_names]
         else:
-            self._backend_names = backend_names
+            self._backend_names = backend_names # type: ignore
         if backend_names:
             self._session_ids = [None] * len(backend_names)
 
@@ -127,7 +127,7 @@ class EntanglementForgingKnitter:
         if isinstance(options, Options):
             self._options = [options]
         else:
-            self._options = options
+            self._options = options # type: ignore
 
     @property
     def service(self) -> QiskitRuntimeService | None:
