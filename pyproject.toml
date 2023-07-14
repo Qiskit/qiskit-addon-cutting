@@ -33,7 +33,6 @@ dependencies = [
     "rustworkx>=0.12.0",
     "qiskit-aer>=0.12.0",
     "qiskit-terra>=0.24.0",
-    "qiskit-nature>=0.6.0",
     "qiskit-ibm-runtime>=0.9.2",
 ]
 
@@ -44,9 +43,6 @@ cplex = [
     "docplex>=2.23.222; python_version < '3.11' and platform_machine != 'arm64'",
     "cplex>=22.1.0.0; python_version < '3.11' and platform_machine != 'arm64'",
 ]
-pyscf = [
-    "pyscf>=2.0.1; sys_platform != 'win32'",
-]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
 ]
@@ -55,7 +51,7 @@ basetest = [
     "pytest-randomly>=1.2.0",
 ]
 test = [
-    "circuit-knitting-toolbox[basetest,pyscf]",
+    "circuit-knitting-toolbox[basetest]",
     "ddt>=1.4.4",
 ]
 nbtest = [
@@ -87,7 +83,7 @@ docs = [
     "qiskit-sphinx-theme~=1.13.0rc2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex,pyscf]",
+    "circuit-knitting-toolbox[cplex]",
     "quantum-serverless>=0.0.7",
     "matplotlib",
     "ipywidgets",
@@ -101,7 +97,6 @@ notebook-dependencies = [
 [tool.hatch.build.targets.wheel]
 only-include = [
     "circuit_knitting",
-    "circuit_knitting_toolbox",
 ]
 
 [tool.autoflake]
