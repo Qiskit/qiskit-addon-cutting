@@ -52,7 +52,7 @@ extensions = [
     "qiskit_sphinx_theme",
 ]
 templates_path = ["_templates"]
-numfig = True
+numfig = False
 numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
@@ -88,5 +88,8 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "qiskit": ("https://qiskit.org/documentation/", None),
+    "qiskit-ibm-runtime": ("https://qiskit.org/ecosystem/ibm-runtime/", None),
+    "qiskit-aer": ("https://qiskit.org/ecosystem/aer/", None),
+    "qiskit-nature": ("https://qiskit.org/ecosystem/nature/", None),
     "rustworkx": ("https://qiskit.org/documentation/rustworkx/", None),
 }
