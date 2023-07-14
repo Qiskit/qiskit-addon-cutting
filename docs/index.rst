@@ -35,8 +35,6 @@ Contents
 
   About Circuit Knitting Toolbox <self>
   Installation Instructions <install>
-  API References <apidocs/index>
-  Release Notes <release-notes>
 
 .. toctree::
   :maxdepth: 2
@@ -54,6 +52,13 @@ Contents
   Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
   Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
+
+.. toctree::
+  :maxdepth: 2
+  :caption: References
+
+  API References <apidocs/index>
+  Release Notes <release-notes>
 
 .. Hiding - Indices and tables
    :ref:`genindex`
