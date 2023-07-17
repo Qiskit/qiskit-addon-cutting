@@ -33,14 +33,30 @@ Contents
 .. toctree::
   :maxdepth: 2
 
+  About Circuit Knitting Toolbox <self>
   Installation Instructions <install>
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Circuit Cutting
+
   Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
   Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
   Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
   CutQC (legacy circuit cutting implementation) <circuit_cutting/cutqc/index>
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Entanglement Forging
+
   Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
   Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
   Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
+
+.. toctree::
+  :maxdepth: 2
+  :caption: References
+
   API References <apidocs/index>
   Release Notes <release-notes>
 
