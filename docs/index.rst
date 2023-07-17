@@ -40,18 +40,18 @@ Contents
   :maxdepth: 2
   :caption: Circuit Cutting
 
-  Circuit Cutting Tutorials <circuit_cutting/tutorials/index>
-  Circuit Cutting Explanatory Material <circuit_cutting/explanation/index>
-  Circuit Cutting How-To Guides <circuit_cutting/how-tos/index>
+  Cutting Tutorials <circuit_cutting/tutorials/index>
+  Cutting Explanatory Material <circuit_cutting/explanation/index>
+  Cutting How-To Guides <circuit_cutting/how-tos/index>
   CutQC (legacy circuit cutting implementation) <circuit_cutting/cutqc/index>
 
 .. toctree::
   :maxdepth: 2
   :caption: Entanglement Forging
 
-  Entanglement Forging Tutorials <entanglement_forging/tutorials/index>
-  Entanglement Forging Explanatory Material <entanglement_forging/explanation/index>
-  Entanglement Forging How-To Guides <entanglement_forging/how-tos/index>
+  Forging Tutorials <entanglement_forging/tutorials/index>
+  Forging Explanatory Material <entanglement_forging/explanation/index>
+  Forging How-To Guides <entanglement_forging/how-tos/index>
 
 .. toctree::
   :maxdepth: 2
