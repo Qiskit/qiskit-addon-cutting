@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""."""
+"""Single-qubit instruction to denote a wire cut location."""
 from __future__ import annotations
 
 from qiskit.circuit import Instruction
