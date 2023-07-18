@@ -13,10 +13,14 @@
 """Test for the transform_to_move function."""
 from __future__ import annotations
 
-from qiskit.circuit import QuantumCircuit
+from pytest import fixture
+from qiskit.circuit import Qubit, QuantumCircuit, QuantumRegister
+from circuit_knitting.cutting.qpd.instructions.move import Move
 from circuit_knitting.cutting.qpd.instructions.cut_wire import CutWire
+from circuit_knitting.cutting.qpd.cut_wire_to_move import transform_to_move
 
 
+@fixture
 def sample_circuit() -> QuantumCircuit:
     circuit = QuantumCircuit(3)
     circuit.x(0)
@@ -26,7 +30,19 @@ def sample_circuit() -> QuantumCircuit:
 
     return circuit
 
+@fixture()
+def resulting_circuit() -> QuantumCircuit:
+    circuit = QuantumCircuit(3)
+    circuit.x(0)
+    circuit.cx(0, 1)
+    circuit.add_bits([Qubit(QuantumRegister(1), 0)])
+    circuit.append(Move(), [1, 3])
+    circuit.cx(3, 2)
 
-def test_transform_to_move(sample_circuit):
+    return circuit
+
+
+def test_transform_to_move(sample_circuit, resulting_circuit):
     """Tests the transformation of cut_wire to move instruction."""
-    pass
+    assert resulting_circuit == transform_to_move(sample_circuit)
+
