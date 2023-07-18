@@ -58,7 +58,8 @@ pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting_toolbox."]
 
-html_theme = "qiskit"
+html_theme = "qiskit-ecosystem"
+html_title = f"{project} {release}"
 
 # autodoc/autosummary options
 autosummary_generate = True
