@@ -1,0 +1,27 @@
+---
+features:
+  - |
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_weights` now
+    returns a mixture of exact and sampled weights when appropriate.
+    Specifically, it exactly evaluates all weights greater than or
+    equal to ``1 / num_samples`` and samples from the remaining
+    weights (ones which are below this threshold).  Previously, this
+    function would only return exact weights if *all* weights were
+    greater than or equal to ``1 / num_samples``; otherwise, all
+    weights were sampled.  The new behavior is expected to improve
+    performance on non-uniform quasi-probability decompositions,
+    e.g. for cut instantiations of
+    :class:`~qiskit.circuit.library.RXXGate`,
+    :class:`~qiskit.circuit.library.RYYGate`,
+    :class:`~qiskit.circuit.library.RZZGate`,
+    :class:`~qiskit.circuit.library.CRXGate`,
+    :class:`~qiskit.circuit.library.CRYGate`, and
+    :class:`~qiskit.circuit.library.CRZGate` away from
+    :math:`\theta=\pi/2`.
+deprecations:
+  - |
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_samples` has
+    been renamed to
+    :func:`~circuit_knitting.cutting.qpd.generate_qpd_weights`.  The
+    original name will be removed no sooner than version 0.4 of the
+    Circuit Knitting Toolbox.

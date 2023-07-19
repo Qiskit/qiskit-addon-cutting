@@ -139,7 +139,7 @@ class EntanglementForgingGroundStateSolver:
             optimizer: Optimizer to use to optimize the ansatz circuit parameters
             initial_point: Initial values for ansatz parameters
             orbitals_to_reduce: List of orbital indices to remove from the problem before
-                decomposition.
+                decomposition. See :ref:`Freezing orbitals` for more information.
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
@@ -337,7 +337,7 @@ class EntanglementForgingGroundStateSolver:
         Args:
             operator: The decomposed Hamiltonian in entanglement forging format
         Returns:
-            Callable function which provides an estimation of the mihnimum eigenvalue
+            Callable function which provides an estimation of the minimum eigenvalue
             of the input operator given some ansatz circuit parameters.
         """
 

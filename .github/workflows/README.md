@@ -38,4 +38,4 @@ This workflow is triggered by a maintainer pushing a tag that represents a relea
 
 ## Docker (`docker.yml`)
 
-This workflow runs periodically (weekly, at the time of writing) to ensure that the [`Dockerfile`](/Dockerfile) and [`docker-compose.yml`](/docker-compose.yml) files at the root of the repository result in a successful build with notebooks that execute without error.
+This workflow runs periodically (weekly, at the time of writing) to ensure that the [`Dockerfile`](/Dockerfile) and [`compose.yaml`](/compose.yaml) files at the root of the repository result in a successful build with notebooks that execute without error.

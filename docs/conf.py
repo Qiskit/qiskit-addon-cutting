@@ -48,19 +48,19 @@ extensions = [
     "nbsphinx",
     "sphinx_copybutton",
     "sphinx_reredirects",
+    "sphinx.ext.intersphinx",
+    "qiskit_sphinx_theme",
 ]
 templates_path = ["_templates"]
-numfig = True
+numfig = False
 numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
 add_module_names = False
 modindex_common_prefix = ["circuit_knitting."]
-html_css_files = ["style.css"]
 
-# html theme options
-html_static_path = ["_static"]
-# html_logo = "_static/images/logo.png"
+html_theme = "qiskit-ecosystem"
+html_title = f"{project} {release}"
 
 # autodoc/autosummary options
 autosummary_generate = True
@@ -82,4 +82,15 @@ exclude_patterns = [
 redirects = {
     "circuit_cutting/tutorials/gate_cutting_to_reduce_circuit_width.html": "01_gate_cutting_to_reduce_circuit_width.html",
     "circuit_cutting/tutorials/gate_cutting_to_reduce_circuit_depth.html": "02_gate_cutting_to_reduce_circuit_depth.html",
+}
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "qiskit": ("https://qiskit.org/documentation/", None),
+    "qiskit-ibm-runtime": ("https://qiskit.org/ecosystem/ibm-runtime/", None),
+    "qiskit-aer": ("https://qiskit.org/ecosystem/aer/", None),
+    "qiskit-nature": ("https://qiskit.org/ecosystem/nature/", None),
+    "rustworkx": ("https://qiskit.org/documentation/rustworkx/", None),
 }
