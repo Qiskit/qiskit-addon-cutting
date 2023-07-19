@@ -30,7 +30,8 @@ def sample_circuit() -> QuantumCircuit:
 
     return circuit
 
-@fixture()
+
+@fixture
 def resulting_circuit() -> QuantumCircuit:
     circuit = QuantumCircuit(3)
     circuit.x(0)
@@ -45,4 +46,3 @@ def resulting_circuit() -> QuantumCircuit:
 def test_transform_to_move(sample_circuit, resulting_circuit):
     """Tests the transformation of cut_wire to move instruction."""
     assert resulting_circuit == transform_to_move(sample_circuit)
-
