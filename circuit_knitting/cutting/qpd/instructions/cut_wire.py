@@ -20,5 +20,5 @@ class CutWire(Instruction):
     """An instruction for denoting a wire cut location."""
 
     def __init__(self, label: str | None = None):
-        """"""
+        """Create CutWire instruction."""
         super().__init__("cut_wire", 1, 0, [], label=label)
