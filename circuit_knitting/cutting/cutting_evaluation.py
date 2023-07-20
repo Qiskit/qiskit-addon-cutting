@@ -159,18 +159,15 @@ def execute_experiments(
         [] for _ in range(len(subexperiments))
     ]
 
-    # If one sampler was used for all subcircuits, some extra post-processing
-    # is needed to re-build the output data structure
-    if len(samplers_by_partition) == 1:
-        count = 0
-        for i in range(len(subexperiments)):
-            for _ in range(len(subexperiments[0])):
+    # Re-build the output data structure to match the shape of input subexperiments
+    count = 0
+    for i in range(len(subexperiments)):
+        for j in range(len(subexperiments[0])):
+            if len(samplers_by_partition) == 1:
                 quasi_dists[i].append(quasi_dists_by_batch[0][count])
                 count += 1
-    else:
-        for i in range(len(subexperiments)):
-            for partition in quasi_dists_by_batch:
-                quasi_dists[i].append(partition[i])
+            else:
+                quasi_dists[i].append(quasi_dists_by_batch[j][i])
 
     return CuttingExperimentResults(quasi_dists, coefficients)
 
