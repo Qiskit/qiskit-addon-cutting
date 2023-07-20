@@ -18,7 +18,7 @@ from .qpd import (
     decompose_qpd_instructions,
     WeightType,
     qpdbasis_from_gate,
-    supported_gates,
+    explicitly_supported_gates,
 )
 from .instructions import (
     BaseQPDGate,
@@ -32,7 +32,7 @@ __all__ = [
     "generate_qpd_weights",
     "generate_qpd_samples",
     "decompose_qpd_instructions",
-    "supported_gates",
+    "explicitly_supported_gates",
     "QPDBasis",
     "BaseQPDGate",
     "TwoQubitQPDGate",

@@ -559,33 +559,19 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a QPDBasis object, given a supported operation.
 
-    This method currently supports the following operations:
-        - :class:`~qiskit.circuit.library.RXXGate`
-        - :class:`~qiskit.circuit.library.RYYGate`
-        - :class:`~qiskit.circuit.library.RZZGate`
-        - :class:`~qiskit.circuit.library.CRXGate`
-        - :class:`~qiskit.circuit.library.CRYGate`
-        - :class:`~qiskit.circuit.library.CRZGate`
-        - :class:`~qiskit.circuit.library.CXGate`
-        - :class:`~qiskit.circuit.library.CYGate`
-        - :class:`~qiskit.circuit.library.CZGate`
-        - :class:`~qiskit.circuit.library.CHGate`
-        - :class:`~qiskit.circuit.library.CSXGate`
-        - :class:`~qiskit.circuit.library.CSGate`
-        - :class:`~qiskit.circuit.library.CSdgGate`
-        - :class:`~qiskit.circuit.library.CPhaseGate`
-        - :class:`~qiskit.circuit.library.SwapGate`
-        - :class:`~qiskit.circuit.library.iSwapGate`
-        - :class:`~qiskit.circuit.library.DCXGate`
+    The operations with explicit support can be obtained by calling
+    :func:`explicitly_supported_gates`.
 
-    The above gate names can also be determined by calling
-    :func:`supported_gates`.
+    Additionally, all two-qubit gates which implement the :meth:`.Gate.to_matrix` method are
+    supported via a KAK decomposition (:class:`.TwoQubitWeylDecomposition`).
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
+        ValueError: Gate not supported.
         ValueError: Cannot decompose gate with unbound parameters.
+        ValueError: ``to_matrix`` conversion of two-qubit gate failed.
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
@@ -595,7 +581,10 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         return f(gate)
 
     if isinstance(gate, Gate) and gate.num_qubits == 2:
-        mat = gate.to_matrix()
+        try:
+            mat = gate.to_matrix()
+        except Exception as ex:
+            raise ValueError("`to_matrix` conversion of two-qubit gate failed") from ex
         d = TwoQubitWeylDecomposition(mat)
         u = _u_from_thetavec([d.a, d.b, d.c])
         retval = _nonlocal_qpd_basis_from_u(u)
@@ -610,9 +599,12 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     raise ValueError(f"Gate not supported: {gate.name}") from None
 
 
-def supported_gates() -> set[str]:
+def explicitly_supported_gates() -> set[str]:
     """
-    Return a set of gate names supported for automatic decomposition.
+    Return a set of instruction names with explicit support for automatic decomposition.
+
+    These instructions are *explicitly* supported by :func:`qpdbasis_from_gate`.
+    Other instructions may be supported too, via a KAK decomposition.
 
     Returns:
         Set of gate names supported for automatic decomposition.
