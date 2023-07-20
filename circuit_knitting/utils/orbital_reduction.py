@@ -31,6 +31,7 @@ def reduce_bitstrings(bitstrings, orbitals_to_reduce):
     elements of the bitstrings.
 
     Example:
+
     >>> reduce_bitstrings([[1, 0, 0, 1, 0], [1, 0, 0, 0, 1], [1, 1, 1, 1, 0]], [0, 1])
     [(0, 1, 0), (0, 0, 1), (1, 1, 0)]
 
