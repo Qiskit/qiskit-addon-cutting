@@ -342,7 +342,7 @@ def _run_experiments_batch(
     quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
 
     # Reshape the output data to match the input
-    quasi_dists_reshaped: list[list[QuasiDistribution]]  = [[] for _ in subexperiments]
+    quasi_dists_reshaped: list[list[QuasiDistribution]] = [[] for _ in subexperiments]
     num_qpd_bits: list[list[int]] = [[] for _ in subexperiments]
     count = 0
     for i, subcirc in enumerate(subexperiments):
