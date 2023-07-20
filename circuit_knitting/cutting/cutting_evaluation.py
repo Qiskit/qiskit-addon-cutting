@@ -140,7 +140,7 @@ def execute_experiments(
         ]
     else:
         samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
-        [
+        batches = [
             [sample[i] for sample in subexperiments]
             for i in range(len(subexperiments[0]))
         ]
