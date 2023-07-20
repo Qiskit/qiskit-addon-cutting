@@ -158,7 +158,8 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_fixed_hf_h2o_asymmetric(self):
         """Test for fixing the HF value in two separate subsystems."""
-        # Set up the ElectronicStructureProblem
+        # The hard-coded HF value based off pyscf outputs, given the
+        # molecular setup represented by the bitstrings and the problem.
         HF = -14.09259461609392
         bitstrings_u = [
             (1, 1, 1, 0, 0),
@@ -177,6 +178,8 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
             bitstrings_u=bitstrings_u,
             bitstrings_v=bitstrings_v,
         )
+        # The initial point was found by doing an ansatz parameter optimization using
+        # the reference forging implementation
         initial_point = [-0.83604922, -0.87326138, -0.93964018, 0.55224467]
         solver = EntanglementForgingGroundStateSolver(
             ansatz=ansatz,
@@ -187,6 +190,6 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         result = solver.solve(self.problem_reduced)
 
         # Make sure our masks didn't interfere with the schmidt matrix
-        # in an unintended way
+        # in an unintended way.
         assert not np.isnan(result.groundstate[0]).any()
         assert not np.isnan(result.groundenergy)
