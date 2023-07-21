@@ -14,7 +14,6 @@
 import os
 import importlib.util
 import unittest
-import pytest
 
 import numpy as np
 from qiskit.circuit import Parameter, QuantumCircuit
