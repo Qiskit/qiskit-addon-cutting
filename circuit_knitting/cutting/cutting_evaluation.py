@@ -128,7 +128,7 @@ def execute_experiments(
         num_samples,
     )
 
-    # Create a list of samplers -- one for each qubit partition
+    # Create a list of samplers to use -- one for each batch
     if isinstance(samplers, BaseSampler):
         samplers_by_partition = [samplers]
         batches = [
@@ -145,7 +145,7 @@ def execute_experiments(
             for i in range(len(subexperiments[0]))
         ]
 
-    # Run each partition's sub-experiments
+    # Run each batch of sub-experiments
     quasi_dists_by_batch = [
         _run_experiments_batch(
             batches[i],
@@ -154,12 +154,10 @@ def execute_experiments(
         for i in range(len(samplers_by_partition))
     ]
 
-    # Reformat the counts to match the shape of the input before returning
+    # Build the output data structure to match the shape of input subexperiments
     quasi_dists: list[list[list[tuple[dict[str, int], int]]]] = [
         [] for _ in range(len(subexperiments))
     ]
-
-    # Re-build the output data structure to match the shape of input subexperiments
     count = 0
     for i in range(len(subexperiments)):
         for j in range(len(subexperiments[0])):
