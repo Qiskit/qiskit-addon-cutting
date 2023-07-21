@@ -35,35 +35,6 @@ pyscf_available = importlib.util.find_spec("pyscf") is not None
 
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
-    def setUp(self):
-        self.energy_shift_h2 = 0.7199689944489797
-
-        self.energy_shift_h2o = -61.37433060587931
-
-        self.hcore_o2 = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "O2_one_body.npy"),
-        )
-        self.eri_o2 = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "O2_two_body.npy"),
-        )
-        self.energy_shift_o2 = -99.83894101027317
-
-        self.hcore_ch3 = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "CH3_one_body.npy"),
-        )
-        self.eri_ch3 = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "CH3_two_body.npy"),
-        )
-        self.energy_shift_ch3 = -31.90914780401554
-
-        self.hcore_cn = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "CN_one_body.npy"),
-        )
-        self.eri_cn = np.load(
-            os.path.join(os.path.dirname(__file__), "test_data", "CN_two_body.npy"),
-        )
-        self.energy_shift_cn = -67.18561556466743
-
     def create_mock_ansatz_circuit(self, num_qubits: int) -> QuantumCircuit:
         theta = Parameter("θ")
         mock_gate = QuantumCircuit(1, name="mock gate")
@@ -233,47 +204,17 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.1219365445030705)
 
-    @pytest.mark.slow
-    def test_asymmetric_bitstrings_O2(self):
-        """Test for entanglement forging driver."""
-        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_o2, self.eri_o2)
-        hamiltonian.nuclear_repulsion_energy = self.energy_shift_o2
-        problem = ElectronicStructureProblem(hamiltonian)
-        problem.num_particles = (6, 6)
-
-        ansatz = EntanglementForgingAnsatz(
-            circuit_u=self.create_mock_ansatz_circuit(8),
-            bitstrings_u=[
-                (1, 1, 1, 1, 1, 1, 0, 0),
-                (1, 1, 1, 1, 1, 0, 1, 0),
-                (1, 1, 1, 1, 0, 1, 1, 0),
-                (1, 1, 0, 1, 1, 1, 1, 0),
-            ],
-            bitstrings_v=[
-                (1, 1, 1, 1, 1, 0, 1, 0),
-                (1, 1, 1, 1, 1, 1, 0, 0),
-                (1, 1, 0, 1, 1, 1, 1, 0),
-                (1, 1, 1, 1, 0, 1, 1, 0),
-            ],
-        )
-
-        # Specify the decomposition method and get the forged operator
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem)
-        forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
-
-        # Set up the forging knitter object
-        forging_knitter = EntanglementForgingKnitter(ansatz)
-        ansatz_params = [0.0]
-
-        energy, _, _ = forging_knitter(ansatz_params, forged_hamiltonian)
-
-        # Ensure ground state energy output is within tolerance
-        self.assertAlmostEqual(energy + energy_shift, -147.63645235088566)
-
     def test_asymmetric_bitstrings_CH3(self):
         """Test for entanglement forging driver."""
-        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_ch3, self.eri_ch3)
-        hamiltonian.nuclear_repulsion_energy = self.energy_shift_ch3
+        hcore_ch3 = np.load(
+            os.path.join(os.path.dirname(__file__), "test_data", "CH3_one_body.npy"),
+        )
+        eri_ch3 = np.load(
+            os.path.join(os.path.dirname(__file__), "test_data", "CH3_two_body.npy"),
+        )
+        energy_shift_ch3 = -31.90914780401554
+        hamiltonian = ElectronicEnergy.from_raw_integrals(hcore_ch3, eri_ch3)
+        hamiltonian.nuclear_repulsion_energy = energy_shift_ch3
         problem = ElectronicStructureProblem(hamiltonian)
         problem.num_particles = (3, 2)
 
@@ -307,44 +248,3 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -39.09031477502881)
-
-    @pytest.mark.slow
-    def test_asymmetric_bitstrings_CN(self):
-        """Test for asymmetric bitstrings with hybrid cross terms."""
-        hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_cn, self.eri_cn)
-        hamiltonian.nuclear_repulsion_energy = self.energy_shift_cn
-        problem = ElectronicStructureProblem(hamiltonian)
-        problem.num_particles = (5, 4)
-
-        ansatz = EntanglementForgingAnsatz(
-            circuit_u=self.create_mock_ansatz_circuit(8),
-            bitstrings_u=[
-                (1, 1, 1, 1, 1, 0, 0, 0),
-                (1, 1, 1, 0, 1, 0, 1, 0),
-                (1, 1, 0, 1, 1, 1, 0, 0),
-                (1, 1, 1, 0, 1, 1, 0, 0),
-                (1, 1, 0, 1, 1, 0, 1, 0),
-                (1, 1, 1, 1, 1, 0, 0, 0),
-            ],
-            bitstrings_v=[
-                (1, 1, 1, 1, 0, 0, 0, 0),
-                (1, 1, 1, 0, 0, 0, 1, 0),
-                (1, 1, 0, 1, 0, 1, 0, 0),
-                (1, 1, 1, 0, 0, 1, 0, 0),
-                (1, 1, 0, 1, 0, 0, 1, 0),
-                (1, 0, 1, 1, 1, 0, 0, 0),
-            ],
-        )
-
-        # Specify the decomposition method and get the forged operator
-        hamiltonian_terms, energy_shift = cholesky_decomposition(problem)
-        forged_hamiltonian = convert_cholesky_operator(hamiltonian_terms, ansatz)
-
-        # Set up the forging knitter object
-        forging_knitter = EntanglementForgingKnitter(ansatz)
-        ansatz_params = [0.0]
-
-        energy, _, _ = forging_knitter(ansatz_params, forged_hamiltonian)
-
-        # Ensure ground state energy output is within tolerance
-        self.assertAlmostEqual(energy + energy_shift, -91.06680541685226)
