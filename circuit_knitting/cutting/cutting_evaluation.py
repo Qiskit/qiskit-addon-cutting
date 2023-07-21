@@ -145,6 +145,9 @@ def execute_experiments(
             for i in range(len(subexperiments[0]))
         ]
 
+    # There should be one batch per input sampler
+    assert len(samplers_by_partition) == len(batches)
+
     # Run each batch of sub-experiments
     quasi_dists_by_batch = [
         _run_experiments_batch(
