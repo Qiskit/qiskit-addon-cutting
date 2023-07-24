@@ -18,44 +18,46 @@ from circuit_knitting.cutting.qpd.instructions.move import Move
 
 
 def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
-    """Transform a ``cut_wire`` instruction to a ``move`` instruction
+    """Transform a :class:`.cut_wire` instruction to a :class:`.move` instruction
 
     Args:
-        circuit (QuantumCircuit): original circuit with cut_wire instructions.
+        circuit (QuantumCircuit): original circuit with :class:`.cut_wire` instructions.
 
     Returns:
-        circuit (QuantumCircuit): new circuit with move instructions.
-
+        circuit (QuantumCircuit): new circuit with :class`.move` instructions.
     """
-    new_circ = QuantumCircuit(len(circuit.qubits))
-    qubit_sequence = new_circ.qubits
 
-    count_cut_wire = 0
+    new_circuit = QuantumCircuit(len(circuit.qubits))
+    qubit_sequence = new_circuit.qubits
+
     for _, instructions in enumerate(circuit.data):
         gate_index = [circuit.find_bit(qubit).index for qubit in instructions.qubits]
 
         if instructions in circuit.get_instructions("cut_wire"):
-            count_cut_wire += 1
-            new_circ.add_bits([Qubit(QuantumRegister(1), 0)])
-            qubit_sequence.append(new_circ.qubits[-1])
+            new_circuit.add_bits([Qubit(QuantumRegister(1), 0)])
+            qubit_sequence.append(new_circuit.qubits[-1])
 
-            # Make changes to qubit sequence
-            temp = qubit_sequence[gate_index[0]]
-            qubit_sequence[gate_index[0]] = qubit_sequence[len(new_circ.qubits) - 1]
-            qubit_sequence[len(new_circ.qubits) - 1] = temp
+            # Make changes to qubit sequence and observables
+            (
+                qubit_sequence[gate_index[0]],
+                qubit_sequence[len(new_circuit.qubits) - 1],
+            ) = (
+                qubit_sequence[len(new_circuit.qubits) - 1],
+                qubit_sequence[gate_index[0]],
+            )
 
             # Replace cut_wire with move instruction
-            new_circ = new_circ.compose(
+            new_circuit = new_circuit.compose(
                 other=Move(),
                 qubits=[
                     qubit_sequence[gate_index[0]],
-                    qubit_sequence[len(new_circ.qubits) - 1],
+                    qubit_sequence[len(new_circuit.qubits) - 1],
                 ],
             )
         else:
-            new_circ = new_circ.compose(
+            new_circuit = new_circuit.compose(
                 other=instructions[0],
                 qubits=[qubit_sequence[index] for index in gate_index],
             )
 
-    return new_circ
+    return new_circuit
