@@ -559,7 +559,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a :class:`.QPDBasis` object, given a supported operation.
 
-    All two-qubit gates which implement the :meth:`.Gate.to_matrix` method are
+    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
     supported.  This should include the vast majority of gates with no unbound
     parameters, but there are some special cases (see, e.g., `qiskit issue #10396
     <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
