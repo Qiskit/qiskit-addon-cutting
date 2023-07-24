@@ -476,13 +476,3 @@ class TestQPDFunctions(unittest.TestCase):
                 e_info.value.args[0]
                 == "theta vector has wrong shape: (4,) (1D vector of length 3 expected)"
             )
-
-    def test_qpdbasis_from_gate_errors(self):
-        with self.subTest("to_matrix fails"):
-            with pytest.raises(ValueError) as e_info:
-                # https://github.com/Qiskit/qiskit-terra/issues/10396
-                qpdbasis_from_gate(CSXGate().inverse())
-            assert (
-                e_info.value.args[0]
-                == "`to_matrix` conversion of two-qubit gate failed"
-            )

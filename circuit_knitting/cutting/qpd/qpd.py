@@ -584,7 +584,10 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
         try:
             mat = gate.to_matrix()
         except Exception as ex:
-            raise ValueError("`to_matrix` conversion of two-qubit gate failed") from ex
+            raise ValueError(
+                f"`to_matrix` conversion of two-qubit gate ({gate.name}) failed. "
+                "Often, this can be caused by unbound parameters."
+            ) from ex
         d = TwoQubitWeylDecomposition(mat)
         u = _u_from_thetavec([d.a, d.b, d.c])
         retval = _nonlocal_qpd_basis_from_u(u)
