@@ -557,7 +557,7 @@ def _register_qpdbasis_from_gate(*args):
 
 def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
-    Generate a QPDBasis object, given a supported operation.
+    Generate a :class:`.QPDBasis` object, given a supported operation.
 
     The operations with explicit support can be obtained by calling
     :func:`explicitly_supported_gates`.
