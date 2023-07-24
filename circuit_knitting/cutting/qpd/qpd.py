@@ -559,11 +559,10 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
     Generate a :class:`.QPDBasis` object, given a supported operation.
 
-    The operations with explicit support can be obtained by calling
-    :func:`explicitly_supported_gates`.
-
-    Additionally, all two-qubit gates which implement the :meth:`.Gate.to_matrix` method are
-    supported via a KAK decomposition (:class:`.TwoQubitWeylDecomposition`).
+    All two-qubit gates which implement the :meth:`.Gate.to_matrix` method are
+    supported.  This should include the vast majority of gates with no unbound
+    parameters, but there are some special cases (see, e.g., `qiskit issue #10396
+    <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
@@ -602,7 +601,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     raise ValueError(f"Gate not supported: {gate.name}") from None
 
 
-def explicitly_supported_gates() -> set[str]:
+def _explicitly_supported_gates() -> set[str]:
     """
     Return a set of instruction names with explicit support for automatic decomposition.
 

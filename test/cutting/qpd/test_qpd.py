@@ -47,6 +47,7 @@ from circuit_knitting.cutting.qpd.qpd import (
     _generate_exact_weights_and_conditional_probabilities,
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
+    _explicitly_supported_gates,
 )
 
 
@@ -426,7 +427,7 @@ class TestQPDFunctions(unittest.TestCase):
             assert weights[map_ids][1] == WeightType.SAMPLED
 
     def test_explicitly_supported_gates(self):
-        gates = explicitly_supported_gates()
+        gates = _explicitly_supported_gates()
         self.assertEqual(
             {
                 "rxx",
