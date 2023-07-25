@@ -23,22 +23,25 @@ from circuit_knitting.cutting.qpd.cut_wire_to_move import transform_to_move
 @fixture
 def sample_circuit() -> QuantumCircuit:
     circuit = QuantumCircuit(3)
-    circuit.x(0)
+    circuit.cx(1, 2)
+    circuit.append(CutWire(), [1])
     circuit.cx(0, 1)
     circuit.append(CutWire(), [1])
     circuit.cx(1, 2)
+    circuit.draw()
 
     return circuit
 
 
 @fixture
 def resulting_circuit() -> QuantumCircuit:
-    circuit = QuantumCircuit(3)
-    circuit.x(0)
-    circuit.cx(0, 1)
-    circuit.add_bits([Qubit(QuantumRegister(1), 0)])
-    circuit.append(Move(), [1, 3])
-    circuit.cx(3, 2)
+    circuit = QuantumCircuit(5)
+    circuit.cx(1, 4)
+    circuit.append(Move(), (1, 2))
+    circuit.cx(0, 2)
+    circuit.append(Move(), (2, 3))
+    circuit.cx(3, 4)
+    circuit.draw()
 
     return circuit
 
