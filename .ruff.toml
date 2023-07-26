@@ -8,3 +8,6 @@ ignore = [
     "F405",  # star import
     "F403",  # unable to detect undefined names due to star import
 ]
+"docs/**" = [
+    "E402",  # module level import not at top of file
+]

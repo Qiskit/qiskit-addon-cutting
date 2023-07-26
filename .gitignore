@@ -42,6 +42,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+coveralls.info
 
 # pyenv
 .python-version
@@ -51,6 +52,10 @@ coverage.xml
 
 # virtualenv
 ENV/
+
+# direnv
+.envrc/
+.direnv/
 
 # Sphinx documentation
 docs/_build/

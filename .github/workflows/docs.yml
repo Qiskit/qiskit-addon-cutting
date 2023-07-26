@@ -28,12 +28,23 @@ jobs:
           pip install tox
           sudo apt-get update
           sudo apt-get install -y pandoc
+      - name: Tell reno to name the upcoming release after the branch we are on
+        shell: bash
+        run: |
+          sed -i.bak -e '/unreleased_version_title:*/d' releasenotes/config.yaml
+          echo unreleased_version_title: \"Upcoming release \(\`\`${GITHUB_REF_NAME}\`\`\)\" >> releasenotes/config.yaml
       - name: Build docs
         shell: bash
         run: |
           tox -edocs
+      - name: Upload docs artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: html_docs
+          path: ./docs/_build/html
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/stable/0.2' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

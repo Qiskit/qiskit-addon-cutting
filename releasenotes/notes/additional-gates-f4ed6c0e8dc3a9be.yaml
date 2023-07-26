@@ -1,0 +1,21 @@
+---
+features:
+  - |
+    The circuit cutting module now supports the cutting of arbitrary
+    two-qubit gates.  This is supported via a KAK decomposition, using
+    Qiskit's :class:`.TwoQubitWeylDecomposition`, following the method
+    in `arXiv:2006.11174 <https://arxiv.org/abs/2006.11174>`__.
+
+    Additionally, this release adds *explicit* support (i.e., without
+    relying on a KAK decomposition) for the following gates:
+
+    - :class:`~qiskit.circuit.library.CHGate`
+    - :class:`~qiskit.circuit.library.CYGate`
+    - :class:`~qiskit.circuit.library.CSGate`
+    - :class:`~qiskit.circuit.library.CSXGate`
+    - :class:`~qiskit.circuit.library.CSdgGate`
+    - :class:`~qiskit.circuit.library.CPhaseGate`
+    - :class:`~qiskit.circuit.library.ECRGate`
+    - :class:`~qiskit.circuit.library.SwapGate`
+    - :class:`~qiskit.circuit.library.iSwapGate`
+    - :class:`~qiskit.circuit.library.DCXGate`
