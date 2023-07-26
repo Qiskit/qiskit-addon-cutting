@@ -267,6 +267,7 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        (Move(), 4),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):
