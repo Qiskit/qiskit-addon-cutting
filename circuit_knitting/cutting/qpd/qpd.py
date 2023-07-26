@@ -598,7 +598,7 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
             operations.append(UnitaryGate(d.K1l))
         return retval
 
-    raise ValueError(f"Gate not supported: {gate.name}") from None
+    raise ValueError(f"Gate not supported: {gate.name}")
 
 
 def _explicitly_supported_gates() -> set[str]:
