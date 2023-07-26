@@ -31,15 +31,15 @@ class Move(Instruction):
     implementing the :class:`Move`:
 
     - No operations since initialization.
-    - A :class:`~qiskit.circuit.Measure` is the preceding operation.
-    - A :class:`~qiskit.circuit.Reset` is the preceding operation.
+    - A :class:`~qiskit.circuit.library.Measure` is the preceding operation.
+    - A :class:`~qiskit.circuit.library.Reset` is the preceding operation.
     - The preceding use of the qubit is such that it is the first output qubit of another
       :class:`Move` operation.
 
     """
 
     def __init__(self, label: str | None = None):
-        """Create a Move instruction."""
+        """Create a :class:`Move` instruction."""
         super().__init__("move", 2, 0, [], label=label)
 
     def _define(self):
