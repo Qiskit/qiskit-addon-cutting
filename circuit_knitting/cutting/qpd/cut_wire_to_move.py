@@ -26,6 +26,9 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
 
     Returns:
         circuit (QuantumCircuit): new circuit with :class`.move` instructions.
+
+    Raises:
+        ValueError: circuit (QuantumCircuit) contains no :class:`.cut_wire` instructions.
     """
 
     new_circuit, mapping = _circuit_structure_mapping(circuit)
@@ -59,6 +62,10 @@ def _circuit_structure_mapping(
         circuit.find_bit(instruction.qubits[0]).index
         for instruction in circuit.get_instructions("cut_wire")
     ]
+    # Do we need to check for cut_wire instructions before proceeding? For example,
+    if all(isinstance(item, type(None)) for item in cut_wire_index):
+        raise ValueError("Circuit argument contains no CutWire instructions")
+
     cut_wire_freq = {key: list(group) for key, group in groupby(cut_wire_index)}
 
     bits = []
