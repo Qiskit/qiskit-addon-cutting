@@ -31,6 +31,7 @@ from qiskit.circuit.library import (
     RXXGate,
     RYYGate,
     RZZGate,
+    RZXGate,
 )
 
 from circuit_knitting.utils.iteration import unique_by_eq
@@ -45,6 +46,8 @@ from circuit_knitting.cutting.qpd.qpd import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
     _nonlocal_qpd_basis_from_u,
+    _u_from_thetavec,
+    _explicitly_supported_gates,
 )
 
 
@@ -256,6 +259,7 @@ class TestQPDFunctions(unittest.TestCase):
         (RXXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RYYGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (RZZGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
+        (RZXGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 7))),
         (CPhaseGate(np.pi / 7), 1 + 2 * np.abs(np.sin(np.pi / 14))),
         (CSGate(), 1 + np.sqrt(2)),
         (CSdgGate(), 1 + np.sqrt(2)),
@@ -422,8 +426,8 @@ class TestQPDFunctions(unittest.TestCase):
             )
             assert weights[map_ids][1] == WeightType.SAMPLED
 
-    def test_supported_gates(self):
-        gates = supported_gates()
+    def test_explicitly_supported_gates(self):
+        gates = _explicitly_supported_gates()
         self.assertEqual(
             {
                 "rxx",
@@ -455,4 +459,21 @@ class TestQPDFunctions(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "u vector has wrong shape: (3,) (1D vector of length 4 expected)"
+            )
+
+    @data(
+        ([np.pi / 4] * 3, [(1 + 1j) / np.sqrt(8)] * 4),
+        ([np.pi / 4, np.pi / 4, 0], [0.5, 0.5j, 0.5j, 0.5]),
+    )
+    @unpack
+    def test_u_from_thetavec(self, theta, expected):
+        assert _u_from_thetavec(theta) == pytest.approx(expected)
+
+    def test_u_from_thetavec_exceptions(self):
+        with self.subTest("Invalid shape"):
+            with pytest.raises(ValueError) as e_info:
+                _u_from_thetavec([0, 1, 2, 3])
+            assert (
+                e_info.value.args[0]
+                == "theta vector has wrong shape: (4,) (1D vector of length 3 expected)"
             )

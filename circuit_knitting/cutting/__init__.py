@@ -57,7 +57,7 @@ Quasi-Probability Decomposition (QPD)
     qpd.generate_qpd_weights
     qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
-    qpd.supported_gates
+    qpd.qpdbasis_from_gate
 
 CutQC
 =====

@@ -116,7 +116,7 @@ class QPDBasis:
     @staticmethod
     def from_gate(gate: Gate) -> "QPDBasis":
         """
-        Generate a QPDBasis object, given a supported operation.
+        Generate a :class:`.QPDBasis` object, given a supported operation.
 
         This static method is provided for convenience; it simply
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
