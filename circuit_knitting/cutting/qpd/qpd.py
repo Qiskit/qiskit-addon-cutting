@@ -62,6 +62,8 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
+from qiskit.extensions import UnitaryGate
+from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomposition
 from qiskit.utils import deprecate_func
 
 from .qpd_basis import QPDBasis
@@ -555,47 +557,56 @@ def _register_qpdbasis_from_gate(*args):
 
 def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     """
-    Generate a QPDBasis object, given a supported operation.
+    Generate a :class:`.QPDBasis` object, given a supported operation.
 
-    This method currently supports the following operations:
-        - :class:`~qiskit.circuit.library.RXXGate`
-        - :class:`~qiskit.circuit.library.RYYGate`
-        - :class:`~qiskit.circuit.library.RZZGate`
-        - :class:`~qiskit.circuit.library.CRXGate`
-        - :class:`~qiskit.circuit.library.CRYGate`
-        - :class:`~qiskit.circuit.library.CRZGate`
-        - :class:`~qiskit.circuit.library.CXGate`
-        - :class:`~qiskit.circuit.library.CYGate`
-        - :class:`~qiskit.circuit.library.CZGate`
-        - :class:`~qiskit.circuit.library.CHGate`
-        - :class:`~qiskit.circuit.library.CSXGate`
-        - :class:`~qiskit.circuit.library.CSGate`
-        - :class:`~qiskit.circuit.library.CSdgGate`
-        - :class:`~qiskit.circuit.library.CPhaseGate`
-        - :class:`~qiskit.circuit.library.SwapGate`
-        - :class:`~qiskit.circuit.library.iSwapGate`
-        - :class:`~qiskit.circuit.library.DCXGate`
-
-    The above gate names can also be determined by calling
-    :func:`supported_gates`.
+    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
+    supported.  This should include the vast majority of gates with no unbound
+    parameters, but there are some special cases (see, e.g., `qiskit issue #10396
+    <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
 
     Returns:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
+        ValueError: Gate not supported.
         ValueError: Cannot decompose gate with unbound parameters.
+        ValueError: ``to_matrix`` conversion of two-qubit gate failed.
     """
     try:
         f = _qpdbasis_from_gate_funcs[gate.name]
     except KeyError:
-        raise ValueError(f"Gate not supported: {gate.name}") from None
+        pass
     else:
         return f(gate)
 
+    if isinstance(gate, Gate) and gate.num_qubits == 2:
+        try:
+            mat = gate.to_matrix()
+        except Exception as ex:
+            raise ValueError(
+                f"`to_matrix` conversion of two-qubit gate ({gate.name}) failed. "
+                "Often, this can be caused by unbound parameters."
+            ) from ex
+        d = TwoQubitWeylDecomposition(mat)
+        u = _u_from_thetavec([d.a, d.b, d.c])
+        retval = _nonlocal_qpd_basis_from_u(u)
+        for operations in unique_by_id(m[0] for m in retval.maps):
+            operations.insert(0, UnitaryGate(d.K2r))
+            operations.append(UnitaryGate(d.K1r))
+        for operations in unique_by_id(m[1] for m in retval.maps):
+            operations.insert(0, UnitaryGate(d.K2l))
+            operations.append(UnitaryGate(d.K1l))
+        return retval
 
-def supported_gates() -> set[str]:
+    raise ValueError(f"Gate not supported: {gate.name}")
+
+
+def _explicitly_supported_gates() -> set[str]:
     """
-    Return a set of gate names supported for automatic decomposition.
+    Return a set of instruction names with explicit support for automatic decomposition.
+
+    These instructions are *explicitly* supported by :func:`qpdbasis_from_gate`.
+    Other instructions may be supported too, via a KAK decomposition.
 
     Returns:
         Set of gate names supported for automatic decomposition.
@@ -617,6 +628,54 @@ def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
         if id(lst) not in copy_by_id:
             copy_by_id[id(lst)] = lst.copy()
     return tuple(copy_by_id[id(lst)] for lst in lsts)
+
+
+def _u_from_thetavec(
+    theta: np.typing.NDArray[np.float64] | Sequence[float], /
+) -> np.typing.NDArray[np.complex128]:
+    r"""
+    Exponentiate the non-local portion of a KAK decomposition.
+
+    This implements Eq. (6) of https://arxiv.org/abs/2006.11174v2:
+
+    .. math::
+
+       \exp [ i ( \sum_\alpha^3 \theta_\alpha \, \sigma_\alpha \otimes \sigma_\alpha ) ]
+       =
+       \sum_{\alpha=0}^3 u_\alpha \, \sigma_\alpha \otimes \sigma_\alpha
+
+    where each :math:`\theta_\alpha` is assumed to be real, and
+    :math:`u_\alpha` is complex in general.
+    """
+    theta = np.asarray(theta)
+    if theta.shape != (3,):
+        raise ValueError(
+            f"theta vector has wrong shape: {theta.shape} (1D vector of length 3 expected)"
+        )
+    # First, we note that if we choose the basis vectors II, XX, YY, and ZZ,
+    # then the following matrix represents one application of the summation in
+    # the exponential:
+    #
+    #   0   θx  θy  θz
+    #   θx  0  -θz -θy
+    #   θy -θz  0  -θx
+    #   θz -θy -θx  0
+    #
+    # This matrix is symmetric and can be exponentiated by diagonalizing it.
+    # Its eigendecomposition is given by:
+    eigvals = np.array(
+        [
+            -np.sum(theta),
+            -theta[0] + theta[1] + theta[2],
+            -theta[1] + theta[2] + theta[0],
+            -theta[2] + theta[0] + theta[1],
+        ]
+    )
+    eigvecs = np.ones([1, 1]) / 2 - np.eye(4)
+    # Finally, we exponentiate the eigenvalues of the matrix in diagonal form.
+    # We also project to the vector [1,0,0,0] on the right, since the
+    # multiplicative identity is given by II.
+    return np.transpose(eigvecs) @ (np.exp(1j * eigvals) * eigvecs[:, 0])
 
 
 def _nonlocal_qpd_basis_from_u(

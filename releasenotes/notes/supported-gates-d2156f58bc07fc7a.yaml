@@ -1,4 +1,0 @@
----
-upgrade:
-  - |
-    Addition of :func:`~circuit_knitting.cutting.qpd.supported_gates` function, which returns the names of all gates which may be automatically decomposed using :func:`~circuit_knitting.cutting.qpd.qpdbasis_from_gate`.

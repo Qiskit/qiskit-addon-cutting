@@ -120,16 +120,29 @@ class TestQPDBasis(unittest.TestCase):
 
     def test_unsupported_gate(self):
         with pytest.raises(ValueError) as e_info:
-            QPDBasis.from_gate(XXMinusYYGate(0.1))
-        assert e_info.value.args[0] == "Gate not supported: xx_minus_yy"
+            QPDBasis.from_gate(C3XGate())
+        assert e_info.value.args[0] == "Gate not supported: mcx"
 
     def test_unbound_parameter(self):
-        with pytest.raises(ValueError) as e_info:
-            QPDBasis.from_gate(RZZGate(Parameter("θ")))
-        assert (
-            e_info.value.args[0]
-            == "Cannot decompose (rzz) gate with unbound parameters."
-        )
+        with self.subTest("Explicitly supported gate"):
+            # For explicitly support gates, we can give a specific error
+            # message due to unbound parameters.
+            with pytest.raises(ValueError) as e_info:
+                QPDBasis.from_gate(RZZGate(Parameter("θ")))
+            assert (
+                e_info.value.args[0]
+                == "Cannot decompose (rzz) gate with unbound parameters."
+            )
+        with self.subTest("Implicitly supported gate"):
+            # For implicitly supported gates, we can detect that `to_matrix`
+            # failed, but there are other possible explanations, too.  See
+            # https://github.com/Qiskit/qiskit-terra/issues/10396
+            with pytest.raises(ValueError) as e_info:
+                QPDBasis.from_gate(XXPlusYYGate(Parameter("θ")))
+            assert (
+                e_info.value.args[0]
+                == "`to_matrix` conversion of two-qubit gate (xx_plus_yy) failed. Often, this can be caused by unbound parameters."
+            )
 
     def test_erroneous_compare(self):
         rxx_truth = QPDBasis(self.truth_rxx_maps, self.truth_rxx_coeffs)
