@@ -122,7 +122,7 @@ class QPDBasis:
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
 
         Args:
-            gate: The gate from which to instantiate a decomposition
+            gate: The instruction from which to instantiate a decomposition
 
         Returns:
             The newly-instantiated :class:`QPDBasis` object
