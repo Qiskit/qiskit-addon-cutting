@@ -49,25 +49,26 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
     return new_circuit
 
 
-def _circuit_structure_mapping(circuit: QuantumCircuit):
+def _circuit_structure_mapping(
+    circuit: QuantumCircuit,
+) -> tuple[QuantumCircuit, list[int]]:
     new_circuit = QuantumCircuit()
-    mapping = [qubit for qubit in range(len(circuit.qubits))]
+    mapping = list(range(len(circuit.qubits)))
 
     cut_wire_index = [
         circuit.find_bit(instruction.qubits[0]).index
         for instruction in circuit.get_instructions("cut_wire")
     ]
+    cut_wire_freq = {key: list(group) for key, group in groupby(cut_wire_index)}
 
-    # TODO: Optimize this.
     bits = []
     for index in range(len(circuit.qubits)):
-        for key, group in groupby(cut_wire_index):
-            if index == key:
-                for cuts in range(len(list(group))):
-                    mapping[index + 1 :] = map(
-                        lambda item: item + 1, iter(mapping[index + 1 :])
-                    )
-                    bits.append(Qubit())
+        if index in cut_wire_freq.keys():
+            for _ in range(len(cut_wire_freq[index])):
+                mapping[index + 1 :] = map(
+                    lambda item: item + 1, iter(mapping[index + 1 :])
+                )
+                bits.append(Qubit())
         bits.append(circuit.qregs[0][index])
 
     new_qregs = QuantumRegister(name=circuit.qregs[0].name, bits=bits)
