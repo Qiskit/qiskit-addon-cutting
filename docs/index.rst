@@ -27,6 +27,11 @@ If you use the Circuit Knitting Toolbox in your research, please cite it accordi
 .. literalinclude:: ../CITATION.bib
    :language: bibtex
 
+Developer guide
+---------------
+
+The developer guide is located at `CONTRIBUTING.md <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/CONTRIBUTING.md>`__ in the root of this project's repository.
+
 Contents
 --------
 
