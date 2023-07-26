@@ -15,7 +15,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import numpy as np
-from qiskit.circuit import Gate, Instruction
+from qiskit.circuit import Instruction
 
 
 class QPDBasis:
@@ -114,7 +114,7 @@ class QPDBasis:
         return self._kappa**2
 
     @staticmethod
-    def from_gate(gate: Gate) -> "QPDBasis":
+    def from_gate(gate: Instruction) -> QPDBasis:
         """
         Generate a :class:`.QPDBasis` object, given a supported operation.
 
