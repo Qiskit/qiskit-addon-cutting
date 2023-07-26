@@ -13,12 +13,17 @@
 """Single-qubit instruction to denote a wire cut location."""
 from __future__ import annotations
 
-from qiskit.circuit import Instruction
+from qiskit.circuit import Gate, QuantumCircuit
 
 
-class CutWire(Instruction):
+class CutWire(Gate):
     """An instruction for denoting a wire cut location."""
 
     def __init__(self, label: str | None = None):
         """Create CutWire instruction."""
-        super().__init__("cut_wire", 1, 0, [], label=label)
+        super().__init__("cut_wire", 1, [], label)
+
+    def _define(self):
+        circuit = QuantumCircuit(1, name=self.name)
+        circuit.i(0)
+        self.definition = circuit
