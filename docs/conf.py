@@ -63,6 +63,7 @@ html_theme = "qiskit-ecosystem"
 html_title = f"{project} {release}"
 html_theme_options = {
     "footer_icons": [
+        # https://pradyunsg.me/furo/customisation/footer/#using-embedded-svgs
         {
             "name": "GitHub",
             "url": "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox",
