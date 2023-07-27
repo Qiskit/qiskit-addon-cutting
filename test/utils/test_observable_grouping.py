@@ -17,7 +17,7 @@ import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
-from circuit_knitting_toolbox.utils.observable_grouping import *
+from circuit_knitting.utils.observable_grouping import *
 
 
 @ddt

@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook:python-3.10
+FROM jupyter/minimal-notebook:python-3.11
 
 LABEL maintainer="Jim Garrison <garrison@ibm.com>"
 

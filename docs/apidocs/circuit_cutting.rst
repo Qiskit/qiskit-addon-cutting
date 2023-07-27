@@ -4,7 +4,7 @@
 Circuit Cutting
 ###############
 
-.. automodule:: circuit_knitting_toolbox.circuit_cutting
+.. automodule:: circuit_knitting.cutting
    :no-members:
    :no-inherited-members:
    :no-special-members:

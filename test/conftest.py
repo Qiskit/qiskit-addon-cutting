@@ -25,17 +25,37 @@ def pytest_addoption(parser):
         default=False,
         help="run slow tests",
     )
+    parser.addoption(
+        "--coverage",
+        action="store_true",
+        default=False,
+        help="skip tests that should not be used for calculating coverage",
+    )
 
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "slow: mark test as slow to run")
+    config.addinivalue_line("markers", "skipforcoverage: skip test during coverage run")
 
 
 def pytest_collection_modifyitems(config, items):
-    if not config.getoption("--run-slow"):
-        skip_slow = pytest.mark.skip(
-            reason="skipping slow test, as --run-slow was not provided"
-        )
-        for item in items:
-            if "slow" in item.keywords:
-                item.add_marker(skip_slow)
+    flags = (
+        (
+            "--run-slow",
+            "slow",
+            False,
+            "skipping slow test, as --run-slow was not provided",
+        ),
+        (
+            "--coverage",
+            "skipforcoverage",
+            True,
+            "deliberately skipping, as --coverage was provided",
+        ),
+    )
+    for option, keyword, skip_when, reason in flags:
+        if config.getoption(option) is skip_when:
+            marker = pytest.mark.skip(reason=reason)
+            for item in items:
+                if keyword in item.keywords:
+                    item.add_marker(marker)

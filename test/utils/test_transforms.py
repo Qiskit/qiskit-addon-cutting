@@ -23,13 +23,13 @@ from qiskit.circuit import (
 from qiskit.circuit.library import EfficientSU2, Measure
 from qiskit.circuit.library.standard_gates import RZZGate
 
-from circuit_knitting_toolbox.circuit_cutting import partition_circuit_qubits
-from circuit_knitting_toolbox.circuit_cutting.qpd import (
+from circuit_knitting.cutting import partition_circuit_qubits
+from circuit_knitting.cutting.qpd import (
     decompose_qpd_instructions,
     TwoQubitQPDGate,
 )
-from circuit_knitting_toolbox.utils.transforms import separate_circuit
-from circuit_knitting_toolbox.utils.iteration import strict_zip
+from circuit_knitting.utils.transforms import separate_circuit
+from circuit_knitting.utils.iteration import strict_zip
 
 
 def prepare_hwea():
@@ -414,6 +414,15 @@ class TestTransforms(unittest.TestCase):
                 (frozenset([1]), 1),
                 (frozenset([2]), 0),
             ]
+
+        with self.subTest("Unused qubit"):
+            circuit = QuantumCircuit(2)
+            circuit.x(0)
+            separated_circuits = separate_circuit(circuit, partition_labels="BA")
+            assert separated_circuits.subcircuits.keys() == {"A", "B"}
+            assert len(separated_circuits.subcircuits["B"].data) == 1
+            assert len(separated_circuits.subcircuits["A"].data) == 0
+            assert separated_circuits.qubit_map == [("B", 0), ("A", 0)]
 
 
 def _create_barrier_subcirc() -> QuantumCircuit:
