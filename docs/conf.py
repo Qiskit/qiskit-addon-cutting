@@ -74,6 +74,9 @@ html_theme_options = {
             "class": "",
         },
     ],
+    "source_repository": "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/",
+    "source_branch": "main",
+    "source_directory": "docs/",
 }
 
 # autodoc/autosummary options
