@@ -32,6 +32,8 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
+    XXPlusYYGate,
+    XXMinusYYGate,
 )
 
 from circuit_knitting.utils.iteration import unique_by_eq
@@ -267,6 +269,8 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        (XXPlusYYGate(0.1), 1 + 4 * np.sin(0.05) + 2 * np.sin(0.05) ** 2),
+        (XXMinusYYGate(0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):

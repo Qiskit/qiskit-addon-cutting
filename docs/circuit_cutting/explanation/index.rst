@@ -30,6 +30,49 @@ Key terms
 
 * decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting :class:`BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
 
+Sampling overhead reference table
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| Instruction(s)                                 | KAK decomposition angles          | Sampling overhead factor                                                |
++================================================+===================================+=========================================================================+
+| :class:`~qiskit.circuit.library.CSGate`,       | :math:`(\pi/8, 0, 0)`             | :math:`3+2\sqrt{2} \approx 5.828`                                       |
+| :class:`~qiskit.circuit.library.CSdgGate`,     |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.CSXGate`       |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.CXGate`,       | :math:`(\pi/4, 0, 0)`             | :math:`3^2=9`                                                           |
+| :class:`~qiskit.circuit.library.CYGate`,       |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.CZGate`,       |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.CHGate`,       |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.ECRGate`       |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.RXXGate`,      | :math:`(|\theta/2|, 0, 0)`        | :math:`\left[1 + \left|\sin(\theta)\right|\right]^2`                    |
+| :class:`~qiskit.circuit.library.RYYGate`,      |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.RZZGate`,      |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.RZXGate`       |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.CRXGate`,      | :math:`(|\theta/4|, 0, 0)`        | :math:`\left[1 + \left|\sin(\theta/2)\right|\right]^2`                  |
+| :class:`~qiskit.circuit.library.CRYGate`,      |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.CRZGate`,      |                                   |                                                                         |
+| :class:`~qiskit.circuit.library.CPhaseGate`    |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.XXPlusYYGate`, | :math:`(|\theta/4|,|\theta/4|,0)` | :math:`\left[1+4\left|\sin(\theta/2)\right|+2\sin^2(\theta/2)\right]^2` |
+| :class:`~qiskit.circuit.library.XXMinusYYGate` |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.SwapGate`      | :math:`(\pi/4,\pi/4,\pi/4)`       | :math:`7^2=49`                                                          |
++------------------------------------------------+-----------------------------------+                                                                         +
+| :class:`~qiskit.circuit.library.iSwapGate`,    | :math:`(\pi/4, \pi/4, 0)`         |                                                                         |
+| :class:`~qiskit.circuit.library.DCXGate`       |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+
+For more information on the KAK decomposition, see:
+
+- https://arxiv.org/abs/2006.11174
+- https://arxiv.org/abs/2205.00016
+- https://arxiv.org/abs/quant-ph/0312193
+- https://arxiv.org/abs/quant-ph/0011050
+- https://arxiv.org/abs/quant-ph/0507171
+
 Current limitations
 -------------------
 * QPD-based wire cutting will be available no sooner than CKT v0.3.0. The `cutqc <../cutqc/index.rst>`__ package may be used for wire cutting in the meantime.
