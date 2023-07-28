@@ -13,7 +13,7 @@
 """Test for the transform_to_move function."""
 from __future__ import annotations
 
-from pytest import fixture, mark, raises
+from pytest import fixture, mark
 from qiskit.circuit import QuantumCircuit
 from circuit_knitting.cutting.qpd.instructions.move import Move
 from circuit_knitting.cutting.qpd.instructions.cut_wire import CutWire
@@ -33,6 +33,20 @@ def circuit1() -> QuantumCircuit:
 
 
 @fixture
+def resulting_circuit1() -> tuple[QuantumCircuit, list[int]]:
+    circuit = QuantumCircuit(5)
+    circuit.cx(1, 4)
+    circuit.append(Move(), (1, 2))
+    circuit.cx(0, 2)
+    circuit.append(Move(), (2, 3))
+    circuit.cx(3, 4)
+
+    mapping = [0, 3, 4]
+
+    return circuit, mapping
+
+
+@fixture
 def circuit2() -> QuantumCircuit:
     circuit = QuantumCircuit(4)
     circuit.cx(0, 1)
@@ -42,6 +56,20 @@ def circuit2() -> QuantumCircuit:
     circuit.cx(2, 3)
 
     return circuit
+
+
+@fixture
+def resulting_circuit2() -> tuple[QuantumCircuit, list[int]]:
+    circuit = QuantumCircuit(6)
+    circuit.cx(0, 1)
+    circuit.append(Move(), [1, 2])
+    circuit.cx(2, 3)
+    circuit.append(Move(), [3, 4])
+    circuit.cx(4, 5)
+
+    mapping = [0, 2, 4, 5]
+
+    return circuit, mapping
 
 
 @fixture
@@ -61,31 +89,7 @@ def circuit3() -> QuantumCircuit:
 
 
 @fixture
-def resulting_circuit1() -> QuantumCircuit:
-    circuit = QuantumCircuit(5)
-    circuit.cx(1, 4)
-    circuit.append(Move(), (1, 2))
-    circuit.cx(0, 2)
-    circuit.append(Move(), (2, 3))
-    circuit.cx(3, 4)
-
-    return circuit
-
-
-@fixture
-def resulting_circuit2() -> QuantumCircuit:
-    circuit = QuantumCircuit(6)
-    circuit.cx(0, 1)
-    circuit.append(Move(), [1, 2])
-    circuit.cx(2, 3)
-    circuit.append(Move(), [3, 4])
-    circuit.cx(4, 5)
-
-    return circuit
-
-
-@fixture
-def resulting_circuit3() -> QuantumCircuit:
+def resulting_circuit3() -> tuple[QuantumCircuit, list[int]]:
     circuit = QuantumCircuit(8)
     circuit.cx(0, 2)
     circuit.append(Move(), [2, 3])
@@ -97,14 +101,9 @@ def resulting_circuit3() -> QuantumCircuit:
     circuit.append(Move(), [0, 1])
     circuit.cx(1, 3)
 
-    return circuit
+    mapping = [1, 3, 6, 7]
 
-
-@mark.parametrize("circuit", [QuantumCircuit(3)])
-def test_no_cut_wire(circuit):
-    """Tests for no CutWire instructions in circuit argument."""
-    with raises(ValueError):
-        _ = transform_to_move(circuit)
+    return circuit, mapping
 
 
 @mark.parametrize(
@@ -117,6 +116,27 @@ def test_no_cut_wire(circuit):
 )
 def test_transform_to_move(request, sample_circuit, resulting_circuit):
     """Tests the transformation of CutWire to Move instruction."""
-    assert request.getfixturevalue(resulting_circuit) == transform_to_move(
+    assert request.getfixturevalue(resulting_circuit)[0] == transform_to_move(
         request.getfixturevalue(sample_circuit)
+    )
+
+
+@mark.parametrize(
+    "sample_circuit, resulting_circuit",
+    [
+        ("circuit1", "resulting_circuit1"),
+        ("circuit2", "resulting_circuit2"),
+        ("circuit3", "resulting_circuit3"),
+    ],
+)
+def test_circuit_registers(request, sample_circuit, resulting_circuit):
+    """Tests the mapping of original and new circuit registers."""
+    initial_mapping = list(range(len(request.getfixturevalue(sample_circuit).qubits)))
+    final_circuit = transform_to_move(request.getfixturevalue(sample_circuit))
+    final_mapping = request.getfixturevalue(resulting_circuit)[1]
+
+    assert all(
+        final_circuit.qubits[final_index]
+        == request.getfixturevalue(sample_circuit).qubits[index]
+        for index, final_index in zip(initial_mapping, final_mapping)
     )

@@ -19,7 +19,7 @@ from circuit_knitting.cutting.qpd.instructions.move import Move
 
 
 def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
-    """Transform a :class:`.cut_wire` instruction to a :class:`.move` instruction
+    """Transform a :class:`.cut_wire` instruction to a :class:`.move` instruction.
 
     Args:
         circuit (QuantumCircuit): original circuit with :class:`.cut_wire` instructions.
@@ -30,10 +30,9 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
     Raises:
         ValueError: circuit (QuantumCircuit) contains no :class:`.cut_wire` instructions.
     """
-
     new_circuit, mapping = _circuit_structure_mapping(circuit)
 
-    for _, instructions in enumerate(circuit.data):
+    for instructions in circuit.data:
         gate_index = [circuit.find_bit(qubit).index for qubit in instructions.qubits]
 
         if instructions in circuit.get_instructions("cut_wire"):
@@ -62,16 +61,12 @@ def _circuit_structure_mapping(
         circuit.find_bit(instruction.qubits[0]).index
         for instruction in circuit.get_instructions("cut_wire")
     ]
-    # Do we need to check for cut_wire instructions before proceeding? For example,
-    if all(isinstance(item, type(None)) for item in cut_wire_index):
-        raise ValueError("Circuit argument contains no CutWire instructions")
-
-    cut_wire_freq = {key: list(group) for key, group in groupby(cut_wire_index)}
+    cut_wire_freq = {key: len(list(group)) for key, group in groupby(cut_wire_index)}
 
     bits = []
     for index in range(len(circuit.qubits)):
         if index in cut_wire_freq.keys():
-            for _ in range(len(cut_wire_freq[index])):
+            for _ in range(cut_wire_freq[index]):
                 mapping[index + 1 :] = map(
                     lambda item: item + 1, iter(mapping[index + 1 :])
                 )
