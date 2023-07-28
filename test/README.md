@@ -71,7 +71,7 @@ To run this environment:
 $ tox -e docs
 ```
 
-If the build succeeds, it can be viewed by navigating to `docs/_build/html/index.html` in a web browser.  Specifically, run `pwd` in the same terminal in which you built the docs, then copy that location and paste it in your web browser.  You should see a directory listing there.  If not, prepend `file://` to the path and try again.  Once you see the directory listing, click on `docs`, then `_build`, then `html`, and then finally `index.html` to view the documentation.
+If the build succeeds, it can be viewed by navigating to `docs/_build/html/index.html` in a web browser.
 
 [tox]: https://github.com/tox-dev/tox
 [`tox.ini`]: ../tox.ini
