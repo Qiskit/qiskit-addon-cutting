@@ -46,12 +46,12 @@ Sampling overhead reference table
 | :class:`~qiskit.circuit.library.CHGate`,       |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.ECRGate`       |                                   |                                                                         |
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
-| :class:`~qiskit.circuit.library.RXXGate`,      | :math:`(|\theta/2|, 0, 0)`        | :math:`\left[1 + \left|\sin(\theta)\right|\right]^2`                    |
+| :class:`~qiskit.circuit.library.RXXGate`,      | :math:`(|\theta/2|, 0, 0)`        | :math:`\left[1 + 2 \left|\sin(\theta)\right| \right]^2`                 |
 | :class:`~qiskit.circuit.library.RYYGate`,      |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.RZZGate`,      |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.RZXGate`       |                                   |                                                                         |
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
-| :class:`~qiskit.circuit.library.CRXGate`,      | :math:`(|\theta/4|, 0, 0)`        | :math:`\left[1 + \left|\sin(\theta/2)\right|\right]^2`                  |
+| :class:`~qiskit.circuit.library.CRXGate`,      | :math:`(|\theta/4|, 0, 0)`        | :math:`\left[1 + 2 \left|\sin(\theta/2)\right| \right]^2`               |
 | :class:`~qiskit.circuit.library.CRYGate`,      |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.CRZGate`,      |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.CPhaseGate`    |                                   |                                                                         |
