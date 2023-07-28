@@ -19,6 +19,16 @@ from qiskit.circuit import QuantumCircuit, Instruction
 class Move(Instruction):
     """A two-qubit instruction representing a reset of the second qubit followed by a swap.
 
+    **Circuit Symbol:**
+
+    .. parsed-literal::
+
+            ┌───────┐
+       q_0: ┤0      ├       q_0: ──────X─
+            │  Move │   =              │
+       q_1: ┤1      ├       q_1: ─|0>──X─
+            └───────┘
+
     The desired effect of this instruction, typically, is to move the state of
     the first qubit to the second qubit.  For this to work as expected, the
     second incoming qubit must share no entanglement with the remainder of the
@@ -34,10 +44,30 @@ class Move(Instruction):
     prior use was as the source (i.e., first) qubit of a preceding
     :class:`Move` operation.
 
-    See `the tutorial on wire cutting using the Move instruction
-    <../circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.ipynb>`__
-    for an example whose two :class:`Move` instructions correspond to each of
-    the aforementioned cases.
+    The following circuit contains two :class:`Move` operations, corresponding
+    to each of the aforementioned cases:
+
+    .. plot::
+       :include-source:
+
+       import numpy as np
+       from qiskit.circuit import QuantumCircuit, CircuitInstruction
+       from circuit_knitting.cutting.instructions import Move
+
+       qc = QuantumCircuit(4)
+       qc.ryy(np.pi / 4, 0, 1)
+       qc.rx(np.pi / 4, 3)
+       qc.append(CircuitInstruction(Move(), [qc.qubits[1], qc.qubits[2]]))
+       qc.rz(np.pi / 4, 0)
+       qc.ryy(np.pi / 4, 2, 3)
+       qc.append(CircuitInstruction(Move(), [qc.qubits[2], qc.qubits[1]]))
+       qc.ryy(np.pi / 4, 0, 1)
+       qc.rx(np.pi / 4, 3)
+       qc.draw("mpl")
+
+    A full demonstration of the :class:`Move` instruction is available in `the
+    introductory tutorial on wire cutting
+    <../circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.ipynb>`__.
     """
 
     def __init__(self, label: str | None = None):
