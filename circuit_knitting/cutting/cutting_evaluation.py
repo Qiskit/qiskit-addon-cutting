@@ -130,7 +130,7 @@ def execute_experiments(
 
     # Create a list of samplers to use -- one for each batch
     if isinstance(samplers, BaseSampler):
-        samplers_by_partition = [samplers]
+        samplers_by_batch = [samplers]
         batches = [
             [
                 sample[i]
@@ -139,22 +139,22 @@ def execute_experiments(
             ]
         ]
     else:
-        samplers_by_partition = [samplers[key] for key in sorted(samplers.keys())]
+        samplers_by_batch = [samplers[key] for key in sorted(samplers.keys())]
         batches = [
             [sample[i] for sample in subexperiments]
             for i in range(len(subexperiments[0]))
         ]
 
     # There should be one batch per input sampler
-    assert len(samplers_by_partition) == len(batches)
+    assert len(samplers_by_batch) == len(batches)
 
     # Run each batch of sub-experiments
     quasi_dists_by_batch = [
         _run_experiments_batch(
             batches[i],
-            samplers_by_partition[i],
+            samplers_by_batch[i],
         )
-        for i in range(len(samplers_by_partition))
+        for i in range(len(samplers_by_batch))
     ]
 
     # Build the output data structure to match the shape of input subexperiments
@@ -164,7 +164,7 @@ def execute_experiments(
     count = 0
     for i in range(len(subexperiments)):
         for j in range(len(subexperiments[0])):
-            if len(samplers_by_partition) == 1:
+            if len(samplers_by_batch) == 1:
                 quasi_dists[i].append(quasi_dists_by_batch[0][count])
                 count += 1
             else:
