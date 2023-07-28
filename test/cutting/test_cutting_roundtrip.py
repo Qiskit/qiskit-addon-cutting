@@ -16,7 +16,6 @@ import logging
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import CircuitInstruction
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
@@ -121,7 +120,7 @@ def example_circuit(
         qubits = [1, 2]
         if len(cut_indices) % 2 == 0:
             qubits.reverse()
-        qc.append(CircuitInstruction(instruction, qubits))
+        qc.append(instruction, qubits)
     qc.barrier()
     append_random_unitary(qc, [0, 1])
     qc.barrier()
