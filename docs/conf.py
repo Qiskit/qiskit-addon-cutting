@@ -81,6 +81,7 @@ exclude_patterns = [
 
 # matplotlib.sphinxext.plot_directive options
 plot_html_show_formats = False
+plot_formats = ["svg"]
 
 # Redirects for pages that have moved
 redirects = {
