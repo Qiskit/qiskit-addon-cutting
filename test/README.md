@@ -61,13 +61,17 @@ $ tox -e coverage
 
 ## Documentation environment
 
-The `docs` environment builds the [Sphinx] documentation locally.  If the build succeeds, it can be viewed by navigating to `docs/_build/html/index.html` in a web browser.
+The `docs` environment builds the [Sphinx] documentation locally.
 
-To run:
+For the documentation build to succeed, [pandoc](https://pandoc.org/) must be installed.  Pandoc is not available via pip, so must be installed through some other means.  Linux users are encouraged to install it through their package manager (e.g., `sudo apt-get install -y pandoc`), while macOS users are encouraged to install it via [Homebrew](https://brew.sh/) (`brew install pandoc`).  Full instructions are available on [pandoc's installation page](https://pandoc.org/installing.html).
+
+To run this environment:
 
 ```sh
 $ tox -e docs
 ```
+
+If the build succeeds, it can be viewed by navigating to `docs/_build/html/index.html` in a web browser.
 
 [tox]: https://github.com/tox-dev/tox
 [`tox.ini`]: ../tox.ini
