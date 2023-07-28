@@ -26,16 +26,18 @@ class Move(Instruction):
     will in turn implement a quantum channel on the other qubit(s) with which
     it is entangled, resulting in the partial collapse of those qubits.
 
-    Generally speaking, the most straightforward way to ensure that the second
-    qubit is not entangled is to prepare it in one of the following ways before
-    implementing the :class:`Move`:
+    The simplest way to ensure that the second (i.e., destination) qubit shares
+    no entanglement with the remainder of the system is to use a fresh qubit
+    which has not been used since initialization.
 
-    - No operations since initialization.
-    - A :class:`~qiskit.circuit.library.Measure` is the preceding operation.
-    - A :class:`~qiskit.circuit.library.Reset` is the preceding operation.
-    - The preceding use of the qubit is such that it is the first output qubit of another
-      :class:`Move` operation.
+    Another valid way is to use, as a desination qubit, a qubit whose immediate
+    prior use was as the source (i.e., first) qubit of a preceding
+    :class:`Move` operation.
 
+    See `the tutorial on wire cutting using the Move instruction
+    <../circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.ipynb>`__
+    for an example whose two :class:`Move` instructions correspond to each of
+    the aforementioned cases.
     """
 
     def __init__(self, label: str | None = None):
