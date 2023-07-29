@@ -35,6 +35,7 @@ Circuit Cutting
 
     PartitionedCuttingProblem
     CuttingExperimentResults
+    instructions.Move
 
 Quasi-Probability Decomposition (QPD)
 =====================================
