@@ -9,14 +9,10 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-r"""Quantum circuit :class:`~qiskit.Instruction`\ s for representing quasiprobability decompositions."""
+r"""Quantum circuit :class:`~qiskit.Instruction`\ s useful for circuit cutting."""
 
-from .qpd_gate import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
-from .qpd_measure import QPDMeasure
+from .move import Move
 
 __all__ = [
-    "BaseQPDGate",
-    "TwoQubitQPDGate",
-    "SingleQubitQPDGate",
-    "QPDMeasure",
+    "Move",
 ]
