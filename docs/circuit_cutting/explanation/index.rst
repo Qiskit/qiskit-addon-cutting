@@ -75,7 +75,6 @@ For more information on the KAK decomposition, see:
 
 Current limitations
 -------------------
-* QPD-based wire cutting will be available no sooner than CKT v0.3.0. The `cutqc <../cutqc/index.rst>`__ package may be used for wire cutting in the meantime.
 * ``PauliList`` is the only supported observable format until no sooner than CKT v0.3.0.
 
 References

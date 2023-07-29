@@ -121,7 +121,7 @@ class TestQPDBasis(unittest.TestCase):
     def test_unsupported_gate(self):
         with pytest.raises(ValueError) as e_info:
             QPDBasis.from_gate(C3XGate())
-        assert e_info.value.args[0] == "Gate not supported: mcx"
+        assert e_info.value.args[0] == "Instruction not supported: mcx"
 
     def test_unbound_parameter(self):
         with self.subTest("Explicitly supported gate"):
@@ -131,7 +131,7 @@ class TestQPDBasis(unittest.TestCase):
                 QPDBasis.from_gate(RZZGate(Parameter("θ")))
             assert (
                 e_info.value.args[0]
-                == "Cannot decompose (rzz) gate with unbound parameters."
+                == "Cannot decompose (rzz) instruction with unbound parameters."
             )
         with self.subTest("Implicitly supported gate"):
             # For implicitly supported gates, we can detect that `to_matrix`
