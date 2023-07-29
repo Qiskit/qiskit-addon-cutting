@@ -31,7 +31,7 @@ Key terms
 * decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting :class:`BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
 
 Sampling overhead reference table
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
 | Instruction(s)                                 | KAK decomposition angles          | Sampling overhead factor                                                |
