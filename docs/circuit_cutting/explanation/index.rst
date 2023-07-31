@@ -46,6 +46,11 @@ Sampling overhead reference table
 | :class:`~qiskit.circuit.library.CHGate`,       |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.ECRGate`       |                                   |                                                                         |
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
+| :class:`~qiskit.circuit.library.iSwapGate`,    | :math:`(\pi/4, \pi/4, 0)`         | :math:`7^2=49`                                                          |
+| :class:`~qiskit.circuit.library.DCXGate`       |                                   |                                                                         |
++------------------------------------------------+-----------------------------------+                                                                         +
+| :class:`~qiskit.circuit.library.SwapGate`      | :math:`(\pi/4,\pi/4,\pi/4)`       |                                                                         |
++------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
 | :class:`~qiskit.circuit.library.RXXGate`,      | :math:`(|\theta/2|, 0, 0)`        | :math:`\left[1 + 2 \left|\sin(\theta)\right| \right]^2`                 |
 | :class:`~qiskit.circuit.library.RYYGate`,      |                                   |                                                                         |
 | :class:`~qiskit.circuit.library.RZZGate`,      |                                   |                                                                         |
@@ -59,10 +64,7 @@ Sampling overhead reference table
 | :class:`~qiskit.circuit.library.XXPlusYYGate`, | :math:`(|\theta/4|,|\theta/4|,0)` | :math:`\left[1+4\left|\sin(\theta/2)\right|+2\sin^2(\theta/2)\right]^2` |
 | :class:`~qiskit.circuit.library.XXMinusYYGate` |                                   |                                                                         |
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
-| :class:`~qiskit.circuit.library.SwapGate`      | :math:`(\pi/4,\pi/4,\pi/4)`       | :math:`7^2=49`                                                          |
-+------------------------------------------------+-----------------------------------+                                                                         +
-| :class:`~qiskit.circuit.library.iSwapGate`,    | :math:`(\pi/4, \pi/4, 0)`         |                                                                         |
-| :class:`~qiskit.circuit.library.DCXGate`       |                                   |                                                                         |
+| :class:`.Move` (cut wire)                      | not applicable                    | :math:`4^2=16`                                                          |
 +------------------------------------------------+-----------------------------------+-------------------------------------------------------------------------+
 
 For more information on the KAK decomposition, see:
