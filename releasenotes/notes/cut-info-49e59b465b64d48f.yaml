@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Introduction of `~circuit_knitting.cutting.CutInfo` class, which contains the decomposition and gate index information for a single cut.
+
+    Removed the ``bases`` field from the :class:`~circuit_knitting.cutting.PartitionedCuttingProblem` class in favor of a ``cuts`` field. Users may now extract the :class:`~circuit_knitting.cutting.qpd.QPDBasis` instances from the ``basis`` field of each `~circuit_knitting.cutting.CutInfo` instance in ``cuts``.

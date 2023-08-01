@@ -28,15 +28,34 @@ from qiskit.quantum_info import PauliList
 from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit
 from .qpd.qpd_basis import QPDBasis
-from .qpd.instructions import TwoQubitQPDGate
+from .qpd.instructions import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate
 
 
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
-    subcircuits: dict[str | int, QuantumCircuit]
-    bases: list[QPDBasis]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    subcircuits: dict[Hashable, QuantumCircuit]
+    cuts: list[CutInfo]
+    subobservables: dict[Hashable, QuantumCircuit] | None = None
+
+
+class CutInfo(NamedTuple):
+    """
+    The decomposition and circuit index information associated with one cut.
+
+    If the cut is associated with more than one subcircuit, the ``gates`` field should
+    be represented as a list of length-2 tuples containing the partition labels and
+    subcircuit instruction indices to the associated gates.
+
+    If the cut is associated with more than one :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` in an unseparated
+    circuit, the ``gates`` may be specified as a list of circuit indices to those gates.
+
+    If the cut is associated with a single :class:`~circuit_knitting.cutting.qpd.BaseQPDGate` instance in an unseparated circuit, the ``gates``
+    may be specified by a single index to the gate.
+    """
+
+    basis: QPDBasis
+    gates: list[tuple[Hashable, int]] | list[int] | int
 
 
 def partition_circuit_qubits(
@@ -195,6 +214,7 @@ def partition_problem(
         ValueError: An input observable acts on a different number of qubits than the input circuit.
         ValueError: An input observable has a phase not equal to 1.
         ValueError: The input circuit should contain no classical bits or registers.
+        ValueError: The input circuit should contain no :class:`~circuit_knitting.cutting.qpd.SingleQubitQPDGate` instances.
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -221,6 +241,10 @@ def partition_problem(
     bases = []
     i = 0
     for inst in qpd_circuit.data:
+        if isinstance(inst.operation, SingleQubitQPDGate):
+            raise ValueError(
+                "Input circuit may not contain SingleQubitQPDGate instances."
+            )
         if isinstance(inst.operation, TwoQubitQPDGate):
             bases.append(inst.operation.basis)
             inst.operation.label = inst.operation.label + f"_{i}"
@@ -228,7 +252,17 @@ def partition_problem(
 
     # Separate the decomposed circuit into its subcircuits
     qpd_circuit_dx = qpd_circuit.decompose(TwoQubitQPDGate)
-    separated_circs = separate_circuit(qpd_circuit_dx, partition_labels)
+    subcircuits = separate_circuit(qpd_circuit_dx, partition_labels).subcircuits
+
+    # Gather the basis and location information for the cuts
+    cuts_dict = defaultdict(list)
+    for label in subcircuits.keys():
+        circuit = subcircuits[label]
+        for i, inst in enumerate(circuit.data):
+            if isinstance(inst.operation, BaseQPDGate):
+                cut_num = int(inst.operation.label.split("_")[-1])
+                cuts_dict[cut_num].append((label, i))
+    cuts = [CutInfo(basis, cuts_dict[cut_num]) for cut_num, basis in enumerate(bases)]
 
     # Decompose the observables, if provided
     subobservables_by_subsystem = None
@@ -238,15 +272,15 @@ def partition_problem(
         )
 
     return PartitionedCuttingProblem(
-        separated_circs.subcircuits,  # type: ignore
-        bases,
+        subcircuits,
+        cuts,
         subobservables=subobservables_by_subsystem,
     )
 
 
 def decompose_observables(
-    observables: PauliList, partition_labels: Sequence[str | int]
-) -> dict[str | int, PauliList]:
+    observables: PauliList, partition_labels: Sequence[Hashable]
+) -> dict[Hashable, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 

@@ -72,7 +72,7 @@ def reconstruct_expectation_values(
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
-        subobservables_by_subsystem = observables
+        subobservables_by_subsystem = observables  # type: ignore
         expvals = np.zeros(len(list(observables.values())[0]))
 
     subsystem_observables = {

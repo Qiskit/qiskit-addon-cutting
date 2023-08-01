@@ -34,6 +34,7 @@ Circuit Cutting
     :template: autosummary/class_no_inherited_members.rst
 
     PartitionedCuttingProblem
+    CutInfo
     CuttingExperimentResults
     instructions.Move
 
@@ -82,6 +83,7 @@ from .cutting_decomposition import (
     cut_gates,
     decompose_gates,
     PartitionedCuttingProblem,
+    CutInfo,
 )
 from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
@@ -94,5 +96,6 @@ __all__ = [
     "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
+    "CutInfo",
     "CuttingExperimentResults",
 ]

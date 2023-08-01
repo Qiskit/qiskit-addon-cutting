@@ -28,6 +28,7 @@ from circuit_knitting.cutting import (
 )
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
+    SingleQubitQPDGate,
     TwoQubitQPDGate,
     BaseQPDGate,
 )
@@ -170,7 +171,22 @@ class TestCuttingDecomposition(unittest.TestCase):
             compare_obs = {"A": PauliList(["XX"]), "B": PauliList(["ZZ"])}
 
             self.assertEqual(subobservables, compare_obs)
-
+        with self.subTest("test single qubit qpd gate input"):
+            # Split 4q HWEA in middle of qubits
+            partition_labels = "AABB"
+            circuit = self.circuit.copy()
+            circuit.data.append(
+                CircuitInstruction(
+                    SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), qubit_id=0),
+                    qubits=[0],
+                )
+            )
+            with pytest.raises(ValueError) as e_info:
+                partition_problem(circuit, partition_labels)
+            assert (
+                e_info.value.args[0]
+                == "Input circuit may not contain SingleQubitQPDGate instances."
+            )
         with self.subTest("test mismatching inputs"):
             # Split 4q HWEA in middle of qubits
             partition_labels = "AB"
