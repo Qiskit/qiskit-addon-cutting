@@ -47,7 +47,7 @@ from circuit_knitting.cutting.qpd.qpd import (
     _generate_exact_weights_and_conditional_probabilities,
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
-    _explicitly_supported_gates,
+    _explicitly_supported_instructions,
 )
 
 
@@ -267,6 +267,7 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        (Move(), 4),
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):
@@ -427,7 +428,7 @@ class TestQPDFunctions(unittest.TestCase):
             assert weights[map_ids][1] == WeightType.SAMPLED
 
     def test_explicitly_supported_gates(self):
-        gates = _explicitly_supported_gates()
+        gates = _explicitly_supported_instructions()
         self.assertEqual(
             {
                 "rxx",
@@ -448,6 +449,7 @@ class TestQPDFunctions(unittest.TestCase):
                 "swap",
                 "iswap",
                 "dcx",
+                "move",
             },
             gates,
         )

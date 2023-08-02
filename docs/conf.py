@@ -41,6 +41,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.extlinks",
+    "matplotlib.sphinxext.plot_directive",
     # "sphinx.ext.autosectionlabel",
     "jupyter_sphinx",
     "sphinx_autodoc_typehints",
@@ -95,6 +96,10 @@ exclude_patterns = [
     "test_notebooks",
     "**/README.rst",
 ]
+
+# matplotlib.sphinxext.plot_directive options
+plot_html_show_formats = False
+plot_formats = ["svg"]
 
 # Redirects for pages that have moved
 redirects = {

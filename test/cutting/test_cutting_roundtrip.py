@@ -16,7 +16,6 @@ import logging
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import CircuitInstruction
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
@@ -50,7 +49,7 @@ from circuit_knitting.cutting import (
     execute_experiments,
     reconstruct_expectation_values,
 )
-
+from circuit_knitting.cutting.instructions import Move
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +89,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [RZXGate(np.pi / 5)],
         [XXPlusYYGate(7 * np.pi / 11)],
         [XXMinusYYGate(11 * np.pi / 17)],
+        [Move()],
+        [Move(), Move()],
     ]
 )
 def example_circuit(
@@ -106,10 +107,20 @@ def example_circuit(
     qc = QuantumCircuit(3)
     cut_indices = []
     for instruction in request.param:
-        append_random_unitary(qc, [0, 1])
+        if instruction.name == "move" and len(cut_indices) % 2 == 1:
+            # We should not entangle qubit 1 with the remainder of the system.
+            # In fact, we're also assuming that the previous operation here was
+            # a move.
+            append_random_unitary(qc, [0])
+            append_random_unitary(qc, [1])
+        else:
+            append_random_unitary(qc, [0, 1])
         append_random_unitary(qc, [2])
         cut_indices.append(len(qc.data))
-        qc.append(CircuitInstruction(instruction, [np.random.choice([0, 1]), 2]))
+        qubits = [1, 2]
+        if len(cut_indices) % 2 == 0:
+            qubits.reverse()
+        qc.append(instruction, qubits)
     qc.barrier()
     append_random_unitary(qc, [0, 1])
     qc.barrier()
