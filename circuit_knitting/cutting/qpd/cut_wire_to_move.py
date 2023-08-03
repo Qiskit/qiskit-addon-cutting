@@ -14,8 +14,8 @@
 from __future__ import annotations
 
 from itertools import groupby
-from qiskit.circuit import Qubit, QuantumCircuit, QuantumRegister
-from circuit_knitting.cutting.qpd.instructions.move import Move
+from qiskit.circuit import Qubit, QuantumCircuit
+from circuit_knitting.cutting.instructions.move import Move
 
 
 def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
@@ -26,9 +26,6 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
 
     Returns:
         circuit (QuantumCircuit): new circuit with :class`.move` instructions.
-
-    Raises:
-        ValueError: circuit (QuantumCircuit) contains no :class:`.cut_wire` instructions.
     """
     new_circuit, mapping = _circuit_structure_mapping(circuit)
 
@@ -63,17 +60,23 @@ def _circuit_structure_mapping(
     ]
     cut_wire_freq = {key: len(list(group)) for key, group in groupby(cut_wire_index)}
 
-    bits = []
-    for index in range(len(circuit.qubits)):
+    # Get intermediate mapping and add quantum bits to new_circuit
+    for qubit in circuit.qubits:
+        index = circuit.find_bit(qubit).index
         if index in cut_wire_freq.keys():
             for _ in range(cut_wire_freq[index]):
                 mapping[index + 1 :] = map(
                     lambda item: item + 1, iter(mapping[index + 1 :])
                 )
-                bits.append(Qubit())
-        bits.append(circuit.qregs[0][index])
+                new_circuit.add_bits([Qubit()])
+        new_circuit.add_bits([qubit])
 
-    new_qregs = QuantumRegister(name=circuit.qregs[0].name, bits=bits)
-    new_circuit.add_register(new_qregs)
+    # Add quantum and classical registers
+    for qreg in circuit.qregs:
+        new_circuit.add_register(qreg)
+
+    new_circuit.add_bits(circuit.clbits)
+    for creg in circuit.cregs:
+        new_circuit.add_register(creg)
 
     return new_circuit, mapping
