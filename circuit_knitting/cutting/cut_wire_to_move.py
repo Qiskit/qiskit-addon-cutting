@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Function to transform a CutWire instruction to a Move instruction."""
+"""Function to transform a :class:`.CutWire` instruction to a :class:`.Move` instruction."""
 from __future__ import annotations
 
 from itertools import groupby
@@ -19,7 +19,7 @@ from circuit_knitting.cutting.instructions.move import Move
 
 
 def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
-    """Transform a :class:`.cut_wire` instruction to a :class:`.move` instruction.
+    """Transform a :class:`.CutWire` instruction to a :class:`.Move` instruction.
 
     Args:
         circuit (QuantumCircuit): original circuit with :class:`.cut_wire` instructions.
