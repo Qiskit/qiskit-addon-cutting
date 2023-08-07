@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from pytest import fixture, mark
-from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit
+from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
 from circuit_knitting.cutting.instructions.move import Move
 from circuit_knitting.cutting.qpd.instructions.cut_wire import CutWire
 from circuit_knitting.cutting.qpd.cut_wire_to_move import transform_to_move
@@ -22,7 +22,7 @@ from circuit_knitting.cutting.qpd.cut_wire_to_move import transform_to_move
 
 @fixture
 def circuit1() -> QuantumCircuit:
-    circuit = QuantumCircuit(3)
+    circuit = QuantumCircuit(3, 3)
     circuit.cx(1, 2)
     circuit.append(CutWire(), [1])
     circuit.cx(0, 1)
@@ -36,6 +36,8 @@ def circuit1() -> QuantumCircuit:
 def resulting_circuit1() -> tuple[QuantumCircuit, list[int]]:
     circuit = QuantumCircuit()
     reg = QuantumRegister(3, "q")
+    creg = ClassicalRegister(3, "c")
+    circuit.add_register(creg)
     circuit.add_bits(
         [
             reg[0],
@@ -59,7 +61,7 @@ def resulting_circuit1() -> tuple[QuantumCircuit, list[int]]:
 
 @fixture
 def circuit2() -> QuantumCircuit:
-    circuit = QuantumCircuit(4)
+    circuit = QuantumCircuit(4, 4)
     circuit.cx(0, 1)
     circuit.append(CutWire(), [1])
     circuit.cx(1, 2)
@@ -73,6 +75,8 @@ def circuit2() -> QuantumCircuit:
 def resulting_circuit2() -> tuple[QuantumCircuit, list[int]]:
     circuit = QuantumCircuit()
     reg = QuantumRegister(4, "q")
+    creg = ClassicalRegister(4, "c")
+    circuit.add_register(creg)
     circuit.add_bits(
         [
             reg[0],
@@ -97,7 +101,7 @@ def resulting_circuit2() -> tuple[QuantumCircuit, list[int]]:
 
 @fixture
 def circuit3() -> QuantumCircuit:
-    circuit = QuantumCircuit(4)
+    circuit = QuantumCircuit(4, 4)
     circuit.cx(0, 1)
     circuit.append(CutWire(), [1])
     circuit.cx(1, 2)
@@ -115,6 +119,8 @@ def circuit3() -> QuantumCircuit:
 def resulting_circuit3() -> tuple[QuantumCircuit, list[int]]:
     circuit = QuantumCircuit()
     reg = QuantumRegister(4, "q")
+    creg = ClassicalRegister(4, "c")
+    circuit.add_register(creg)
     circuit.add_bits(
         [
             Qubit(),
@@ -148,6 +154,8 @@ def circuit4() -> QuantumCircuit:
     circuit = QuantumCircuit()
     reg1 = QuantumRegister(4, "qx")
     reg2 = QuantumRegister(4, "qy")
+    creg = ClassicalRegister(8, "c")
+    circuit.add_register(creg)
     for i in range(4):
         circuit.add_bits([reg1[i], reg2[i], Qubit()])
     circuit.add_register(reg1)
@@ -167,6 +175,8 @@ def resulting_circuit4() -> tuple[QuantumCircuit, list[int]]:
     circuit = QuantumCircuit()
     reg1 = QuantumRegister(4, "qx")
     reg2 = QuantumRegister(4, "qy")
+    creg = ClassicalRegister(8, "c")
+    circuit.add_register(creg)
     circuit.add_bits([Qubit(), reg1[0]])
     circuit.add_bits([Qubit(), reg2[0]])
     circuit.add_bits([Qubit(), Qubit()])
@@ -290,3 +300,27 @@ def test_circuit_width(request, sample_circuit):
 
     # Tests width of initial and final circuit
     assert len(sample_circuit.qubits) + total_cut_wire == len(final_circuit.qubits)
+
+
+@mark.parametrize(
+    "sample_circuit",
+    [
+        "circuit1",
+        "circuit2",
+        "circuit3",
+        "circuit4",
+    ],
+)
+def test_creg(request, sample_circuit):
+    """Tests the number and size of cregs in the initial and final circuits."""
+    sample_circuit = request.getfixturevalue(sample_circuit)
+    final_circuit = transform_to_move(sample_circuit)
+
+    # Tests number of cregs in initial and final circuits
+    assert len(sample_circuit.cregs) == len(final_circuit.cregs)
+
+    for sample_creg, final_creg in zip(
+        sample_circuit.cregs,
+        final_circuit.cregs,
+    ):
+        assert sample_creg.size == final_creg.size
