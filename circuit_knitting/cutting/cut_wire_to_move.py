@@ -31,7 +31,7 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
 
     for instructions in circuit.data:
         gate_index = [circuit.find_bit(qubit).index for qubit in instructions.qubits]
-        
+
         if instructions in circuit.get_instructions("cut_wire"):
             # Replace cut_wire with move instruction
             new_circuit = new_circuit.compose(
