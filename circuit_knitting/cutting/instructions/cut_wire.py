@@ -25,5 +25,4 @@ class CutWire(Gate):
 
     def _define(self):
         circuit = QuantumCircuit(1, name=self.name)
-        circuit.i(0)
         self.definition = circuit
