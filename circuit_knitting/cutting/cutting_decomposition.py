@@ -173,7 +173,7 @@ def partition_problem(
     Separate an input circuit and observable(s) along qubit partition labels.
 
     Circuit qubits with matching partition labels will be grouped together, and non-local
-    gates spanning more than one partition will be replaced with :class:`.TwoQubitQPDGate`\ s.
+    gates spanning more than one partition will be replaced with :class:`.SingleQubitQPDGate`\ s.
 
     If provided, the observables will be separated along the boundaries specified by
     ``partition_labels``.
