@@ -21,44 +21,31 @@ from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
-from .cutting_decomposition import decompose_observables
+from .cutting_decomposition import decompose_observables, PartitionedCuttingProblem
 from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
-    coefficients: Sequence[tuple[float, WeightType]],
-    observables: PauliList | dict[str | int, PauliList],
+    partitioned_problem: PartitionedCuttingProblem,
+    quasi_dists: dict[str | int, Sequence[QuasiDistribution]],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and
-            QPD bit information from each sub-experiment. Its expected shape is
-            (num_unique_samples, num_partitions, num_commuting_observ_groups)
-        coefficients: A sequence of coefficients, such that each coefficient is associated
-            with one unique sample. The length of ``coefficients`` should equal
-            the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical
-            value and the ``WeightType`` denoting how the value was generated.
-        observables: The observable(s) for which the expectation values will be calculated.
-            This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
-            was not separated into subcircuits. If the decomposed circuit was separated, this
-            should be a dictionary mapping from partition label to subobservables.
+        partitioned_problem: The results from cutting gates and wires in a circuit
+        quasi_dists: The results from running the cutting subexperiments using the
+            Qiskit Sampler primitive.
 
     Returns:
         A ``list`` of ``float``\ s, such that each float is a simulated expectation
         value corresponding to the input observable in the same position
 
     Raises:
-        ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if len(coefficients) != len(quasi_dists):
-        raise ValueError(
-            f"The number of unique samples in the quasi_dists list ({len(quasi_dists)}) does "
-            f"not equal the number of coefficients ({len(coefficients)})."
-        )
+    observables = partitioned_problem.subobservables
+    weights = partitioned_problem.weights
     # Create the commuting observable groups
     if isinstance(observables, PauliList):
         if any(obs.phase != 0 for obs in observables):
@@ -79,29 +66,44 @@ def reconstruct_expectation_values(
         label: ObservableCollection(subobservables)
         for label, subobservables in subobservables_by_subsystem.items()
     }
+    sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
+
+    # Count the number of midcircuit measurements in each subexperiment
+    num_qpd_bits = {}
+    for i, label in enumerate(partitioned_problem.subexperiments.keys()):
+        nums_bits = []
+        for j, circ in enumerate(partitioned_problem.subexperiments[label]):
+            nums_bits.append(len(circ.cregs[0]))
+        num_qpd_bits[label] = nums_bits
 
     # Assign each weight's sign and calculate the expectation values for each observable
-    for i, coeff in enumerate(coefficients):
-        sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
-        current_expvals = np.ones((len(expvals),))
-        for j, label in enumerate(sorted_subsystems):
-            so = subsystem_observables[label]
+    for label in sorted_subsystems:
+        so = subsystem_observables[label]
+        unique_subexperiments = [
+            partitioned_problem.subexperiments[label][i]
+            for i in range(
+                int(len(partitioned_problem.subexperiments[label]) / len(so.groups))
+            )
+            if i % len(so.groups) == 0
+        ]
+        for i, _ in enumerate(unique_subexperiments):
+            current_expvals = np.ones((len(expvals),))
+            weight = weights[label][i*len(so.groups)]
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists[i][j][k][0]
+                quasi_probs = quasi_dists[label][i*len(so.groups)+k]
                 for outcome, quasi_prob in quasi_probs.items():
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        quasi_dists[i][j][k][1], cog, outcome
+                        num_qpd_bits[label][i*len(so.groups)+k], cog, outcome
                     )
-
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
 
-        expvals += coeff[0] * current_expvals
+            expvals += weight[0] * current_expvals
 
     return list(expvals)
 

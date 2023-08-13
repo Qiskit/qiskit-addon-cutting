@@ -25,7 +25,6 @@ Circuit Cutting
     partition_problem
     cut_gates
     decompose_gates
-    execute_experiments
     reconstruct_expectation_values
 
 .. autosummary::
@@ -83,7 +82,6 @@ from .cutting_decomposition import (
     decompose_gates,
     PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
 
 __all__ = [
@@ -91,7 +89,6 @@ __all__ = [
     "partition_problem",
     "cut_gates",
     "decompose_gates",
-    "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
     "CuttingExperimentResults",
