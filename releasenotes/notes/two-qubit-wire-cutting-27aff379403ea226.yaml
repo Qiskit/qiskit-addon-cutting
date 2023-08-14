@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The :mod:`circuit_knitting.cutting` module now supports wire
+    cutting.  There is a :ref:`new tutorial <circuit cutting
+    tutorials>` that explains how to use it.

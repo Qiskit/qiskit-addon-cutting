@@ -16,20 +16,28 @@ import logging
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import CircuitInstruction
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
     RZZGate,
+    RZXGate,
+    XXPlusYYGate,
+    XXMinusYYGate,
     CHGate,
     CXGate,
     CYGate,
     CZGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
     CRXGate,
     CRYGate,
     CRZGate,
+    CPhaseGate,
     ECRGate,
-    CSXGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
@@ -41,7 +49,7 @@ from circuit_knitting.cutting import (
     execute_experiments,
     reconstruct_expectation_values,
 )
-
+from circuit_knitting.cutting.instructions import Move
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +60,17 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
 
 @pytest.fixture(
     params=[
+        [SwapGate()],
+        [iSwapGate()],
+        [DCXGate()],
         [CXGate()],
         [CYGate()],
         [CZGate()],
         [CHGate()],
         [ECRGate()],
         [CSXGate()],
+        [CSGate()],
+        [CSdgGate()],
         [RYYGate(0.0)],
         [RZZGate(np.pi)],
         [RXXGate(np.pi / 3)],
@@ -70,6 +83,14 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CRYGate(np.pi / 7)],
         [CRZGate(np.pi / 11)],
         [RXXGate(np.pi / 3), CRYGate(np.pi / 7)],
+        [CPhaseGate(np.pi / 3)],
+        [RXXGate(np.pi / 3), CPhaseGate(np.pi / 7)],
+        [UnitaryGate(random_unitary(2**2))],
+        [RZXGate(np.pi / 5)],
+        [XXPlusYYGate(7 * np.pi / 11)],
+        [XXMinusYYGate(11 * np.pi / 17)],
+        [Move()],
+        [Move(), Move()],
     ]
 )
 def example_circuit(
@@ -86,10 +107,20 @@ def example_circuit(
     qc = QuantumCircuit(3)
     cut_indices = []
     for instruction in request.param:
-        append_random_unitary(qc, [0, 1])
+        if instruction.name == "move" and len(cut_indices) % 2 == 1:
+            # We should not entangle qubit 1 with the remainder of the system.
+            # In fact, we're also assuming that the previous operation here was
+            # a move.
+            append_random_unitary(qc, [0])
+            append_random_unitary(qc, [1])
+        else:
+            append_random_unitary(qc, [0, 1])
         append_random_unitary(qc, [2])
         cut_indices.append(len(qc.data))
-        qc.append(CircuitInstruction(instruction, [np.random.choice([0, 1]), 2]))
+        qubits = [1, 2]
+        if len(cut_indices) % 2 == 0:
+            qubits.reverse()
+        qc.append(instruction, qubits)
     qc.barrier()
     append_random_unitary(qc, [0, 1])
     qc.barrier()
@@ -126,7 +157,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
         subobservables=subobservables,
-        num_samples=1500,
+        num_samples=np.inf,
         samplers=sampler,
     )
     simulated_expvals = reconstruct_expectation_values(

@@ -7,6 +7,7 @@
   [![Qiskit](https://img.shields.io/badge/Qiskit-%E2%89%A5%200.43.0-6133BD)](https://github.com/Qiskit/qiskit)
   [![Qiskit Nature](https://img.shields.io/badge/Qiskit%20Nature-%E2%89%A5%200.6.0-6133BD)](https://github.com/Qiskit/qiskit-nature)
 <br />
+  [![Docs (stable)](https://img.shields.io/badge/Docs-stable-blue.svg)](https://qiskit-extensions.github.io/circuit-knitting-toolbox/)
   [![DOI](https://zenodo.org/badge/543181258.svg)](https://zenodo.org/badge/latestdoi/543181258)
   [![License](https://img.shields.io/github/license/Qiskit-Extensions/circuit-knitting-toolbox?label=License)](LICENSE.txt)
   [![Code style: Black](https://img.shields.io/badge/Code%20style-Black-000.svg)](https://github.com/psf/black)
@@ -36,7 +37,7 @@ The toolbox enables users to run parallelized and hybrid (quantum + classical) w
 
 The toolbox currently contains the following tools:
 - Entanglement Forging [[1]](#references)
-- Circuit Cutting [[2-6]](#references)
+- Circuit Cutting [[2-7]](#references)
   
 ----------------------------------------------------------------------------------------------------
   
@@ -70,13 +71,15 @@ This project is meant to evolve rapidly and, as such, does not follow [Qiskit's 
 
 [2] Kosuke Mitarai, Keisuke Fujii, [Constructing a virtual two-qubit gate by sampling single-qubit operations](https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc), New J. Phys. 23 023021.
 
-[3] Christophe Piveteau, David Sutter, [Circuit knitting with classical communication](https://arxiv.org/abs/2205.00016), arXiv:2205.00016 [quant-ph].
+[3] Kosuke Mitarai, Keisuke Fujii, [Overhead for simulating a non-local channel with local channels by quasiprobability sampling](https://quantum-journal.org/papers/q-2021-01-28-388/), Quantum 5, 388 (2021).
 
-[4] Lukas Brenner, Christophe Piveteau, David Sutter, [Optimal wire cutting with classical communication](https://arxiv.org/abs/2302.03366), arXiv:2302.03366 [quant-ph].
+[4] Christophe Piveteau, David Sutter, [Circuit knitting with classical communication](https://arxiv.org/abs/2205.00016), arXiv:2205.00016 [quant-ph].
 
-[5] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, [CutQC: Using small quantum computers for large quantum circuit evaluations](https://doi.org/10.1145/3445814.3446758), Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021).
+[5] Lukas Brenner, Christophe Piveteau, David Sutter, [Optimal wire cutting with classical communication](https://arxiv.org/abs/2302.03366), arXiv:2302.03366 [quant-ph].
+
+[6] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, [CutQC: Using small quantum computers for large quantum circuit evaluations](https://doi.org/10.1145/3445814.3446758), Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021).
   
-[6] K. Temme, S. Bravyi, and J. M. Gambetta, [Error mitigation for short-depth quantum circuits](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509), Physical Review Letters, 119(18), (2017).
+[7] K. Temme, S. Bravyi, and J. M. Gambetta, [Error mitigation for short-depth quantum circuits](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509), Physical Review Letters, 119(18), (2017).
   
 ----------------------------------------------------------------------------------------------------
 

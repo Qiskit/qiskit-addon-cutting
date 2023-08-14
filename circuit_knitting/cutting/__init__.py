@@ -35,6 +35,7 @@ Circuit Cutting
 
     PartitionedCuttingProblem
     CuttingExperimentResults
+    instructions.Move
 
 Quasi-Probability Decomposition (QPD)
 =====================================
@@ -54,9 +55,10 @@ Quasi-Probability Decomposition (QPD)
     :toctree: ../stubs/
     :nosignatures:
 
+    qpd.generate_qpd_weights
     qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
-    qpd.supported_gates
+    qpd.qpdbasis_from_gate
 
 CutQC
 =====

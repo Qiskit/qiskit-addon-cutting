@@ -30,7 +30,7 @@ from .qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
-    generate_qpd_samples,
+    generate_qpd_weights,
     decompose_qpd_instructions,
     WeightType,
 )
@@ -56,7 +56,7 @@ def execute_experiments(
     Args:
         circuits: The circuit(s) resulting from decomposing nonlocal gates
         subobservables: The subobservable(s) corresponding to the circuit(s). If
-            a :class:`~qiskit.QuantumCircuit` is submitted for the ``circuits`` argument,
+            a :class:`~qiskit.circuit.QuantumCircuit` is submitted for the ``circuits`` argument,
             a :class:`~qiskit.quantum_info.PauliList` is expected; otherwise, a mapping
             from partition label to subobservables is expected.
         num_samples: The number of samples to draw from the quasiprobability distribution
@@ -259,7 +259,7 @@ def _generate_cutting_experiments(
         }
 
     # Sample the joint quasiprobability decomposition
-    random_samples = generate_qpd_samples(bases, num_samples=num_samples)
+    random_samples = generate_qpd_weights(bases, num_samples=num_samples)
 
     # Calculate terms in coefficient calculation
     kappa = np.prod([basis.kappa for basis in bases])

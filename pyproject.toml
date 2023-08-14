@@ -41,8 +41,8 @@ dependencies = [
 cplex = [
     # We use the same restrictions in both of the following lines, as there
     # is no reason for us to install docplex without cplex.
-    "docplex>=2.23.222; python_version < '3.11' and platform_machine != 'arm64'",
-    "cplex>=22.1.0.0; python_version < '3.11' and platform_machine != 'arm64'",
+    "docplex>=2.23.222; platform_machine != 'arm64'",
+    "cplex>=22.1.0.0; platform_machine != 'arm64'",
 ]
 pyscf = [
     "pyscf>=2.0.1; sys_platform != 'win32'",
@@ -64,7 +64,7 @@ nbtest = [
 ]
 style = [
     "autoflake==2.2.0",
-    "black[jupyter]==23.3.0",
+    "black[jupyter]~=23.1",
     "ruff>=0.0.246",
     "nbqa>=1.6.0",
 ]
@@ -81,9 +81,13 @@ docs = [
     "sphinx-autodoc-typehints>=1.12.0",
     "sphinx-reredirects",
     "jupyter-sphinx>=0.3.2",
+    # The following line is needed until
+    # https://github.com/jupyter/jupyter-sphinx/pull/226 is resolved.
+    "ipykernel>=4.5.1",
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
     "reno>=3.4.0",
+    "qiskit-sphinx-theme~=1.14.0rc1"
 ]
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex,pyscf]",

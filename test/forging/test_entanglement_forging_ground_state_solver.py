@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for EntanglementForgingVQE module."""
+"""Tests for EntanglementForgingGroundStateSolver module."""
 
 import os
 import unittest
@@ -93,7 +93,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
 
     @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_vqe_hydrogen(self):
-        """Test of applying Entanglement Forged Solver to to compute the energy of a H2 molecule."""
+        """Test of applying Entanglement Forged Solver to compute the energy of a H2 molecule."""
         # Set up the ElectronicStructureProblem
         driver = PySCFDriver(
             atom="H .0 .0 .0; H .0 .0 0.735",

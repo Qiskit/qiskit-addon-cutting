@@ -36,27 +36,27 @@ class PartitionedCuttingProblem(NamedTuple):
 
     subcircuits: dict[str | int, QuantumCircuit]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    subobservables: dict[str | int, PauliList] | None = None
 
 
 def partition_circuit_qubits(
     circuit: QuantumCircuit, partition_labels: Sequence[Hashable], inplace: bool = False
 ) -> QuantumCircuit:
     r"""
-    Replace all nonlocal gates belonging to more than one partition with instances of :class:`TwoQubitQPDGate`.
+    Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.
 
-    :class:`TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
+    :class:`.TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
 
     Args:
         circuit: The circuit to partition
         partition_labels: A sequence containing a partition label for each qubit in the
             input circuit. Nonlocal gates belonging to more than one partition
-            will be replaced with :class:`TwoQubitQPDGate`\ s.
+            will be replaced with :class:`.TwoQubitQPDGate`\ s.
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
         The output circuit with each nonlocal gate spanning two partitions replaced by a
-        :class:`TwoQubitQPDGate`
+        :class:`.TwoQubitQPDGate`
 
     Raises:
         ValueError: The length of partition_labels does not equal the number of qubits in the circuit.
@@ -119,7 +119,7 @@ def decompose_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
     r"""
-    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
+    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
 
     Deprecated as of 0.3.0. Instead, use :func:`~circuit_knitting.cutting.cut_gates`.
     """
@@ -130,7 +130,7 @@ def cut_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:
     r"""
-    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
+    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
 
     Args:
         circuit: The circuit containing gates to be decomposed
@@ -138,8 +138,8 @@ def cut_gates(
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
-        and a list of :class:`QPDBasis` instances -- one for each decomposed gate.
+        A copy of the input circuit with the specified gates replaced with :class:`.TwoQubitQPDGate`\ s
+        and a list of :class:`.QPDBasis` instances -- one for each decomposed gate.
 
     Raises:
         ValueError: The input circuit should contain no classical bits or registers.
@@ -173,7 +173,7 @@ def partition_problem(
     Separate an input circuit and observable(s) along qubit partition labels.
 
     Circuit qubits with matching partition labels will be grouped together, and non-local
-    gates spanning more than one partition will be replaced with :class:`TwoQubitQPDGate`\ s.
+    gates spanning more than one partition will be replaced with :class:`.SingleQubitQPDGate`\ s.
 
     If provided, the observables will be separated along the boundaries specified by
     ``partition_labels``.

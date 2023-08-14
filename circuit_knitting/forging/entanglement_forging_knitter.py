@@ -597,7 +597,7 @@ def _partition(a, n):
         n: The number of partitions
 
     Returns:
-        The generator containing the paritions
+        The generator containing the partitions
     """
     k, m = divmod(len(a), n)
     return (a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n))
