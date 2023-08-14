@@ -46,7 +46,6 @@ from qiskit.primitives import Estimator
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
     partition_problem,
-    execute_experiments,
     reconstruct_expectation_values,
 )
 from circuit_knitting.cutting.instructions import Move
@@ -151,18 +150,18 @@ def test_cutting_exact_reconstruction(example_circuit):
         estimator.run([qc0] * len(observables), list(observables)).result().values
     )
     sampler = ExactSampler()
-    subcircuits, bases, subobservables = partition_problem(
-        qc, "AAB", observables=observables_nophase
+    partitioned_problem = partition_problem(
+        qc, "AAB", num_samples=np.inf, observables=observables_nophase
     )
-    quasi_dists, coefficients = execute_experiments(
-        circuits=subcircuits,
-        subobservables=subobservables,
-        num_samples=np.inf,
-        samplers=sampler,
+
+    quasi_dists_a = (
+        sampler.run(partitioned_problem.subexperiments["A"]).result().quasi_dists
     )
-    simulated_expvals = reconstruct_expectation_values(
-        quasi_dists, coefficients, subobservables
+    quasi_dists_b = (
+        sampler.run(partitioned_problem.subexperiments["B"]).result().quasi_dists
     )
+    quasi_dists = {"A": quasi_dists_a, "B": quasi_dists_b}
+    simulated_expvals = reconstruct_expectation_values(partitioned_problem, quasi_dists)
     simulated_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))

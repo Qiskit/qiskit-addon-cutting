@@ -40,6 +40,7 @@ from .qpd import (
     TwoQubitQPDGate,
     generate_qpd_weights,
     decompose_qpd_instructions,
+    WeightType,
 )
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import SingleQubitQPDGate, TwoQubitQPDGate
@@ -50,9 +51,9 @@ class PartitionedCuttingProblem(NamedTuple):
 
     subcircuits: dict[str | int, QuantumCircuit]
     subexperiments: dict[str | int, list[QuantumCircuit]]
-    weights: dict[str | int, list[float]]
+    weights: list[tuple[float, WeightType]]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    observables: dict[str | int, QuantumCircuit]
 
 
 def partition_circuit_qubits(
@@ -214,13 +215,12 @@ def partition_problem(
                 corresponding to that partition. These :class:`~qiskit.QuantumCircuit` instances
                 are defined by outcome of sampling the joint quasi-probability distribution defined
                 by the :class:`.BaseQPDGate` instances in each subcircuit.
-            - weights: A ``dict`` mapping a partition label to the weights corresponding to each
-                subexperiment. The weight at location ``weights[label][id]`` corresponds to
-                the subexperiment at location ``subexperiments[label][id]``. These weights are used
-                in post-processing to reconstruct the expectation value.
+            - weights: The weights corresponding to the unique samples drawn from the joint
+                quasi-probability distribution defined by the :class:`.BaseQPDGate` instances in each subcircuit.
+                These weights are used in post-processing to reconstruct the expectation value.
             - bases: A list of :class:`.QPDBasis` instances -- one for each circuit gate
                 or wire which was decomposed
-            - subobservables: A dictionary mapping a partition label to a list of Pauli observables
+            - observables: A dictionary mapping a partition label to a list of Pauli observables
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -273,10 +273,10 @@ def partition_problem(
 
     return PartitionedCuttingProblem(
         separated_circs.subcircuits,  # type: ignore
-        subexperiments,
+        subexperiments,  # type: ignore
         weights,
         bases,
-        subobservables=subobservables_by_subsystem,
+        observables=subobservables_by_subsystem,
     )
 
 
@@ -311,7 +311,10 @@ def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,
-) -> tuple[list[QuantumCircuit], list[tuple[Any, WeightType]]]:
+) -> tuple[
+    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[tuple[float, WeightType]],
+]:
     """Generate all the experiments to run on the backend and their associated weights."""
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on the format of the execute_experiments input args, but the 2nd half of this function
@@ -355,17 +358,20 @@ def _generate_cutting_experiments(
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
     # Generate the outputs -- sub-experiments, weights, and frequencies
-    subexperiments: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
-    weights: dict[str | int, list[list[float]]] = defaultdict(list)
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
+    weights: list[tuple[float, WeightType]] = []
     for i, (subcircuit, label) in enumerate(
         strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
     ):
-        subexps = []
+        subexps: list[QuantumCircuit] = []
         for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
             actual_coeff = np.prod(
                 [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
             )
             sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
+            if i == 0:
+                weights.append((sampled_coeff, weight_type))
+                weight_collected = True
             map_ids_tmp = map_ids
             if is_separated:
                 map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
@@ -375,14 +381,15 @@ def _generate_cutting_experiments(
             so = subsystem_observables[label]
             for j, cog in enumerate(so.groups):
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                weights[label].append((sampled_coeff, weight_type))
-                subexperiments[label].append(meas_qc)
+                subexperiments_dict[label].append(meas_qc)
 
-    if len(weights.keys()) == 1:
-        subexperiments = subexperiments[weights.keys()[0]]
-        weights = weights[weights.keys()[0]]
+    subexperiments_out: list[QuantumCircuit] | dict[
+        str | int, list[QuantumCircuit]
+    ] = subexperiments_dict
+    if len(subexperiments_dict.keys()) == 1:
+        subexperiments_out = subexperiments_dict[list(subexperiments_dict.keys())[0]]
 
-    return subexperiments, weights
+    return subexperiments_out, weights
 
 
 def _get_mapping_ids_by_partition(
@@ -486,3 +493,19 @@ def _append_measurement_circuit(
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc
+
+
+def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]]:
+    """Get a list of each unique QPD basis in the circuit and the QPDGate indices."""
+    bases = []
+    qpd_gate_ids = []
+    for i, inst in enumerate(circuit):
+        if isinstance(inst.operation, SingleQubitQPDGate):
+            raise ValueError(
+                "SingleQubitQPDGates are not supported in unseparable circuits."
+            )
+        if isinstance(inst.operation, TwoQubitQPDGate):
+            bases.append(inst.operation.basis)
+            qpd_gate_ids.append([i])
+
+    return bases, qpd_gate_ids

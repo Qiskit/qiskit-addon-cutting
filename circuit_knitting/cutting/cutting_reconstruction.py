@@ -44,7 +44,7 @@ def reconstruct_expectation_values(
     Raises:
         ValueError: An input observable has a phase not equal to 1.
     """
-    observables = partitioned_problem.subobservables
+    observables = partitioned_problem.observables
     weights = partitioned_problem.weights
     # Create the commuting observable groups
     if isinstance(observables, PauliList):
@@ -70,40 +70,38 @@ def reconstruct_expectation_values(
 
     # Count the number of midcircuit measurements in each subexperiment
     num_qpd_bits = {}
-    for i, label in enumerate(partitioned_problem.subexperiments.keys()):
+    for i, label in enumerate(sorted_subsystems):
         nums_bits = []
         for j, circ in enumerate(partitioned_problem.subexperiments[label]):
             nums_bits.append(len(circ.cregs[0]))
         num_qpd_bits[label] = nums_bits
 
-    # Assign each weight's sign and calculate the expectation values for each observable
-    for label in sorted_subsystems:
-        so = subsystem_observables[label]
-        unique_subexperiments = [
-            partitioned_problem.subexperiments[label][i]
-            for i in range(
-                int(len(partitioned_problem.subexperiments[label]) / len(so.groups))
-            )
-            if i % len(so.groups) == 0
-        ]
-        for i, _ in enumerate(unique_subexperiments):
-            current_expvals = np.ones((len(expvals),))
-            weight = weights[label][i*len(so.groups)]
+    key0 = sorted(partitioned_problem.subexperiments.keys())[0]
+    assert (
+        len(partitioned_problem.subexperiments[key0])
+        % len(subsystem_observables[key0].groups)
+        == 0
+    )
+    num_unique_samples = len(partitioned_problem.weights)
+    for i in range(num_unique_samples):
+        current_expvals = np.ones((len(expvals),))
+        for label in sorted_subsystems:
+            so = subsystem_observables[label]
+            weight = weights[i]
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists[label][i*len(so.groups)+k]
+                quasi_probs = quasi_dists[label][i * len(so.groups) + k]
                 for outcome, quasi_prob in quasi_probs.items():
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        num_qpd_bits[label][i*len(so.groups)+k], cog, outcome
+                        num_qpd_bits[label][i * len(so.groups) + k], cog, outcome
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
-
-            expvals += weight[0] * current_expvals
+        expvals += weight[0] * current_expvals
 
     return list(expvals)
 
