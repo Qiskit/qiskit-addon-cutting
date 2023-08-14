@@ -13,6 +13,7 @@
 
 from copy import deepcopy
 
+import numpy as np
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -28,9 +29,7 @@ def test_transpile_before_realizing_basis_id():
     circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
-    subcircuits, bases, subobservables = partition_problem(
-        circuit=circuit, partition_labels="AABB", observables=observables
-    )
+    partitioned_problem = partition_problem(circuit, "AABB", np.inf, observables)
 
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.
@@ -45,6 +44,6 @@ def test_transpile_before_realizing_basis_id():
 
     # Pass each subcircuit through the pass manager.
     subcircuits = {
-        label: pass_manager.run(subcircuits["A"])
-        for label, circuit in subcircuits.items()
+        label: pass_manager.run(partitioned_problem.subcircuits["A"])
+        for label, circuit in partitioned_problem.subcircuits.items()
     }

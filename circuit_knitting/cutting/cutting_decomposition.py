@@ -53,7 +53,7 @@ class PartitionedCuttingProblem(NamedTuple):
     subexperiments: dict[str | int, list[QuantumCircuit]]
     weights: list[tuple[float, WeightType]]
     bases: list[QPDBasis]
-    observables: dict[str | int, QuantumCircuit]
+    subobservables: dict[str | int, PauliList]
 
 
 def partition_circuit_qubits(
@@ -220,7 +220,7 @@ def partition_problem(
                 These weights are used in post-processing to reconstruct the expectation value.
             - bases: A list of :class:`.QPDBasis` instances -- one for each circuit gate
                 or wire which was decomposed
-            - observables: A dictionary mapping a partition label to a list of Pauli observables
+            - subobservables: A dictionary mapping a partition label to a list of Pauli observables
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -267,7 +267,7 @@ def partition_problem(
     subobservables_by_subsystem = decompose_observables(observables, partition_labels)
 
     # Generate the sub-experiments to run on backend
-    subexperiments, weights = _generate_cutting_experiments(
+    subexperiments, weights = generate_cutting_experiments(
         separated_circs.subcircuits, subobservables_by_subsystem, num_samples
     )
 
@@ -276,7 +276,7 @@ def partition_problem(
         subexperiments,  # type: ignore
         weights,
         bases,
-        observables=subobservables_by_subsystem,
+        subobservables_by_subsystem,
     )
 
 
@@ -307,7 +307,7 @@ def decompose_observables(
     return subobservables_by_subsystem
 
 
-def _generate_cutting_experiments(
+def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,

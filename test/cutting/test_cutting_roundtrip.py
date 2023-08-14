@@ -161,7 +161,12 @@ def test_cutting_exact_reconstruction(example_circuit):
         sampler.run(partitioned_problem.subexperiments["B"]).result().quasi_dists
     )
     quasi_dists = {"A": quasi_dists_a, "B": quasi_dists_b}
-    simulated_expvals = reconstruct_expectation_values(partitioned_problem, quasi_dists)
+    simulated_expvals = reconstruct_expectation_values(
+        partitioned_problem.subexperiments,
+        partitioned_problem.subobservables,
+        partitioned_problem.weights,
+        quasi_dists,
+    )
     simulated_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))

@@ -16,6 +16,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import numpy as np
+from qiskit import QuantumCircuit
 from qiskit.quantum_info import PauliList
 from qiskit.result import QuasiDistribution
 
@@ -26,14 +27,17 @@ from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    partitioned_problem: PartitionedCuttingProblem,
-    quasi_dists: dict[str | int, Sequence[QuasiDistribution]],
+    subexperiments: Sequence[QuantumCircuit]
+    | dict[str | int, Sequence[QuantumCircuit]],
+    observables: PauliList | dict[str | int, PauliList],
+    weights: Sequence[tuple[float, WeightType]],
+    quasi_dists: Sequence[tuple[QuasiDistribution, WeightType]]
+    | dict[str | int, Sequence[tuple[QuasiDistribution, WeightType]]],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        partitioned_problem: The results from cutting gates and wires in a circuit
         quasi_dists: The results from running the cutting subexperiments using the
             Qiskit Sampler primitive.
 
@@ -42,20 +46,37 @@ def reconstruct_expectation_values(
         value corresponding to the input observable in the same position
 
     Raises:
+        ValueError: ``subexperiments``, ``observables``, and ``quasi-dists`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    observables = partitioned_problem.observables
-    weights = partitioned_problem.weights
-    # Create the commuting observable groups
+    if isinstance(subexperiments, Sequence) and (
+        not isinstance(observables, PauliList) or not isinstance(quasi_dists, Sequence)
+    ):
+        raise ValueError(
+            "If the type of subexperiments is a Sequence, observables should be a "
+            "PauliList and quasi_dists should also be a Sequence."
+        )
+    if isinstance(subexperiments, dict) and (
+        not isinstance(observables, dict) or not isinstance(quasi_dists, dict)
+    ):
+        raise ValueError(
+            "If the type of subexperiments is a dictionary, both observables and "
+            "quasi_dists should also be dictionaries."
+        )
+    # If circuit was not separated, transform input data structures to dictionary format
     if isinstance(observables, PauliList):
         if any(obs.phase != 0 for obs in observables):
             raise ValueError("An input observable has a phase not equal to 1.")
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
+        subexperiments_dict = {"A": subexperiments}
+        quasi_dists_dict = {"A": quasi_dists}
         expvals = np.zeros(len(observables))
 
     else:
+        subexperiments_dict = subexperiments  # type: ignore
+        quasi_dists_dict = quasi_dists  # type: ignore
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
@@ -72,18 +93,13 @@ def reconstruct_expectation_values(
     num_qpd_bits = {}
     for i, label in enumerate(sorted_subsystems):
         nums_bits = []
-        for j, circ in enumerate(partitioned_problem.subexperiments[label]):
+        for j, circ in enumerate(subexperiments_dict[label]):  # type: ignore
             nums_bits.append(len(circ.cregs[0]))
         num_qpd_bits[label] = nums_bits
 
-    key0 = sorted(partitioned_problem.subexperiments.keys())[0]
-    assert (
-        len(partitioned_problem.subexperiments[key0])
-        % len(subsystem_observables[key0].groups)
-        == 0
-    )
-    num_unique_samples = len(partitioned_problem.weights)
-    for i in range(num_unique_samples):
+    key0 = sorted(subexperiments_dict.keys())[0]
+    assert len(subexperiments_dict[key0]) % len(subsystem_observables[key0].groups) == 0
+    for i in range(len(weights)):
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
             so = subsystem_observables[label]
@@ -92,8 +108,8 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists[label][i * len(so.groups) + k]
-                for outcome, quasi_prob in quasi_probs.items():
+                quasi_probs = quasi_dists_dict[label][i * len(so.groups) + k]  # type: ignore
+                for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
                         num_qpd_bits[label][i * len(so.groups) + k], cog, outcome
                     )

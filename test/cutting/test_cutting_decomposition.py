@@ -169,7 +169,7 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             compare_obs = {"A": PauliList(["XX"]), "B": PauliList(["ZZ"])}
 
-            self.assertEqual(partitioned_problem.observables, compare_obs)
+            self.assertEqual(partitioned_problem.subobservables, compare_obs)
 
         with self.subTest("test mismatching inputs"):
             observable = PauliList(["ZZZZ"])
@@ -253,4 +253,4 @@ class TestCuttingDecomposition(unittest.TestCase):
         qc = QuantumCircuit(2)
         partitioned_problem = partition_problem(qc, "AB", np.inf, PauliList(["XX"]))
         assert partitioned_problem.subcircuits.keys() == {"A", "B"}
-        assert partitioned_problem.observables.keys() == {"A", "B"}
+        assert partitioned_problem.subobservables.keys() == {"A", "B"}

@@ -44,36 +44,44 @@ class TestCuttingReconstruction(unittest.TestCase):
 
     def test_cutting_reconstruction(self):
         with self.subTest("Test PauliList observable"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(1.0, WeightType.EXACT)]
+            quasi_dists = [QuasiDistribution({"0": 1.0})]
+            weights = [(1.0, WeightType.EXACT)]
+            subexperiments = [QuantumCircuit(2)]
+            creg1 = ClassicalRegister(1, name="qpd_measurements")
+            creg2 = ClassicalRegister(2, name="observable_measurements")
+            subexperiments[0].add_register(creg1)
+            subexperiments[0].add_register(creg2)
             observables = PauliList(["ZZ"])
             expvals = reconstruct_expectation_values(
-                quasi_dists, coefficients, observables
+                subexperiments, observables, weights, quasi_dists
             )
             self.assertEqual([1.0], expvals)
         with self.subTest("Test mismatching inputs"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            quasi_dists = [QuasiDistribution({"0": 1.0})]
+            weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            subexperiments = {"A": QuantumCircuit(2)}
             observables = PauliList(["ZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(
+                    subexperiments, observables, weights, quasi_dists
+                )
             assert (
                 e_info.value.args[0]
-                == "The number of unique samples in the quasi_dists list (1) does not equal the number of coefficients (2)."
+                == "If the type of subexperiments is a dictionary, both observables and quasi_dists should also be dictionaries."
             )
         with self.subTest("Test unsupported phase"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT)]
+            quasi_dists = [QuasiDistribution({"0": 1.0})]
+            weights = [(0.5, WeightType.EXACT)]
+            subexperiments = [QuantumCircuit(2)]
+            creg1 = ClassicalRegister(1, name="qpd_measurements")
+            creg2 = ClassicalRegister(2, name="observable_measurements")
+            subexperiments[0].add_register(creg1)
+            subexperiments[0].add_register(creg2)
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
-            assert (
-                e_info.value.args[0]
-                == "An input observable has a phase not equal to 1."
-            )
-            observables = {"A": PauliList(["iZZ"])}
-            with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(
+                    subexperiments, observables, weights, quasi_dists
+                )
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
