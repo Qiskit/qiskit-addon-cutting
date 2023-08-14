@@ -130,7 +130,11 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
 
     @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_fixed_hf_h2o(self):
-        """Test for fixing the HF value in computing the energy of a H2O molecule."""
+        """
+        Test for fixing the HF value in computing the energy of a H2O molecule.
+        
+        Hard-coded values were generated using PySCF.
+        """
         # Set up the ElectronicStructureProblem
         HF = -14.09259461609392
 
@@ -157,7 +161,11 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     @pytest.mark.slow
     @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_fixed_hf_h2o_asymmetric(self):
-        """Test for fixing the HF value in two separate subsystems."""
+        """
+        Test for fixing the HF value in two separate subsystems.
+        
+        Hard-coded values were generated using PySCF.
+        """
         # The hard-coded HF value based off pyscf outputs, given the
         # molecular setup represented by the bitstrings and the problem.
         HF = -14.09259461609392
