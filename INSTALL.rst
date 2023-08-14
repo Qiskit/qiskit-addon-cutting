@@ -117,21 +117,18 @@ Option 3: Use within Docker
 
 We have provided a `Dockerfile <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile>`__, which can be used to
 build a Docker image, as well as a
-`docker-compose.yml <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docker-compose.yml>`__ file, which allows one
-to use the Docker image with just a few simple commands. If you have
-Docker installed but not `Docker
-Compose <https://pypi.org/project/docker-compose/>`__, the latter can be
-installed by first running ``pip install docker-compose``.
+`compose.yaml <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/compose.yaml>`__ file, which allows one
+to use the Docker image with just a few simple commands.
 
 .. code:: sh
 
     git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
     cd circuit-knitting-toolbox
-    docker-compose build
-    docker-compose up
+    docker compose build
+    docker compose up
 
 Depending on your system configuration, you may need to type ``sudo``
-before each ``docker-compose`` command.
+before each ``docker compose`` command.
 
 .. note::
 
@@ -180,8 +177,8 @@ take care when installing the toolbox, depending on which tools they
 intend to use.
   
   - The automatic wire cut search in the ``cutqc`` package depends
-    on CPLEX, which is only available on Intel chips and is not yet available
-    for Python 3.11.
+    on CPLEX, which is only available on Intel chips.
+  - The entanglement forging tool requires PySCF, which does not support Windows.
 
 In each case, one method that is guaranteed to work is to :ref:`use
 the toolbox within Docker <Option 3>`.  Other methods include:

@@ -15,7 +15,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import numpy as np
-from qiskit.circuit import Gate, Instruction
+from qiskit.circuit import Instruction
 
 
 class QPDBasis:
@@ -114,15 +114,15 @@ class QPDBasis:
         return self._kappa**2
 
     @staticmethod
-    def from_gate(gate: Gate) -> "QPDBasis":
+    def from_gate(gate: Instruction) -> QPDBasis:
         """
-        Generate a QPDBasis object, given a supported operation.
+        Generate a :class:`.QPDBasis` object, given a supported operation.
 
         This static method is provided for convenience; it simply
         calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
 
         Args:
-            gate: The gate from which to instantiate a decomposition
+            gate: The instruction from which to instantiate a decomposition
 
         Returns:
             The newly-instantiated :class:`QPDBasis` object

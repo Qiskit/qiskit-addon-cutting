@@ -14,7 +14,6 @@ the new code.  These features currently specific to ``cutqc`` include:
 
 - Reconstruction of probability distributions (rather than expectation values)
 - Automatic cut finding
-- Wire cutting (rather than gate cutting)
 
 .. _cutqc tutorials:
 
