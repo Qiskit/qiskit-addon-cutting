@@ -145,7 +145,7 @@ class EntanglementForgingGroundStateSolver:
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
             hf_energy: The Hartree-Fock energy to use at each iteration. If this is left unset,
-                the energy will be calculated with quantum experiments. See :ref:`Fixing the Hartree-Fock bitstring`
+                the energy will be calculated using quantum experiments. See :ref:`Fixing the Hartree-Fock bitstring`
                 for more information.
 
         Returns:
