@@ -132,7 +132,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def test_fixed_hf_h2o(self):
         """
         Test for fixing the HF value in computing the energy of a H2O molecule.
-        
+
         Hard-coded values were generated using PySCF.
         """
         # Set up the ElectronicStructureProblem
@@ -163,7 +163,7 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
     def test_fixed_hf_h2o_asymmetric(self):
         """
         Test for fixing the HF value in two separate subsystems.
-        
+
         Hard-coded values were generated using PySCF.
         """
         # The hard-coded HF value based off pyscf outputs, given the
