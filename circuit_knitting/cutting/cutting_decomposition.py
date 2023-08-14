@@ -223,7 +223,7 @@ def partition_problem(
     for inst in qpd_circuit.data:
         if isinstance(inst.operation, TwoQubitQPDGate):
             bases.append(inst.operation.basis)
-            inst.operation.label = inst.operation.label + f"_{i}"
+            inst.operation.label = f"{inst.operation.label}_{i}"
             i += 1
 
     # Separate the decomposed circuit into its subcircuits
