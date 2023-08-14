@@ -36,7 +36,7 @@ class PartitionedCuttingProblem(NamedTuple):
 
     subcircuits: dict[str | int, QuantumCircuit]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    subobservables: dict[str | int, PauliList] | None = None
 
 
 def partition_circuit_qubits(
