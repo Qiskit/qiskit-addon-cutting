@@ -51,9 +51,10 @@ class PartitionedCuttingProblem(NamedTuple):
 
     subcircuits: dict[str | int, QuantumCircuit]
     subexperiments: dict[str | int, list[QuantumCircuit]]
+    subobservables: dict[str | int, PauliList]
     weights: list[tuple[float, WeightType]]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, PauliList]
+    num_decomps: dict[str | int, int]
 
 
 def partition_circuit_qubits(
@@ -221,6 +222,8 @@ def partition_problem(
             - bases: A list of :class:`.QPDBasis` instances -- one for each circuit gate
                 or wire which was decomposed
             - subobservables: A dictionary mapping a partition label to a list of Pauli observables
+            - num_decomps: A dictionary mapping a partition label to the number of decompositions
+                in that circuit partition.
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -262,22 +265,27 @@ def partition_problem(
     qpd_circuit_dx = qpd_circuit.decompose(TwoQubitQPDGate)
     separated_circs = separate_circuit(qpd_circuit_dx, partition_labels)
 
-    # Decompose the observables, if provided
-    subobservables_by_subsystem = None
+    # Decompose the observables
     subobservables_by_subsystem = decompose_observables(observables, partition_labels)
 
     # Generate the sub-experiments to run on backend
     subexperiments, weights = generate_cutting_experiments(
         separated_circs.subcircuits, subobservables_by_subsystem, num_samples
     )
-    # These asserts remove the need for mypy ignores on subcircs and subexperiments
+
     assert isinstance(subexperiments, dict)
+    num_decomps = {
+        label: len(subexperiments[label][0].cregs[0])
+        for label in subobservables_by_subsystem.keys()
+    }
+
     return PartitionedCuttingProblem(
         separated_circs.subcircuits,  # type: ignore
         subexperiments,
+        subobservables_by_subsystem,
         weights,
         bases,
-        subobservables_by_subsystem,
+        num_decomps,
     )
 
 

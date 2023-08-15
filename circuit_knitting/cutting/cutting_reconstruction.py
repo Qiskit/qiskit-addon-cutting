@@ -27,12 +27,11 @@ from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    subexperiments: Sequence[QuantumCircuit]
-    | dict[str | int, Sequence[QuantumCircuit]],
     observables: PauliList | dict[str | int, PauliList],
     weights: Sequence[tuple[float, WeightType]],
     quasi_dists: Sequence[tuple[QuasiDistribution, WeightType]]
     | dict[str | int, Sequence[tuple[QuasiDistribution, WeightType]]],
+    num_qpd_bits: int | dict[str | int, int],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
@@ -46,22 +45,16 @@ def reconstruct_expectation_values(
         value corresponding to the input observable in the same position
 
     Raises:
-        ValueError: ``subexperiments``, ``observables``, and ``quasi-dists`` are of incompatible types.
+        ValueError: ``observables``, and ``quasi-dists`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if isinstance(subexperiments, Sequence) and (
-        not isinstance(observables, PauliList) or not isinstance(quasi_dists, Sequence)
-    ):
+    if isinstance(observables, PauliList) and not isinstance(quasi_dists, Sequence):
         raise ValueError(
-            "If the type of subexperiments is a Sequence, observables should be a "
-            "PauliList and quasi_dists should be a Sequence."
+            "If observables is a PauliList, quasi_dists must be a Sequence."
         )
-    if isinstance(subexperiments, dict) and (
-        not isinstance(observables, dict) or not isinstance(quasi_dists, dict)
-    ):
+    if isinstance(observables, dict) and not isinstance(quasi_dists, dict):
         raise ValueError(
-            "If the type of subexperiments is a dictionary, both observables and "
-            "quasi_dists should also be dictionaries."
+            "If observables is a dictionary, quasi_dists must also be a dictionary."
         )
     # If circuit was not separated, transform input data structures to dictionary format
     if isinstance(observables, PauliList):
@@ -70,13 +63,13 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
-        subexperiments_dict = {"A": subexperiments}
         quasi_dists_dict = {"A": quasi_dists}
+        num_qpd_bits_dict = {"A": num_qpd_bits}
         expvals = np.zeros(len(observables))
 
     else:
-        subexperiments_dict = subexperiments  # type: ignore
-        quasi_dists_dict = quasi_dists  # type: ignore
+        quasi_dists_dict = quasi_dists
+        num_qpd_bits_dict = num_qpd_bits
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
@@ -89,16 +82,7 @@ def reconstruct_expectation_values(
     }
     sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
 
-    # Count the number of midcircuit measurements in each subexperiment
-    num_qpd_bits = {}
-    for i, label in enumerate(sorted_subsystems):
-        nums_bits = []
-        for j, circ in enumerate(subexperiments_dict[label]):  # type: ignore
-            nums_bits.append(len(circ.cregs[0]))
-        num_qpd_bits[label] = nums_bits
-
-    key0 = sorted(subexperiments_dict.keys())[0]
-    assert len(subexperiments_dict[key0]) % len(subsystem_observables[key0].groups) == 0
+    key0 = sorted(subobservables_by_subsystem.keys())[0]
     for i in range(len(weights)):
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
@@ -111,7 +95,7 @@ def reconstruct_expectation_values(
                 quasi_probs = quasi_dists_dict[label][i * len(so.groups) + k]  # type: ignore
                 for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        num_qpd_bits[label][i * len(so.groups) + k], cog, outcome
+                        num_qpd_bits_dict[label], cog, outcome
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
