@@ -16,7 +16,7 @@ from __future__ import annotations
 from pytest import fixture, mark
 from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
 from circuit_knitting.cutting.instructions import Move, CutWire
-from circuit_knitting.cutting.cut_wire_to_move import transform_to_move
+from circuit_knitting.cutting import transform_cuts_to_moves
 
 
 @fixture
@@ -204,9 +204,9 @@ def resulting_circuit4() -> tuple[QuantumCircuit, list[int]]:
         ("circuit4", "resulting_circuit4"),
     ],
 )
-def test_transform_to_move(request, sample_circuit, resulting_circuit):
+def test_transform_cuts_to_moves(request, sample_circuit, resulting_circuit):
     """Tests the transformation of CutWire to Move instruction."""
-    assert request.getfixturevalue(resulting_circuit)[0] == transform_to_move(
+    assert request.getfixturevalue(resulting_circuit)[0] == transform_cuts_to_moves(
         request.getfixturevalue(sample_circuit)
     )
 
@@ -225,7 +225,7 @@ def test_circuit_mapping(request, sample_circuit, resulting_circuit):
     sample_circuit = request.getfixturevalue(sample_circuit)
     resulting_mapping = request.getfixturevalue(resulting_circuit)[1]
 
-    final_circuit = transform_to_move(sample_circuit)
+    final_circuit = transform_cuts_to_moves(sample_circuit)
     final_mapping = [
         final_circuit.find_bit(qubit).index for qubit in sample_circuit.qubits
     ]
@@ -248,7 +248,7 @@ def test_circuit_mapping(request, sample_circuit, resulting_circuit):
 def test_qreg_name_num(request, sample_circuit):
     """Tests the number and name of qregs in initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_to_move(sample_circuit)
+    final_circuit = transform_cuts_to_moves(sample_circuit)
 
     # Tests number of qregs in initial and final circuits
     assert len(sample_circuit.qregs) == len(final_circuit.qregs)
@@ -272,7 +272,7 @@ def test_qreg_name_num(request, sample_circuit):
 def test_qreg_size(request, sample_circuit):
     """Tests the size of qregs in initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_to_move(sample_circuit)
+    final_circuit = transform_cuts_to_moves(sample_circuit)
 
     # Tests size of qregs in initial and final circuits
     for sample_qreg, final_qreg in zip(
@@ -294,7 +294,7 @@ def test_qreg_size(request, sample_circuit):
 def test_circuit_width(request, sample_circuit):
     """Tests the width of the initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_to_move(sample_circuit)
+    final_circuit = transform_cuts_to_moves(sample_circuit)
     total_cut_wire = len(sample_circuit.get_instructions("cut_wire"))
 
     # Tests width of initial and final circuit
@@ -313,7 +313,7 @@ def test_circuit_width(request, sample_circuit):
 def test_creg(request, sample_circuit):
     """Tests the number and size of cregs in the initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_to_move(sample_circuit)
+    final_circuit = transform_cuts_to_moves(sample_circuit)
 
     # Tests number of cregs in initial and final circuits
     assert len(sample_circuit.cregs) == len(final_circuit.cregs)

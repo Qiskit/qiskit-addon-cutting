@@ -18,7 +18,7 @@ from qiskit.circuit import Qubit, QuantumCircuit
 from circuit_knitting.cutting.instructions.move import Move
 
 
-def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
+def transform_cuts_to_moves(circuit: QuantumCircuit) -> QuantumCircuit:
     """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions.
 
     Args:
