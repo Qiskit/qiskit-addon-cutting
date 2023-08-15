@@ -1135,7 +1135,6 @@ def _decompose_qpd_instructions(
         data_id_offset += 1
         circuit.data.insert(i + data_id_offset, inst2)
 
-
     # The number of clbits in the "qpd_measurements` register will equal the total
     # number of decompositions in the input circuit.
     num_qpd_bits = 0
