@@ -22,7 +22,7 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
     """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions.
 
     Args:
-        circuit (QuantumCircuit): original circuit with :class:`.cut_wire` instructions.
+        circuit: Original circuit with :class:`.CutWire` instructions
 
     Returns:
         circuit (QuantumCircuit): new circuit with :class`.move` instructions.
