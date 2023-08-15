@@ -19,7 +19,7 @@ from circuit_knitting.cutting.instructions.move import Move
 
 
 def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
-    """Transform a :class:`.CutWire` instruction to a :class:`.Move` instruction.
+    """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions.
 
     Args:
         circuit (QuantumCircuit): original circuit with :class:`.cut_wire` instructions.
