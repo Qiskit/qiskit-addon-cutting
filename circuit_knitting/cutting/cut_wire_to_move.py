@@ -34,17 +34,17 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
 
         if instructions in circuit.get_instructions("cut_wire"):
             # Replace cut_wire with move instruction
-            new_circuit = new_circuit.compose(
+            new_circuit.compose(
                 other=Move(),
                 qubits=[mapping[gate_index[0]], mapping[gate_index[0]] + 1],
-                inplace=False,
+                inplace=True,
             )
             mapping[gate_index[0]] += 1
         else:
-            new_circuit = new_circuit.compose(
+            new_circuit.compose(
                 other=instructions[0],
                 qubits=[mapping[index] for index in gate_index],
-                inplace=False,
+                inplace=True,
             )
 
     return new_circuit
