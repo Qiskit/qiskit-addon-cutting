@@ -21,6 +21,7 @@ Circuit Cutting
     :toctree: ../stubs/
     :nosignatures:
 
+    transform_cuts_to_moves
     partition_circuit_qubits
     partition_problem
     cut_gates
@@ -35,6 +36,7 @@ Circuit Cutting
 
     PartitionedCuttingProblem
     CuttingExperimentResults
+    instructions.CutWire
     instructions.Move
 
 Quasi-Probability Decomposition (QPD)
@@ -85,6 +87,7 @@ from .cutting_decomposition import (
 )
 from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
+from .cut_wire_to_move import transform_cuts_to_moves
 
 __all__ = [
     "partition_circuit_qubits",
@@ -95,4 +98,5 @@ __all__ = [
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
     "CuttingExperimentResults",
+    "transform_cuts_to_moves",
 ]
