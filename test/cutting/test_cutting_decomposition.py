@@ -234,10 +234,15 @@ class TestCuttingDecomposition(unittest.TestCase):
             qc.cx(2, 3)
             qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [2, 1])
             qc.cx(0, 1)
-            subcircuits, bases, subobservables = partition_problem(
-                qc, "AABB", observables=PauliList(["IZIZ"])
+            partitioned_problem = partition_problem(
+                qc, "AABB", np.inf, PauliList(["IZIZ"])
             )
-            assert len(subcircuits) == len(bases) == len(subobservables) == 2
+            assert (
+                len(partitioned_problem.subcircuits)
+                == len(partitioned_problem.bases)
+                == len(partitioned_problem.subobservables)
+                == 2
+            )
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):

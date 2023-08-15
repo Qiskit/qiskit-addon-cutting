@@ -273,7 +273,7 @@ def partition_problem(
     # These asserts remove the need for mypy ignores on subcircs and subexperiments
     assert isinstance(subexperiments, dict)
     return PartitionedCuttingProblem(
-        separated_circs.subcircuits, # type: ignore
+        separated_circs.subcircuits,  # type: ignore
         subexperiments,
         weights,
         bases,
