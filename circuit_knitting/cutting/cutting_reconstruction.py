@@ -54,7 +54,7 @@ def reconstruct_expectation_values(
     ):
         raise ValueError(
             "If the type of subexperiments is a Sequence, observables should be a "
-            "PauliList and quasi_dists should also be a Sequence."
+            "PauliList and quasi_dists should be a Sequence."
         )
     if isinstance(subexperiments, dict) and (
         not isinstance(observables, dict) or not isinstance(quasi_dists, dict)
