@@ -67,7 +67,7 @@ class TestCuttingEvaluation(unittest.TestCase):
             quasi_dists, coefficients = execute_experiments(
                 self.circuit, self.observable, num_samples=50, samplers=self.sampler
             )
-            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual([[[(QuasiDistribution({12: 1.0}), 2)]]], quasi_dists)
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Basic test with dicts"):
             circ1 = QuantumCircuit(1)
@@ -103,8 +103,8 @@ class TestCuttingEvaluation(unittest.TestCase):
             self.assertEqual(
                 [
                     [
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                        [(QuasiDistribution({1: 1.0}), 0)],
+                        [(QuasiDistribution({2: 1.0}), 1)],
+                        [(QuasiDistribution({2: 1.0}), 1)],
                     ]
                 ],
                 quasi_dists,
