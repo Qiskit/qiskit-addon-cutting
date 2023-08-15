@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+      The ``qpd_measurements`` classical register added to the output of :func:`circuit_knitting.cutting.qpd.decompose_qpd_instructions` will now contain a number of bits based on the number of :class:`circuit_knitting.cutting.qpd.BaseQPDGate` instances in the input circuit, rather than the number of :class:`circuit_knitting.cutting.qpd.QPDMeasure` instances. Now the ``qpd_measurements`` classical register in the output circuit will contain 2 bits for every :class:`circuit_knitting.cutting.qpd.TwoQubitQPDGate` instance and 1 bit for every :class:`Circuit_knitting.cutting.qpd.SingleQubitQPDGate` instance.
