@@ -15,8 +15,7 @@ from __future__ import annotations
 
 from pytest import fixture, mark
 from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
-from circuit_knitting.cutting.instructions.move import Move
-from circuit_knitting.cutting.instructions.cut_wire import CutWire
+from circuit_knitting.cutting.instructions import Move, CutWire
 from circuit_knitting.cutting.cut_wire_to_move import transform_to_move
 
 
