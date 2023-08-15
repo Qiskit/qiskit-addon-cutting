@@ -111,11 +111,11 @@ only-include = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
-[tool.coverage.run]
-omit = [
-    # deprecated import location(s)
-    "circuit_knitting/cutting/wire_cutting.py",
-]
+#[tool.coverage.run]
+#omit = [
+#    # deprecated import location(s)
+#    "circuit_knitting/path/to/deprecated/module",
+#]
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
