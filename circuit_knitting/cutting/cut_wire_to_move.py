@@ -25,7 +25,7 @@ def transform_to_move(circuit: QuantumCircuit) -> QuantumCircuit:
         circuit: Original circuit with :class:`.CutWire` instructions
 
     Returns:
-        circuit (QuantumCircuit): new circuit with :class`.move` instructions.
+        circuit: New circuit with :class:`.CutWire` instructions replaced by :class`.Move` instructions
     """
     new_circuit, mapping = _circuit_structure_mapping(circuit)
 
