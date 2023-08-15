@@ -150,15 +150,18 @@ def test_cutting_exact_reconstruction(example_circuit):
     exact_expvals = (
         estimator.run([qc0] * len(observables), list(observables)).result().values
     )
-    sampler = ExactSampler()
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
+    if np.random.randint(2):
+        samplers = ExactSampler()
+    else:
+        samplers = {label: ExactSampler() for label in subcircuits.keys()}
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
         subobservables=subobservables,
         num_samples=np.inf,
-        samplers=sampler,
+        samplers=samplers,
     )
     simulated_expvals = reconstruct_expectation_values(
         quasi_dists, coefficients, subobservables
