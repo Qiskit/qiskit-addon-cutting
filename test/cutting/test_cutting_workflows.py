@@ -43,7 +43,7 @@ def test_transpile_before_realizing_basis_id():
     pass_manager = generate_preset_pass_manager(3, target=target)
 
     # Pass each subcircuit through the pass manager.
-    subcircuits = {
+    _ = {
         label: pass_manager.run(partitioned_problem.subcircuits["A"])
         for label, circuit in partitioned_problem.subcircuits.items()
     }

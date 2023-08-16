@@ -42,8 +42,6 @@ from .qpd import (
     decompose_qpd_instructions,
     WeightType,
 )
-from .qpd.qpd_basis import QPDBasis
-from .qpd.instructions import SingleQubitQPDGate, TwoQubitQPDGate
 
 
 class PartitionedCuttingProblem(NamedTuple):
@@ -364,7 +362,6 @@ def generate_cutting_experiments(
     for i, (subcircuit, label) in enumerate(
         strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
     ):
-        subexps: list[QuantumCircuit] = []
         for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
             actual_coeff = np.prod(
                 [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
@@ -372,7 +369,6 @@ def generate_cutting_experiments(
             sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
             if i == 0:
                 weights.append((sampled_coeff, weight_type))
-                weight_collected = True
             map_ids_tmp = map_ids
             if is_separated:
                 map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])

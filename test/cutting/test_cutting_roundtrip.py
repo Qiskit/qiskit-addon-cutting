@@ -162,7 +162,6 @@ def test_cutting_exact_reconstruction(example_circuit):
     )
     quasi_dists = {"A": quasi_dists_a, "B": quasi_dists_b}
     simulated_expvals = reconstruct_expectation_values(
-        partitioned_problem.subexperiments,
         partitioned_problem.subobservables,
         partitioned_problem.weights,
         quasi_dists,
