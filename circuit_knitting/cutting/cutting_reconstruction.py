@@ -18,7 +18,7 @@ from collections.abc import Sequence
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import PauliList
-from qiskit.result import QuasiDistribution
+from qiskit.primitives import SamplerResult
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
@@ -29,15 +29,14 @@ from .qpd import WeightType
 def reconstruct_expectation_values(
     observables: PauliList | dict[str | int, PauliList],
     weights: Sequence[tuple[float, WeightType]],
-    quasi_dists: Sequence[tuple[QuasiDistribution, WeightType]]
-    | dict[str | int, Sequence[tuple[QuasiDistribution, WeightType]]],
-    num_qpd_bits: int | dict[str | int, int],
+    results: Sequence[tuple[SamplerResult, WeightType]]
+    | dict[str | int, Sequence[tuple[SamplerResult, WeightType]]],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        quasi_dists: The results from running the cutting subexperiments using the
+        results: The results from running the cutting subexperiments using the
             Qiskit Sampler primitive.
 
     Returns:
@@ -48,13 +47,13 @@ def reconstruct_expectation_values(
         ValueError: ``observables``, and ``quasi-dists`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if isinstance(observables, PauliList) and not isinstance(quasi_dists, Sequence):
+    if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
         raise ValueError(
-            "If observables is a PauliList, quasi_dists must be a Sequence."
+            "If observables is a PauliList, results must be a SamplerResult."
         )
-    if isinstance(observables, dict) and not isinstance(quasi_dists, dict):
+    if isinstance(observables, dict) and not isinstance(results, dict):
         raise ValueError(
-            "If observables is a dictionary, quasi_dists must also be a dictionary."
+            "If observables is a dictionary, results must also be a dictionary."
         )
     # If circuit was not separated, transform input data structures to dictionary format
     if isinstance(observables, PauliList):
@@ -63,13 +62,11 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
-        quasi_dists_dict = {"A": quasi_dists}
-        num_qpd_bits_dict = {"A": num_qpd_bits}
+        results_dict = {"A": results}
         expvals = np.zeros(len(observables))
 
     else:
-        quasi_dists_dict = quasi_dists
-        num_qpd_bits_dict = num_qpd_bits
+        results_dict = results
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
@@ -92,10 +89,14 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists_dict[label][i * len(so.groups) + k]  # type: ignore
+                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]  # type: ignore
                 for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        num_qpd_bits_dict[label], cog, outcome
+                        results_dict[label].metadata[i * len(so.groups) + k][
+                            "num_qpd_bits"
+                        ],
+                        cog,
+                        outcome,
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
