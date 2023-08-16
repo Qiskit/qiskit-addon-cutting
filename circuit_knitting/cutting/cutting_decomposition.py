@@ -54,7 +54,6 @@ class PartitionedCuttingProblem(NamedTuple):
     subobservables: dict[str | int, PauliList]
     weights: list[tuple[float, WeightType]]
     bases: list[QPDBasis]
-    num_decomps: dict[str | int, int]
 
 
 def partition_circuit_qubits(
@@ -222,8 +221,6 @@ def partition_problem(
             - bases: A list of :class:`.QPDBasis` instances -- one for each circuit gate
                 or wire which was decomposed
             - subobservables: A dictionary mapping a partition label to a list of Pauli observables
-            - num_decomps: A dictionary mapping a partition label to the number of decompositions
-                in that circuit partition.
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
@@ -274,10 +271,6 @@ def partition_problem(
     )
 
     assert isinstance(subexperiments, dict)
-    num_decomps = {
-        label: len(subexperiments[label][0].cregs[0])
-        for label in subobservables_by_subsystem.keys()
-    }
 
     return PartitionedCuttingProblem(
         separated_circs.subcircuits,  # type: ignore
@@ -285,7 +278,6 @@ def partition_problem(
         subobservables_by_subsystem,
         weights,
         bases,
-        num_decomps,
     )
 
 
