@@ -103,9 +103,12 @@ def reconstruct_expectation_values(
                 # the number of bits needed to represent the sampled distribution, not
                 # the total number of measurements taken on qubits.
 
-                # If an odd number of the most significant bits are left positively
-                # unsampled, then that would result in a bitflip error under this
-                # implementation.
+                # If an odd number of the most significant bits (most significant
+                # observable bits) are left positively unsampled, then that would result in
+                # a bitflip error under this implementation.
+
+                # To prevent this, we will loop through every outcome and take the max
+                # num_qpd_bits
                 ######################################################
                 num_qpd_bits = quasi_probs._num_bits - num_obs_bits
 
