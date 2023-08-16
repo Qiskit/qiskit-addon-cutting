@@ -18,7 +18,7 @@ from collections.abc import Sequence
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import PauliList
-from qiskit.primitives import SamplerResult
+from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
@@ -29,8 +29,8 @@ from .qpd import WeightType
 def reconstruct_expectation_values(
     observables: PauliList | dict[str | int, PauliList],
     weights: Sequence[tuple[float, WeightType]],
-    results: Sequence[tuple[SamplerResult, WeightType]]
-    | dict[str | int, Sequence[tuple[SamplerResult, WeightType]]],
+    results: Sequence[tuple[QuasiDistribution, WeightType]]
+    | dict[str | int, Sequence[tuple[QuasiDistribution, WeightType]]],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
@@ -47,9 +47,9 @@ def reconstruct_expectation_values(
         ValueError: ``observables``, and ``quasi-dists`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
+    if isinstance(observables, PauliList) and not isinstance(results, QuasiDistribution):
         raise ValueError(
-            "If observables is a PauliList, results must be a SamplerResult."
+            "If observables is a PauliList, results must be a QuasiDistribution."
         )
     if isinstance(observables, dict) and not isinstance(results, dict):
         raise ValueError(
@@ -89,14 +89,18 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]  # type: ignore
+                num_obs_bits = len(
+                    [char for char in cog.general_observable.to_label() if char != "I"]
+                )
+                quasi_probs = results_dict[label][i * len(so.groups) + k]  # type: ignore
+                ######################################################
+                # Accessing private field here. Switch to public field
+                # when Qiskit issue # 10648 is resolved and released.
+                ######################################################
+                num_qpd_bits = quasi_probs._num_bits - num_obs_bits
                 for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        results_dict[label].metadata[i * len(so.groups) + k][
-                            "num_qpd_bits"
-                        ],
-                        cog,
-                        outcome,
+                        num_qpd_bits, cog, outcome
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
