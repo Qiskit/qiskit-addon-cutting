@@ -117,10 +117,10 @@ def expand_observables(
     Args:
         observables: Observables corresponding to ``original_circuit``
         original_circuit: Original circuit
-        final_circuit: Final circuit, whose qubits the original ``observables`` should be expanded to.
+        final_circuit: Final circuit, whose qubits the original ``observables`` should be expanded to
 
     Returns:
-        New observables, appropriate for the ``final_circuit``.
+        New :math:`N`-qubit observables which are compatible with the :math:`N`-qubit ``final_circuit``
 
     Raises:
         ValueError: ``observables`` and ``original_circuit`` have different number of qubits.
