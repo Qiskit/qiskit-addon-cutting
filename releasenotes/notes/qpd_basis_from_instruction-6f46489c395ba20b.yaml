@@ -1,0 +1,6 @@
+---
+deprecations:
+  - |
+    :meth:`.QPDBasis.from_gate` has been renamed to
+    :meth:`.QPDBasis.from_instruction`.  The original name is
+    deprecated and will be removed no sooner than CKT v0.4.0.
