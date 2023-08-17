@@ -240,6 +240,22 @@ class TestCuttingDecomposition(unittest.TestCase):
                 qc, "AABB", observables=PauliList(["IZIZ"])
             )
             assert len(subcircuits) == len(bases) == len(subobservables) == 2
+        with self.subTest("Automatic partition_labels"):
+            qc = QuantumCircuit(4)
+            qc.h(0)
+            qc.cx(0, 2)
+            qc.cx(0, 1)
+            qc.s(3)
+            # Add a TwoQubitQPDGate that, when cut, allows the circuit to
+            # separate
+            qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [1, 3])
+            # Add a TwoQubitQPDGate that, when cut, does *not* allow the
+            # circuit to separate
+            qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [2, 0])
+            subcircuit, *_ = partition_problem(qc)
+            assert subcircuit.keys() == {0, 1}
+            assert subcircuit[0].num_qubits == 3
+            assert subcircuit[1].num_qubits == 1
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
