@@ -14,12 +14,13 @@
 from __future__ import annotations
 
 from itertools import groupby
-import numpy as np
 
+import numpy as np
 from qiskit.circuit import Qubit, QuantumCircuit
 from qiskit.circuit.exceptions import CircuitError
 from qiskit.quantum_info import PauliList
-from circuit_knitting.cutting.instructions.move import Move
+
+from .instructions.move import Move
 
 
 def transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
