@@ -13,16 +13,34 @@
 """Function to transform a :class:`.CutWire` instruction to a :class:`.Move` instruction."""
 from __future__ import annotations
 
+from typing import Callable
 from itertools import groupby
 import numpy as np
 
-from qiskit.circuit import Qubit, QuantumCircuit
+from qiskit.circuit import Qubit, QuantumCircuit, Operation
 from qiskit.circuit.exceptions import CircuitError
 from qiskit.quantum_info import PauliList
 from circuit_knitting.cutting.instructions.move import Move
+from circuit_knitting.cutting.qpd.instructions import TwoQubitQPDGate
 
 
-def transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
+def cut_wires(circuit: QuantumCircuit, /) -> QuantumCircuit:
+    """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions marked for cutting.
+
+    The returned circuit will have one newly allocated qubit for every :class:`.CutWire` instruction.
+
+    Args:
+        circuit: Original circuit with :class:`.CutWire` instructions
+
+    Returns:
+        circuit: New circuit with :class:`.CutWire` instructions replaced by :class:`.Move` instructions wrapped in :class:`TwoQubitQPDGate`\ s
+    """
+    return _transform_cut_wires(
+        circuit, lambda: TwoQubitQPDGate.from_instruction(Move())
+    )
+
+
+def _transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
     """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions.
 
     Args:
@@ -31,6 +49,12 @@ def transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
     Returns:
         circuit: New circuit with :class:`.CutWire` instructions replaced by :class`.Move` instructions
     """
+    return _transform_cut_wires(circuit, Move)
+
+
+def _transform_cut_wires(
+    circuit: QuantumCircuit, factory: Callable[[], Operation], /
+) -> QuantumCircuit:
     new_circuit, mapping = _circuit_structure_mapping(circuit)
 
     for instructions in circuit.data:
@@ -39,7 +63,7 @@ def transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
         if instructions in circuit.get_instructions("cut_wire"):
             # Replace cut_wire with move instruction
             new_circuit.compose(
-                other=Move(),
+                other=factory(),
                 qubits=[mapping[gate_index[0]], mapping[gate_index[0]] + 1],
                 inplace=True,
             )
