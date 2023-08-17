@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+from collections import defaultdict
 from collections.abc import Sequence
 
 import numpy as np
@@ -79,6 +80,38 @@ def reconstruct_expectation_values(
     }
     sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
 
+    # Get the number of QPD bits for each partition's subexperiments
+
+    # QuasiDistribution._num_bits is not guaranteed to reflect the total number of
+    # qubit measurements on the input circuit. It may only reflect the number of bits
+    # needed to represent the outcomes of the sampled distribution.
+    # More info in QuasiDistribution __init__ comments:
+    # https://github.com/Qiskit/qiskit-terra/blob/0388d543dee1fe59f07b257fa218fe99511397c8/qiskit/result/distributions/quasi.py
+
+    # If the most significant bit(s) of the observable were never sampled positively,
+    # the QuasiDistribution._num_bits would report an erroneously low number of bits,
+    # resulting in an erroneously low estimation of the number of QPD bits. We mitigate
+    # this by leveraging the fact that all QPD registers are the same size for a
+    # given partition, and we take the max estimation of the number of QPD bits
+    # across all experiments for a given partition.
+    qpd_bits_by_partition = defaultdict(lambda: 0)
+    for i in range(len(weights)):
+        for label in sorted_subsystems:
+            so = subsystem_observables[label]
+            for k, cog in enumerate(so.groups):
+                num_obs_bits = len(
+                    [char for char in cog.general_observable.to_label() if char != "I"]
+                )
+                quasi_probs: QuasiDistribution = results_dict[label][i * len(so.groups) + k]  # type: ignore
+                ###################################################################################
+                # Accessing private QuasiDistribution._num_bits field here. Switch to public field
+                # when Qiskit issue # 10648 is resolved and released.
+                ###################################################################################
+                qpd_bits_by_partition[label] = max(
+                    qpd_bits_by_partition[label], quasi_probs._num_bits - num_obs_bits
+                )
+
+    # Reconstruct the expectation values
     for i in range(len(weights)):
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
@@ -93,28 +126,9 @@ def reconstruct_expectation_values(
                 )
                 quasi_probs: QuasiDistribution = results_dict[label][i * len(so.groups) + k]  # type: ignore
 
-                ######################################################
-                # Accessing private field here. Switch to public field
-                # when Qiskit issue # 10648 is resolved and released.
-
-                # Using quasi_probs.num_bits as the total number of bits in the distribution
-                # assumes that the most significant bit in the register was sampled
-                # positively at least once, as QuasiDistribution.num_bits only reports
-                # the number of bits needed to represent the sampled distribution, not
-                # the total number of measurements taken on qubits.
-
-                # If an odd number of the most significant bits (most significant
-                # observable bits) are left positively unsampled, then that would result in
-                # a bitflip error under this implementation.
-
-                # To prevent this, we will loop through every outcome and take the max
-                # num_qpd_bits
-                ######################################################
-                num_qpd_bits = quasi_probs._num_bits - num_obs_bits
-
                 for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        num_qpd_bits, cog, outcome
+                        qpd_bits_by_partition[label], cog, outcome
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(

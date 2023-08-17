@@ -148,7 +148,7 @@ class TestQPDFunctions(unittest.TestCase):
             qpd_gate = TwoQubitQPDGate(qpd_basis)
             circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
             decomp_circ = decompose_qpd_instructions(circ, [[0]], map_ids=[0])
-            circ_compare.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            circ_compare.add_register(ClassicalRegister(2, name="qpd_measurements"))
             self.assertEqual(decomp_circ, circ_compare)
         with self.subTest("Incorrect map index size"):
             with pytest.raises(ValueError) as e_info:
@@ -175,7 +175,7 @@ class TestQPDFunctions(unittest.TestCase):
             qpd_inst = CircuitInstruction(self.qpd_gate1, qubits=[0, 1])
             qpd_circ.data.append(qpd_inst)
             dx_circ_truth = QuantumCircuit(2)
-            creg = ClassicalRegister(1, name="qpd_measurements")
+            creg = ClassicalRegister(2, name="qpd_measurements")
             dx_circ_truth.add_register(creg)
             dx_circ_truth.h(0)
             dx_circ_truth.rx(np.pi / 2, 1)
