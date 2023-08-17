@@ -97,7 +97,7 @@ def expand_observables(
 ) -> PauliList:
     """Expand observable(s) according to the qubit mapping between ``original_circuit`` and ``final_circuit``.
 
-    The qubits on ``final_circuit`` must be a superset of those on
+    The :class:`.Qubit`\ s on ``final_circuit`` must be a superset of those on
     ``original_circuit``.
 
     Given a :class:`.PauliList` of observables, this function returns new
