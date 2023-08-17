@@ -15,6 +15,7 @@ from ddt import ddt, data, unpack
 import pytest
 import numpy as np
 from qiskit.result import QuasiDistribution
+from qiskit.primitives import SamplerResult
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
@@ -44,8 +45,10 @@ class TestCuttingReconstruction(unittest.TestCase):
 
     def test_cutting_reconstruction(self):
         with self.subTest("Test PauliList observable"):
-            quasi_dists = [QuasiDistribution({"0": 1.0})]
-            quasi_dists[0]._num_bits = 3
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(1.0, WeightType.EXACT)]
             subexperiments = [QuantumCircuit(2)]
             creg1 = ClassicalRegister(1, name="qpd_measurements")
@@ -53,22 +56,27 @@ class TestCuttingReconstruction(unittest.TestCase):
             subexperiments[0].add_register(creg1)
             subexperiments[0].add_register(creg2)
             observables = PauliList(["ZZ"])
-            expvals = reconstruct_expectation_values(observables, weights, quasi_dists)
+            expvals = reconstruct_expectation_values(observables, weights, results)
             self.assertEqual([1.0], expvals)
         with self.subTest("Test mismatching inputs"):
-            quasi_dists = [QuasiDistribution({"0": 1.0})]
-            quasi_dists[0]._num_bits = 3
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
             subexperiments = {"A": QuantumCircuit(2)}
             observables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(observables, weights, quasi_dists)
+                reconstruct_expectation_values(observables, weights, results)
             assert (
                 e_info.value.args[0]
                 == "If observables is a dictionary, results must also be a dictionary."
             )
         with self.subTest("Test unsupported phase"):
-            quasi_dists = [QuasiDistribution({"0": 1.0})]
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT)]
             subexperiments = [QuantumCircuit(2)]
             creg1 = ClassicalRegister(1, name="qpd_measurements")
@@ -77,7 +85,7 @@ class TestCuttingReconstruction(unittest.TestCase):
             subexperiments[0].add_register(creg2)
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(observables, weights, quasi_dists)
+                reconstruct_expectation_values(observables, weights, results)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."

@@ -154,17 +154,21 @@ def test_cutting_exact_reconstruction(example_circuit):
         qc, "AAB", num_samples=np.inf, observables=observables_nophase
     )
 
-    quasi_dists_a = (
-        sampler.run(partitioned_problem.subexperiments["A"]).result().quasi_dists
-    )
-    quasi_dists_b = (
-        sampler.run(partitioned_problem.subexperiments["B"]).result().quasi_dists
-    )
-    quasi_dists = {"A": quasi_dists_a, "B": quasi_dists_b}
+    results_a = sampler.run(partitioned_problem.subexperiments["A"]).result()
+    results_b = sampler.run(partitioned_problem.subexperiments["B"]).result()
+    for i in range(len(partitioned_problem.subexperiments["A"])):
+        results_a.metadata[i]["num_qpd_bits"] = len(
+            partitioned_problem.subexperiments["A"][i].cregs[0]
+        )
+    for i in range(len(partitioned_problem.subexperiments["B"])):
+        results_b.metadata[i]["num_qpd_bits"] = len(
+            partitioned_problem.subexperiments["B"][i].cregs[0]
+        )
+    results = {"A": results_a, "B": results_b}
     simulated_expvals = reconstruct_expectation_values(
         partitioned_problem.subobservables,
         partitioned_problem.weights,
-        quasi_dists,
+        results,
     )
     simulated_expvals *= phases
 

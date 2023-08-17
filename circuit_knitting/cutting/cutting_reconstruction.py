@@ -13,12 +13,11 @@
 
 from __future__ import annotations
 
-from collections import defaultdict
 from collections.abc import Sequence
 
 import numpy as np
 from qiskit.quantum_info import PauliList
-from qiskit.result import QuasiDistribution
+from qiskit.primitives import SamplerResult
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
@@ -29,7 +28,7 @@ from .qpd import WeightType
 def reconstruct_expectation_values(
     observables: PauliList | dict[str | int, PauliList],
     weights: Sequence[tuple[float, WeightType]],
-    results: Sequence[QuasiDistribution] | dict[str | int, Sequence[QuasiDistribution]],
+    results: SamplerResult | dict[str | int, SamplerResult],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
@@ -43,12 +42,12 @@ def reconstruct_expectation_values(
         value corresponding to the input observable in the same position
 
     Raises:
-        ValueError: ``observables``, and ``quasi-dists`` are of incompatible types.
+        ValueError: ``observables``, and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if isinstance(observables, PauliList) and not isinstance(results, Sequence):
+    if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
         raise ValueError(
-            "If observables is a PauliList, results must be a QuasiDistribution."
+            "If observables is a PauliList, results must be a SamplerResult instance."
         )
     if isinstance(observables, dict) and not isinstance(results, dict):
         raise ValueError(
@@ -61,12 +60,10 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
-        assert isinstance(results, Sequence)
-        results_dict: dict[str | int, Sequence[QuasiDistribution]] = {"A": results}
+        results_dict: dict[str | int, SamplerResult] = {"A": results}
         expvals = np.zeros(len(observables))
 
     else:
-        assert isinstance(results, dict)
         results_dict = results
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
@@ -80,37 +77,6 @@ def reconstruct_expectation_values(
     }
     sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
 
-    # Get the number of QPD bits for each partition's subexperiments
-
-    # QuasiDistribution._num_bits is not guaranteed to reflect the total number of
-    # qubit measurements on the input circuit. It may only reflect the number of bits
-    # needed to represent the outcomes of the sampled distribution.
-    # More info in QuasiDistribution __init__ comments:
-    # https://github.com/Qiskit/qiskit-terra/blob/0388d543dee1fe59f07b257fa218fe99511397c8/qiskit/result/distributions/quasi.py
-
-    # If the most significant bit(s) of the observable were never sampled positively,
-    # the QuasiDistribution._num_bits would report an erroneously low number of bits,
-    # resulting in an erroneously low estimation of the number of QPD bits. We mitigate
-    # this by leveraging the fact that all QPD registers are the same size for a
-    # given partition, and we take the max estimation of the number of QPD bits
-    # across all experiments for a given partition.
-    qpd_bits_by_partition = defaultdict(lambda: 0)
-    for i in range(len(weights)):
-        for label in sorted_subsystems:
-            so = subsystem_observables[label]
-            for k, cog in enumerate(so.groups):
-                num_obs_bits = len(
-                    [char for char in cog.general_observable.to_label() if char != "I"]
-                )
-                quasi_probs: QuasiDistribution = results_dict[label][i * len(so.groups) + k]  # type: ignore
-                ###################################################################################
-                # Accessing private QuasiDistribution._num_bits field here. Switch to public field
-                # when Qiskit issue # 10648 is resolved and released.
-                ###################################################################################
-                qpd_bits_by_partition[label] = max(
-                    qpd_bits_by_partition[label], quasi_probs._num_bits - num_obs_bits
-                )
-
     # Reconstruct the expectation values
     for i in range(len(weights)):
         current_expvals = np.ones((len(expvals),))
@@ -121,14 +87,14 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                num_obs_bits = len(
-                    [char for char in cog.general_observable.to_label() if char != "I"]
-                )
-                quasi_probs: QuasiDistribution = results_dict[label][i * len(so.groups) + k]  # type: ignore
-
+                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]  # type: ignore
                 for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        qpd_bits_by_partition[label], cog, outcome
+                        results_dict[label].metadata[i * len(so.groups) + k][
+                            "num_qpd_bits"
+                        ],
+                        cog,
+                        outcome,
                     )
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(

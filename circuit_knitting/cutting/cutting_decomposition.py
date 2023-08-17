@@ -182,7 +182,7 @@ def cut_gates(
 def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
-    num_samples: int,
+    num_samples: int | float,
     observables: PauliList,
 ) -> PartitionedCuttingProblem:
     r"""
@@ -192,39 +192,42 @@ def partition_problem(
     gates spanning more than one partition will be cut, replaced with :class:`.SingleQubitQPDGate`\ s,
     and separated along the disconnected qubit boundaries into subcircuits.
     The observables will be separated along the boundaries specified by
-    ``partition_labels`` into subobservables for each partition.
+    the partition labels into subobservables for each partition.
 
     The subexperiments will be realized by sampling the joint quasi-probability distribution
     defined by the :class:`.BaseQPDGate` instances in each subcircuit. The distribution will be
-    sampled ``num_samples`` times, and a subexperiment will be created for each unique circuit
-    realized during sampling.
+    sampled ``num_samples`` times, and one or more subexperiments will be created for each unique
+    circuit realized during sampling.
 
     Args:
         circuit: The circuit to partition and separate
         partition_labels: A sequence of labels, such that each label corresponds
             to the circuit qubit with the same index
-        num_samples: The number of samples to draw from the quasi-probability distribution
+        num_samples: The number of samples to draw from the quasi-probability distribution. If set
+            to infinity, the weights will be generated rigorously rather than by sampling from
+            the distribution.
         observables: The observables to separate
 
     Returns:
         A ``namedtuple`` containing:
-            - subcircuits: A dictionary mapping a partition label to the corresponding subcircuit.
+            - subcircuits: A dictionary mapping a partition label to the corresponding subcircuit
             - subexperiments: A ``dict`` mapping a partition label to all of the subexperiments
                 corresponding to that partition. These :class:`~qiskit.QuantumCircuit` instances
                 are defined by outcome of sampling the joint quasi-probability distribution defined
                 by the :class:`.BaseQPDGate` instances in each subcircuit.
+            - subobservables: A dictionary mapping a partition label to a list of Pauli observables
             - weights: The weights corresponding to the unique samples drawn from the joint
                 quasi-probability distribution defined by the :class:`.BaseQPDGate` instances in each subcircuit.
                 These weights are used in post-processing to reconstruct the expectation value.
             - bases: A list of :class:`.QPDBasis` instances -- one for each circuit gate
                 or wire which was decomposed
-            - subobservables: A dictionary mapping a partition label to a list of Pauli observables
 
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
         ValueError: An input observable acts on a different number of qubits than the input circuit.
         ValueError: An input observable has a phase not equal to 1.
         ValueError: The input circuit should contain no classical bits or registers.
+        ValueError: ``num_samples`` must either be an ``int`` or infinity.
     """
     if len(partition_labels) != circuit.num_qubits:
         raise ValueError(
@@ -244,6 +247,10 @@ def partition_problem(
         raise ValueError(
             "Circuits input to execute_experiments should contain no classical registers or bits."
         )
+
+    if isinstance(num_samples, float):
+        if num_samples != np.inf:
+            raise ValueError("num_samples must either be an integer or infinity.")
 
     # Partition the circuit with TwoQubitQPDGates and assign the order via their labels
     qpd_circuit = partition_circuit_qubits(circuit, partition_labels)
@@ -265,7 +272,7 @@ def partition_problem(
 
     # Generate the sub-experiments to run on backend
     subexperiments, weights = generate_cutting_experiments(
-        separated_circs.subcircuits, subobservables_by_subsystem, num_samples
+        separated_circs.subcircuits, num_samples, subobservables_by_subsystem
     )
 
     assert isinstance(subexperiments, dict)
@@ -308,13 +315,44 @@ def decompose_observables(
 
 def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
+    num_samples: int | float,
     observables: PauliList | dict[str | int, PauliList],
-    num_samples: int,
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
 ]:
-    """Generate all the experiments to run on the backend and their associated weights."""
+    """
+    Generate cutting subexperiments and their associated weights.
+
+    Args:
+        circuits: The circuit(s) to partition and separate
+        num_samples: The number of samples to draw from the quasi-probability distribution. If set
+            to infinity, the weights will be generated rigorously rather than by sampling from
+            the distribution.
+        observables: The observable(s) to evaluate for each unique sample
+
+    Returns:
+        A tuple containing the cutting experiments and their associated weights.
+
+        If the input circuits is a :class:`QuantumCircuit` instance, the output subexperiments
+        will be a sequence of circuits -- one for every unique sample and observable. If the
+        input circuits are represented as a dictionary keyed by partition labels, the output
+        subexperiments will also be a dictionary keyed by partition labels and containing
+        the subexperiments for each partition.
+
+        The weights are always a sequence of length-2 tuples, where each tuple contains the
+        weight and the :class:`WeightType`. Each weight corresponds to one unique sample.
+
+    Raises:
+        ValueError: ``num_samples`` must either be an integer or infinity.
+        ValueError: :class:`SingleQubitQPDGate` instances must have the cut number
+            appended to the gate label.
+        ValueError: :class:`SingleQubitQPDGate` instances are not allowed in
+    """
+    if isinstance(num_samples, float):
+        if num_samples != np.inf:
+            raise ValueError("num_samples must either be an integer or infinity.")
+
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on the format of the execute_experiments input args, but the 2nd half of this function
     # can be shared between both cases.
@@ -356,7 +394,7 @@ def generate_cutting_experiments(
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
-    # Generate the outputs -- sub-experiments, weights, and frequencies
+    # Generate the sub-experiments and weights
     subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
     weights: list[tuple[float, WeightType]] = []
     for i, (subcircuit, label) in enumerate(
@@ -402,12 +440,23 @@ def _get_mapping_ids_by_partition(
         subcirc_map_ids.append([])
         for i, inst in enumerate(circ.data):
             if isinstance(inst.operation, SingleQubitQPDGate):
-                decomp_id = int(inst.operation.label.split("_")[-1])
+                try:
+                    decomp_id = int(inst.operation.label.split("_")[-1])
+                except (AttributeError, ValueError):
+                    _raise_bad_qpd_gate_labels()
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[-1].append([i])
                 subcirc_map_ids[-1].append(decomp_id)
 
     return subcirc_qpd_gate_ids, subcirc_map_ids
+
+
+def _raise_bad_qpd_gate_labels() -> None:
+    raise ValueError(
+        "BaseQPDGate instances in input circuit(s) should have their "
+        'labels suffixed with "_<cut_#>" so that sibling SingleQubitQPDGate '
+        "instances may be grouped and sampled together."
+    )
 
 
 def _get_bases_by_partition(
@@ -418,9 +467,13 @@ def _get_bases_by_partition(
     bases_dict = {}
     for i, subcirc in enumerate(subcirc_qpd_gate_ids):
         for basis_id in subcirc:
-            decomp_id = int(
-                circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
-            )
+            try:
+                decomp_id = int(
+                    circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
+                )
+            except (AttributeError, ValueError):
+                _raise_bad_qpd_gate_labels()
+
             bases_dict[decomp_id] = circuits[i].data[basis_id[0]].operation.basis
     bases = [bases_dict[key] for key in sorted(bases_dict.keys())]
 
