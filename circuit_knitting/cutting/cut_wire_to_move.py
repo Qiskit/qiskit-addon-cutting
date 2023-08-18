@@ -14,11 +14,16 @@
 from __future__ import annotations
 
 from itertools import groupby
+
+import numpy as np
 from qiskit.circuit import Qubit, QuantumCircuit
-from circuit_knitting.cutting.instructions.move import Move
+from qiskit.circuit.exceptions import CircuitError
+from qiskit.quantum_info import PauliList
+
+from .instructions.move import Move
 
 
-def transform_cuts_to_moves(circuit: QuantumCircuit) -> QuantumCircuit:
+def transform_cuts_to_moves(circuit: QuantumCircuit, /) -> QuantumCircuit:
     """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions.
 
     Args:
@@ -82,3 +87,63 @@ def _circuit_structure_mapping(
         new_circuit.add_register(creg)
 
     return new_circuit, mapping
+
+
+def expand_observables(
+    observables: PauliList,
+    original_circuit: QuantumCircuit,
+    final_circuit: QuantumCircuit,
+    /,
+) -> PauliList:
+    r"""Expand observable(s) according to the qubit mapping between ``original_circuit`` and ``final_circuit``.
+
+    The :class:`.Qubit`\ s on ``final_circuit`` must be a superset of those on
+    ``original_circuit``.
+
+    Given a :class:`.PauliList` of observables, this function returns new
+    observables with identity operators placed on the qubits that did not
+    exist in ``original_circuit``.  This way, observables on
+    ``original_circuit`` can be mapped to appropriate observables on
+    ``final_circuit``.
+
+    This function is designed to be used after calling ``final_circuit =
+    transform_cuts_to_moves(original_circuit)`` (see
+    :func:`.transform_cuts_to_moves`).
+
+    This function requires ``observables.num_qubits ==
+    original_circuit.num_qubits`` and returns new observables such that
+    ``retval.num_qubits == final_circuit.num_qubits``.
+
+    Args:
+        observables: Observables corresponding to ``original_circuit``
+        original_circuit: Original circuit
+        final_circuit: Final circuit, whose qubits the original ``observables`` should be expanded to
+
+    Returns:
+        New :math:`N`-qubit observables which are compatible with the :math:`N`-qubit ``final_circuit``
+
+    Raises:
+        ValueError: ``observables`` and ``original_circuit`` have different number of qubits.
+        ValueError: Qubit from ``original_circuit`` cannot be found in ``final_circuit``.
+    """
+    if observables.num_qubits != original_circuit.num_qubits:
+        raise ValueError(
+            "The `observables` and `original_circuit` must have the same number "
+            f"of qubits. ({observables.num_qubits} != {original_circuit.num_qubits})"
+        )
+    mapping: list[int] = []
+    for i, qubit in enumerate(original_circuit.qubits):
+        try:
+            idx = final_circuit.find_bit(qubit)[0]
+        except CircuitError as ex:
+            raise ValueError(
+                f"The {i}-th qubit of the `original_circuit` cannot be found "
+                "in the `final_circuit`."
+            ) from ex
+        mapping.append(idx)
+    dims = (len(observables), final_circuit.num_qubits)
+    z = np.full(dims, False)
+    x = np.full(dims, False)
+    z[:, mapping] = observables.z
+    x[:, mapping] = observables.x
+    return PauliList.from_symplectic(z, x, observables.phase.copy())

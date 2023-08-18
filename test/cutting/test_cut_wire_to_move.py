@@ -10,13 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test for the transform_to_move function."""
+"""Tests for single qubit wire cutting functions."""
 from __future__ import annotations
 
-from pytest import fixture, mark
+from pytest import fixture, mark, raises
 from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
+from qiskit.quantum_info import PauliList
 from circuit_knitting.cutting.instructions import Move, CutWire
-from circuit_knitting.cutting import transform_cuts_to_moves
+from circuit_knitting.cutting import transform_cuts_to_moves, expand_observables
 
 
 @fixture
@@ -323,3 +324,75 @@ def test_creg(request, sample_circuit):
         final_circuit.cregs,
     ):
         assert sample_creg.size == final_creg.size
+
+
+class TestExpandObservables:
+    def test_expand_observables(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit()
+        qc1.add_bits(
+            [
+                qc0.qubits[0],
+                Qubit(),
+                Qubit(),
+                qc0.qubits[1],
+                qc0.qubits[2],
+                Qubit(),
+            ]
+        )
+        observables_in = PauliList(
+            [
+                "XYZ",
+                "iIXZ",
+                "-YYZ",
+                "-iZZZ",
+            ]
+        )
+        observables_expected = PauliList(
+            [
+                "IXYIIZ",
+                "iIIXIIZ",
+                "-IYYIIZ",
+                "-iIZZIIZ",
+            ]
+        )
+        observables_out = expand_observables(observables_in, qc0, qc1)
+        assert observables_out == observables_expected
+
+    def test_with_zero_qubits(self):
+        qc0 = QuantumCircuit()
+        qc1 = QuantumCircuit(3)
+        observables_in = PauliList(["", ""])
+        observables_expected = PauliList(["III"] * 2)
+        observables_out = expand_observables(observables_in, qc0, qc1)
+        assert observables_out == observables_expected
+
+    def test_with_mismatched_qubit_count(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit(4)
+        obs = PauliList(["IZIZ"])
+        with raises(ValueError) as e_info:
+            expand_observables(obs, qc0, qc1)
+        assert (
+            e_info.value.args[0]
+            == "The `observables` and `original_circuit` must have the same number of qubits. (4 != 3)"
+        )
+
+    def test_with_non_subset(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit()
+        qc1.add_bits(
+            [
+                qc0.qubits[0],
+                Qubit(),
+                qc0.qubits[1],
+                Qubit(),
+            ]
+        )
+        obs = PauliList(["IZZ"])
+        with raises(ValueError) as e_info:
+            expand_observables(obs, qc0, qc1)
+        assert (
+            e_info.value.args[0]
+            == "The 2-th qubit of the `original_circuit` cannot be found in the `final_circuit`."
+        )

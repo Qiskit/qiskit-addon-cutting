@@ -22,6 +22,7 @@ Circuit Cutting
     :nosignatures:
 
     transform_cuts_to_moves
+    expand_observables
     partition_circuit_qubits
     partition_problem
     cut_gates
@@ -87,7 +88,7 @@ from .cutting_decomposition import (
 )
 from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_reconstruction import reconstruct_expectation_values
-from .cut_wire_to_move import transform_cuts_to_moves
+from .cut_wire_to_move import transform_cuts_to_moves, expand_observables
 
 __all__ = [
     "partition_circuit_qubits",
@@ -99,4 +100,5 @@ __all__ = [
     "PartitionedCuttingProblem",
     "CuttingExperimentResults",
     "transform_cuts_to_moves",
+    "expand_observables",
 ]
