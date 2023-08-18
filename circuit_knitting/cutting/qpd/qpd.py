@@ -69,7 +69,7 @@ from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomp
 from qiskit.utils import deprecate_func
 
 from .qpd_basis import QPDBasis
-from .instructions import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate, QPDMeasure
+from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
 from ..instructions import Move
 from ...utils.iteration import unique_by_id, strict_zip
 
@@ -1062,7 +1062,7 @@ def _validate_qpd_instructions(
 
 
 def _decompose_qpd_measurements(
-    circuit: QuantumCircuit, num_qpd_bits: int, inplace: bool = True
+    circuit: QuantumCircuit, inplace: bool = True
 ) -> QuantumCircuit:
     """
     Create mid-circuit measurements.
@@ -1085,7 +1085,7 @@ def _decompose_qpd_measurements(
     # Create a classical register for the qpd measurement results.  This is
     # partly for convenience, partly to work around
     # https://github.com/Qiskit/qiskit-aer/issues/1660.
-    reg = ClassicalRegister(num_qpd_bits, name="qpd_measurements")
+    reg = ClassicalRegister(len(qpd_measure_ids), name="qpd_measurements")
     circuit.add_register(reg)
 
     # Place the measurement instructions
@@ -1135,14 +1135,10 @@ def _decompose_qpd_instructions(
         data_id_offset += 1
         circuit.data.insert(i + data_id_offset, inst2)
 
-    # The number of clbits in the "qpd_measurements` register will equal the total
-    # number of decompositions in the input circuit.
-    num_qpd_bits = 0
     # Decompose all the QPDGates (should all be single qubit now) into Qiskit operations
     new_instruction_ids = []
     for i, inst in enumerate(circuit.data):
-        if isinstance(inst.operation, SingleQubitQPDGate):
-            num_qpd_bits += 1
+        if isinstance(inst.operation, BaseQPDGate):
             new_instruction_ids.append(i)
     data_id_offset = 0
     for i in new_instruction_ids:
@@ -1170,6 +1166,6 @@ def _decompose_qpd_instructions(
             del circuit.data[i + data_id_offset]
             data_id_offset -= 1
 
-    _decompose_qpd_measurements(circuit, num_qpd_bits)
+    _decompose_qpd_measurements(circuit)
 
     return circuit

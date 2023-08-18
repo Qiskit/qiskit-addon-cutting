@@ -159,7 +159,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             observable = PauliList(["ZZXX"])
 
             partitioned_problem = partition_problem(
-                self.circuit, partition_labels, np.inf, observable
+                self.circuit, partition_labels, observable, np.inf
             )
             for subcircuit in partitioned_problem.subcircuits.values():
                 parameter_vals = [np.pi / 4] * len(subcircuit.parameters)
@@ -179,7 +179,7 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             with pytest.raises(ValueError) as e_info:
                 subcircuits, _, subobservables = partition_problem(
-                    self.circuit, partition_labels, np.inf, observable
+                    self.circuit, partition_labels, observable, np.inf
                 )
             assert (
                 e_info.value.args[0]
@@ -190,7 +190,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             observable = PauliList(["ZZ"])
             with pytest.raises(ValueError) as e_info:
                 subcircuits, _, subobservables = partition_problem(
-                    self.circuit, partition_labels, np.inf, observable
+                    self.circuit, partition_labels, observable, np.inf
                 )
             assert (
                 e_info.value.args[0]
@@ -207,7 +207,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             circuit.add_bits([Clbit()])
 
             with pytest.raises(ValueError) as e_info:
-                partition_problem(circuit, partition_labels, np.inf, observable)
+                partition_problem(circuit, partition_labels, observable, np.inf)
             assert (
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
@@ -219,7 +219,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             observable = PauliList(["-ZZXX"])
 
             with pytest.raises(ValueError) as e_info:
-                partition_problem(circuit, partition_labels, np.inf, observable)
+                partition_problem(circuit, partition_labels, observable, np.inf)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
@@ -235,7 +235,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [2, 1])
             qc.cx(0, 1)
             partitioned_problem = partition_problem(
-                qc, "AABB", np.inf, PauliList(["IZIZ"])
+                qc, "AABB", PauliList(["IZIZ"]), np.inf
             )
             assert (
                 len(partitioned_problem.subcircuits)
@@ -271,6 +271,6 @@ class TestCuttingDecomposition(unittest.TestCase):
     def test_unused_qubits(self):
         """Issue #218"""
         qc = QuantumCircuit(2)
-        partitioned_problem = partition_problem(qc, "AB", np.inf, PauliList(["XX"]))
+        partitioned_problem = partition_problem(qc, "AB", PauliList(["XX"]), np.inf)
         assert partitioned_problem.subcircuits.keys() == {"A", "B"}
         assert partitioned_problem.subobservables.keys() == {"A", "B"}

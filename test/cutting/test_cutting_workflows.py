@@ -29,7 +29,7 @@ def test_transpile_before_realizing_basis_id():
     circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
-    partitioned_problem = partition_problem(circuit, "AABB", np.inf, observables)
+    partitioned_problem = partition_problem(circuit, "AABB", observables, np.inf)
 
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.

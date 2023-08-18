@@ -182,8 +182,8 @@ def cut_gates(
 def partition_problem(
     circuit: QuantumCircuit,
     partition_labels: Sequence[str | int],
-    num_samples: int | float,
     observables: PauliList,
+    num_samples: int | float,
 ) -> PartitionedCuttingProblem:
     r"""
     Separate an input circuit and observable(s) along qubit partition labels.
@@ -203,10 +203,10 @@ def partition_problem(
         circuit: The circuit to partition and separate
         partition_labels: A sequence of labels, such that each label corresponds
             to the circuit qubit with the same index
+        observables: The observables to separate
         num_samples: The number of samples to draw from the quasi-probability distribution. If set
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
-        observables: The observables to separate
 
     Returns:
         A ``namedtuple`` containing:
@@ -272,7 +272,7 @@ def partition_problem(
 
     # Generate the sub-experiments to run on backend
     subexperiments, weights = generate_cutting_experiments(
-        separated_circs.subcircuits, num_samples, subobservables_by_subsystem
+        separated_circs.subcircuits, subobservables_by_subsystem, num_samples
     )
 
     assert isinstance(subexperiments, dict)
@@ -315,8 +315,8 @@ def decompose_observables(
 
 def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
-    num_samples: int | float,
     observables: PauliList | dict[str | int, PauliList],
+    num_samples: int | float,
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
@@ -326,10 +326,10 @@ def generate_cutting_experiments(
 
     Args:
         circuits: The circuit(s) to partition and separate
+        observables: The observable(s) to evaluate for each unique sample
         num_samples: The number of samples to draw from the quasi-probability distribution. If set
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
-        observables: The observable(s) to evaluate for each unique sample
 
     Returns:
         A tuple containing the cutting experiments and their associated weights.
