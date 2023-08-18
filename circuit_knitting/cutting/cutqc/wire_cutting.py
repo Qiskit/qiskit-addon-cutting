@@ -25,6 +25,11 @@ from qiskit_ibm_runtime import Options, QiskitRuntimeService
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import generate_reconstructed_output
+from .dynamic_definition import (
+    dd_build,
+    get_reconstruction_qubit_order,
+    read_dd_bins,
+)
 
 
 def cut_circuit_wires(
@@ -189,6 +194,75 @@ def reconstruct_full_distribution(
     )
 
     return reconstructed_probability
+
+
+def create_dd_bin(
+    subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
+    cuts: dict[str, Any],
+    mem_limit: int,
+    recursion_depth: int,
+    num_threads: int = 1,
+) -> dict[int, Any]:
+    """
+    Create a bin for Dynamic Definition.
+
+    Args:
+        subcircuit_instance_probabilities: The probability vectors from each
+            of the subcircuit instances, as output by the _run_subcircuits function
+        cuts: The results of cutting
+        mem_limit: maximum system memory
+        recursion_depth: the number of recursive call for Dynamic Definition
+        num_threads: The number of threads to use to parallelize the recomposing
+
+    Returns:
+        The bin for dynamic definition
+    """
+    summation_terms, subcircuit_entries, subcircuit_instances = _generate_metadata(cuts)
+
+    subcircuit_entry_probabilities = _attribute_shots(
+        subcircuit_entries, subcircuit_instance_probabilities
+    )
+
+    bin = dd_build(
+        summation_terms=summation_terms,
+        subcircuit_entry_probs=subcircuit_entry_probabilities,
+        num_cuts=cuts["num_cuts"],
+        mem_limit=mem_limit,
+        recursion_depth=recursion_depth,
+        counter=cuts["counter"],
+        subcircuit_instances=subcircuit_instances,
+        num_threads=num_threads,
+    )
+
+    return bin
+
+
+def reconstruct_dd_full_distribution(
+    circuit: QuantumCircuit,
+    cuts: dict[str, Any],
+    dd_bins: dict[int, Any],
+) -> np.ndarray:
+    """
+    Reconstruct the full probabilities from bins of dynamic definition.
+
+    Args:
+        circuit: The original full circuit
+        cuts: The results of cutting
+        dd_bins: The bin for Dynamic Definition
+
+    Returns:
+        The reconstructed probability vector
+    """
+    subcircuit_out_qubits = get_reconstruction_qubit_order(
+        full_circuit=circuit,
+        complete_path_map=cuts["complete_path_map"],
+        subcircuits=cuts["subcircuits"],
+    )
+    reconstructed_prob = read_dd_bins(
+        subcircuit_out_qubits=subcircuit_out_qubits, dd_bins=dd_bins
+    )
+
+    return reconstructed_prob
 
 
 def _generate_metadata(
