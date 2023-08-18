@@ -6,4 +6,6 @@ prelude: |
   ``circuit_knitting_toolbox`` has been renamed to
   ``circuit_knitting``, ``entanglement_forging`` has been renamed to
   ``forging``, and ``circuit_cutting`` has been renamed to
-  ``cutting``.
+  ``cutting``.  The new circuit cutting module contains significant
+  enhancements, including support for wire cutting and for the cutting
+  of arbitrary two-qubit gates.
