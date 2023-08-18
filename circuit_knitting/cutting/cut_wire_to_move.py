@@ -15,17 +15,18 @@ from __future__ import annotations
 
 from typing import Callable
 from itertools import groupby
-import numpy as np
 
+import numpy as np
 from qiskit.circuit import Qubit, QuantumCircuit, Operation
 from qiskit.circuit.exceptions import CircuitError
 from qiskit.quantum_info import PauliList
-from circuit_knitting.cutting.instructions.move import Move
-from circuit_knitting.cutting.qpd.instructions import TwoQubitQPDGate
+
+from .instructions import Move
+from .qpd.instructions import TwoQubitQPDGate
 
 
 def cut_wires(circuit: QuantumCircuit, /) -> QuantumCircuit:
-    """Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions marked for cutting.
+    r"""Transform all :class:`.CutWire` instructions in a circuit to :class:`.Move` instructions marked for cutting.
 
     The returned circuit will have one newly allocated qubit for every :class:`.CutWire` instruction.
 
@@ -118,9 +119,9 @@ def expand_observables(
     final_circuit: QuantumCircuit,
     /,
 ) -> PauliList:
-    """Expand observable(s) according to the qubit mapping between ``original_circuit`` and ``final_circuit``.
+    r"""Expand observable(s) according to the qubit mapping between ``original_circuit`` and ``final_circuit``.
 
-    The qubits on ``final_circuit`` must be a superset of those on
+    The :class:`.Qubit`\ s on ``final_circuit`` must be a superset of those on
     ``original_circuit``.
 
     Given a :class:`.PauliList` of observables, this function returns new
@@ -140,10 +141,10 @@ def expand_observables(
     Args:
         observables: Observables corresponding to ``original_circuit``
         original_circuit: Original circuit
-        final_circuit: Final circuit, whose qubits the original ``observables`` should be expanded to.
+        final_circuit: Final circuit, whose qubits the original ``observables`` should be expanded to
 
     Returns:
-        New observables, appropriate for the ``final_circuit``.
+        New :math:`N`-qubit observables which are compatible with the :math:`N`-qubit ``final_circuit``
 
     Raises:
         ValueError: ``observables`` and ``original_circuit`` have different number of qubits.
