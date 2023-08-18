@@ -19,7 +19,7 @@ from qiskit.quantum_info import PauliList
 from circuit_knitting.cutting.instructions import Move, CutWire
 from circuit_knitting.cutting.qpd.instructions import TwoQubitQPDGate
 from circuit_knitting.cutting import cut_wires, expand_observables
-from circuit_knitting.cutting.cut_wire_to_move import _transform_cuts_to_moves
+from circuit_knitting.cutting.wire_cutting_transforms import _transform_cuts_to_moves
 
 
 @fixture
