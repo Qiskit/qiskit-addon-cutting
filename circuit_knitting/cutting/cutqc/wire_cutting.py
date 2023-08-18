@@ -237,7 +237,7 @@ def create_dd_bin(
     return bin
 
 
-def reconstruct_dd_full_distribute(
+def reconstruct_dd_full_distribution(
     circuit: QuantumCircuit,
     cuts: dict[str, Any],
     dd_bins: dict[int, Any],
