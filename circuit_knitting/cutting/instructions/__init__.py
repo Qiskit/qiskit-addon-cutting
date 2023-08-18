@@ -11,8 +11,10 @@
 
 r"""Quantum circuit :class:`~qiskit.Instruction`\ s useful for circuit cutting."""
 
+from .cut_wire import CutWire
 from .move import Move
 
 __all__ = [
+    "CutWire",
     "Move",
 ]
