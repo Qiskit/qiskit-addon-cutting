@@ -207,7 +207,7 @@ def resulting_circuit4() -> tuple[QuantumCircuit, list[int]]:
         ("circuit4", "resulting_circuit4"),
     ],
 )
-def test__transform_cuts_to_moves(request, sample_circuit, resulting_circuit):
+def test_transform_cuts_to_moves(request, sample_circuit, resulting_circuit):
     """Tests the transformation of CutWire to Move instruction."""
     assert request.getfixturevalue(resulting_circuit)[0] == _transform_cuts_to_moves(
         request.getfixturevalue(sample_circuit)
