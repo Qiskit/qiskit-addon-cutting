@@ -30,6 +30,11 @@ def cut_wires(circuit: QuantumCircuit, /) -> QuantumCircuit:
 
     The returned circuit will have one newly allocated qubit for every :class:`.CutWire` instruction.
 
+    See Sec. 3 and Appendix A of `2302.03366v1
+    <https://arxiv.org/abs/2302.03366v1>`__ for more information about the two
+    different representations of wire cuts: single-qubit (:class:`.CutWire`)
+    vs. two-qubit (:class:`.Move`).
+
     Args:
         circuit: Original circuit with :class:`.CutWire` instructions
 
