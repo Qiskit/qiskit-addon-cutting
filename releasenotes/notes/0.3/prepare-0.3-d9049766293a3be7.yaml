@@ -1,6 +1,6 @@
 ---
 prelude: |
-  The 0.3.0 release introduces significant new features while maining
+  The 0.3.0 release introduces significant new features while maintaining
   backwards compatibility with the 0.2.0 release.  The most striking
   change in this release is the shortened module names:
   ``circuit_knitting_toolbox`` has been renamed to
