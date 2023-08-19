@@ -25,12 +25,15 @@ from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
+    generate_cutting_experiments,
 )
 from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
+    SingleQubitQPDGate,
     TwoQubitQPDGate,
     BaseQPDGate,
+    WeightType,
 )
 
 
@@ -243,6 +246,14 @@ class TestCuttingDecomposition(unittest.TestCase):
                 == len(partitioned_problem.subobservables)
                 == 2
             )
+        with self.subTest("Test bad num_samples"):
+            qc = QuantumCircuit(4)
+            with pytest.raises(ValueError) as e_info:
+                partition_problem(qc, "AABB", PauliList(["ZZZZ"]), 4.5)
+            assert (
+                e_info.value.args[0]
+                == "num_samples must either be an integer or infinity."
+            )
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
@@ -274,3 +285,73 @@ class TestCuttingDecomposition(unittest.TestCase):
         partitioned_problem = partition_problem(qc, "AB", PauliList(["XX"]), np.inf)
         assert partitioned_problem.subcircuits.keys() == {"A", "B"}
         assert partitioned_problem.subobservables.keys() == {"A", "B"}
+
+    def test_generate_cutting_experiments(self):
+        with self.subTest("simple circuit and observable"):
+            qc = QuantumCircuit(2)
+            qc.append(
+                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                qargs=[0, 1],
+            )
+            comp_weights = [
+                (0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (-0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (-0.5, WeightType.EXACT),
+            ]
+            subexperiments, weights = generate_cutting_experiments(
+                qc, PauliList(["ZZ"]), np.inf
+            )
+            assert weights == comp_weights
+            assert len(weights) == len(subexperiments)
+            for exp in subexperiments:
+                assert isinstance(exp, QuantumCircuit)
+
+        with self.subTest("test bad num_samples"):
+            qc = QuantumCircuit(4)
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 4.5)
+            assert (
+                e_info.value.args[0]
+                == "num_samples must either be an integer or infinity."
+            )
+        with self.subTest("test bad label"):
+            qc = QuantumCircuit(2)
+            qc.append(
+                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                qargs=[0, 1],
+            )
+            partitioned_problem = partition_problem(qc, "AB", PauliList(["ZZ"]), np.inf)
+            partitioned_problem.subcircuits["A"].data[0].operation.label = "newlabel"
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(
+                    partitioned_problem.subcircuits,
+                    partitioned_problem.subobservables,
+                    np.inf,
+                )
+            assert e_info.value.args[0] == (
+                "BaseQPDGate instances in input circuit(s) should have their labels suffixed with "
+                '"_<cut_#>" so that sibling SingleQubitQPDGate instances may be grouped and sampled together.'
+            )
+        with self.subTest("test bad observable size"):
+            qc = QuantumCircuit(4)
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
+            assert e_info.value.args[0] == (
+                "Quantum circuit qubit count (4) does not match qubit count of observable(s) (2)."
+                "  Try providing `qubit_locations` explicitly."
+            )
+        with self.subTest("test single qubit qpd gate in unseparated circuit"):
+            qc = QuantumCircuit(2)
+            qc.append(
+                SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 0, label="cut_cx_0"),
+                qargs=[0],
+            )
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
+            assert (
+                e_info.value.args[0]
+                == "SingleQubitQPDGates are not supported in unseparated circuits."
+            )

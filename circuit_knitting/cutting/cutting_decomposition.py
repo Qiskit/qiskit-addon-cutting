@@ -347,7 +347,7 @@ def generate_cutting_experiments(
         ValueError: ``num_samples`` must either be an integer or infinity.
         ValueError: :class:`SingleQubitQPDGate` instances must have the cut number
             appended to the gate label.
-        ValueError: :class:`SingleQubitQPDGate` instances are not allowed in
+        ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
     """
     if isinstance(num_samples, float):
         if num_samples != np.inf:
@@ -471,8 +471,8 @@ def _get_bases_by_partition(
                 decomp_id = int(
                     circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
                 )
-            except (AttributeError, ValueError):
-                _raise_bad_qpd_gate_labels()
+            except (AttributeError, ValueError):  # pragma: no cover
+                _raise_bad_qpd_gate_labels()  # pragma: no cover
 
             bases_dict[decomp_id] = circuits[i].data[basis_id[0]].operation.basis
     bases = [bases_dict[key] for key in sorted(bases_dict.keys())]
@@ -517,8 +517,10 @@ def _append_measurement_circuit(
             )
         qubit_locations = range(cog.general_observable.num_qubits)
     else:
-        if len(qubit_locations) != cog.general_observable.num_qubits:
-            raise ValueError(
+        if (
+            len(qubit_locations) != cog.general_observable.num_qubits
+        ):  # pragma: no cover
+            raise ValueError(  # pragma: no cover
                 f"qubit_locations has {len(qubit_locations)} element(s) but the "
                 f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
             )
@@ -552,7 +554,7 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
     for i, inst in enumerate(circuit):
         if isinstance(inst.operation, SingleQubitQPDGate):
             raise ValueError(
-                "SingleQubitQPDGates are not supported in unseparable circuits."
+                "SingleQubitQPDGates are not supported in unseparated circuits."
             )
         if isinstance(inst.operation, TwoQubitQPDGate):
             bases.append(inst.operation.basis)
