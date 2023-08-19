@@ -19,14 +19,11 @@ from circuit_knitting.cutting import (
     partition_problem,
     cut_gates,
     decompose_gates,
-    execute_experiments,
     reconstruct_expectation_values,
     PartitionedCuttingProblem,
-    CuttingExperimentResults,
     qpd,
     cutqc,
     cutting_decomposition,
-    cutting_evaluation,
     cutting_reconstruction,
     wire_cutting,
 )
@@ -36,10 +33,8 @@ __all__ = [
     "partition_problem",
     "cut_gates",
     "decompose_gates",
-    "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
-    "CuttingExperimentResults",
 ]
 
 sys.modules["circuit_knitting_toolbox.circuit_cutting.qpd"] = qpd
@@ -59,9 +54,6 @@ sys.modules["circuit_knitting_toolbox.circuit_cutting.wire_cutting"] = wire_cutt
 sys.modules[
     "circuit_knitting_toolbox.circuit_cutting.cutting_decomposition"
 ] = cutting_decomposition
-sys.modules[
-    "circuit_knitting_toolbox.circuit_cutting.cutting_evaluation"
-] = cutting_evaluation
 sys.modules[
     "circuit_knitting_toolbox.circuit_cutting.cutting_reconstruction"
 ] = cutting_reconstruction
