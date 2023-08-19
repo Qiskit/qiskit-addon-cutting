@@ -93,14 +93,14 @@ class TestQPDBasis(unittest.TestCase):
             -0.24999999999999997,
         ]
 
-    def test_from_gate(self):
+    def test_from_instruction(self):
         rxx_gate = RXXGate(np.pi / 3)
         ryy_gate = RYYGate(np.pi / 5)
         rzz_gate = RZZGate(np.pi / 6)
 
-        rxx_decomp: QPDBasis = QPDBasis.from_gate(rxx_gate)
-        ryy_decomp: QPDBasis = QPDBasis.from_gate(ryy_gate)
-        rzz_decomp: QPDBasis = QPDBasis.from_gate(rzz_gate)
+        rxx_decomp: QPDBasis = QPDBasis.from_instruction(rxx_gate)
+        ryy_decomp: QPDBasis = QPDBasis.from_instruction(ryy_gate)
+        rzz_decomp: QPDBasis = QPDBasis.from_instruction(rzz_gate)
 
         rxx_truth = QPDBasis(self.truth_rxx_maps, self.truth_rxx_coeffs)
         ryy_truth = QPDBasis(self.truth_ryy_maps, self.truth_ryy_coeffs)
@@ -115,12 +115,12 @@ class TestQPDBasis(unittest.TestCase):
         np.testing.assert_allclose(rzz_truth.coeffs, rzz_decomp.coeffs)
 
     def test_eq(self):
-        basis = QPDBasis.from_gate(RXXGate(np.pi / 7))
+        basis = QPDBasis.from_instruction(RXXGate(np.pi / 7))
         self.assertEqual(copy.deepcopy(basis), basis)
 
     def test_unsupported_gate(self):
         with pytest.raises(ValueError) as e_info:
-            QPDBasis.from_gate(C3XGate())
+            QPDBasis.from_instruction(C3XGate())
         assert e_info.value.args[0] == "Instruction not supported: mcx"
 
     def test_unbound_parameter(self):
@@ -128,7 +128,7 @@ class TestQPDBasis(unittest.TestCase):
             # For explicitly support gates, we can give a specific error
             # message due to unbound parameters.
             with pytest.raises(ValueError) as e_info:
-                QPDBasis.from_gate(RZZGate(Parameter("θ")))
+                QPDBasis.from_instruction(RZZGate(Parameter("θ")))
             assert (
                 e_info.value.args[0]
                 == "Cannot decompose (rzz) instruction with unbound parameters."
@@ -138,7 +138,7 @@ class TestQPDBasis(unittest.TestCase):
             # failed, but there are other possible explanations, too.  See
             # https://github.com/Qiskit/qiskit-terra/issues/10396
             with pytest.raises(ValueError) as e_info:
-                QPDBasis.from_gate(XXPlusYYGate(Parameter("θ")))
+                QPDBasis.from_instruction(XXPlusYYGate(Parameter("θ")))
             assert (
                 e_info.value.args[0]
                 == "`to_matrix` conversion of two-qubit gate (xx_plus_yy) failed. Often, this can be caused by unbound parameters."

@@ -407,7 +407,7 @@ def build(
     )
     args = []
     for i in range(num_threads * 5):
-        segment_summation_terms = _find_process_jobs(
+        segment_summation_terms = find_process_jobs(
             jobs=summation_terms, rank=i, num_workers=num_threads * 5
         )
         if len(segment_summation_terms) == 0:
@@ -435,9 +435,9 @@ def build(
     return reconstructed_prob, smart_order, overhead
 
 
-def _find_process_jobs(
-    jobs: Sequence[dict[int, int]], rank: int, num_workers: int
-) -> Sequence[dict[int, int]]:
+def find_process_jobs(
+    jobs: Sequence[Any], rank: int, num_workers: int
+) -> Sequence[Any]:
     """
     Split up the total jobs into subjobs to be multithreaded.
 

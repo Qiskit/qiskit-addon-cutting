@@ -144,6 +144,12 @@ class TwoQubitQPDGate(BaseQPDGate):
 
         self.definition = qc
 
+    @classmethod
+    def from_instruction(cls, instruction: Instruction, /):
+        """Create a :class:`TwoQubitQPDGate` which represents a cut version of the given ``instruction``."""
+        decomposition = QPDBasis.from_instruction(instruction)
+        return TwoQubitQPDGate(decomposition, label=f"cut_{instruction.name}")
+
 
 class SingleQubitQPDGate(BaseQPDGate):
     """

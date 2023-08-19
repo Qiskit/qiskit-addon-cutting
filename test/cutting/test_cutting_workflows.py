@@ -29,13 +29,15 @@ def test_transpile_before_realizing_basis_id():
     circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
-    partitioned_problem = partition_problem(circuit, "AABB", observables, np.inf)
+    partitioned_problem = partition_problem(
+        circuit, observables, np.inf, partition_labels="AABB"
+    )
 
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.
     backend = FakeLagosV2()
     target = deepcopy(backend.target)
-    sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 1)
+    sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_instruction(CXGate()), 1)
     target.add_instruction(
         sample_qpd_instruction,
         {(i,): None for i in range(target.num_qubits)},

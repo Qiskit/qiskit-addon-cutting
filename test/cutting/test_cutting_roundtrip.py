@@ -151,7 +151,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     )
     sampler = ExactSampler()
     partitioned_problem = partition_problem(
-        qc, "AAB", num_samples=np.inf, observables=observables_nophase
+        qc, observables_nophase, np.inf, partition_labels="AAB"
     )
 
     results_a = sampler.run(partitioned_problem.subexperiments["A"]).result()

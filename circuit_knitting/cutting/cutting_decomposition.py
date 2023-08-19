@@ -32,7 +32,7 @@ from ..utils.observable_grouping import (
     ObservableCollection,
     CommutingObservableGroup,
 )
-from ..utils.transforms import separate_circuit
+from ..utils.transforms import separate_circuit, _partition_labels_from_circuit
 from ..utils.iteration import strict_zip
 from .qpd import (
     QPDBasis,
@@ -111,10 +111,7 @@ def partition_circuit_qubits(
         if isinstance(instruction.operation, TwoQubitQPDGate):
             continue
 
-        decomposition = QPDBasis.from_gate(instruction.operation)
-        qpd_gate = TwoQubitQPDGate(
-            decomposition, label=f"cut_{instruction.operation.name}"
-        )
+        qpd_gate = TwoQubitQPDGate.from_instruction(instruction.operation)
         circuit.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit
@@ -171,9 +168,8 @@ def cut_gates(
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
         qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
-        decomposition = QPDBasis.from_gate(gate.operation)
-        bases.append(decomposition)
-        qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
+        qpd_gate = TwoQubitQPDGate.from_instruction(gate.operation)
+        bases.append(qpd_gate.basis)
         circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit, bases
@@ -181,18 +177,23 @@ def cut_gates(
 
 def partition_problem(
     circuit: QuantumCircuit,
-    partition_labels: Sequence[str | int],
     observables: PauliList,
     num_samples: int | float,
+    partition_labels: Sequence[str | int] | None = None,
 ) -> PartitionedCuttingProblem:
     r"""
-    Separate an input circuit and observable(s) along qubit partition labels.
+    Separate an input circuit and observable(s).
 
-    Circuit qubits with matching partition labels will be grouped together, and non-local
-    gates spanning more than one partition will be cut, replaced with :class:`.SingleQubitQPDGate`\ s,
-    and separated along the disconnected qubit boundaries into subcircuits.
-    The observables will be separated along the boundaries specified by
-    the partition labels into subobservables for each partition.
+    If ``partition_labels`` is provided, then qubits with matching partition
+    labels will be grouped together, and non-local gates spanning more than one
+    partition will be cut. The observables will be separated along the boundaries
+    specified by the partition labels into subobservables for each partition.
+
+    If ``partition_labels`` is not provided, then it will be determined
+    automatically from the connectivity of the circuit.  This automatic
+    determination ignores any :class:`.TwoQubitQPDGate`\ s in the ``circuit``,
+    as these denote instructions that are explicitly destined for cutting. All cut
+    instructions will be replaced with :class:`.SingleQubitQPDGate`\ s.
 
     The subexperiments will be realized by sampling the joint quasi-probability distribution
     defined by the :class:`.BaseQPDGate` instances in each subcircuit. The distribution will be
@@ -201,12 +202,12 @@ def partition_problem(
 
     Args:
         circuit: The circuit to partition and separate
-        partition_labels: A sequence of labels, such that each label corresponds
-            to the circuit qubit with the same index
         observables: The observables to separate
         num_samples: The number of samples to draw from the quasi-probability distribution. If set
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
+        partition_labels: A sequence of labels, such that each label corresponds
+            to the circuit qubit with the same index
 
     Returns:
         A ``namedtuple`` containing:
@@ -229,7 +230,7 @@ def partition_problem(
         ValueError: The input circuit should contain no classical bits or registers.
         ValueError: ``num_samples`` must either be an ``int`` or infinity.
     """
-    if len(partition_labels) != circuit.num_qubits:
+    if partition_labels is not None and len(partition_labels) != circuit.num_qubits:
         raise ValueError(
             f"The number of partition labels ({len(partition_labels)}) must equal the number "
             f"of qubits in the circuit ({circuit.num_qubits})."
@@ -251,6 +252,13 @@ def partition_problem(
     if isinstance(num_samples, float):
         if num_samples != np.inf:
             raise ValueError("num_samples must either be an integer or infinity.")
+
+    # Determine partition labels from connectivity (ignoring TwoQubitQPDGates)
+    # if partition_labels is not specified
+    if partition_labels is None:
+        partition_labels = _partition_labels_from_circuit(
+            circuit, ignore=lambda inst: isinstance(inst.operation, TwoQubitQPDGate)
+        )
 
     # Partition the circuit with TwoQubitQPDGates and assign the order via their labels
     qpd_circuit = partition_circuit_qubits(circuit, partition_labels)
