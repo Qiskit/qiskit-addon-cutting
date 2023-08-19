@@ -36,7 +36,6 @@ Circuit Cutting
     :template: autosummary/class_no_inherited_members.rst
 
     PartitionedCuttingProblem
-    CuttingExperimentResults
     instructions.CutWire
     instructions.Move
 
@@ -98,7 +97,6 @@ __all__ = [
     "decompose_gates",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
-    "CuttingExperimentResults",
     "cut_wires",
     "expand_observables",
 ]
