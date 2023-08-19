@@ -32,7 +32,7 @@ Key terms
 
 Current limitations
 -------------------
-* ``PauliList`` is the only supported observable format until no sooner than CKT v0.3.0.
+* ``PauliList`` is the only supported observable format until no sooner than CKT v0.4.0.
 
 References
 ----------

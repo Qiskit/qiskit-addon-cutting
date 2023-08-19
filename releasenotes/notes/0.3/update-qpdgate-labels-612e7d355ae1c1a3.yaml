@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    :class:`.BaseQPDGate` instances in subcircuits
+    returned from :func:`.partition_circuit_qubits`
+    and :func:`.partition_problem` will now have
+    labels prefixed with "cut", rather than "qpd".
+
