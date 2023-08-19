@@ -72,6 +72,14 @@ class TestCuttingReconstruction(unittest.TestCase):
                 e_info.value.args[0]
                 == "If observables is a dictionary, results must also be a dictionary."
             )
+            results2 = {"A": results}
+            observables = PauliList(["ZZ"])
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(observables, weights, results2)
+            assert (
+                e_info.value.args[0]
+                == "If observables is a PauliList, results must be a SamplerResult instance."
+            )
         with self.subTest("Test unsupported phase"):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
@@ -86,6 +94,15 @@ class TestCuttingReconstruction(unittest.TestCase):
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
                 reconstruct_expectation_values(observables, weights, results)
+            assert (
+                e_info.value.args[0]
+                == "An input observable has a phase not equal to 1."
+            )
+            results2 = {"A": results}
+            subexperiments = {"A": subexperiments}
+            observables = {"A": observables}
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(observables, weights, results2)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
