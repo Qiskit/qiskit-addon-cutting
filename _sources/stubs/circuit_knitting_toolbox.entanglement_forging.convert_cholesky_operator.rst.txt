@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.entanglement\_forging.convert\_cholesky\_operator
-============================================================================
-
-.. currentmodule:: circuit_knitting_toolbox.entanglement_forging
-
-.. autofunction:: convert_cholesky_operator

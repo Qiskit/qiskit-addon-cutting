@@ -5,12 +5,13 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="How to generate exact sampling coefficients" href="how_to_generate_exact_sampling_coefficients.html" /><link rel="prev" title="Circuit Cutting How-To Guides" href="index.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.05.20 -->
-        <title>How to generate exact quasiprobability distributions from Sampler - Circuit Knitting Toolbox 0.2.0</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
+        <title>How to generate exact quasiprobability distributions from Sampler - Circuit Knitting Toolbox 0.3.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
@@ -131,7 +132,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.2.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +159,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.2.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -174,12 +175,14 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Cutting Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Cutting Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Cutting Explanatory Material</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Cutting How-To Guides</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Cutting How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">How to generate exact quasiprobability distributions from Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../cutqc/index.html">CutQC (legacy circuit cutting implementation)</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of CutQC (legacy circuit cutting implementation)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -198,9 +201,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../entanglement_forging/explanation/index.html">Forging Explanatory Material</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../entanglement_forging/how-tos/index.html">Forging How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Forging How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals (with the H₂O molecule as an example)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../entanglement_forging/how-tos/specify-problem.html">How to specify the problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings (with the CH₃ molecule as an example)</a></li>
 </ul>
 </li>
 </ul>
@@ -208,59 +211,67 @@
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../apidocs/index.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../apidocs/circuit_cutting.html">Circuit Cutting</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Circuit Cutting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html">circuit_knitting_toolbox.circuit_cutting.partition_problem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html">circuit_knitting_toolbox.circuit_cutting.decompose_gates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html">circuit_knitting_toolbox.circuit_cutting.execute_experiments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html">circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html">circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults.html">circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html">circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.WeightType.html">circuit_knitting_toolbox.circuit_cutting.qpd.WeightType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples.html">circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions.html">circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html">circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms.html">circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.build.html">circuit_knitting_toolbox.circuit_cutting.cutqc.build</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.verify.html">circuit_knitting_toolbox.circuit_cutting.cutqc.verify</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires.html">circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits.html">circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html">circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cut_wires.html">circuit_knitting.cutting.cut_wires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.expand_observables.html">circuit_knitting.cutting.expand_observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.partition_circuit_qubits.html">circuit_knitting.cutting.partition_circuit_qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.CuttingExperimentResults.html">circuit_knitting.cutting.CuttingExperimentResults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html">circuit_knitting.cutting.qpd.TwoQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.WeightType.html">circuit_knitting.cutting.qpd.WeightType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.generate_qpd_weights.html">circuit_knitting.cutting.qpd.generate_qpd_weights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.generate_qpd_samples.html">circuit_knitting.cutting.qpd.generate_qpd_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.decompose_qpd_instructions.html">circuit_knitting.cutting.qpd.decompose_qpd_instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.qpdbasis_from_instruction.html">circuit_knitting.cutting.qpd.qpdbasis_from_instruction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.run_subcircuit_instances.html">circuit_knitting.cutting.cutqc.run_subcircuit_instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.generate_summation_terms.html">circuit_knitting.cutting.cutqc.generate_summation_terms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.build.html">circuit_knitting.cutting.cutqc.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.verify.html">circuit_knitting.cutting.cutqc.verify</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.cut_circuit_wires.html">circuit_knitting.cutting.cutqc.cut_circuit_wires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.evaluate_subcircuits.html">circuit_knitting.cutting.cutqc.evaluate_subcircuits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cutqc.reconstruct_full_distribution.html">circuit_knitting.cutting.cutqc.reconstruct_full_distribution</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../apidocs/entanglement_forging.html">Entanglement Forging</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Entanglement Forging</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition.html">circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html">circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.EntanglementForgingKnitter.html">circuit_knitting.forging.EntanglementForgingKnitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.EntanglementForgingOperator.html">circuit_knitting.forging.EntanglementForgingOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.EntanglementForgingAnsatz.html">circuit_knitting.forging.EntanglementForgingAnsatz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.EntanglementForgingGroundStateSolver.html">circuit_knitting.forging.EntanglementForgingGroundStateSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.EntanglementForgingResult.html">circuit_knitting.forging.EntanglementForgingResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.cholesky_decomposition.html">circuit_knitting.forging.cholesky_decomposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.forging.convert_cholesky_operator.html">circuit_knitting.forging.convert_cholesky_operator</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../apidocs/utils.html">Utilities</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Utilities</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html">circuit_knitting_toolbox.utils.bitwise.bit_count</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.conversion.quasi_to_real.html">circuit_knitting_toolbox.utils.conversion.quasi_to_real</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.conversion.naive_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.naive_probability_distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.conversion.dict_to_array.html">circuit_knitting_toolbox.utils.conversion.dict_to_array</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_id.html">circuit_knitting_toolbox.utils.iteration.unique_by_id</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.iteration.unique_by_eq.html">circuit_knitting_toolbox.utils.iteration.unique_by_eq</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.metrics.chi2_distance.html">circuit_knitting_toolbox.utils.metrics.chi2_distance</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.metrics.MSE.html">circuit_knitting_toolbox.utils.metrics.MSE</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.metrics.MAPE.html">circuit_knitting_toolbox.utils.metrics.MAPE</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.metrics.cross_entropy.html">circuit_knitting_toolbox.utils.metrics.cross_entropy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.metrics.HOP.html">circuit_knitting_toolbox.utils.metrics.HOP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem.html">circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup.html">circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html">circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html">circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.simulation.ExactSampler.html">circuit_knitting_toolbox.utils.simulation.ExactSampler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.transforms.separate_circuit.html">circuit_knitting_toolbox.utils.transforms.separate_circuit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html">circuit_knitting_toolbox.utils.transforms.SeparatedCircuits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.bitwise.bit_count.html">circuit_knitting.utils.bitwise.bit_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.conversion.quasi_to_real.html">circuit_knitting.utils.conversion.quasi_to_real</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.conversion.nearest_probability_distribution.html">circuit_knitting.utils.conversion.nearest_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.conversion.naive_probability_distribution.html">circuit_knitting.utils.conversion.naive_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.conversion.dict_to_array.html">circuit_knitting.utils.conversion.dict_to_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.iteration.unique_by_id.html">circuit_knitting.utils.iteration.unique_by_id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.iteration.unique_by_eq.html">circuit_knitting.utils.iteration.unique_by_eq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.metrics.chi2_distance.html">circuit_knitting.utils.metrics.chi2_distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.metrics.MSE.html">circuit_knitting.utils.metrics.MSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.metrics.MAPE.html">circuit_knitting.utils.metrics.MAPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.metrics.cross_entropy.html">circuit_knitting.utils.metrics.cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.metrics.HOP.html">circuit_knitting.utils.metrics.HOP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.observable_grouping.observables_restricted_to_subsystem.html">circuit_knitting.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.observable_grouping.CommutingObservableGroup.html">circuit_knitting.utils.observable_grouping.CommutingObservableGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.observable_grouping.ObservableCollection.html">circuit_knitting.utils.observable_grouping.ObservableCollection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting.utils.orbital_reduction.reduce_bitstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.simulation.simulate_statevector_outcomes.html">circuit_knitting.utils.simulation.simulate_statevector_outcomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.simulation.ExactSampler.html">circuit_knitting.utils.simulation.ExactSampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.transforms.separate_circuit.html">circuit_knitting.utils.transforms.separate_circuit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.utils.transforms.SeparatedCircuits.html">circuit_knitting.utils.transforms.SeparatedCircuits</a></li>
 </ul>
 </li>
 </ul>
@@ -316,7 +327,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
 
-<span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.circuit_cutting</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">partition_problem</span><span class="p">,</span>
     <span class="n">execute_experiments</span><span class="p">,</span>
 <span class="p">)</span>
@@ -332,18 +343,20 @@
 <span class="n">circuit</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">observables</span> <span class="o">=</span> <span class="n">PauliList</span><span class="p">([</span><span class="s2">&quot;ZZ&quot;</span><span class="p">])</span>
-<span class="n">subcircuits</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">subobservables</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
+<span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
     <span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observables</span>
 <span class="p">)</span>
+<span class="n">subcircuits</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subcircuits</span>
+<span class="n">subobservables</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subobservables</span>
 </pre></div>
 </div>
 </div>
-<p>In order to calculate exact quasiprobability distributions for circuits with mid-circuit measurements, users will need to use the <code class="docutils literal notranslate"><span class="pre">ExactSampler</span></code> class from <code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.utils.simulation</span></code>. The Qiskit Samplers do not support mid-circuit measurements in statevector mode.</p>
+<p>In order to calculate exact quasiprobability distributions for circuits with mid-circuit measurements, users will need to use the <code class="docutils literal notranslate"><span class="pre">ExactSampler</span></code> class from <code class="docutils literal notranslate"><span class="pre">circuit_knitting.utils.simulation</span></code>. The Qiskit Samplers do not support mid-circuit measurements in statevector mode.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting_toolbox.utils.simulation</span> <span class="kn">import</span> <span class="n">ExactSampler</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.utils.simulation</span> <span class="kn">import</span> <span class="n">ExactSampler</span>
 
 <span class="n">exact_sampler</span> <span class="o">=</span> <span class="n">ExactSampler</span><span class="p">()</span>
 </pre></div>
@@ -362,6 +375,22 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>  <span class="c1"># noqa: F401</span>
+
+<span class="o">%</span><span class="k">qiskit_version_table</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td><code>qiskit-terra</code></td><td>0.24.1</td></tr><tr><td><code>qiskit-aer</code></td><td>0.12.1</td></tr><tr><td><code>qiskit-ibmq-provider</code></td><td>0.20.2</td></tr><tr><td><code>qiskit</code></td><td>0.43.2</td></tr><tr><td><code>qiskit-nature</code></td><td>0.6.0</td></tr><tr><th>System information</th></tr><tr><td>Python version</td><td>3.8.16</td></tr><tr><td>Python compiler</td><td>Clang 14.0.6 </td></tr><tr><td>Python build</td><td>default, Mar  1 2023 21:19:10</td></tr><tr><td>OS</td><td>Darwin</td></tr><tr><td>CPUs</td><td>8</td></tr><tr><td>Memory (Gb)</td><td>32.0</td></tr><tr><td colspan='2'>Mon Aug 14 08:37:59 2023 CDT</td></tr></table></div>
 </div>
 </section>
 
@@ -422,7 +451,7 @@
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b1f64a84"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

@@ -3,14 +3,15 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="circuit_knitting_toolbox.utils.transforms.SeparatedCircuits" href="stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="circuit_knitting.utils.transforms.SeparatedCircuits" href="stubs/circuit_knitting.utils.transforms.SeparatedCircuits.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.05.20 -->
-        <title>Release Notes - Circuit Knitting Toolbox 0.2.0</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
+        <title>Release Notes - Circuit Knitting Toolbox 0.3.0</title>
       <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fd506691" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -130,7 +131,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Circuit Knitting Toolbox 0.2.0</div></a>
+      <a href="index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +158,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.2.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -173,12 +174,14 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="circuit_cutting/tutorials/index.html">Cutting Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Cutting Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="circuit_cutting/explanation/index.html">Cutting Explanatory Material</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="circuit_cutting/how-tos/index.html">Cutting How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Cutting How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="circuit_cutting/cutqc/index.html">CutQC (legacy circuit cutting implementation)</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of CutQC (legacy circuit cutting implementation)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -197,9 +200,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="entanglement_forging/explanation/index.html">Forging Explanatory Material</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="entanglement_forging/how-tos/index.html">Forging How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Forging How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals (with the H₂O molecule as an example)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/specify-problem.html">How to specify the problem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/freeze-orbitals.html">How to freeze orbitals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="entanglement_forging/how-tos/use-asymmetric-bitstrings.html">How to use asymmetric bitstrings (with the CH₃ molecule as an example)</a></li>
 </ul>
 </li>
 </ul>
@@ -207,59 +210,67 @@
 <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="apidocs/index.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/circuit_cutting.html">Circuit Cutting</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Circuit Cutting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits.html">circuit_knitting_toolbox.circuit_cutting.partition_circuit_qubits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html">circuit_knitting_toolbox.circuit_cutting.partition_problem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html">circuit_knitting_toolbox.circuit_cutting.decompose_gates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html">circuit_knitting_toolbox.circuit_cutting.execute_experiments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html">circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem.html">circuit_knitting_toolbox.circuit_cutting.PartitionedCuttingProblem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults.html">circuit_knitting_toolbox.circuit_cutting.CuttingExperimentResults</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html">circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.SingleQubitQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate.html">circuit_knitting_toolbox.circuit_cutting.qpd.TwoQubitQPDGate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.WeightType.html">circuit_knitting_toolbox.circuit_cutting.qpd.WeightType</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples.html">circuit_knitting_toolbox.circuit_cutting.qpd.generate_qpd_samples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions.html">circuit_knitting_toolbox.circuit_cutting.qpd.decompose_qpd_instructions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances.html">circuit_knitting_toolbox.circuit_cutting.cutqc.run_subcircuit_instances</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms.html">circuit_knitting_toolbox.circuit_cutting.cutqc.generate_summation_terms</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.build.html">circuit_knitting_toolbox.circuit_cutting.cutqc.build</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.verify.html">circuit_knitting_toolbox.circuit_cutting.cutqc.verify</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires.html">circuit_knitting_toolbox.circuit_cutting.cutqc.cut_circuit_wires</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits.html">circuit_knitting_toolbox.circuit_cutting.cutqc.evaluate_subcircuits</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution.html">circuit_knitting_toolbox.circuit_cutting.cutqc.reconstruct_full_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cut_wires.html">circuit_knitting.cutting.cut_wires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.expand_observables.html">circuit_knitting.cutting.expand_observables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.partition_circuit_qubits.html">circuit_knitting.cutting.partition_circuit_qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.CuttingExperimentResults.html">circuit_knitting.cutting.CuttingExperimentResults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html">circuit_knitting.cutting.qpd.TwoQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.WeightType.html">circuit_knitting.cutting.qpd.WeightType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.generate_qpd_weights.html">circuit_knitting.cutting.qpd.generate_qpd_weights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.generate_qpd_samples.html">circuit_knitting.cutting.qpd.generate_qpd_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.decompose_qpd_instructions.html">circuit_knitting.cutting.qpd.decompose_qpd_instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.qpdbasis_from_instruction.html">circuit_knitting.cutting.qpd.qpdbasis_from_instruction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.run_subcircuit_instances.html">circuit_knitting.cutting.cutqc.run_subcircuit_instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.generate_summation_terms.html">circuit_knitting.cutting.cutqc.generate_summation_terms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.build.html">circuit_knitting.cutting.cutqc.build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.verify.html">circuit_knitting.cutting.cutqc.verify</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.cut_circuit_wires.html">circuit_knitting.cutting.cutqc.cut_circuit_wires</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.evaluate_subcircuits.html">circuit_knitting.cutting.cutqc.evaluate_subcircuits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cutqc.reconstruct_full_distribution.html">circuit_knitting.cutting.cutqc.reconstruct_full_distribution</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/entanglement_forging.html">Entanglement Forging</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Entanglement Forging</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingKnitter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingOperator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingAnsatz</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver.html">circuit_knitting_toolbox.entanglement_forging.EntanglementForgingGroundStateSolver</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition.html">circuit_knitting_toolbox.entanglement_forging.cholesky_decomposition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator.html">circuit_knitting_toolbox.entanglement_forging.convert_cholesky_operator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingKnitter.html">circuit_knitting.forging.EntanglementForgingKnitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingOperator.html">circuit_knitting.forging.EntanglementForgingOperator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingAnsatz.html">circuit_knitting.forging.EntanglementForgingAnsatz</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingGroundStateSolver.html">circuit_knitting.forging.EntanglementForgingGroundStateSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingResult.html">circuit_knitting.forging.EntanglementForgingResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.cholesky_decomposition.html">circuit_knitting.forging.cholesky_decomposition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.forging.convert_cholesky_operator.html">circuit_knitting.forging.convert_cholesky_operator</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/utils.html">Utilities</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Utilities</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.bitwise.bit_count.html">circuit_knitting_toolbox.utils.bitwise.bit_count</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.quasi_to_real.html">circuit_knitting_toolbox.utils.conversion.quasi_to_real</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.nearest_probability_distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.naive_probability_distribution.html">circuit_knitting_toolbox.utils.conversion.naive_probability_distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.conversion.dict_to_array.html">circuit_knitting_toolbox.utils.conversion.dict_to_array</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.iteration.unique_by_id.html">circuit_knitting_toolbox.utils.iteration.unique_by_id</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.iteration.unique_by_eq.html">circuit_knitting_toolbox.utils.iteration.unique_by_eq</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.chi2_distance.html">circuit_knitting_toolbox.utils.metrics.chi2_distance</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.MSE.html">circuit_knitting_toolbox.utils.metrics.MSE</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.MAPE.html">circuit_knitting_toolbox.utils.metrics.MAPE</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.cross_entropy.html">circuit_knitting_toolbox.utils.metrics.cross_entropy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.metrics.HOP.html">circuit_knitting_toolbox.utils.metrics.HOP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem.html">circuit_knitting_toolbox.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup.html">circuit_knitting_toolbox.utils.observable_grouping.CommutingObservableGroup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection.html">circuit_knitting_toolbox.utils.observable_grouping.ObservableCollection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting_toolbox.utils.orbital_reduction.reduce_bitstrings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes.html">circuit_knitting_toolbox.utils.simulation.simulate_statevector_outcomes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.simulation.ExactSampler.html">circuit_knitting_toolbox.utils.simulation.ExactSampler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.transforms.separate_circuit.html">circuit_knitting_toolbox.utils.transforms.separate_circuit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html">circuit_knitting_toolbox.utils.transforms.SeparatedCircuits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.bitwise.bit_count.html">circuit_knitting.utils.bitwise.bit_count</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.conversion.quasi_to_real.html">circuit_knitting.utils.conversion.quasi_to_real</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.conversion.nearest_probability_distribution.html">circuit_knitting.utils.conversion.nearest_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.conversion.naive_probability_distribution.html">circuit_knitting.utils.conversion.naive_probability_distribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.conversion.dict_to_array.html">circuit_knitting.utils.conversion.dict_to_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.iteration.unique_by_id.html">circuit_knitting.utils.iteration.unique_by_id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.iteration.unique_by_eq.html">circuit_knitting.utils.iteration.unique_by_eq</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.metrics.chi2_distance.html">circuit_knitting.utils.metrics.chi2_distance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.metrics.MSE.html">circuit_knitting.utils.metrics.MSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.metrics.MAPE.html">circuit_knitting.utils.metrics.MAPE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.metrics.cross_entropy.html">circuit_knitting.utils.metrics.cross_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.metrics.HOP.html">circuit_knitting.utils.metrics.HOP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.observable_grouping.observables_restricted_to_subsystem.html">circuit_knitting.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.observable_grouping.CommutingObservableGroup.html">circuit_knitting.utils.observable_grouping.CommutingObservableGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.observable_grouping.ObservableCollection.html">circuit_knitting.utils.observable_grouping.ObservableCollection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.orbital_reduction.reduce_bitstrings.html">circuit_knitting.utils.orbital_reduction.reduce_bitstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.simulation.simulate_statevector_outcomes.html">circuit_knitting.utils.simulation.simulate_statevector_outcomes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.simulation.ExactSampler.html">circuit_knitting.utils.simulation.ExactSampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.transforms.separate_circuit.html">circuit_knitting.utils.transforms.separate_circuit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.utils.transforms.SeparatedCircuits.html">circuit_knitting.utils.transforms.SeparatedCircuits</a></li>
 </ul>
 </li>
 </ul>
@@ -307,62 +318,214 @@
         <article role="main">
           <section id="release-notes">
 <span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
-<section id="release-notes-0-2-0">
-<span id="id2"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Permalink to this heading">#</a></h2>
+<section id="release-notes-0-3-0">
+<span id="id2"></span><h2>0.3.0<a class="headerlink" href="#release-notes-0-3-0" title="Permalink to this heading">#</a></h2>
 <section id="prelude">
-<span id="release-notes-0-2-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">#</a></h3>
+<span id="release-notes-0-3-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">#</a></h3>
+<p>The 0.3.0 release introduces significant new features while maintaining
+backwards compatibility with the 0.2.0 release.  The most striking
+change in this release is the shortened module names:
+<code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox</span></code> has been renamed to
+<code class="docutils literal notranslate"><span class="pre">circuit_knitting</span></code>, <code class="docutils literal notranslate"><span class="pre">entanglement_forging</span></code> has been renamed to
+<code class="docutils literal notranslate"><span class="pre">forging</span></code>, and <code class="docutils literal notranslate"><span class="pre">circuit_cutting</span></code> has been renamed to
+<code class="docutils literal notranslate"><span class="pre">cutting</span></code>.  The new circuit cutting module contains significant
+enhancements, including support for wire cutting and for the cutting
+of arbitrary two-qubit gates.</p>
+</section>
+<section id="new-features">
+<span id="release-notes-0-3-0-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">#</a></h3>
+<ul>
+<li><p>The circuit cutting module now supports the cutting of arbitrary
+two-qubit gates.  This is supported via a KAK decomposition, using
+Qiskit’s <code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitWeylDecomposition</span></code>, following the method
+in <a class="reference external" href="https://arxiv.org/abs/2006.11174">arXiv:2006.11174</a>.</p>
+<p>Additionally, this release adds <em>explicit</em> support (i.e., without
+relying on a KAK decomposition) for the following gates:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CHGate.html#qiskit.circuit.library.CHGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CHGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CYGate.html#qiskit.circuit.library.CYGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CYGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CSGate.html#qiskit.circuit.library.CSGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CSXGate.html#qiskit.circuit.library.CSXGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSXGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CSdgGate.html#qiskit.circuit.library.CSdgGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSdgGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CPhaseGate.html#qiskit.circuit.library.CPhaseGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPhaseGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.ECRGate.html#qiskit.circuit.library.ECRGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ECRGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.SwapGate.html#qiskit.circuit.library.SwapGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.iSwapGate.html#qiskit.circuit.library.iSwapGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">iSwapGate</span></code></a></p></li>
+<li><p><a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.DCXGate.html#qiskit.circuit.library.DCXGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCXGate</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html#circuit_knitting.cutting.partition_problem" title="circuit_knitting.cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a> now works even if <code class="docutils literal notranslate"><span class="pre">partition_labels</span></code>
+is not explicitly provided.  In this case, the labels are
+determined automatically from the connectivity of the input
+circuit.  For the sake of determining connectivity,
+<a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html#circuit_knitting.cutting.qpd.TwoQubitQPDGate" title="circuit_knitting.cutting.qpd.TwoQubitQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code></a>s are ignored, as these instructions
+are already marked for cutting.  To support this workflow, this
+release also introduces a new method,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">TwoQubitQPDGate.from_instruction()</span></code>, which allows one to
+create a <a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html#circuit_knitting.cutting.qpd.TwoQubitQPDGate" title="circuit_knitting.cutting.qpd.TwoQubitQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code></a> that wraps a given instruction.</p></li>
+</ul>
+<ul class="simple">
+<li><p>Dynamic Definition code has been added to the
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">cutqc</span></code> module.
+See pull request <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/pull/285">#285</a>
+for details.</p></li>
+</ul>
+<ul class="simple">
+<li><p>Users may now bypass experiments associated with the Hartree-Fock bitstring and replace their results with a specified Hartree-Fock value using the <code class="docutils literal notranslate"><span class="pre">hf_energy</span></code> class field in <a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingGroundStateSolver.html#circuit_knitting.forging.EntanglementForgingGroundStateSolver" title="circuit_knitting.forging.EntanglementForgingGroundStateSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code></a>. Refer to the <a class="reference internal" href="entanglement_forging/explanation/index.html#fixing-the-hartree-fock-bitstring"><span class="std std-ref">explanatory material</span></a> for more information.</p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.generate_qpd_weights.html#circuit_knitting.cutting.qpd.generate_qpd_weights" title="circuit_knitting.cutting.qpd.generate_qpd_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_qpd_weights()</span></code></a> now
+returns a mixture of exact and sampled weights when appropriate.
+Specifically, it exactly evaluates all weights greater than or
+equal to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">num_samples</span></code> and samples from the remaining
+weights (ones which are below this threshold).  Previously, this
+function would only return exact weights if <em>all</em> weights were
+greater than or equal to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">num_samples</span></code>; otherwise, all
+weights were sampled.  The new behavior is expected to improve
+performance on non-uniform quasi-probability decompositions,
+e.g. for cut instantiations of
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.RXXGate.html#qiskit.circuit.library.RXXGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RXXGate</span></code></a>,
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.RYYGate.html#qiskit.circuit.library.RYYGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RYYGate</span></code></a>,
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.RZZGate.html#qiskit.circuit.library.RZZGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a>,
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CRXGate.html#qiskit.circuit.library.CRXGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRXGate</span></code></a>,
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CRYGate.html#qiskit.circuit.library.CRYGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRYGate</span></code></a>, and
+<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.library.CRZGate.html#qiskit.circuit.library.CRZGate" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRZGate</span></code></a> away from
+<span class="math notranslate nohighlight">\(\theta=\pi/2\)</span>.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting.cutting" title="circuit_knitting.cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting.cutting</span></code></a> module now supports wire
+cutting.  There is a <a class="reference internal" href="circuit_cutting/tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">new tutorial</span></a> that explains how to use it.</p></li>
+</ul>
+</section>
+<section id="upgrade-notes">
+<span id="release-notes-0-3-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a> no longer creates separate jobs for each subcircuit by default.
+Now, separate jobs are only created if separate <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.BaseSampler.html#qiskit.primitives.BaseSampler" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSampler</span></code></a> instances are provided for each circuit partition.</p></li>
+</ul>
+<ul class="simple">
+<li><p>Numpy 1.23.0 or later is now required.  The <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.kron.html#numpy.kron" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">kron()</span></code></a>
+method in earlier versions <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/pull/70#issuecomment-1500514513">has known performance issues</a>,
+and this method is used heavily by the CutQC wire cutting module.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The dependency on the <a class="reference external" href="https://qiskit.org/documentation/apidoc/opflow.html#module-qiskit.opflow" title="(in Qiskit v0.44)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit.opflow</span></code></a> module has been removed from entanglement forging.
+With this change, Qiskit Nature 0.6.0 is now required.
+However, Qiskit Nature 0.6.0 is incompatible with Quantum Serverless, so users that wish to
+use entanglement forging with Quantum Serverless must remain on version 0.2 of the Circuit
+Knitting Toolbox until <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/108">issue #108</a> is resolved.</p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html#circuit_knitting.cutting.qpd.BaseQPDGate" title="circuit_knitting.cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> instances in subcircuits
+returned from <a class="reference internal" href="stubs/circuit_knitting.cutting.partition_circuit_qubits.html#circuit_knitting.cutting.partition_circuit_qubits" title="circuit_knitting.cutting.partition_circuit_qubits"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_circuit_qubits()</span></code></a>
+and <a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html#circuit_knitting.cutting.partition_problem" title="circuit_knitting.cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a> will now have
+labels prefixed with “cut”, rather than “qpd”.</p></li>
+</ul>
+</section>
+<section id="deprecation-notes">
+<span id="release-notes-0-3-0-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html#circuit_knitting.cutting.decompose_gates" title="circuit_knitting.cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a> is deprecated and will be removed no sooner than v0.4.0. Users should migrate to the identical <a class="reference internal" href="stubs/circuit_knitting.cutting.cut_gates.html#circuit_knitting.cutting.cut_gates" title="circuit_knitting.cutting.cut_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">cut_gates()</span></code></a> function.</p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.generate_qpd_samples.html#circuit_knitting.cutting.qpd.generate_qpd_samples" title="circuit_knitting.cutting.qpd.generate_qpd_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_qpd_samples()</span></code></a> has
+been renamed to
+<a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.generate_qpd_weights.html#circuit_knitting.cutting.qpd.generate_qpd_weights" title="circuit_knitting.cutting.qpd.generate_qpd_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_qpd_weights()</span></code></a>.  The
+original name will be removed no sooner than version 0.4 of the
+Circuit Knitting Toolbox.</p></li>
+</ul>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">QPDBasis.from_gate()</span></code> has been renamed to
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">QPDBasis.from_instruction()</span></code>.  The original name is
+deprecated and will be removed no sooner than CKT v0.4.0.</p></li>
+</ul>
+<ul>
+<li><p>The top-level name for imports has been renamed from
+<code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox</span></code> to <code class="docutils literal notranslate"><span class="pre">circuit_knitting</span></code>.
+Furthermore, the following renames have occurred one level deeper:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.entanglement_forging</span></code> has been moved
+to <code class="docutils literal notranslate"><span class="pre">circuit_knitting.forging</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting</span></code> has been moved
+to <code class="docutils literal notranslate"><span class="pre">circuit_knitting.cutting</span></code>.</p></li>
+</ul>
+<p>The old import locations are now deprecated and will be removed in
+a future release of the Circuit Knitting Toolbox.</p>
+</li>
+</ul>
+</section>
+<section id="bug-fixes">
+<span id="release-notes-0-3-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fixed a bug in <a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.decompose_qpd_instructions.html#circuit_knitting.cutting.qpd.decompose_qpd_instructions" title="circuit_knitting.cutting.qpd.decompose_qpd_instructions"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_qpd_instructions()</span></code></a> which would
+cause index errors if <a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html#circuit_knitting.cutting.qpd.TwoQubitQPDGate" title="circuit_knitting.cutting.qpd.TwoQubitQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code></a> indices were
+not specified in ascending order.</p></li>
+</ul>
+<ul class="simple">
+<li><p>Fixed a bug in <a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingGroundStateSolver.html#circuit_knitting.forging.EntanglementForgingGroundStateSolver" title="circuit_knitting.forging.EntanglementForgingGroundStateSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code></a> which was causing
+<code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>s when instantiating the <a class="reference internal" href="stubs/circuit_knitting.forging.EntanglementForgingResult.html#circuit_knitting.forging.EntanglementForgingResult" title="circuit_knitting.forging.EntanglementForgingResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingResult</span></code></a> in certain
+conditions, such as when reducing the orbitals over which to solve.</p></li>
+</ul>
+</section>
+</section>
+<section id="release-notes-0-2-0">
+<span id="id3"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Permalink to this heading">#</a></h2>
+<section id="release-notes-0-2-0-prelude">
+<span id="id4"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-2-0-prelude" title="Permalink to this heading">#</a></h3>
 <p>0.2.0 is centered around the addition of functions which allow for the easy
 implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
 <a class="reference internal" href="circuit_cutting/explanation/index.html#circuit-cutting-explanation"><span class="std std-ref">explanation guide</span></a>.</p>
-<p>The foundation of the <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code>
+<p>The foundation of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code>
 sub-package. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package allows for easy transformation of <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
-See <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html#circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis" title="circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis"><code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code></a> and <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html#circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate" title="circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> classes for more information.</p>
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> classes for more information.</p>
 <p>Additionally, 0.2.0 includes a set of functions which allow for easy implementation of gate cutting workflows.
 These functions are built on top of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code> package. Like all
 circuit knitting techniques, gate cutting can be described as three consecutive stages: <em>decomposition</em> of a problem,
 <em>execution</em> of many subexperiments, and <em>reconstruction</em> of a simulated output of the original problem.
-These steps may be implemented with the <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package using only a few primary
-functions, namely, the <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html#circuit_knitting_toolbox.circuit_cutting.partition_problem" title="circuit_knitting_toolbox.circuit_cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html#circuit_knitting_toolbox.circuit_cutting.decompose_gates" title="circuit_knitting_toolbox.circuit_cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html#circuit_knitting_toolbox.circuit_cutting.execute_experiments" title="circuit_knitting_toolbox.circuit_cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a>, and <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html#circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values" title="circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a> functions.
+These steps may be implemented with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package using only a few primary
+functions, namely, the <a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html#circuit_knitting.cutting.partition_problem" title="circuit_knitting.cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html#circuit_knitting.cutting.decompose_gates" title="circuit_knitting.cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a>, and <a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values" title="circuit_knitting.cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a> functions.
 Check out the <a class="reference internal" href="circuit_cutting/tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">tutorials</span></a> for a look at a couple of example circuit cutting workflows.</p>
 </section>
-<section id="new-features">
-<span id="release-notes-0-2-0-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-2-0-new-features">
+<span id="id5"></span><h3>New Features<a class="headerlink" href="#release-notes-0-2-0-new-features" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Addition of a <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package which allows for easy
 transformation of <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> gates and wires into elements which may be decomposed to a
-probabilistic set of basis gates. See <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis.html#circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis" title="circuit_knitting_toolbox.circuit_cutting.qpd.QPDBasis"><code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code></a> and <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate.html#circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate" title="circuit_knitting_toolbox.circuit_cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> classes for more information.</p></li>
+probabilistic set of basis gates. See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> classes for more information.</p></li>
 </ul>
 <ul class="simple">
 <li><p>Addition of <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_decomposition</span></code>, <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_execution</span></code>,
 and <code class="xref py py-mod docutils literal notranslate"><span class="pre">cutting_reconstruction</span></code> modules. These modules
 provide several functions which allow for easy implementation of gate cutting workflows, namely,
-the <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.partition_problem.html#circuit_knitting_toolbox.circuit_cutting.partition_problem" title="circuit_knitting_toolbox.circuit_cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.decompose_gates.html#circuit_knitting_toolbox.circuit_cutting.decompose_gates" title="circuit_knitting_toolbox.circuit_cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.execute_experiments.html#circuit_knitting_toolbox.circuit_cutting.execute_experiments" title="circuit_knitting_toolbox.circuit_cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a>, and <a class="reference internal" href="stubs/circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values.html#circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values" title="circuit_knitting_toolbox.circuit_cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a> functions.</p></li>
+the <a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html#circuit_knitting.cutting.partition_problem" title="circuit_knitting.cutting.partition_problem"><code class="xref py py-func docutils literal notranslate"><span class="pre">partition_problem()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html#circuit_knitting.cutting.decompose_gates" title="circuit_knitting.cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a>, <a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a>, and <a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values" title="circuit_knitting.cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a> functions.</p></li>
 </ul>
 </section>
 <section id="known-issues">
 <span id="release-notes-0-2-0-known-issues"></span><h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package only supports <code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code> observables for calculating expectation values. Support for calculating
-expectation values for more observable types, including <code class="xref py py-class docutils literal notranslate"><span class="pre">SparsePauliOp</span></code>, is expected no sooner than 0.3.0.</p></li>
+<li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package only supports <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.PauliList.html#qiskit.quantum_info.PauliList" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code></a> observables for calculating expectation values. Support for calculating
+expectation values for more observable types, including <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.SparsePauliOp.html#qiskit.quantum_info.SparsePauliOp" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparsePauliOp</span></code></a>, is expected no sooner than 0.3.0.</p></li>
 </ul>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Sampler</span></code>s from Qiskit and Qiskit Aer do not support mid-circuit measurements in statevector mode. For more on generating exact quasi-distributions using the <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSampler</span></code> interface, check out our <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb">how-to guide</a>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Sampler</span></code>s from Qiskit and Qiskit Aer do not support mid-circuit measurements in statevector mode. For more on generating exact quasi-distributions using the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.BaseSampler.html#qiskit.primitives.BaseSampler" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSampler</span></code></a> interface, check out our <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/tree/main/docs/circuit_cutting/how-tos/how_to_generate_exact_quasi_dists_from_sampler.ipynb">how-to guide</a>.</p></li>
 </ul>
 <ul class="simple">
-<li><p>The <a class="reference internal" href="apidocs/circuit_cutting.html#module-circuit_knitting_toolbox.circuit_cutting" title="circuit_knitting_toolbox.circuit_cutting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code></a> package generally does not yet support input circuits with user-added
+<li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package generally does not yet support input circuits with user-added
 classical bits, so by extension, it does not yet support dynamic circuits.</p></li>
 </ul>
 </section>
-<section id="upgrade-notes">
-<span id="release-notes-0-2-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-2-0-upgrade-notes">
+<span id="id6"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-2-0-upgrade-notes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been removed. To run the
 Circuit Knitting Toolbox, you now need Python version 3.8 or
 higher.</p></li>
 </ul>
 </section>
-<section id="deprecation-notes">
-<span id="release-notes-0-2-0-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-2-0-deprecation-notes">
+<span id="id7"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-2-0-deprecation-notes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.wire_cutting</span></code> namespace
 is now deprecated. It has been renamed to
@@ -376,9 +539,9 @@ reconstruction.</p></li>
 </section>
 </section>
 <section id="release-notes-0-1-0">
-<span id="id3"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">#</a></h2>
+<span id="id8"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">#</a></h2>
 <section id="release-notes-0-1-0-new-features">
-<span id="id4"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Permalink to this heading">#</a></h3>
+<span id="id9"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for Python 3.11.</p></li>
 </ul>
@@ -387,7 +550,7 @@ reconstruction.</p></li>
 </ul>
 </section>
 <section id="release-notes-0-1-0-upgrade-notes">
-<span id="id5"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-1-0-upgrade-notes" title="Permalink to this heading">#</a></h3>
+<span id="id10"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-1-0-upgrade-notes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The minimum supported version of each Qiskit dependency has been
 updated.  This release depends on <code class="docutils literal notranslate"><span class="pre">qiskit-terra&gt;=0.23.3</span></code>,
@@ -398,7 +561,7 @@ Toolbox.</p></li>
 </ul>
 <ul>
 <li><p>Support for Qiskit Nature &lt; 0.5 has been removed upon this release.</p>
-<p>Users are now be required to use the <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>,
+<p>Users are now be required to use the <a class="reference external" href="https://qiskit.org/ecosystem/nature/stubs/qiskit_nature.second_q.problems.ElectronicStructureProblem.html#qiskit_nature.second_q.problems.ElectronicStructureProblem" title="(in Qiskit Nature v0.6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code></a>,
 as input to the <code class="xref py py-class docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code>, rather than the deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>.</p>
 <p>For more information on migrating to Qiskit Nature 0.5, check out the
 <a class="reference external" href="https://qiskit.org/ecosystem/nature/migration/0.5_a_intro.html">Qiskit Nature migration guide</a>.</p>
@@ -408,7 +571,7 @@ out the <a class="reference internal" href="entanglement_forging/tutorials/index
 </ul>
 <ul class="simple">
 <li><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">IntegralDriver</span></code> class has been removed. The new Qiskit Nature
-API allows for a more flexible build-up of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code>,
+API allows for a more flexible build-up of the <a class="reference external" href="https://qiskit.org/ecosystem/nature/stubs/qiskit_nature.second_q.problems.ElectronicStructureProblem.html#qiskit_nature.second_q.problems.ElectronicStructureProblem" title="(in Qiskit Nature v0.6.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElectronicStructureProblem</span></code></a>,
 and this driver is no longer needed.</p></li>
 </ul>
 <ul class="simple">
@@ -417,7 +580,7 @@ installed for automatic wire cut finding to work.</p></li>
 </ul>
 </section>
 <section id="release-notes-0-1-0-deprecation-notes">
-<span id="id6"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-1-0-deprecation-notes" title="Permalink to this heading">#</a></h3>
+<span id="id11"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-1-0-deprecation-notes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been deprecated.  Future
 versions of the Circuit Knitting Toolbox will require Python 3.8
@@ -432,14 +595,14 @@ or higher.</p></li>
       <footer>
         <div class="related-pages">
           
-          <a class="prev-page" href="stubs/circuit_knitting_toolbox.utils.transforms.SeparatedCircuits.html">
+          <a class="prev-page" href="stubs/circuit_knitting.utils.transforms.SeparatedCircuits.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">circuit_knitting_toolbox.utils.transforms.SeparatedCircuits</div>
+                <div class="title">circuit_knitting.utils.transforms.SeparatedCircuits</div>
                 
               </div>
             </a>
@@ -481,12 +644,20 @@ or higher.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
-<li><a class="reference internal" href="#release-notes-0-2-0">0.2.0</a><ul>
+<li><a class="reference internal" href="#release-notes-0-3-0">0.3.0</a><ul>
 <li><a class="reference internal" href="#prelude">Prelude</a></li>
 <li><a class="reference internal" href="#new-features">New Features</a></li>
-<li><a class="reference internal" href="#known-issues">Known Issues</a></li>
 <li><a class="reference internal" href="#upgrade-notes">Upgrade Notes</a></li>
 <li><a class="reference internal" href="#deprecation-notes">Deprecation Notes</a></li>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-notes-0-2-0">0.2.0</a><ul>
+<li><a class="reference internal" href="#release-notes-0-2-0-prelude">Prelude</a></li>
+<li><a class="reference internal" href="#release-notes-0-2-0-new-features">New Features</a></li>
+<li><a class="reference internal" href="#known-issues">Known Issues</a></li>
+<li><a class="reference internal" href="#release-notes-0-2-0-upgrade-notes">Upgrade Notes</a></li>
+<li><a class="reference internal" href="#release-notes-0-2-0-deprecation-notes">Deprecation Notes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-notes-0-1-0">0.1.0</a><ul>
@@ -508,7 +679,7 @@ or higher.</p></li>
   </div>
 </div><script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b1f64a84"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c02300dd"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -517,5 +688,7 @@ or higher.</p></li>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

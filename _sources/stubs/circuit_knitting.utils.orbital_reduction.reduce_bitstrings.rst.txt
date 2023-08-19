@@ -1,0 +1,6 @@
+﻿circuit\_knitting.utils.orbital\_reduction.reduce\_bitstrings
+=============================================================
+
+.. currentmodule:: circuit_knitting.utils.orbital_reduction
+
+.. autofunction:: reduce_bitstrings

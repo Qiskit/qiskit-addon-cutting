@@ -1,0 +1,26 @@
+﻿circuit\_knitting.cutting.instructions.CutWire
+==============================================
+
+.. currentmodule:: circuit_knitting.cutting.instructions
+
+.. autoclass:: CutWire
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CutWire.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+   
+   

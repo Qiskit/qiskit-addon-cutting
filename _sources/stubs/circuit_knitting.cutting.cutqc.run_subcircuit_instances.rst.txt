@@ -1,0 +1,6 @@
+﻿circuit\_knitting.cutting.cutqc.run\_subcircuit\_instances
+==========================================================
+
+.. currentmodule:: circuit_knitting.cutting.cutqc
+
+.. autofunction:: run_subcircuit_instances

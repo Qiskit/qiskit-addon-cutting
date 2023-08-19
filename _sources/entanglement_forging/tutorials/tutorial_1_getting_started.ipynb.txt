@@ -48,7 +48,7 @@
    "source": [
     "from qiskit_nature.second_q.drivers import PySCFDriver\n",
     "from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema\n",
-    "from qiskit_nature.second_q.problems import ElectronicStructureProblem, ElectronicBasis\n",
+    "from qiskit_nature.second_q.problems import ElectronicBasis\n",
     "\n",
     "driver = PySCFDriver(\"H 0.0 0.0 0.0; H 0.0 0.0 0.735\")\n",
     "driver.run()\n",
@@ -96,7 +96,7 @@
     }
    ],
    "source": [
-    "from circuit_knitting_toolbox.entanglement_forging import EntanglementForgingAnsatz\n",
+    "from circuit_knitting.forging import EntanglementForgingAnsatz\n",
     "from qiskit.circuit.library import TwoLocal\n",
     "\n",
     "ansatz = EntanglementForgingAnsatz(\n",
@@ -124,7 +124,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "from qiskit_ibm_runtime import QiskitRuntimeService, Options\n",
+    "from qiskit_ibm_runtime import QiskitRuntimeService, Options  # noqa: F401\n",
     "\n",
     "# By default, use a local simulator to implement the Qiskit Runtime Primitives\n",
     "service = None\n",
@@ -164,7 +164,7 @@
    "source": [
     "import numpy as np\n",
     "from qiskit.algorithms.optimizers import COBYLA\n",
-    "from circuit_knitting_toolbox.entanglement_forging import (\n",
+    "from circuit_knitting.forging import (\n",
     "    EntanglementForgingGroundStateSolver,\n",
     ")\n",
     "\n",
@@ -311,7 +311,7 @@
     }
    ],
    "source": [
-    "import qiskit.tools.jupyter\n",
+    "import qiskit.tools.jupyter  # noqa: F401\n",
     "\n",
     "%qiskit_version_table"
    ]

@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.utils.iteration.unique\_by\_id
-=========================================================
-
-.. currentmodule:: circuit_knitting_toolbox.utils.iteration
-
-.. autofunction:: unique_by_id

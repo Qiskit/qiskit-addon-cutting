@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.utils.conversion.naive\_probability\_distribution
-============================================================================
-
-.. currentmodule:: circuit_knitting_toolbox.utils.conversion
-
-.. autofunction:: naive_probability_distribution

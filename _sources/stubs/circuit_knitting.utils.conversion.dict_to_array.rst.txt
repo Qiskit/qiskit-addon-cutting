@@ -1,0 +1,6 @@
+﻿circuit\_knitting.utils.conversion.dict\_to\_array
+==================================================
+
+.. currentmodule:: circuit_knitting.utils.conversion
+
+.. autofunction:: dict_to_array

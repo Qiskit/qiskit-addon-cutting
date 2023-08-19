@@ -1,0 +1,6 @@
+﻿circuit\_knitting.utils.metrics.MSE
+===================================
+
+.. currentmodule:: circuit_knitting.utils.metrics
+
+.. autofunction:: MSE

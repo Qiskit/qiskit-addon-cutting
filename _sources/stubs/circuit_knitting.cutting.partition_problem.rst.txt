@@ -1,0 +1,6 @@
+﻿circuit\_knitting.cutting.partition\_problem
+============================================
+
+.. currentmodule:: circuit_knitting.cutting
+
+.. autofunction:: partition_problem

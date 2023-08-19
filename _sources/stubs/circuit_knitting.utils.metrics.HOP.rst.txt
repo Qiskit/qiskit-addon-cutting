@@ -1,0 +1,6 @@
+﻿circuit\_knitting.utils.metrics.HOP
+===================================
+
+.. currentmodule:: circuit_knitting.utils.metrics
+
+.. autofunction:: HOP

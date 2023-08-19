@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.utils.observable\_grouping.observables\_restricted\_to\_subsystem
-============================================================================================
-
-.. currentmodule:: circuit_knitting_toolbox.utils.observable_grouping
-
-.. autofunction:: observables_restricted_to_subsystem

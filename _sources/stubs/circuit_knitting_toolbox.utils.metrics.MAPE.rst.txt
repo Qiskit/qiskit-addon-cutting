@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.utils.metrics.MAPE
-=============================================
-
-.. currentmodule:: circuit_knitting_toolbox.utils.metrics
-
-.. autofunction:: MAPE

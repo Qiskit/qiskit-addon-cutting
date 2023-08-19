@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.utils.bitwise.bit\_count
-===================================================
-
-.. currentmodule:: circuit_knitting_toolbox.utils.bitwise
-
-.. autofunction:: bit_count

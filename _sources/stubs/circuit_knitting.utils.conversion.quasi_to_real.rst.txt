@@ -1,0 +1,6 @@
+﻿circuit\_knitting.utils.conversion.quasi\_to\_real
+==================================================
+
+.. currentmodule:: circuit_knitting.utils.conversion
+
+.. autofunction:: quasi_to_real

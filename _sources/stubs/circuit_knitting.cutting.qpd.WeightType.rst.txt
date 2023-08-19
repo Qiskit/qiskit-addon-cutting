@@ -1,0 +1,22 @@
+﻿circuit\_knitting.cutting.qpd.WeightType
+========================================
+
+.. currentmodule:: circuit_knitting.cutting.qpd
+
+.. autoclass:: WeightType
+   :show-inheritance:
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WeightType.EXACT
+      ~WeightType.SAMPLED
+   
+   

@@ -1,0 +1,30 @@
+﻿circuit\_knitting.utils.observable\_grouping.ObservableCollection
+=================================================================
+
+.. currentmodule:: circuit_knitting.utils.observable_grouping
+
+.. autoclass:: ObservableCollection
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ObservableCollection.__init__
+      ~ObservableCollection.construct_general_observables
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ObservableCollection.groups
+      ~ObservableCollection.lookup
+   
+   

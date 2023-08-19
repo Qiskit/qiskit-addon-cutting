@@ -1,0 +1,34 @@
+﻿circuit\_knitting.cutting.qpd.QPDBasis
+======================================
+
+.. currentmodule:: circuit_knitting.cutting.qpd
+
+.. autoclass:: QPDBasis
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~QPDBasis.__init__
+      ~QPDBasis.from_gate
+      ~QPDBasis.from_instruction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~QPDBasis.coeffs
+      ~QPDBasis.kappa
+      ~QPDBasis.maps
+      ~QPDBasis.num_qubits
+      ~QPDBasis.overhead
+      ~QPDBasis.probabilities
+   
+   

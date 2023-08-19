@@ -18,9 +18,9 @@ There are two types of cuts: gate cuts and wire cuts.  Gate cuts, also known as 
 
 There are three settings to consider for circuit cutting.  The first is where only local operations (LO) [i.e., local *quantum* operations] are available.  The other settings introduce classical communication between the circuit executions, which is known in the quantum information literature as LOCC, for `local operations and classical communication <https://en.wikipedia.org/wiki/LOCC>`__.  The LOCC can be either near-time, one-directional communication between the circuit executions (the second setting), or real-time, bi-directional communication (the third setting).
 
-As mentioned above, the cost of any simulation based on quasiprobability distribution is an exponential sampling overhead. The overhead of a cut gate depends on which gate is cut; see the final appendix of [`1 <https://arxiv.org/abs/2205.00016>`__] for details.  Here, we will focus on the CNOT gate.  If no real-time classical communication is available between qubits of the cut gate or wire, cut CNOT gates incur a sampling overhead of O(:math:`9^n`), and wire cuts incur a sampling overhead of O(:math:`16^n`), where :math:`n` is the total number of cuts. If real-time communication is available (i.e., if the hardware supports “dynamic circuits”), the sampling overhead for both CNOT gate and wire cuts may be reduced to O(:math:`4^n`) [`1 <https://arxiv.org/abs/2205.00016>`__,\ `3 <https://arxiv.org/abs/2302.03366>`__]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.
+As mentioned above, the cost of any simulation based on quasiprobability distribution is an exponential sampling overhead. The overhead of a cut gate depends on which gate is cut; see the final appendix of [`1 <https://arxiv.org/abs/2205.00016>`__] for details.  Here, we will focus on the CNOT gate.  If no real-time classical communication is available between qubits of the cut gate or wire, cut CNOT gates incur a sampling overhead of O(:math:`9^n`), and wire cuts incur a sampling overhead of O(:math:`16^n`), where :math:`n` is the total number of cuts. If real-time communication is available (i.e., if the hardware supports “dynamic circuits”), the sampling overhead for both CNOT gate and wire cuts may be reduced to O(:math:`4^n`) [`1 <https://arxiv.org/abs/2205.00016>`__,\ `4 <https://arxiv.org/abs/2302.03366>`__]; however, support for circuit cutting with classical communication (LOCC) is not yet supported in CKT.
 
-For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [`4 <https://arxiv.org/abs/1612.02058>`__].
+For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [`5 <https://arxiv.org/abs/1612.02058>`__].
 
 Key terms
 -----------------
@@ -32,8 +32,7 @@ Key terms
 
 Current limitations
 -------------------
-* QPD-based wire cutting will be available no sooner than CKT v0.3.0. The `cutqc <../cutqc/index.rst>`__ package may be used for wire cutting in the meantime.
-* ``PauliList`` is the only supported observable format until no sooner than CKT v0.3.0.
+* ``PauliList`` is the only supported observable format until no sooner than CKT v0.4.0.
 
 References
 ----------
@@ -48,9 +47,12 @@ https://arxiv.org/abs/2205.00016
 single-qubit operations*,
 https://arxiv.org/abs/1909.07534
 
-[3] Lukas Brenner, Christophe Piveteau, David Sutter, *Optimal wire cutting with
+[3] Kosuke Mitarai, Keisuke Fujii, *Overhead for simulating a non-local channel with local channels by quasiprobability sampling*,
+https://arxiv.org/abs/2006.11174
+
+[4] Lukas Brenner, Christophe Piveteau, David Sutter, *Optimal wire cutting with
 classical communication*,
 https://arxiv.org/abs/2302.03366
 
-[4] K. Temme, S. Bravyi, and J. M. Gambetta, *Error mitigation for short-depth quantum circuits*,
+[5] K. Temme, S. Bravyi, and J. M. Gambetta, *Error mitigation for short-depth quantum circuits*,
 https://arxiv.org/abs/1612.02058

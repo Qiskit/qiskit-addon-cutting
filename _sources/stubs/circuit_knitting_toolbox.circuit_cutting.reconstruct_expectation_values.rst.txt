@@ -1,6 +1,0 @@
-﻿circuit\_knitting\_toolbox.circuit\_cutting.reconstruct\_expectation\_values
-============================================================================
-
-.. currentmodule:: circuit_knitting_toolbox.circuit_cutting
-
-.. autofunction:: reconstruct_expectation_values

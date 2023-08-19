@@ -1,0 +1,39 @@
+﻿circuit\_knitting.forging.EntanglementForgingGroundStateSolver
+==============================================================
+
+.. currentmodule:: circuit_knitting.forging
+
+.. autoclass:: EntanglementForgingGroundStateSolver
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~EntanglementForgingGroundStateSolver.__init__
+      ~EntanglementForgingGroundStateSolver.get_eigenvalue_evaluation
+      ~EntanglementForgingGroundStateSolver.get_qubit_operators
+      ~EntanglementForgingGroundStateSolver.solve
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~EntanglementForgingGroundStateSolver.ansatz
+      ~EntanglementForgingGroundStateSolver.backend_names
+      ~EntanglementForgingGroundStateSolver.hf_energy
+      ~EntanglementForgingGroundStateSolver.initial_point
+      ~EntanglementForgingGroundStateSolver.mo_coeff
+      ~EntanglementForgingGroundStateSolver.optimizer
+      ~EntanglementForgingGroundStateSolver.options
+      ~EntanglementForgingGroundStateSolver.orbitals_to_reduce
+      ~EntanglementForgingGroundStateSolver.service
+   
+   

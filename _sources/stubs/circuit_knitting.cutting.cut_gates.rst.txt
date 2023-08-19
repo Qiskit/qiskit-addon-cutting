@@ -1,0 +1,6 @@
+﻿circuit\_knitting.cutting.cut\_gates
+====================================
+
+.. currentmodule:: circuit_knitting.cutting
+
+.. autofunction:: cut_gates
