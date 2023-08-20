@@ -1,5 +1,5 @@
-Circuit Cutting How-Tos
--------------------------
+Circuit Cutting How-To Guides
+-----------------------------
 
 - `Generate exact quasi-distributions <how_to_generate_exact_quasi_dists_from_sampler.ipynb>`__:
   Use the :class:`~circuit_knitting.utils.simulation.ExactSampler` interface to generate
