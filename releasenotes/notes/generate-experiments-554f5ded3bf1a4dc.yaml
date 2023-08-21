@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added a function, :func:`~circuit_knitting.cutting.generate_cutting_experiments`, which generates the cutting subexperiments to be run on the backend - given an input circuit, observable, and number of samples to draw from the input circuit. For each subexperiment, a quasi-distribution will be generated using Qiskit Sampler primitive. :func:`generate_cutting_experiments` also generates the weights associated with each subexperiment. The quasi-distributions and weights are used during expectation value reconstruction.
