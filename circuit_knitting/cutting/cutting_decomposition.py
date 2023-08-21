@@ -481,8 +481,10 @@ def _append_measurement_circuit(
     inplace: bool = False,
 ) -> QuantumCircuit:
     """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
+
     The new register will be named ``"observable_measurements"`` and will be
     the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+
     Args:
         qc: The quantum circuit
         cog: The commuting observable set for
@@ -493,6 +495,7 @@ def _append_measurement_circuit(
             to have the same number of qubits, and the identity map
             (i.e., ``range(qc.num_qubits)``) is used.
         inplace: Whether to operate on the circuit in place (default: ``False``)
+
     Returns:
         The modified circuit
     """
