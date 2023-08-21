@@ -311,6 +311,36 @@ class TestCuttingDecomposition(unittest.TestCase):
             for exp in subexperiments:
                 assert isinstance(exp, QuantumCircuit)
 
+        with self.subTest("simple circuit and observable as dict"):
+            qc = QuantumCircuit(2)
+            qc.append(
+                SingleQubitQPDGate(
+                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=0
+                ),
+                qargs=[0],
+            )
+            qc.append(
+                SingleQubitQPDGate(
+                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=1
+                ),
+                qargs=[1],
+            )
+            comp_weights = [
+                (0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (-0.5, WeightType.EXACT),
+                (0.5, WeightType.EXACT),
+                (-0.5, WeightType.EXACT),
+            ]
+            subexperiments, weights = generate_cutting_experiments(
+                {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
+            )
+            assert weights == comp_weights
+            assert len(weights) == len(subexperiments)
+            for exp in subexperiments:
+                assert isinstance(exp, QuantumCircuit)
+
         with self.subTest("test bad num_samples"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
