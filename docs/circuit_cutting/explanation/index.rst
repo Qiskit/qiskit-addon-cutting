@@ -1,5 +1,3 @@
-.. _circuit cutting explanation:
-
 ###################################################
 Explanatory material for the circuit cutting module
 ###################################################
@@ -30,13 +28,9 @@ As mentioned above, the cost of any simulation based on quasiprobability distrib
 
 For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [`5 <https://arxiv.org/abs/1612.02058>`__].
 
-.. _Sampling overhead:
-
 Sampling overhead
 -----------------
 The sampling overhead is the factor by which the number of samples must increase for the quasiprobability decomposition to result in the same amount of error, $\epsilon$, as one would get by sampling the original circuit. Cutting CNOT and CZ gates incurs a sampling overhead of roughly $O(9^k/\epsilon^2)$, where $k$ is the number of cuts [`2 https://arxiv.org/abs/1909.07534`__]; however, other gates may have higher or lower exponential bases. For example, the sampling overhead resulting from cutting SWAP gates scales with complexity $O(49^k/\epsilon^2)$ [`3 https://arxiv.org/abs/2006.11174`__]. Cutting wires with local operations (LO) only incurs a sampling overhead of $4^{2k}$ [`4 https://arxiv.org/abs/2302.03366`__].
-
-.. _Sample weights:
 
 Sample weights in CKT
 ---------------------
