@@ -25,6 +25,7 @@ import numpy.typing as npt
 from qiskit.circuit import (
     QuantumCircuit,
     Gate,
+    ControlledGate,
     Instruction,
     ClassicalRegister,
     CircuitInstruction,
@@ -41,6 +42,7 @@ from qiskit.circuit.library.standard_gates import (
     SXGate,
     SXdgGate,
     TGate,
+    TdgGate,
     RXGate,
     RYGate,
     RZGate,
@@ -950,6 +952,14 @@ def _(gate: CSXGate):
     retval = qpdbasis_from_instruction(CRXGate(np.pi / 2))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TGate())
+    return retval
+
+
+@_register_qpdbasis_from_instruction("csxdg")
+def _(gate: ControlledGate):
+    retval = qpdbasis_from_instruction(CRXGate(-np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TdgGate())
     return retval
 
 
