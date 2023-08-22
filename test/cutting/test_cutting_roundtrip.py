@@ -68,6 +68,7 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CHGate()],
         [ECRGate()],
         [CSXGate()],
+        [CSXGate().inverse()],
         [CSGate()],
         [CSdgGate()],
         [RYYGate(0.0)],
