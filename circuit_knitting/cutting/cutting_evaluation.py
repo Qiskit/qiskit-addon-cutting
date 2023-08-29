@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 from typing import Any, NamedTuple
+from collections import defaultdict
 from collections.abc import Sequence
 from itertools import chain
 
@@ -238,6 +239,131 @@ def _append_measurement_circuit(
     return qc
 
 
+def generate_cutting_experiments(
+    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
+    observables: PauliList | dict[str | int, PauliList],
+    num_samples: int | float,
+) -> tuple[
+    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[tuple[float, WeightType]],
+]:
+    """
+    Generate cutting subexperiments and their associated weights.
+
+    If the input circuit and observables are not split into multiple partitions, the output
+    subexperiments will be contained within a 1D array.
+
+    If the input circuit and observables is split into multiple partitions, the output
+    subexperiments will be returned as a dictionary which maps a partition label to to
+    a 1D array containing the subexperiments associated with that partition.
+
+    In both cases, the subexperiment lists are ordered as follows:
+        :math:`[sample_{0}observable_{0}, sample_{0}observable_{1}, ..., sample_{0}observable_{N}, ..., sample_{M}observable_{N}]`
+
+    The weights will always be returned as a 1D array -- one weight for each unique sample.
+
+    Args:
+        circuits: The circuit(s) to partition and separate
+        observables: The observable(s) to evaluate for each unique sample
+        num_samples: The number of samples to draw from the quasi-probability distribution. If set
+            to infinity, the weights will be generated rigorously rather than by sampling from
+            the distribution.
+    Returns:
+        A tuple containing the cutting experiments and their associated weights.
+        If the input circuits is a :class:`QuantumCircuit` instance, the output subexperiments
+        will be a sequence of circuits -- one for every unique sample and observable. If the
+        input circuits are represented as a dictionary keyed by partition labels, the output
+        subexperiments will also be a dictionary keyed by partition labels and containing
+        the subexperiments for each partition.
+        The weights are always a sequence of length-2 tuples, where each tuple contains the
+        weight and the :class:`WeightType`. Each weight corresponds to one unique sample.
+
+    Raises:
+        ValueError: ``num_samples`` must either be an integer or infinity.
+        ValueError: :class:`SingleQubitQPDGate` instances must have the cut number
+            appended to the gate label.
+        ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
+    """
+    if isinstance(num_samples, float):
+        if num_samples != np.inf:
+            raise ValueError("num_samples must either be an integer or infinity.")
+
+    # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
+    # depending on the format of the execute_experiments input args, but the 2nd half of this function
+    # can be shared between both cases.
+    if isinstance(circuits, QuantumCircuit):
+        is_separated = False
+        subcircuit_list = [circuits]
+        subobservables_by_subsystem = decompose_observables(
+            observables, "A" * len(observables[0])
+        )
+        subsystem_observables = {
+            label: ObservableCollection(subobservables)
+            for label, subobservables in subobservables_by_subsystem.items()
+        }
+        # Gather the unique bases from the circuit
+        bases, qpd_gate_ids = _get_bases(circuits)
+        subcirc_qpd_gate_ids = [qpd_gate_ids]
+
+    else:
+        is_separated = True
+        subcircuit_list = [circuits[key] for key in sorted(circuits.keys())]
+        # Gather the unique bases across the subcircuits
+        subcirc_qpd_gate_ids, subcirc_map_ids = _get_mapping_ids_by_partition(
+            subcircuit_list
+        )
+        bases = _get_bases_by_partition(subcircuit_list, subcirc_qpd_gate_ids)
+
+        # Create the commuting observable groups
+        subsystem_observables = {
+            label: ObservableCollection(so) for label, so in observables.items()
+        }
+
+    # Sample the joint quasiprobability decomposition
+    random_samples = generate_qpd_weights(bases, num_samples=num_samples)
+
+    # Calculate terms in coefficient calculation
+    kappa = np.prod([basis.kappa for basis in bases])
+    num_samples = sum([value[0] for value in random_samples.values()])  # type: ignore
+
+    # Sort samples in descending order of frequency
+    sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
+
+    # Generate the output experiments and weights
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
+    weights: list[tuple[float, WeightType]] = []
+    for i, (subcircuit, label) in enumerate(
+        strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+    ):
+        for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+            actual_coeff = np.prod(
+                [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
+            )
+            sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
+            if i == 0:
+                weights.append((sampled_coeff, weight_type))
+            map_ids_tmp = map_ids
+            if is_separated:
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+            decomp_qc = decompose_qpd_instructions(
+                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+            )
+            so = subsystem_observables[label]
+            for j, cog in enumerate(so.groups):
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
+                subexperiments_dict[label].append(meas_qc)
+
+    # If the circuit wasn't separated, return the subexperiments as a list
+    subexperiments_out: list[QuantumCircuit] | dict[
+        str | int, list[QuantumCircuit]
+    ] = subexperiments_dict
+    assert isinstance(subexperiments_out, dict)
+    if len(subexperiments_out.keys()) == 1:
+        subexperiments_out = subexperiments_dict[list(subexperiments_dict.keys())[0]]
+
+    return subexperiments_out, weights
+
+
 def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
@@ -377,12 +503,23 @@ def _get_mapping_ids_by_partition(
         subcirc_map_ids.append([])
         for i, inst in enumerate(circ.data):
             if isinstance(inst.operation, SingleQubitQPDGate):
-                decomp_id = int(inst.operation.label.split("_")[-1])
+                try:
+                    decomp_id = int(inst.operation.label.split("_")[-1])
+                except (AttributeError, ValueError):
+                    _raise_bad_qpd_gate_labels()
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[-1].append([i])
                 subcirc_map_ids[-1].append(decomp_id)
 
     return subcirc_qpd_gate_ids, subcirc_map_ids
+
+
+def _raise_bad_qpd_gate_labels() -> None:
+    raise ValueError(
+        "BaseQPDGate instances in input circuit(s) should have their "
+        'labels suffixed with "_<cut_#>" so that sibling SingleQubitQPDGate '
+        "instances may be grouped and sampled together."
+    )
 
 
 def _get_bases_by_partition(
@@ -393,9 +530,13 @@ def _get_bases_by_partition(
     bases_dict = {}
     for i, subcirc in enumerate(subcirc_qpd_gate_ids):
         for basis_id in subcirc:
-            decomp_id = int(
-                circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
-            )
+            try:
+                decomp_id = int(
+                    circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
+                )
+            except (AttributeError, ValueError):  # pragma: no cover
+                _raise_bad_qpd_gate_labels()  # pragma: no cover
+
             bases_dict[decomp_id] = circuits[i].data[basis_id[0]].operation.basis
     bases = [bases_dict[key] for key in sorted(bases_dict.keys())]
 

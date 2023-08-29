@@ -27,6 +27,7 @@ Circuit Cutting
     partition_problem
     cut_gates
     decompose_gates
+    generate_cutting_experiments
     execute_experiments
     reconstruct_expectation_values
 
@@ -86,7 +87,11 @@ from .cutting_decomposition import (
     decompose_gates,
     PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments, CuttingExperimentResults
+from .cutting_evaluation import (
+    execute_experiments,
+    CuttingExperimentResults,
+    generate_cutting_experiments,
+)
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
 
@@ -95,6 +100,7 @@ __all__ = [
     "partition_problem",
     "cut_gates",
     "decompose_gates",
+    "generate_cutting_experiments",
     "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
