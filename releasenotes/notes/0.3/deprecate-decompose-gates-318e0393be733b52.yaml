@@ -1,0 +1,4 @@
+---
+deprecations:
+  - |
+    :func:`.decompose_gates` is deprecated and will be removed no sooner than v0.4.0. Users should migrate to the identical :func:`.cut_gates` function.
