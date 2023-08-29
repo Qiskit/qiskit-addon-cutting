@@ -29,7 +29,7 @@ from qiskit.quantum_info import PauliList
 
 from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit
-from .qpd import QPDBasis, TwoQubitQPDGate, supported_gates
+from .qpd import QPDBasis, TwoQubitQPDGate
 
 
 class PartitionedCuttingProblem(NamedTuple):
@@ -286,7 +286,7 @@ def decompose_observables(
 
 
 def find_gate_cuts(
-    circuit: QuantumCircuit, num_cuts: int, transpilation_options: dict
+    circuit: QuantumCircuit, budget: float, transpilation_options: dict
 ) -> tuple[QuantumCircuit, list[QPDBasis], list[int]]:
     r"""
     Find an optimized set of gates to cut, given a transpilation context.
@@ -296,7 +296,7 @@ def find_gate_cuts(
 
     Args:
         circuit: The circuit to cut
-        num_cuts: The number of cuts to make
+        budget: The max sampling overhead allowed in returned cutting problem
         transpilation_options: A dictionary of kwargs to be passed to the Qiskit
             ``transpile`` function.
 
@@ -311,10 +311,23 @@ def find_gate_cuts(
     # Sweep the circuit num_cuts times. In each sweep, find the gate that results in the biggest
     # reduction in depth, and replace it with a local, placeholder gate.
     cut_indices = []
-    for cuts in range(num_cuts):
-        cut_scores = _evaluate_cuts(circ_copy, transpilation_options)
-        best_idx = cut_scores[0][0]
+    total_cost = 1
+    while total_cost < budget:
+        best_cuts = _evaluate_cuts(circ_copy, transpilation_options)
+        improved_best = False
+        for cut in best_cuts:
+            if cut[1] * total_cost > budget:
+                continue
+            best_idx = cut[0]
+            best_cost = cut[1]
+            best_score = cut[2]
+            improved_best = True
+            break
+        if not improved_best:
+            break
+        total_cost *= best_cost
         cut_indices.append(best_idx)
+        print(f"Adding cut gate with cost {best_cost} and depth_savings {best_score * best_cost}")
         # Put a single qubit placeholder in place of the optimal gate
         qubit0 = circ_copy.find_bit(circ_copy.data[best_idx].qubits[0]).index
         # Use XGate as a placeholder since it will transpile to all our backends.
@@ -330,24 +343,20 @@ def find_gate_cuts(
 def _evaluate_cuts(
     circuit: QuantumCircuit, transpilation_options: dict
 ) -> list[tuple[int, int]]:
-    """Return the index and cut score for each supported gate in the circuit."""
+    """Return the index and overhead for each supported gate in the circuit."""
     input_depth = transpile(circuit, **transpilation_options).depth()
 
     # For each supported gate in the circuit, assign a score based on the gate's
     # average SWAP overhead across num_reps transpilation runs
     cut_scores = []
     for i, inst in enumerate(circuit.data):
-        if inst.operation.name not in supported_gates():
+        if len(inst.qubits) != 2:
             continue
-        cut_score = 0
         del circuit.data[i]
-        # Try three times to mitigate outlier layouts from affecting the cutting scheme
-        num_reps = 3
-        for _ in range(num_reps):
-            cut_score += (
-                input_depth - transpile(circuit, **transpilation_options).depth()
-            )
-        cut_scores.append((i, cut_score))
+        depth_savings = input_depth - transpile(circuit, **transpilation_options).depth()
+        overhead = QPDBasis.from_instruction(inst.operation).overhead
+        cut_score = depth_savings / overhead
+        cut_scores.append((i, overhead, cut_score))
         circuit.data.insert(i, inst)
 
-    return sorted(cut_scores, key=lambda x: x[1], reverse=True)
+    return sorted(cut_scores, key=lambda x: x[2], reverse=True)
