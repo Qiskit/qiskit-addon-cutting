@@ -123,7 +123,7 @@ def execute_experiments(
         subexperiments,
         coefficients,
         sampled_frequencies,
-    ) = generate_cutting_experiments(
+    ) = _generate_cutting_experiments(
         circuits,
         subobservables,
         num_samples,
@@ -239,7 +239,7 @@ def _append_measurement_circuit(
     return qc
 
 
-def _generate_cutting_experiments(
+def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int | float,
@@ -364,7 +364,7 @@ def _generate_cutting_experiments(
     return subexperiments_out, weights
 
 
-def generate_cutting_experiments(
+def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
     num_samples: int,

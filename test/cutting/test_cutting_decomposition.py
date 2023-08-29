@@ -23,7 +23,7 @@ from qiskit.quantum_info import PauliList
 
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
-    _generate_cutting_experiments,
+    generate_cutting_experiments,
     partition_problem,
     cut_gates,
 )
@@ -303,7 +303,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = _generate_cutting_experiments(
+            subexperiments, weights = generate_cutting_experiments(
                 qc, PauliList(["ZZ"]), np.inf
             )
             assert weights == comp_weights
@@ -333,7 +333,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = _generate_cutting_experiments(
+            subexperiments, weights = generate_cutting_experiments(
                 {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
             )
             assert weights == comp_weights
@@ -344,7 +344,7 @@ class TestCuttingDecomposition(unittest.TestCase):
         with self.subTest("test bad num_samples"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
-                _generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 4.5)
+                generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 4.5)
             assert (
                 e_info.value.args[0]
                 == "num_samples must either be an integer or infinity."
@@ -360,7 +360,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             )
             partitioned_problem.subcircuits["A"].data[0].operation.label = "newlabel"
             with pytest.raises(ValueError) as e_info:
-                _generate_cutting_experiments(
+                generate_cutting_experiments(
                     partitioned_problem.subcircuits,
                     partitioned_problem.subobservables,
                     np.inf,
@@ -372,7 +372,7 @@ class TestCuttingDecomposition(unittest.TestCase):
         with self.subTest("test bad observable size"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
-                _generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
+                generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
             assert e_info.value.args[0] == (
                 "Quantum circuit qubit count (4) does not match qubit count of observable(s) (2)."
                 "  Try providing `qubit_locations` explicitly."
@@ -384,7 +384,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 qargs=[0],
             )
             with pytest.raises(ValueError) as e_info:
-                _generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
+                generate_cutting_experiments(qc, PauliList(["ZZ"]), np.inf)
             assert (
                 e_info.value.args[0]
                 == "SingleQubitQPDGates are not supported in unseparable circuits."
