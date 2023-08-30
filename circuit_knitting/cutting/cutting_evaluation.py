@@ -312,7 +312,7 @@ def _generate_cutting_experiments(
         )
     if isinstance(num_samples, float):
         if not num_samples >= 1:
-            raise ValueError("num_samples must either be an integer or infinity.")
+            raise ValueError("num_samples must be positive.")
 
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on the format of the execute_experiments input args, but the 2nd half of this function

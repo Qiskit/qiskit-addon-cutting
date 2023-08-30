@@ -344,11 +344,8 @@ class TestCuttingDecomposition(unittest.TestCase):
         with self.subTest("test bad num_samples"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
-                generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 4.5)
-            assert (
-                e_info.value.args[0]
-                == "num_samples must either be an integer or infinity."
-            )
+                generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 0)
+            assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("test incompatible inputs"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
@@ -374,7 +371,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             )
             partitioned_problem.subcircuits["A"].data[0].operation.label = "newlabel"
             comp_string = (
-                "BaseQPDGate instances in input circuit(s) must have their "
+                "SingleQubitQPDGate instances in input circuit(s) must have their "
                 'labels suffixed with "_<id>", where <id> is the index of the gate '
                 "relative to the other gates belonging to the same cut. For example, "
                 "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
