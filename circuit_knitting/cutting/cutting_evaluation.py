@@ -478,7 +478,7 @@ def _get_mapping_ids_by_partition(
                         "SingleQubitQPDGate instances in input circuit(s) must have their "
                         'labels suffixed with "_<id>", where <id> is the index of the gate '
                         "relative to the other gates belonging to the same cut. For example, "
-                        "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
+                        "a two-qubit gate cut can be represented by two SingleQubitQPDGates -- one "
                         'labeled "<your_label>_0" and one labeled "<your_label>_1".'
                         "  This allows SingleQubitQPDGates belonging to the same cut to be "
                         "sampled together."
