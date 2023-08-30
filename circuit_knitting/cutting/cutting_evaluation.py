@@ -475,7 +475,7 @@ def _get_mapping_ids_by_partition(
                     decomp_id = int(inst.operation.label.split("_")[-1])
                 except (AttributeError, ValueError):
                     raise ValueError(
-                        "BaseQPDGate instances in input circuit(s) must have their "
+                        "SingleQubitQPDGate instances in input circuit(s) must have their "
                         'labels suffixed with "_<id>", where <id> is the index of the gate '
                         "relative to the other gates belonging to the same cut. For example, "
                         "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
