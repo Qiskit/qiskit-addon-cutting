@@ -337,9 +337,9 @@ class TestCuttingDecomposition(unittest.TestCase):
                 {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
             )
             assert weights == comp_weights
-            assert len(weights) == len(subexperiments)
-            for exp in subexperiments:
-                assert isinstance(exp, QuantumCircuit)
+            assert len(weights) == len(subexperiments["A"])
+            for circ in subexperiments["A"]:
+                assert isinstance(circ, QuantumCircuit)
 
         with self.subTest("test bad num_samples"):
             qc = QuantumCircuit(4)
