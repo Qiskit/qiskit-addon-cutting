@@ -135,7 +135,7 @@ def pin_dependencies(replacements: List[str], inplace: bool = False):
 
 
 @app.command()
-def add_dependency(dependency, inplace: bool = False):
+def add_dependency(dependency: str, inplace: bool = False):
     """Add a dependency to `pyproject.toml`."""
     with open("pyproject.toml") as f:
         d = toml.load(f)
