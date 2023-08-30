@@ -119,11 +119,7 @@ def _pin_dependencies(mapfunc, inplace: bool):
         "allow-direct-references"
     ] = True
 
-    if inplace:
-        with open("pyproject.toml", "w") as f:
-            toml.dump(d, f)
-    else:
-        print(toml.dumps(d))
+    _save_pyproject_toml(d, inplace)
 
 
 @app.command()
@@ -136,6 +132,23 @@ def pin_dependencies_to_minimum(inplace: bool = False):
 def pin_dependencies(replacements: List[str], inplace: bool = False):
     """Pin dependencies in `pyproject.toml` to the provided versions."""
     _pin_dependencies(mapfunc_replace(replacements), inplace)
+
+
+@app.command()
+def add_dependency(dependency: str, inplace: bool = False):
+    """Add a dependency to `pyproject.toml`."""
+    with open("pyproject.toml") as f:
+        d = toml.load(f)
+    d["project"]["dependencies"].append(dependency)
+    _save_pyproject_toml(d, inplace)
+
+
+def _save_pyproject_toml(d: dict, inplace: bool) -> None:
+    if inplace:
+        with open("pyproject.toml", "w") as f:
+            toml.dump(d, f)
+    else:
+        print(toml.dumps(d))
 
 
 if __name__ == "__main__":
