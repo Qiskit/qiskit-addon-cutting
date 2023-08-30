@@ -215,7 +215,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert (
                 e_info.value.args[0]
-                == "The number of requested samples must be positive."
+                == "The number of requested samples must be at least 1."
             )
         with self.subTest("Dict of non-unique samplers"):
             qc = QuantumCircuit(2)
