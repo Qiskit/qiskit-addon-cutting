@@ -378,8 +378,9 @@ def generate_cutting_experiments(
         str | int, list[QuantumCircuit]
     ] = subexperiments_dict
     assert isinstance(subexperiments_out, dict)
-    if len(subexperiments_out.keys()) == 1:
-        subexperiments_out = subexperiments_dict[list(subexperiments_dict.keys())[0]]
+    if isinstance(circuits, QuantumCircuit):
+        assert len(subexperiments_out.keys()) == 1
+        subexperiments_out = list(subexperiments_dict.values())[0]
 
     return subexperiments_out, weights, subexperiments_legacy
 
