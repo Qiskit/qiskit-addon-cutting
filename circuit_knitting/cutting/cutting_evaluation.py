@@ -331,14 +331,8 @@ def generate_cutting_experiments(
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
     subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
-    weights_legacy: list[tuple[float, WeightType]] = []
     for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
         subexperiments_legacy.append([])
-        actual_coeff = np.prod(
-            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
-        )
-        sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-        weights_legacy.append((sampled_coeff, weight_type))
         for i, (subcircuit, label) in enumerate(
             strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
         ):
