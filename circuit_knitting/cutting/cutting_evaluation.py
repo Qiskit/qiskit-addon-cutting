@@ -311,7 +311,7 @@ def _generate_cutting_experiments(
             "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
         )
     if isinstance(num_samples, float):
-        if num_samples != np.inf:
+        if not num_samples >= 1:
             raise ValueError("num_samples must either be an integer or infinity.")
 
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
