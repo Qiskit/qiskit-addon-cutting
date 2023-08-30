@@ -282,8 +282,9 @@ def generate_cutting_experiments(
     Raises:
         ValueError: ``num_samples`` must either be an integer or infinity.
         ValueError: ``circuits`` and ``observables`` are incompatible types
-        ValueError: :class:`SingleQubitQPDGate` instances must have the cut number
-            appended to the gate label.
+        ValueError: :class:`SingleQubitQPDGate` instances must have their cut ID
+            appended to the gate label so they may be associated with other gates belonging
+            to the same cut.
         ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
     """
     subexperiments, weights, _ = _generate_cutting_experiments(
@@ -473,20 +474,20 @@ def _get_mapping_ids_by_partition(
                 try:
                     decomp_id = int(inst.operation.label.split("_")[-1])
                 except (AttributeError, ValueError):
-                    _raise_bad_qpd_gate_labels()
+                    raise ValueError(
+                        "BaseQPDGate instances in input circuit(s) must have their "
+                        'labels suffixed with "_<id>", where <id> is the index of the gate '
+                        "relative to the other gates belonging to the same cut. For example, "
+                        "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
+                        'labeled "<your_label>_0" and one labeled "<your_label>_1".'
+                        "  This allows SingleQubitQPDGates belonging to the same cut to be "
+                        "sampled together."
+                    )
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[-1].append([i])
                 subcirc_map_ids[-1].append(decomp_id)
 
     return subcirc_qpd_gate_ids, subcirc_map_ids
-
-
-def _raise_bad_qpd_gate_labels() -> None:
-    raise ValueError(
-        "BaseQPDGate instances in input circuit(s) should have their "
-        'labels suffixed with "_<cut_#>" so that sibling SingleQubitQPDGate '
-        "instances may be grouped and sampled together."
-    )
 
 
 def _get_bases_by_partition(
@@ -497,13 +498,9 @@ def _get_bases_by_partition(
     bases_dict = {}
     for i, subcirc in enumerate(subcirc_qpd_gate_ids):
         for basis_id in subcirc:
-            try:
-                decomp_id = int(
-                    circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
-                )
-            except (AttributeError, ValueError):  # pragma: no cover
-                _raise_bad_qpd_gate_labels()  # pragma: no cover
-
+            decomp_id = int(
+                circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
+            )
             bases_dict[decomp_id] = circuits[i].data[basis_id[0]].operation.basis
     bases = [bases_dict[key] for key in sorted(bases_dict.keys())]
 

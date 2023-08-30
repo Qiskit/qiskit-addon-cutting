@@ -349,6 +349,20 @@ class TestCuttingDecomposition(unittest.TestCase):
                 e_info.value.args[0]
                 == "num_samples must either be an integer or infinity."
             )
+        with self.subTest("test incompatible inputs"):
+            qc = QuantumCircuit(4)
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(qc, {"A": PauliList(["ZZZZ"])}, 4.5)
+            assert (
+                e_info.value.args[0]
+                == "If the input circuits is a QuantumCircuit, the observables must be a PauliList."
+            )
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments({"A": qc}, PauliList(["ZZZZ"]), 4.5)
+            assert (
+                e_info.value.args[0]
+                == "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
+            )
         with self.subTest("test bad label"):
             qc = QuantumCircuit(2)
             qc.append(
@@ -359,16 +373,22 @@ class TestCuttingDecomposition(unittest.TestCase):
                 qc, "AB", observables=PauliList(["ZZ"])
             )
             partitioned_problem.subcircuits["A"].data[0].operation.label = "newlabel"
+            comp_string = (
+                "BaseQPDGate instances in input circuit(s) must have their "
+                'labels suffixed with "_<id>", where <id> is the index of the gate '
+                "relative to the other gates belonging to the same cut. For example, "
+                "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
+                'labeled "<your_label>_0" and one labeled "<your_label>_1".'
+                "  This allows SingleQubitQPDGates belonging to the same cut to be "
+                "sampled together."
+            )
             with pytest.raises(ValueError) as e_info:
                 generate_cutting_experiments(
                     partitioned_problem.subcircuits,
                     partitioned_problem.subobservables,
                     np.inf,
                 )
-            assert e_info.value.args[0] == (
-                "BaseQPDGate instances in input circuit(s) should have their labels suffixed with "
-                '"_<cut_#>" so that sibling SingleQubitQPDGate instances may be grouped and sampled together.'
-            )
+            assert e_info.value.args[0] == comp_string
         with self.subTest("test bad observable size"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
