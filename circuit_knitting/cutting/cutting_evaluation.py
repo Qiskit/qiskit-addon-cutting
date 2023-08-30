@@ -397,7 +397,7 @@ def _generate_cutting_experiments(
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 subexperiments_legacy[-1][-1].append(meas_qc)
 
-    # If the circuit wasn't separated, return the subexperiments as a list
+    # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
         str | int, list[QuantumCircuit]
     ] = subexperiments_dict
