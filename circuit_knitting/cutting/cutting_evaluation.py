@@ -70,7 +70,7 @@ def execute_experiments(
           sampling frequency
 
     Raises:
-        ValueError: The number of requested samples must be greater than one.
+        ValueError: The number of requested samples must be at least one.
         ValueError: The types of ``circuits`` and ``subobservables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
@@ -280,7 +280,7 @@ def generate_cutting_experiments(
         weight and the :class:`WeightType`. Each weight corresponds to one unique sample.
 
     Raises:
-        ValueError: ``num_samples`` must either be greater than one.
+        ValueError: ``num_samples`` must either be at least one.
         ValueError: ``circuits`` and ``observables`` are incompatible types
         ValueError: :class:`SingleQubitQPDGate` instances must have their cut ID
             appended to the gate label so they may be associated with other gates belonging
