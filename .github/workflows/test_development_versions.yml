@@ -31,8 +31,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip tox
           python -m pip install toml typer
+          python tools/extremal-python-dependencies.py add-dependency \
+              "qiskit-terra @ git+https://github.com/Qiskit/qiskit.git" \
+              --inplace
           python tools/extremal-python-dependencies.py pin-dependencies \
-              "qiskit @ git+https://github.com/Qiskit/qiskit.git" \
+              "qiskit @ git+https://github.com/Qiskit/qiskit.git#subdirectory=qiskit_pkg" \
               "qiskit-nature @ git+https://github.com/qiskit-community/qiskit-nature.git" \
               "qiskit-ibm-runtime @ git+https://github.com/Qiskit/qiskit-ibm-runtime.git" \
               --inplace
