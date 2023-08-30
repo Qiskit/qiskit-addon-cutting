@@ -123,7 +123,7 @@ def execute_experiments(
         _,
         coefficients,
         subexperiments,
-    ) = generate_cutting_experiments(
+    ) = _generate_cutting_experiments(
         circuits,
         subobservables,
         num_samples,
@@ -246,17 +246,17 @@ def generate_cutting_experiments(
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
-    list[list[list[QuantumCircuit]]],
 ]:
     """
     Generate cutting subexperiments and their associated weights.
 
-    If the input circuit and observables are not split into multiple partitions, the output
-    subexperiments will be contained within a 1D array.
+    If the input, ``circuits``, is a :class:`QuantumCircuit` instance, the
+    output subexperiments will be contained within a 1D array, and ``observables`` is
+    expected to be a :class:`PauliList` instance.
 
-    If the input circuit and observables is split into multiple partitions, the output
-    subexperiments will be returned as a dictionary which maps a partition label to to
-    a 1D array containing the subexperiments associated with that partition.
+    If the input circuit and observables are specified by dictionaries with partition labels
+    as keys, the output subexperiments will be returned as a dictionary which maps a
+    partition label to to a 1D array containing the subexperiments associated with that partition.
 
     In both cases, the subexperiment lists are ordered as follows:
         :math:`[sample_{0}observable_{0}, sample_{0}observable_{1}, ..., sample_{0}observable_{N}, ..., sample_{M}observable_{N}]`
@@ -281,10 +281,34 @@ def generate_cutting_experiments(
 
     Raises:
         ValueError: ``num_samples`` must either be an integer or infinity.
+        ValueError: ``circuits`` and ``observables`` are incompatible types
         ValueError: :class:`SingleQubitQPDGate` instances must have the cut number
             appended to the gate label.
         ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
     """
+    subexperiments, weights, _ = _generate_cutting_experiments(
+        circuits, observables, num_samples
+    )
+    return subexperiments, weights
+
+
+def _generate_cutting_experiments(
+    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
+    observables: PauliList | dict[str | int, PauliList],
+    num_samples: int | float,
+) -> tuple[
+    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[tuple[float, WeightType]],
+    list[list[list[QuantumCircuit]]],
+]:
+    if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
+        raise ValueError(
+            "If the input circuits is a QuantumCircuit, the observables must be a PauliList."
+        )
+    if isinstance(circuits, dict) and not isinstance(observables, dict):
+        raise ValueError(
+            "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
+        )
     if isinstance(num_samples, float):
         if num_samples != np.inf:
             raise ValueError("num_samples must either be an integer or infinity.")
@@ -333,17 +357,16 @@ def generate_cutting_experiments(
     # Generate the output experiments and weights
     subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
     weights: list[tuple[float, WeightType]] = []
-    for i, (subcircuit, label) in enumerate(
-        strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-    ):
-        for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-            actual_coeff = np.prod(
-                [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
-            )
-            sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-            if i == 0:
-                weights.append((sampled_coeff, weight_type))
-            map_ids_tmp = map_ids
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+        actual_coeff = np.prod(
+            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
+        )
+        sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
+        weights.append((sampled_coeff, weight_type))
+        map_ids_tmp = map_ids
+        for i, (subcircuit, label) in enumerate(
+            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+        ):
             if is_separated:
                 map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
             decomp_qc = decompose_qpd_instructions(
