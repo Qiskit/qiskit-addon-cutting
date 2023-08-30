@@ -330,24 +330,6 @@ def generate_cutting_experiments(
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
-    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
-    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-        subexperiments_legacy.append([])
-        for i, (subcircuit, label) in enumerate(
-            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-        ):
-            map_ids_tmp = map_ids
-            if is_separated:
-                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
-            )
-            subexperiments_legacy[-1].append([])
-            so = subsystem_observables[label]
-            for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments_legacy[-1][-1].append(meas_qc)
-
     # Generate the output experiments and weights
     subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
     weights: list[tuple[float, WeightType]] = []
@@ -371,6 +353,25 @@ def generate_cutting_experiments(
             for j, cog in enumerate(so.groups):
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 subexperiments_dict[label].append(meas_qc)
+
+    # Generate legacy subexperiments list
+    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+        subexperiments_legacy.append([])
+        for i, (subcircuit, label) in enumerate(
+            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+        ):
+            map_ids_tmp = map_ids
+            if is_separated:
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+            decomp_qc = decompose_qpd_instructions(
+                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+            )
+            subexperiments_legacy[-1].append([])
+            so = subsystem_observables[label]
+            for j, cog in enumerate(so.groups):
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
+                subexperiments_legacy[-1][-1].append(meas_qc)
 
     # If the circuit wasn't separated, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
