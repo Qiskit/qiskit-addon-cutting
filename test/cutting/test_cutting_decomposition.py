@@ -40,9 +40,9 @@ class TestCuttingDecomposition(unittest.TestCase):
         circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
         qpd_circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
 
-        # We will instantiate 2 QPDBasis objects using from_gate
+        # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)
-        rxx_decomp = QPDBasis.from_gate(rxx_gate)
+        rxx_decomp = QPDBasis.from_instruction(rxx_gate)
 
         # Create two QPDGates and specify each of their bases
         # Labels are only used for visualizations
@@ -232,24 +232,35 @@ class TestCuttingDecomposition(unittest.TestCase):
             qc.rx(np.pi / 4, 1)
             qc.rx(np.pi / 4, 3)
             qc.cx(0, 1)
-            qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [1, 2])
+            qc.append(TwoQubitQPDGate(QPDBasis.from_instruction(Move())), [1, 2])
             qc.cx(2, 3)
-            qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [2, 1])
+            qc.append(TwoQubitQPDGate(QPDBasis.from_instruction(Move())), [2, 1])
             qc.cx(0, 1)
             subcircuits, bases, subobservables = partition_problem(
                 qc, "AABB", observables=PauliList(["IZIZ"])
             )
             assert len(subcircuits) == len(bases) == len(subobservables) == 2
+        with self.subTest("Automatic partition_labels"):
+            qc = QuantumCircuit(4)
+            qc.h(0)
+            qc.cx(0, 2)
+            qc.cx(0, 1)
+            qc.s(3)
+            # Add a TwoQubitQPDGate that, when cut, allows the circuit to
+            # separate
+            qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [1, 3])
+            # Add a TwoQubitQPDGate that, when cut, does *not* allow the
+            # circuit to separate
+            qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [2, 0])
+            subcircuit, *_ = partition_problem(qc)
+            assert subcircuit.keys() == {0, 1}
+            assert subcircuit[0].num_qubits == 3
+            assert subcircuit[1].num_qubits == 1
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
             compare_qc = QuantumCircuit(2)
-            compare_qc.append(
-                CircuitInstruction(
-                    TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
-                    qubits=[0, 1],
-                )
-            )
+            compare_qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [0, 1])
 
             qc = QuantumCircuit(2)
             qc.cx(0, 1)

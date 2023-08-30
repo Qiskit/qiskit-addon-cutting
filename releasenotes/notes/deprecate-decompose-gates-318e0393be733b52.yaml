@@ -1,4 +1,0 @@
----
-deprecations:
-  - |
-    :func:`~circuit_knitting_toolbox.circuit_cutting.decompose_gates` is deprecated and will be removed no sooner than v0.4.0. Users should migrate to the identical :func:`~cicuit_knitting_toolbox.circuit_cutting.cut_gates` function.
