@@ -303,7 +303,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, weights, _ = generate_cutting_experiments(
                 qc, PauliList(["ZZ"]), np.inf
             )
             assert weights == comp_weights
@@ -333,7 +333,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, weights, _ = generate_cutting_experiments(
                 {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
             )
             assert weights == comp_weights

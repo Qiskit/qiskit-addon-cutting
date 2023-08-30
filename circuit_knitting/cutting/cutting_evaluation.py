@@ -120,10 +120,10 @@ def execute_experiments(
 
     # Generate the sub-experiments to run on backend
     (
-        subexperiments,
+        _,
         coefficients,
-        sampled_frequencies,
-    ) = _generate_cutting_experiments(
+        subexperiments,
+    ) = generate_cutting_experiments(
         circuits,
         subobservables,
         num_samples,
@@ -174,71 +174,6 @@ def execute_experiments(
     return CuttingExperimentResults(quasi_dists, coefficients)
 
 
-def _append_measurement_circuit(
-    qc: QuantumCircuit,
-    cog: CommutingObservableGroup,
-    /,
-    *,
-    qubit_locations: Sequence[int] | None = None,
-    inplace: bool = False,
-) -> QuantumCircuit:
-    """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
-
-    The new register will be named ``"observable_measurements"`` and will be
-    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
-
-    Args:
-        qc: The quantum circuit
-        cog: The commuting observable set for
-            which to construct measurements
-        qubit_locations: A ``Sequence`` whose length is the number of qubits
-            in the observables, where each element holds that qubit's corresponding
-            index in the circuit.  By default, the circuit and observables are assumed
-            to have the same number of qubits, and the identity map
-            (i.e., ``range(qc.num_qubits)``) is used.
-        inplace: Whether to operate on the circuit in place (default: ``False``)
-
-    Returns:
-        The modified circuit
-    """
-    if qubit_locations is None:
-        # By default, the identity map.
-        if qc.num_qubits != cog.general_observable.num_qubits:
-            raise ValueError(
-                f"Quantum circuit qubit count ({qc.num_qubits}) does not match qubit "
-                f"count of observable(s) ({cog.general_observable.num_qubits}).  "
-                f"Try providing `qubit_locations` explicitly."
-            )
-        qubit_locations = range(cog.general_observable.num_qubits)
-    else:
-        if len(qubit_locations) != cog.general_observable.num_qubits:
-            raise ValueError(
-                f"qubit_locations has {len(qubit_locations)} element(s) but the "
-                f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
-            )
-    if not inplace:
-        qc = qc.copy()
-
-    # Append the appropriate measurements to qc
-    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
-    qc.add_register(obs_creg)
-    # Implement the necessary basis rotations and measurements, as
-    # in BackendEstimator._measurement_circuit().
-    genobs_x = cog.general_observable.x
-    genobs_z = cog.general_observable.z
-    for clbit, subqubit in enumerate(cog.pauli_indices):
-        # subqubit is the index of the qubit in the subsystem.
-        # actual_qubit is its index in the system of interest (if different).
-        actual_qubit = qubit_locations[subqubit]
-        if genobs_x[subqubit]:
-            if genobs_z[subqubit]:
-                qc.sdg(actual_qubit)
-            qc.h(actual_qubit)
-        qc.measure(actual_qubit, obs_creg[clbit])
-
-    return qc
-
-
 def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
@@ -246,6 +181,7 @@ def generate_cutting_experiments(
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
+    list[list[list[QuantumCircuit]]],
 ]:
     """
     Generate cutting subexperiments and their associated weights.
@@ -329,6 +265,30 @@ def generate_cutting_experiments(
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
+    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
+    weights_legacy: list[tuple[float, WeightType]] = []
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+        subexperiments_legacy.append([])
+        actual_coeff = np.prod(
+            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
+        )
+        sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
+        weights_legacy.append((sampled_coeff, weight_type))
+        for i, (subcircuit, label) in enumerate(
+            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+        ):
+            map_ids_tmp = map_ids
+            if is_separated:
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+            decomp_qc = decompose_qpd_instructions(
+                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+            )
+            subexperiments_legacy[-1].append([])
+            so = subsystem_observables[label]
+            for j, cog in enumerate(so.groups):
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
+                subexperiments_legacy[-1][-1].append(meas_qc)
+
     # Generate the output experiments and weights
     subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
     weights: list[tuple[float, WeightType]] = []
@@ -361,84 +321,7 @@ def generate_cutting_experiments(
     if len(subexperiments_out.keys()) == 1:
         subexperiments_out = subexperiments_dict[list(subexperiments_dict.keys())[0]]
 
-    return subexperiments_out, weights
-
-
-def _generate_cutting_experiments(
-    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
-    observables: PauliList | dict[str | int, PauliList],
-    num_samples: int,
-) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[Any, WeightType]], list[float]]:
-    """Generate all the experiments to run on the backend and their associated coefficients."""
-    # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
-    # depending on the format of the execute_experiments input args, but the 2nd half of this function
-    # can be shared between both cases.
-    if isinstance(circuits, QuantumCircuit):
-        is_separated = False
-        subcircuit_list = [circuits]
-        subobservables_by_subsystem = decompose_observables(
-            observables, "A" * len(observables[0])
-        )
-        subsystem_observables = {
-            label: ObservableCollection(subobservables)
-            for label, subobservables in subobservables_by_subsystem.items()
-        }
-        # Gather the unique bases from the circuit
-        bases, qpd_gate_ids = _get_bases(circuits)
-        subcirc_qpd_gate_ids = [qpd_gate_ids]
-
-    else:
-        is_separated = True
-        subcircuit_list = [circuits[key] for key in sorted(circuits.keys())]
-        # Gather the unique bases across the subcircuits
-        subcirc_qpd_gate_ids, subcirc_map_ids = _get_mapping_ids_by_partition(
-            subcircuit_list
-        )
-        bases = _get_bases_by_partition(subcircuit_list, subcirc_qpd_gate_ids)
-
-        # Create the commuting observable groups
-        subsystem_observables = {
-            label: ObservableCollection(so) for label, so in observables.items()
-        }
-
-    # Sample the joint quasiprobability decomposition
-    random_samples = generate_qpd_weights(bases, num_samples=num_samples)
-
-    # Calculate terms in coefficient calculation
-    kappa = np.prod([basis.kappa for basis in bases])
-    num_samples = sum([value[0] for value in random_samples.values()])  # type: ignore
-
-    # Sort samples in descending order of frequency
-    sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
-
-    # Generate the outputs -- sub-experiments, coefficients, and frequencies
-    subexperiments: list[list[list[QuantumCircuit]]] = []
-    coefficients = []
-    sampled_frequencies = []
-    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-        subexperiments.append([])
-        actual_coeff = np.prod(
-            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
-        )
-        sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-        coefficients.append((sampled_coeff, weight_type))
-        sampled_frequencies.append(redundancy)
-        for i, (subcircuit, label) in enumerate(
-            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-        ):
-            map_ids_tmp = map_ids
-            if is_separated:
-                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
-            )
-            subexperiments[-1].append([])
-            so = subsystem_observables[label]
-            for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments[-1][-1].append(meas_qc)
-
-    return subexperiments, coefficients, sampled_frequencies
+    return subexperiments_out, weights, subexperiments_legacy
 
 
 def _run_experiments_batch(
@@ -557,6 +440,71 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
             qpd_gate_ids.append([i])
 
     return bases, qpd_gate_ids
+
+
+def _append_measurement_circuit(
+    qc: QuantumCircuit,
+    cog: CommutingObservableGroup,
+    /,
+    *,
+    qubit_locations: Sequence[int] | None = None,
+    inplace: bool = False,
+) -> QuantumCircuit:
+    """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
+
+    The new register will be named ``"observable_measurements"`` and will be
+    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+
+    Args:
+        qc: The quantum circuit
+        cog: The commuting observable set for
+            which to construct measurements
+        qubit_locations: A ``Sequence`` whose length is the number of qubits
+            in the observables, where each element holds that qubit's corresponding
+            index in the circuit.  By default, the circuit and observables are assumed
+            to have the same number of qubits, and the identity map
+            (i.e., ``range(qc.num_qubits)``) is used.
+        inplace: Whether to operate on the circuit in place (default: ``False``)
+
+    Returns:
+        The modified circuit
+    """
+    if qubit_locations is None:
+        # By default, the identity map.
+        if qc.num_qubits != cog.general_observable.num_qubits:
+            raise ValueError(
+                f"Quantum circuit qubit count ({qc.num_qubits}) does not match qubit "
+                f"count of observable(s) ({cog.general_observable.num_qubits}).  "
+                f"Try providing `qubit_locations` explicitly."
+            )
+        qubit_locations = range(cog.general_observable.num_qubits)
+    else:
+        if len(qubit_locations) != cog.general_observable.num_qubits:
+            raise ValueError(
+                f"qubit_locations has {len(qubit_locations)} element(s) but the "
+                f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
+            )
+    if not inplace:
+        qc = qc.copy()
+
+    # Append the appropriate measurements to qc
+    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
+    qc.add_register(obs_creg)
+    # Implement the necessary basis rotations and measurements, as
+    # in BackendEstimator._measurement_circuit().
+    genobs_x = cog.general_observable.x
+    genobs_z = cog.general_observable.z
+    for clbit, subqubit in enumerate(cog.pauli_indices):
+        # subqubit is the index of the qubit in the subsystem.
+        # actual_qubit is its index in the system of interest (if different).
+        actual_qubit = qubit_locations[subqubit]
+        if genobs_x[subqubit]:
+            if genobs_z[subqubit]:
+                qc.sdg(actual_qubit)
+            qc.h(actual_qubit)
+        qc.measure(actual_qubit, obs_creg[clbit])
+
+    return qc
 
 
 def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> None:
