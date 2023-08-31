@@ -310,9 +310,8 @@ def _generate_cutting_experiments(
         raise ValueError(
             "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
         )
-    if isinstance(num_samples, float):
-        if not num_samples >= 1:
-            raise ValueError("num_samples must be at least 1.")
+    if not num_samples >= 1:
+        raise ValueError("num_samples must be at least 1.")
 
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on the format of the execute_experiments input args, but the 2nd half of this function
