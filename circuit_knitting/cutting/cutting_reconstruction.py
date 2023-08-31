@@ -27,7 +27,7 @@ from .qpd import WeightType
 
 def reconstruct_expectation_values(
     results: SamplerResult | dict[str | int, SamplerResult],
-    weights: Sequence[tuple[float, WeightType]],
+    coefficients: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[str | int, PauliList],
 ) -> list[float]:
     r"""
@@ -40,7 +40,7 @@ def reconstruct_expectation_values(
             a single partition to the results. If the circuit was partitioned and its
             pieces run separately, the input should be a dictionary mapping partition labels
             to the results from each partition's subexperiments.
-        weights: The weights associated with each unique subexperiment. Each weight is a tuple
+        coefficients: The weights associated with each unique subexperiment. Each weight is a tuple
             containing the scalar value as well as the ``WeightType``, which denotes
             how the value was generated.
         observables: The observable(s) for which the expectation values will be calculated.
@@ -90,11 +90,11 @@ def reconstruct_expectation_values(
     sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
 
     # Reconstruct the expectation values
-    for i in range(len(weights)):
+    for i in range(len(coefficients)):
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
             so = subsystem_observables[label]
-            weight = weights[i]
+            coeff = coefficients[i]
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
@@ -114,7 +114,7 @@ def reconstruct_expectation_values(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
 
-        expvals += weight[0] * current_expvals
+        expvals += coeff[0] * current_expvals
 
     return list(expvals)
 
