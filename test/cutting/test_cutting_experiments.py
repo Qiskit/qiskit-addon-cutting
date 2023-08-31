@@ -87,6 +87,9 @@ class TestCuttingExperiments(unittest.TestCase):
             with pytest.raises(ValueError) as e_info:
                 generate_cutting_experiments(qc, PauliList(["ZZZZ"]), 0)
             assert e_info.value.args[0] == "num_samples must be at least 1."
+            with pytest.raises(ValueError) as e_info:
+                generate_cutting_experiments(qc, PauliList(["ZZZZ"]), np.nan)
+            assert e_info.value.args[0] == "num_samples must be at least 1."
         with self.subTest("test incompatible inputs"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
