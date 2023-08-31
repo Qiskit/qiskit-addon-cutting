@@ -23,17 +23,14 @@ from qiskit.quantum_info import PauliList
 
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
-    generate_cutting_experiments,
     partition_problem,
     cut_gates,
 )
 from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
-    SingleQubitQPDGate,
     TwoQubitQPDGate,
     BaseQPDGate,
-    WeightType,
 )
 
 
