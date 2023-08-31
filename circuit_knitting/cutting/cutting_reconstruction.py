@@ -40,9 +40,19 @@ def reconstruct_expectation_values(
             a single partition to the results. If the circuit was partitioned and its
             pieces run separately, the input should be a dictionary mapping partition labels
             to the results from each partition's subexperiments.
+
+            The subexperiment results are expected to be ordered in the same way the subexperiments
+            are ordered in the output of :func:`generate_cutting_experiments` -- one result for every
+            sample and observable, as shown below. The Qiskit Sampler primitive will return the results
+            in the same order the experiments are submitted, so it is important to format your
+            subexperiments correctly before submitting to the Sampler primitive.
+
+            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`
+
         coefficients: The weights associated with each unique subexperiment. Each weight is a tuple
-            containing the scalar value as well as the ``WeightType``, which denotes
-            how the value was generated.
+            containing the scalar value as well as the :class:`WeightType`, which denotes
+            how the value was generated. The contributions from each subexperiment result to the final
+            expectation value will be scaled by this value.
         observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if ``results`` is a
             :class:`~qiskit.primitives.SamplerResult` instance. Otherwise, it should be a
