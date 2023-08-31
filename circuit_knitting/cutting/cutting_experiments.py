@@ -40,7 +40,7 @@ def generate_cutting_experiments(
     partition label to a 1D array containing the subexperiments associated with that partition.
 
     In both cases, the subexperiment lists are ordered as follows:
-        :math:`[sample_{0}observable_{0}, sample_{0}observable_{1}, \ldots, sample_{0}observable_{N}, \ldots, sample_{M}observable_{N}]`
+        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, \ldots, sample_{M}observable_{N}]`
 
     The weights will always be returned as a 1D array -- one weight for each unique sample.
 
