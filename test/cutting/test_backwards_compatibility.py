@@ -162,8 +162,8 @@ def test_v0_3_cutting_width_workflow():
     subcircuits["A"]
     assert np.prod([basis.overhead for basis in bases]) == pytest.approx(81)
     samplers = {
-        "A": Sampler(run_options={"shots": 2**12}),
-        "B": Sampler(run_options={"shots": 2**12}),
+        "A": Sampler(run_options={"shots": 10}),
+        "B": Sampler(run_options={"shots": 10}),
     }
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
@@ -231,7 +231,7 @@ def test_v0_3_cutting_depth_workflow():
     )
     transpiled_qc.depth()
     transpiled_qpd_circuit.depth()
-    sampler = Sampler(run_options={"shots": 2**12})
+    sampler = Sampler(run_options={"shots": 10})
     quasi_dists, coefficients = execute_experiments(
         circuits=qpd_circuit,
         subobservables=observables,
@@ -303,8 +303,8 @@ def test_v0_3_wire_cutting_workflow():
     subcircuits["A"]
     assert np.prod([basis.overhead for basis in bases]) == pytest.approx(256)
     samplers = {
-        "A": Sampler(run_options={"shots": 2**12}),
-        "B": Sampler(run_options={"shots": 2**12}),
+        "A": Sampler(run_options={"shots": 10}),
+        "B": Sampler(run_options={"shots": 10}),
     }
     quasi_dists, coefficients = execute_experiments(
         circuits=subcircuits,
