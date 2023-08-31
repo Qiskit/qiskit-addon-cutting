@@ -125,7 +125,7 @@ class TestCuttingExperiments(unittest.TestCase):
                 "a two-qubit gate cut can be represented by two SingleQubitQPDGates -- one "
                 'labeled "<your_label>_0" and one labeled "<your_label>_1".'
                 "  This allows SingleQubitQPDGates belonging to the same cut to be "
-                "sampled together."
+                "sampled jointly."
             )
         with self.subTest("test bad observable size"):
             qc = QuantumCircuit(4)
