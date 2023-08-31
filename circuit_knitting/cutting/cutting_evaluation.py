@@ -424,7 +424,7 @@ def _get_mapping_ids_by_partition(
                         'labels suffixed with "_<id>", where <id> is the index of the cut '
                         "relative to the other cuts in the circuit. For example, all "
                         "SingleQubitQPDGates belonging to the same cut, N, should have labels "
-                        ' formatted as "<gate_label>_N". This allows SingleQubitQPDGates '
+                        ' formatted as "<your_label>_N". This allows SingleQubitQPDGates '
                         "belonging to the same cut to be sampled jointly."
                     )
                 decomp_ids.add(decomp_id)
