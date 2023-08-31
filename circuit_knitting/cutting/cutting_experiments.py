@@ -62,7 +62,7 @@ def generate_cutting_experiments(
         weight and the :class:`WeightType`. Each weight corresponds to one unique sample.
 
     Raises:
-        ValueError: ``num_samples`` must either be at least one.
+        ValueError: ``num_samples`` must be at least one.
         ValueError: ``circuits`` and ``observables`` are incompatible types
         ValueError: :class:`SingleQubitQPDGate` instances must have their cut ID
             appended to the gate label so they may be associated with other gates belonging
