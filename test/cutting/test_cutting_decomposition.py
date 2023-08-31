@@ -370,22 +370,22 @@ class TestCuttingDecomposition(unittest.TestCase):
                 qc, "AB", observables=PauliList(["ZZ"])
             )
             partitioned_problem.subcircuits["A"].data[0].operation.label = "newlabel"
-            comp_string = (
-                "SingleQubitQPDGate instances in input circuit(s) must have their "
-                'labels suffixed with "_<id>", where <id> is the index of the gate '
-                "relative to the other gates belonging to the same cut. For example, "
-                "a two-qubit gate can be represented by two SingleQubitQPDGates -- one "
-                'labeled "<your_label>_0" and one labeled "<your_label>_1".'
-                "  This allows SingleQubitQPDGates belonging to the same cut to be "
-                "sampled together."
-            )
+
             with pytest.raises(ValueError) as e_info:
                 generate_cutting_experiments(
                     partitioned_problem.subcircuits,
                     partitioned_problem.subobservables,
                     np.inf,
                 )
-            assert e_info.value.args[0] == comp_string
+            assert e_info.value.args[0] == (
+                "SingleQubitQPDGate instances in input circuit(s) must have their "
+                'labels suffixed with "_<id>", where <id> is the index of the gate '
+                "relative to the other gates belonging to the same cut. For example, "
+                "a two-qubit gate cut can be represented by two SingleQubitQPDGates -- one "
+                'labeled "<your_label>_0" and one labeled "<your_label>_1".'
+                "  This allows SingleQubitQPDGates belonging to the same cut to be "
+                "sampled together."
+            )
         with self.subTest("test bad observable size"):
             qc = QuantumCircuit(4)
             with pytest.raises(ValueError) as e_info:
