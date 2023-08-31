@@ -17,7 +17,7 @@ from collections.abc import Sequence
 
 import numpy as np
 from qiskit.quantum_info import PauliList
-from qiskit.result import QuasiDistribution
+from qiskit.primitives import SamplerResult
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
@@ -26,49 +26,57 @@ from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
-    coefficients: Sequence[tuple[float, WeightType]],
+    results: SamplerResult | dict[str | int, SamplerResult],
+    weights: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[str | int, PauliList],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and
-            QPD bit information from each sub-experiment. Its expected shape is
-            (num_unique_samples, num_partitions, num_commuting_observ_groups)
-        coefficients: A sequence of coefficients, such that each coefficient is associated
-            with one unique sample. The length of ``coefficients`` should equal
-            the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical
-            value and the ``WeightType`` denoting how the value was generated.
+        results: The results from running the cutting subexperiments. If the cut circuit
+            was not partitioned between qubits and run separately, the input should be
+            a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping
+            a single partition to the results. If the circuit was partitioned and its
+            pieces run separately, the input should be a dictionary mapping partition labels
+            to the results from each partition's subexperiments.
+        weights: The weights associated with each unique subexperiment. Each weight is a tuple
+            containing the scalar value as well as the ``WeightType``, which denotes
+            how the value was generated.
         observables: The observable(s) for which the expectation values will be calculated.
-            This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
-            was not separated into subcircuits. If the decomposed circuit was separated, this
-            should be a dictionary mapping from partition label to subobservables.
+            This should be a :class:`~qiskit.quantum_info.PauliList` if ``results`` is a
+            :class:`~qiskit.primitives.SamplerResult` instance. Otherwise, it should be a
+            dictionary mapping partition labels to the observables associated with that partition.
 
     Returns:
-        A ``list`` of ``float``\ s, such that each float is a simulated expectation
+        A ``list`` of ``float``\ s, such that each float is an expectation
         value corresponding to the input observable in the same position
 
     Raises:
-        ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
+        ValueError: ``observables`` and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if len(coefficients) != len(quasi_dists):
+    if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
         raise ValueError(
-            f"The number of unique samples in the quasi_dists list ({len(quasi_dists)}) does "
-            f"not equal the number of coefficients ({len(coefficients)})."
+            "If observables is a PauliList, results must be a SamplerResult instance."
         )
-    # Create the commuting observable groups
+    if isinstance(observables, dict) and not isinstance(results, dict):
+        raise ValueError(
+            "If observables is a dictionary, results must also be a dictionary."
+        )
+
+    # If circuit was not separated, transform input data structures to dictionary format
     if isinstance(observables, PauliList):
         if any(obs.phase != 0 for obs in observables):
             raise ValueError("An input observable has a phase not equal to 1.")
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
+        results_dict: dict[str | int, SamplerResult] = {"A": results}
         expvals = np.zeros(len(observables))
 
     else:
+        results_dict = results
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
@@ -79,21 +87,26 @@ def reconstruct_expectation_values(
         label: ObservableCollection(subobservables)
         for label, subobservables in subobservables_by_subsystem.items()
     }
+    sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
 
-    # Assign each weight's sign and calculate the expectation values for each observable
-    for i, coeff in enumerate(coefficients):
-        sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
+    # Reconstruct the expectation values
+    for i in range(len(weights)):
         current_expvals = np.ones((len(expvals),))
-        for j, label in enumerate(sorted_subsystems):
+        for label in sorted_subsystems:
             so = subsystem_observables[label]
+            weight = weights[i]
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists[i][j][k][0]
-                for outcome, quasi_prob in quasi_probs.items():
+                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]  # type: ignore
+                for outcome, quasi_prob in quasi_probs.items():  # type: ignore
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        quasi_dists[i][j][k][1], cog, outcome
+                        results_dict[label].metadata[i * len(so.groups) + k][
+                            "num_qpd_bits"
+                        ],
+                        cog,
+                        outcome,
                     )
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
@@ -101,7 +114,7 @@ def reconstruct_expectation_values(
                     [subsystem_expvals[m][n] for m, n in so.lookup[subobservable]]
                 )
 
-        expvals += coeff[0] * current_expvals
+        expvals += weight[0] * current_expvals
 
     return list(expvals)
 

@@ -15,6 +15,7 @@ from ddt import ddt, data, unpack
 import pytest
 import numpy as np
 from qiskit.result import QuasiDistribution
+from qiskit.primitives import SamplerResult
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
@@ -44,36 +45,64 @@ class TestCuttingReconstruction(unittest.TestCase):
 
     def test_cutting_reconstruction(self):
         with self.subTest("Test PauliList observable"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(1.0, WeightType.EXACT)]
-            observables = PauliList(["ZZ"])
-            expvals = reconstruct_expectation_values(
-                quasi_dists, coefficients, observables
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
+            results.metadata[0]["num_qpd_bits"] = 1
+            weights = [(1.0, WeightType.EXACT)]
+            subexperiments = [QuantumCircuit(2)]
+            creg1 = ClassicalRegister(1, name="qpd_measurements")
+            creg2 = ClassicalRegister(2, name="observable_measurements")
+            subexperiments[0].add_register(creg1)
+            subexperiments[0].add_register(creg2)
+            observables = PauliList(["ZZ"])
+            expvals = reconstruct_expectation_values(results, weights, observables)
             self.assertEqual([1.0], expvals)
         with self.subTest("Test mismatching inputs"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
-            observables = PauliList(["ZZ"])
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1
+            weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            subexperiments = {"A": QuantumCircuit(2)}
+            observables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results, weights, observables)
             assert (
                 e_info.value.args[0]
-                == "The number of unique samples in the quasi_dists list (1) does not equal the number of coefficients (2)."
+                == "If observables is a dictionary, results must also be a dictionary."
+            )
+            results2 = {"A": results}
+            observables = PauliList(["ZZ"])
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results2, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "If observables is a PauliList, results must be a SamplerResult instance."
             )
         with self.subTest("Test unsupported phase"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT)]
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1
+            weights = [(0.5, WeightType.EXACT)]
+            subexperiments = [QuantumCircuit(2)]
+            creg1 = ClassicalRegister(1, name="qpd_measurements")
+            creg2 = ClassicalRegister(2, name="observable_measurements")
+            subexperiments[0].add_register(creg1)
+            subexperiments[0].add_register(creg2)
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results, weights, observables)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
-            observables = {"A": PauliList(["iZZ"])}
+            results = {"A": results}
+            subexperiments = {"A": subexperiments}
+            observables = {"A": observables}
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results, weights, observables)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
