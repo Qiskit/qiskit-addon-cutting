@@ -77,7 +77,7 @@ def execute_experiments(
         ValueError: The input circuits may not contain any classical registers or bits.
         ValueError: If multiple samplers are passed, each one must be unique.
     """
-    if num_samples <= 0:
+    if not num_samples >= 1:
         raise ValueError("The number of requested samples must be at least 1.")
 
     if isinstance(circuits, dict) and not isinstance(subobservables, dict):
