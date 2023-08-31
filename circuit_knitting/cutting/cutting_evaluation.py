@@ -426,7 +426,7 @@ def _get_mapping_ids_by_partition(
                         "a two-qubit gate cut can be represented by two SingleQubitQPDGates -- one "
                         'labeled "<your_label>_0" and one labeled "<your_label>_1".'
                         "  This allows SingleQubitQPDGates belonging to the same cut to be "
-                        "sampled together."
+                        "sampled jointly."
                     )
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[-1].append([i])
