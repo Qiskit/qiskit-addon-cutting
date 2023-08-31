@@ -13,7 +13,8 @@
 
 from __future__ import annotations
 
-from typing import Any, NamedTuple
+from typing import NamedTuple
+from collections import defaultdict
 from collections.abc import Sequence
 from itertools import chain
 
@@ -69,15 +70,15 @@ def execute_experiments(
           sampling frequency
 
     Raises:
-        ValueError: The number of requested samples must be positive.
+        ValueError: The number of requested samples must be at least one.
         ValueError: The types of ``circuits`` and ``subobservables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
         ValueError: The input circuits may not contain any classical registers or bits.
         ValueError: If multiple samplers are passed, each one must be unique.
     """
-    if num_samples <= 0:
-        raise ValueError("The number of requested samples must be positive.")
+    if not num_samples >= 1:
+        raise ValueError("The number of requested samples must be at least 1.")
 
     if isinstance(circuits, dict) and not isinstance(subobservables, dict):
         raise ValueError(
@@ -119,9 +120,9 @@ def execute_experiments(
 
     # Generate the sub-experiments to run on backend
     (
-        subexperiments,
+        _,
         coefficients,
-        sampled_frequencies,
+        subexperiments,
     ) = _generate_cutting_experiments(
         circuits,
         subobservables,
@@ -241,9 +242,23 @@ def _append_measurement_circuit(
 def _generate_cutting_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     observables: PauliList | dict[str | int, PauliList],
-    num_samples: int,
-) -> tuple[list[list[list[QuantumCircuit]]], list[tuple[Any, WeightType]], list[float]]:
-    """Generate all the experiments to run on the backend and their associated coefficients."""
+    num_samples: int | float,
+) -> tuple[
+    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[tuple[float, WeightType]],
+    list[list[list[QuantumCircuit]]],
+]:
+    if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
+        raise ValueError(
+            "If the input circuits is a QuantumCircuit, the observables must be a PauliList."
+        )
+    if isinstance(circuits, dict) and not isinstance(observables, dict):
+        raise ValueError(
+            "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
+        )
+    if not num_samples >= 1:
+        raise ValueError("num_samples must be at least 1.")
+
     # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
     # depending on the format of the execute_experiments input args, but the 2nd half of this function
     # can be shared between both cases.
@@ -285,18 +300,33 @@ def _generate_cutting_experiments(
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
-    # Generate the outputs -- sub-experiments, coefficients, and frequencies
-    subexperiments: list[list[list[QuantumCircuit]]] = []
-    coefficients = []
-    sampled_frequencies = []
+    # Generate the output experiments and weights
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
+    weights: list[tuple[float, WeightType]] = []
     for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-        subexperiments.append([])
         actual_coeff = np.prod(
             [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
         )
         sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-        coefficients.append((sampled_coeff, weight_type))
-        sampled_frequencies.append(redundancy)
+        weights.append((sampled_coeff, weight_type))
+        map_ids_tmp = map_ids
+        for i, (subcircuit, label) in enumerate(
+            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+        ):
+            if is_separated:
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+            decomp_qc = decompose_qpd_instructions(
+                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+            )
+            so = subsystem_observables[label]
+            for j, cog in enumerate(so.groups):
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
+                subexperiments_dict[label].append(meas_qc)
+
+    # Generate legacy subexperiments list
+    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+        subexperiments_legacy.append([])
         for i, (subcircuit, label) in enumerate(
             strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
         ):
@@ -306,13 +336,22 @@ def _generate_cutting_experiments(
             decomp_qc = decompose_qpd_instructions(
                 subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
             )
-            subexperiments[-1].append([])
+            subexperiments_legacy[-1].append([])
             so = subsystem_observables[label]
             for j, cog in enumerate(so.groups):
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments[-1][-1].append(meas_qc)
+                subexperiments_legacy[-1][-1].append(meas_qc)
 
-    return subexperiments, coefficients, sampled_frequencies
+    # If the input was a single quantum circuit, return the subexperiments as a list
+    subexperiments_out: list[QuantumCircuit] | dict[
+        str | int, list[QuantumCircuit]
+    ] = dict(subexperiments_dict)
+    assert isinstance(subexperiments_out, dict)
+    if isinstance(circuits, QuantumCircuit):
+        assert len(subexperiments_out.keys()) == 1
+        subexperiments_out = list(subexperiments_dict.values())[0]
+
+    return subexperiments_out, weights, subexperiments_legacy
 
 
 def _run_experiments_batch(
@@ -377,7 +416,17 @@ def _get_mapping_ids_by_partition(
         subcirc_map_ids.append([])
         for i, inst in enumerate(circ.data):
             if isinstance(inst.operation, SingleQubitQPDGate):
-                decomp_id = int(inst.operation.label.split("_")[-1])
+                try:
+                    decomp_id = int(inst.operation.label.split("_")[-1])
+                except (AttributeError, ValueError):
+                    raise ValueError(
+                        "SingleQubitQPDGate instances in input circuit(s) must have their "
+                        'labels suffixed with "_<id>", where <id> is the index of the cut '
+                        "relative to the other cuts in the circuit. For example, all "
+                        "SingleQubitQPDGates belonging to the same cut, N, should have labels "
+                        ' formatted as "<your_label>_N". This allows SingleQubitQPDGates '
+                        "belonging to the same cut to be sampled jointly."
+                    )
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[-1].append([i])
                 subcirc_map_ids[-1].append(decomp_id)
