@@ -41,7 +41,7 @@ def generate_cutting_experiments(
 
     In both cases, the subexperiment lists are ordered as follows:
 
-        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, \ldots, sample_{M}observable_{N}]`
+        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`
 
     The weights will always be returned as a 1D array -- one weight for each unique sample.
 
