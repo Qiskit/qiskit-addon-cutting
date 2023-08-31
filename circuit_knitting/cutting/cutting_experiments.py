@@ -28,7 +28,7 @@ def generate_cutting_experiments(
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
 ]:
-    """
+    r"""
     Generate cutting subexperiments and their associated weights.
 
     If the input, ``circuits``, is a :class:`QuantumCircuit` instance, the
