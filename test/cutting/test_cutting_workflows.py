@@ -36,7 +36,7 @@ def test_transpile_before_realizing_basis_id():
     # SingleQubitQPDGate is allowed.
     backend = FakeLagosV2()
     target = deepcopy(backend.target)
-    sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 1)
+    sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_instruction(CXGate()), 1)
     target.add_instruction(
         sample_qpd_instruction,
         {(i,): None for i in range(target.num_qubits)},

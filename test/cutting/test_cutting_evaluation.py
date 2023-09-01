@@ -9,11 +9,11 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-import pytest
-import unittest
 
+import unittest
 from copy import deepcopy
 
+import pytest
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.result import QuasiDistribution
 from qiskit.primitives import Sampler as TerraSampler
@@ -215,7 +215,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert (
                 e_info.value.args[0]
-                == "The number of requested samples must be positive."
+                == "The number of requested samples must be at least 1."
             )
         with self.subTest("Dict of non-unique samplers"):
             qc = QuantumCircuit(2)

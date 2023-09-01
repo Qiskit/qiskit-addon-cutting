@@ -30,7 +30,7 @@ from __future__ import annotations
 from uuid import uuid4, UUID
 from collections import defaultdict
 from collections.abc import Sequence, Iterable, Hashable, MutableMapping
-from typing import NamedTuple
+from typing import NamedTuple, Callable
 
 from rustworkx import PyGraph, connected_components  # type: ignore[attr-defined]
 from qiskit.circuit import (
@@ -134,12 +134,17 @@ def separate_circuit(
     return SeparatedCircuits(subcircuits, qubit_map)
 
 
-def _partition_labels_from_circuit(circuit: QuantumCircuit) -> list[int]:
+def _partition_labels_from_circuit(
+    circuit: QuantumCircuit,
+    ignore: Callable[[CircuitInstruction], bool] = lambda instr: False,
+) -> list[int]:
     """Generate partition labels from the connectivity of a quantum circuit."""
     # Determine connectivity structure of the circuit
     graph: PyGraph = PyGraph()
     graph.add_nodes_from(range(circuit.num_qubits))
     for instruction in circuit.data:
+        if ignore(instruction):
+            continue
         qubits = instruction.qubits
         for i, q1 in enumerate(qubits):
             for q2 in qubits[i + 1 :]:

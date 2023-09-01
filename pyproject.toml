@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.2.0"
+version = "0.3.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -32,7 +32,7 @@ dependencies = [
     "scipy>=1.5.2,<1.11",
     "rustworkx>=0.12.0",
     "qiskit-aer>=0.12.0",
-    "qiskit-terra>=0.24.0",
+    "qiskit>=0.43.0",
     "qiskit-nature>=0.6.0",
     "qiskit-ibm-runtime>=0.9.2",
 ]
@@ -64,7 +64,7 @@ nbtest = [
 ]
 style = [
     "autoflake==2.2.0",
-    "black[jupyter]==23.3.0",
+    "black[jupyter]~=23.1",
     "ruff>=0.0.246",
     "nbqa>=1.6.0",
 ]
@@ -81,6 +81,9 @@ docs = [
     "sphinx-autodoc-typehints>=1.12.0",
     "sphinx-reredirects",
     "jupyter-sphinx>=0.3.2",
+    # The following line is needed until
+    # https://github.com/jupyter/jupyter-sphinx/pull/226 is resolved.
+    "ipykernel>=4.5.1",
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
     "reno>=3.4.0",
