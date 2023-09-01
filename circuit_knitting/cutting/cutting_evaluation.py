@@ -38,13 +38,6 @@ from .qpd import (
 from .cutting_decomposition import decompose_observables
 
 
-class CuttingExperimentResults(NamedTuple):
-    """Circuit cutting subexperiment results and sampling coefficients."""
-
-    quasi_dists: list[list[list[tuple[QuasiDistribution, int]]]]
-    coeffs: Sequence[tuple[float, WeightType]]
-
-
 def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     subobservables: PauliList | dict[str | int, PauliList],
@@ -64,10 +57,8 @@ def execute_experiments(
         samplers: Sampler(s) on which to run the sub-experiments.
 
     Returns:
-        - A 3D list of length-2 tuples holding the quasi-distributions and QPD bit information
-          for each sub-experiment. The shape of the list is: (``num_unique_samples``, ``num_partitions``, ``num_commuting_observ_groups``)
-        - Coefficients corresponding to each unique subexperiment's
-          sampling frequency
+        - A list of :class:`~qiskit.primitives.SamplerResult` instances -- one for each partition.
+        - Coefficients corresponding to each unique subexperiment's sampling frequency
 
     Raises:
         ValueError: The number of requested samples must be at least one.
@@ -120,58 +111,39 @@ def execute_experiments(
 
     # Generate the sub-experiments to run on backend
     (
-        _,
-        coefficients,
         subexperiments,
+        coefficients,
+        _,
     ) = _generate_cutting_experiments(
         circuits,
         subobservables,
         num_samples,
     )
 
-    # Create a list of samplers to use -- one for each batch
-    if isinstance(samplers, BaseSampler):
-        samplers_by_batch = [samplers]
-        batches = [
-            [
-                sample[i]
-                for sample in subexperiments
-                for i in range(len(subexperiments[0]))
-            ]
-        ]
+    # Set up subexperiments and samplers
+    if isinstance(subexperiments, list):
+        subexperiments_dict = {"A": subexperiments}
     else:
-        samplers_by_batch = [samplers[key] for key in sorted(samplers.keys())]
-        batches = [
-            [sample[i] for sample in subexperiments]
-            for i in range(len(subexperiments[0]))
-        ]
+        assert isinstance(subexperiments, dict)
+        subexperiments_dict = subexperiments
+    if isinstance(samplers, BaseSampler):
+        samplers_dict = {key: samplers for key in subexperiments_dict.keys()}
+    else:
+        assert isinstance(samplers, dict)
+        samplers_dict = samplers
 
-    # There should be one batch per input sampler
-    assert len(samplers_by_batch) == len(batches)
+    # Run experiments and append QPD bit information to the metadata
+    results = {label: samplers_dict[label].run(subexperiments_dict[label]).result() for label in sorted(subexperiments.keys())}
+    for label, result in results.items():
+        for i, metadata in enumerate(result.metadata):
+            metadata['num_qpd_bits'] = len(subexperiments_dict[label][i].cregs[0])
 
-    # Run each batch of sub-experiments
-    quasi_dists_by_batch = [
-        _run_experiments_batch(
-            batches[i],
-            samplers_by_batch[i],
-        )
-        for i in range(len(samplers_by_batch))
-    ]
+    results_out = results
+    if isinstance(circuits, QuantumCircuit):
+        assert len(results_dict.keys()) == 1
+        results_out = results_dict[list(results_dict.keys())[0]]
 
-    # Build the output data structure to match the shape of input subexperiments
-    quasi_dists: list[list[list[tuple[dict[str, int], int]]]] = [
-        [] for _ in range(len(subexperiments))
-    ]
-    count = 0
-    for i in range(len(subexperiments)):
-        for j in range(len(subexperiments[0])):
-            if len(samplers_by_batch) == 1:
-                quasi_dists[i].append(quasi_dists_by_batch[0][count])
-                count += 1
-            else:
-                quasi_dists[i].append(quasi_dists_by_batch[j][i])
-
-    return CuttingExperimentResults(quasi_dists, coefficients)
+    return results_out, coefficients
 
 
 def _append_measurement_circuit(
@@ -380,23 +352,22 @@ def _run_experiments_batch(
         num_qpd_bits_flat.append(len(circ.cregs[0]))
 
     # Run all of the batched experiments
-    quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
+    results_flat = sampler.run(experiments_flat).result()
+
 
     # Reshape the output data to match the input
-    quasi_dists_reshaped: list[list[QuasiDistribution]] = [[] for _ in subexperiments]
-    num_qpd_bits: list[list[int]] = [[] for _ in subexperiments]
+    results_reshaped: list[list[SamplerResult]] = [[] for _ in subexperiments]
     count = 0
     for i, subcirc in enumerate(subexperiments):
         for j in range(len(subcirc)):
             quasi_dists_reshaped[i].append(quasi_dists_flat[count])
-            num_qpd_bits[i].append(num_qpd_bits_flat[count])
             count += 1
 
     # Create the counts tuples, which include the number of QPD measurement bits
-    quasi_dists: list[list[tuple[dict[str, float], int]]] = [
+    results: list[list[SamplerResult]] = [
         [] for _ in range(len(subexperiments))
     ]
-    for i, sample in enumerate(quasi_dists_reshaped):
+    for i, sample in enumerate(results_reshaped):
         for j, prob_dict in enumerate(sample):
             quasi_dists[i].append((prob_dict, num_qpd_bits[i][j]))
 
