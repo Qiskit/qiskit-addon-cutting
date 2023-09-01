@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+import copy
 from typing import Sequence, Any
 from concurrent.futures import ThreadPoolExecutor
 
@@ -38,6 +39,7 @@ class EntanglementForgingKnitter:
     def __init__(
         self,
         ansatz: EntanglementForgingAnsatz,
+        fixed_hf_value: float | None = None,
         service: QiskitRuntimeService | None = None,
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
@@ -48,6 +50,9 @@ class EntanglementForgingKnitter:
         Args:
             ansatz: The container for the circuit structure and bitstrings to be used
                 (and generate the stateprep circuits)
+            fixed_hf_value: This value will be used instead of calculating the Hartree-Fock energy.
+                This value should represent the Hartree-Fock energy shifted by the nuclear repulsion energy.
+                The HF energy needs to be shifted in order to be used in the Schmidt matrix.
             service: The service used to spawn Qiskit primitives and runtime jobs
             backend_names: Names of the backends to use for calculating expectation values
             options: Options to use with the backends
@@ -59,6 +64,7 @@ class EntanglementForgingKnitter:
         self._session_ids: list[str | None] | None = None
         self._backend_names: list[str] | None = None
         self._options: list[Options] | None = None
+        self.fixed_hf_value = fixed_hf_value
         # Call constructors
         self.backend_names = backend_names  # type: ignore
         self.options = options
@@ -141,6 +147,16 @@ class EntanglementForgingKnitter:
         """Change the service class field."""
         self._service = service.active_account() if service is not None else service
 
+    @property
+    def fixed_hf_value(self) -> float | None:
+        """Return the shifted Hartree-Fock energy."""
+        return self._fixed_hf_value
+
+    @fixed_hf_value.setter
+    def fixed_hf_value(self, fixed_hf_value: float | None) -> None:
+        """Set the shifted Hartree-Fock energy to bet used in the Schmidt matrix."""
+        self._fixed_hf_value = fixed_hf_value
+
     def __call__(
         self,
         ansatz_parameters: Sequence[float],
@@ -191,6 +207,8 @@ class EntanglementForgingKnitter:
         tensor_ansatze_u = [
             prep_circ.compose(circuit_u) for prep_circ in self._tensor_circuits_u
         ]
+        if self.fixed_hf_value is not None:
+            tensor_ansatze_u = tensor_ansatze_u[1:]
         superposition_ansatze_u = [
             prep_circ.compose(circuit_u) for prep_circ in self._superposition_circuits_u
         ]
@@ -201,6 +219,8 @@ class EntanglementForgingKnitter:
             tensor_ansatze_v = [
                 prep_circ.compose(circuit_u) for prep_circ in self._tensor_circuits_v
             ]
+            if self.fixed_hf_value is not None:
+                tensor_ansatze_v = tensor_ansatze_v[1:]
             superposition_ansatze_v = [
                 prep_circ.compose(circuit_u)
                 for prep_circ in self._superposition_circuits_v
@@ -282,10 +302,29 @@ class EntanglementForgingKnitter:
                     )
                 self._session_ids[i] = job_id
 
+        # Pack NaNs into the expval list in place of the HF bitstring results to
+        # ensure Schmidt matrix is the correct shape
+        if self._fixed_hf_value is not None:
+            num_paulis = len(forged_operator.tensor_paulis)
+            nans_u = np.empty(num_paulis)
+            nans_u[:] = np.nan
+            if not self._ansatz.bitstrings_are_symmetric:
+                # Should be equal number of expvals for each subsystem
+                assert len(tensor_expvals) % 2 == 0
+                num_tensor_terms = int(len(tensor_expvals) / 2)
+                nans_v = copy.deepcopy(nans_u)
+                tensor_expvals.insert(num_tensor_terms, nans_v)
+            tensor_expvals.insert(0, nans_u)
+
         # Compute the Schmidt matrix
         h_schmidt = self._compute_h_schmidt(
             forged_operator, np.array(tensor_expvals), np.array(superposition_expvals)
         )
+
+        # Hard-code the shifted Hartree-Fock energy, if desired
+        if self._fixed_hf_value is not None:
+            h_schmidt[0, 0] = self._fixed_hf_value
+
         evals, evecs = np.linalg.eigh(h_schmidt)
         schmidt_coeffs = evecs[:, 0]
         energy = evals[0]
@@ -569,10 +608,10 @@ def _estimate_expvals(
     tensor_paulis: list[Pauli],
     superposition_ansatze: list[QuantumCircuit],
     superposition_paulis: list[Pauli],
-    service_args: dict[str, Any] | None = None,
-    backend_name: str | None = None,
-    options: Options | None = None,
-    session_id: str | None = None,
+    service_args: dict[str, Any] | None,
+    backend_name: str | None,
+    options: Options | None,
+    session_id: str | None,
 ) -> tuple[list[np.ndarray], list[np.ndarray], str | None]:
     """Run quantum circuits to generate the expectation values.
 

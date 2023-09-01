@@ -1,0 +1,11 @@
+---
+prelude: |
+  The 0.3.0 release introduces significant new features while maintaining
+  backwards compatibility with the 0.2.0 release.  The most striking
+  change in this release is the shortened module names:
+  ``circuit_knitting_toolbox`` has been renamed to
+  ``circuit_knitting``, ``entanglement_forging`` has been renamed to
+  ``forging``, and ``circuit_cutting`` has been renamed to
+  ``cutting``.  The new circuit cutting module contains significant
+  enhancements, including support for wire cutting and for the cutting
+  of arbitrary two-qubit gates.

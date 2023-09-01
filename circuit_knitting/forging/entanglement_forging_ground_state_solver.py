@@ -129,6 +129,7 @@ class EntanglementForgingGroundStateSolver:
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
         mo_coeff: np.ndarray | None = None,
+        hf_energy: float | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -143,6 +144,9 @@ class EntanglementForgingGroundStateSolver:
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
+            hf_energy: The Hartree-Fock energy to use at each iteration. If this is left unset,
+                the energy will be calculated using quantum experiments. See :ref:`Fixing the Hartree-Fock bitstring`
+                for more information.
 
         Returns:
             None
@@ -157,6 +161,7 @@ class EntanglementForgingGroundStateSolver:
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
+        self.hf_energy = hf_energy
         self._mo_coeff = mo_coeff
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
@@ -246,6 +251,16 @@ class EntanglementForgingGroundStateSolver:
         """Set the coefficients for converting integrals to the MO basis."""
         self._mo_coeff = mo_coeff
 
+    @property
+    def hf_energy(self) -> float | None:
+        """Return the Hartree-Fock energy."""
+        return self._hf_energy
+
+    @hf_energy.setter
+    def hf_energy(self, hf_energy: float | None) -> None:
+        """Set the Hartree-Fock energy."""
+        self._hf_energy = hf_energy
+
     def solve(
         self,
         problem: ElectronicStructureProblem,
@@ -284,18 +299,24 @@ class EntanglementForgingGroundStateSolver:
         hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
-        # Set the knitter class field
+        # Shift the hf value so it can be entered into the Schmidt matrix
+        fixed_hf_value = None
+        if self.hf_energy is not None:
+            fixed_hf_value = self.hf_energy - self._energy_shift
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
+                fixed_hf_value=fixed_hf_value,
                 service=self._service,
                 backend_names=backend_names,
                 options=self._options,
             )
         else:
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz, options=self._options
+                self._ansatz,
+                fixed_hf_value=fixed_hf_value,
+                options=self._options,
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0

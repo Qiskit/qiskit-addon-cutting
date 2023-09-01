@@ -25,9 +25,12 @@ import numpy.typing as npt
 from qiskit.circuit import (
     QuantumCircuit,
     Gate,
+    ControlledGate,
+    Instruction,
     ClassicalRegister,
     CircuitInstruction,
     Measure,
+    Reset,
 )
 from qiskit.circuit.library.standard_gates import (
     XGate,
@@ -39,6 +42,7 @@ from qiskit.circuit.library.standard_gates import (
     SXGate,
     SXdgGate,
     TGate,
+    TdgGate,
     RXGate,
     RYGate,
     RZGate,
@@ -68,6 +72,7 @@ from qiskit.utils import deprecate_func
 
 from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
+from ..instructions import Move
 from ...utils.iteration import unique_by_id, strict_zip
 
 
@@ -543,19 +548,28 @@ def decompose_qpd_instructions(
     return new_qc
 
 
-_qpdbasis_from_gate_funcs: dict[str, Callable[[Gate], QPDBasis]] = {}
+_qpdbasis_from_instruction_funcs: dict[str, Callable[[Instruction], QPDBasis]] = {}
 
 
-def _register_qpdbasis_from_gate(*args):
+def _register_qpdbasis_from_instruction(*args):
     def g(f):
         for name in args:
-            _qpdbasis_from_gate_funcs[name] = f
+            _qpdbasis_from_instruction_funcs[name] = f
         return f
 
     return g
 
 
-def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
+@deprecate_func(
+    since="0.3.0",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no earlier than v0.4.0",
+    additional_msg=(
+        "This function has been renamed to "
+        "``circuit_knitting.cutting.qpd.qpdbasis_from_instruction()``."
+    ),
+)
+def qpdbasis_from_gate(gate: Instruction) -> QPDBasis:  # pragma: no cover
     """
     Generate a :class:`.QPDBasis` object, given a supported operation.
 
@@ -564,16 +578,42 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
     parameters, but there are some special cases (see, e.g., `qiskit issue #10396
     <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
 
+    The :class:`.Move` operation, which can be used to specify a wire cut,
+    is also supported.
+
     Returns:
         The newly-instantiated :class:`QPDBasis` object
 
     Raises:
-        ValueError: Gate not supported.
-        ValueError: Cannot decompose gate with unbound parameters.
+        ValueError: Instruction not supported.
+        ValueError: Cannot decompose instruction with unbound parameters.
+        ValueError: ``to_matrix`` conversion of two-qubit gate failed.
+    """
+    return qpdbasis_from_instruction(gate)
+
+
+def qpdbasis_from_instruction(gate: Instruction, /) -> QPDBasis:
+    """
+    Generate a :class:`.QPDBasis` object, given a supported operation.
+
+    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
+    supported.  This should include the vast majority of gates with no unbound
+    parameters, but there are some special cases (see, e.g., `qiskit issue #10396
+    <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
+
+    The :class:`.Move` operation, which can be used to specify a wire cut,
+    is also supported.
+
+    Returns:
+        The newly-instantiated :class:`QPDBasis` object
+
+    Raises:
+        ValueError: Instruction not supported.
+        ValueError: Cannot decompose instruction with unbound parameters.
         ValueError: ``to_matrix`` conversion of two-qubit gate failed.
     """
     try:
-        f = _qpdbasis_from_gate_funcs[gate.name]
+        f = _qpdbasis_from_instruction_funcs[gate.name]
     except KeyError:
         pass
     else:
@@ -598,20 +638,20 @@ def qpdbasis_from_gate(gate: Gate) -> QPDBasis:
             operations.append(UnitaryGate(d.K1l))
         return retval
 
-    raise ValueError(f"Gate not supported: {gate.name}")
+    raise ValueError(f"Instruction not supported: {gate.name}")
 
 
-def _explicitly_supported_gates() -> set[str]:
+def _explicitly_supported_instructions() -> set[str]:
     """
     Return a set of instruction names with explicit support for automatic decomposition.
 
-    These instructions are *explicitly* supported by :func:`qpdbasis_from_gate`.
+    These instructions are *explicitly* supported by :func:`qpdbasis_from_instruction`.
     Other instructions may be supported too, via a KAK decomposition.
 
     Returns:
         Set of gate names supported for automatic decomposition.
     """
-    return set(_qpdbasis_from_gate_funcs)
+    return set(_qpdbasis_from_instruction_funcs)
 
 
 def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
@@ -788,19 +828,19 @@ def _nonlocal_qpd_basis_from_u(
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("swap")
+@_register_qpdbasis_from_instruction("swap")
 def _(gate: SwapGate):
     return _nonlocal_qpd_basis_from_u([(1 + 1j) / np.sqrt(8)] * 4)
 
 
-@_register_qpdbasis_from_gate("iswap")
+@_register_qpdbasis_from_instruction("iswap")
 def _(gate: iSwapGate):
     return _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
 
 
-@_register_qpdbasis_from_gate("dcx")
+@_register_qpdbasis_from_instruction("dcx")
 def _(gate: DCXGate):
-    retval = qpdbasis_from_gate(iSwapGate())
+    retval = qpdbasis_from_instruction(iSwapGate())
     # Modify basis according to DCXGate definition in Qiskit circuit library
     # https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
     for operations in unique_by_id(m[0] for m in retval.maps):
@@ -812,7 +852,7 @@ def _(gate: DCXGate):
     return retval
 
 
-@_register_qpdbasis_from_gate("rxx", "ryy", "rzz", "crx", "cry", "crz")
+@_register_qpdbasis_from_instruction("rxx", "ryy", "rzz", "crx", "cry", "crz")
 def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
@@ -846,7 +886,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         ([r_minus], measurement_1),
     ]
 
-    theta = _theta_from_gate(gate)
+    theta = _theta_from_instruction(gate)
 
     if gate.name[0] == "c":
         # Following Eq. (C.4) of https://arxiv.org/abs/2205.00016v2,
@@ -885,37 +925,45 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("cs", "csdg")
+@_register_qpdbasis_from_instruction("cs", "csdg")
 def _(gate: CSGate | CSdgGate):
     theta = np.pi / 2
     rot_gate = TGate()
     if gate.name == "csdg":
         theta *= -1
         rot_gate = rot_gate.inverse()
-    retval = qpdbasis_from_gate(CRZGate(theta))
+    retval = qpdbasis_from_instruction(CRZGate(theta))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, rot_gate)
     return retval
 
 
-@_register_qpdbasis_from_gate("cp")
+@_register_qpdbasis_from_instruction("cp")
 def _(gate: CPhaseGate):
-    theta = _theta_from_gate(gate)
-    retval = qpdbasis_from_gate(CRZGate(theta))
+    theta = _theta_from_instruction(gate)
+    retval = qpdbasis_from_instruction(CRZGate(theta))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, PhaseGate(theta / 2))
     return retval
 
 
-@_register_qpdbasis_from_gate("csx")
+@_register_qpdbasis_from_instruction("csx")
 def _(gate: CSXGate):
-    retval = qpdbasis_from_gate(CRXGate(np.pi / 2))
+    retval = qpdbasis_from_instruction(CRXGate(np.pi / 2))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TGate())
     return retval
 
 
-@_register_qpdbasis_from_gate("cx", "cy", "cz", "ch")
+@_register_qpdbasis_from_instruction("csxdg")
+def _(gate: ControlledGate):
+    retval = qpdbasis_from_instruction(CRXGate(-np.pi / 2))
+    for operations in unique_by_id(m[0] for m in retval.maps):
+        operations.insert(0, TdgGate())
+    return retval
+
+
+@_register_qpdbasis_from_instruction("cx", "cy", "cz", "ch")
 def _(gate: CXGate | CYGate | CZGate | CHGate):
     # Constructing a virtual two-qubit gate by sampling single-qubit operations - Mitarai et al
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
@@ -953,9 +1001,9 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
     return QPDBasis(maps, coeffs)
 
 
-@_register_qpdbasis_from_gate("ecr")
+@_register_qpdbasis_from_instruction("ecr")
 def _(gate: ECRGate):
-    retval = qpdbasis_from_gate(CXGate())
+    retval = qpdbasis_from_instruction(CXGate())
     # Modify basis according to ECRGate definition in Qiskit circuit library
     # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
     for operations in unique_by_id(m[0] for m in retval.maps):
@@ -966,7 +1014,7 @@ def _(gate: ECRGate):
     return retval
 
 
-def _theta_from_gate(gate: Gate) -> float:
+def _theta_from_instruction(gate: Gate, /) -> float:
     param_gates = {"rxx", "ryy", "rzz", "crx", "cry", "crz", "cp"}
 
     # Internal function should only be called for supported gates
@@ -977,10 +1025,39 @@ def _theta_from_gate(gate: Gate) -> float:
         theta = float(gate.params[0])
     except TypeError as err:
         raise ValueError(
-            f"Cannot decompose ({gate.name}) gate with unbound parameters."
+            f"Cannot decompose ({gate.name}) instruction with unbound parameters."
         ) from err
 
     return theta
+
+
+@_register_qpdbasis_from_instruction("move")
+def _(gate: Move):
+    i_measurement = [Reset()]
+    x_measurement = [HGate(), QPDMeasure(), Reset()]
+    y_measurement = [SdgGate(), HGate(), QPDMeasure(), Reset()]
+    z_measurement = [QPDMeasure(), Reset()]
+
+    prep_0 = [Reset()]
+    prep_1 = [Reset(), XGate()]
+    prep_plus = [Reset(), HGate()]
+    prep_minus = [Reset(), XGate(), HGate()]
+    prep_iplus = [Reset(), HGate(), SGate()]
+    prep_iminus = [Reset(), XGate(), HGate(), SGate()]
+
+    # https://arxiv.org/abs/1904.00102v2 Eqs. (12)-(19)
+    maps1, maps2, coeffs = zip(
+        (i_measurement, prep_0, 0.5),
+        (i_measurement, prep_1, 0.5),
+        (x_measurement, prep_plus, 0.5),
+        (x_measurement, prep_minus, -0.5),
+        (y_measurement, prep_iplus, 0.5),
+        (y_measurement, prep_iminus, -0.5),
+        (z_measurement, prep_0, 0.5),
+        (z_measurement, prep_1, -0.5),
+    )
+    maps = list(zip(maps1, maps2))
+    return QPDBasis(maps, coeffs)
 
 
 def _validate_qpd_instructions(

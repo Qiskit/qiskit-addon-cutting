@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    :func:`~circuit_knitting.cutting.execute_experiments` no longer creates separate jobs for each subcircuit by default.
+    Now, separate jobs are only created if separate :class:`~qiskit.primitives.BaseSampler` instances are provided for each circuit partition.
