@@ -13,6 +13,7 @@
 
 from __future__ import annotations
 
+from typing import NamedTuple
 from collections import defaultdict
 from collections.abc import Sequence
 
@@ -35,14 +36,19 @@ from .qpd import (
 from .cutting_decomposition import decompose_observables
 
 
+class CuttingExperimentResults(NamedTuple):
+    """Circuit cutting subexperiment results and sampling coefficients."""
+
+    results: SamplerResult | dict[str | int, SamplerResult]
+    coeffs: Sequence[tuple[float, WeightType]]
+
+
 def execute_experiments(
     circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
     subobservables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-) -> tuple[
-    SamplerResult | dict[str | int, SamplerResult], list[tuple[float, WeightType]]
-]:
+    ) -> CuttingExperimentResults:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -161,7 +167,7 @@ def execute_experiments(
         assert len(results_out.keys()) == 1
         results_out = results[list(results.keys())[0]]
 
-    return results_out, coefficients
+    return CuttingExperimentResults(results=results_out, coeffs=coefficients)
 
 
 def _append_measurement_circuit(

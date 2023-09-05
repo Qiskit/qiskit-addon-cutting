@@ -20,6 +20,7 @@ from circuit_knitting.cutting import (
     cut_gates,
     decompose_gates,
     execute_experiments,
+    CuttingExperimentResults,
     reconstruct_expectation_values,
     PartitionedCuttingProblem,
     qpd,
@@ -36,6 +37,7 @@ __all__ = [
     "cut_gates",
     "decompose_gates",
     "execute_experiments",
+    "CuttingExperimentResults",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
 ]
