@@ -133,8 +133,8 @@ def execute_experiments(
         samplers_dict = samplers
 
     # Make sure the first two cregs in each circuit are for QPD and observable measurements
-    # Submit a job for each circuit partition.
-    jobs = {}
+    # Run a job for each partition and collect results
+    results = {}
     for label in sorted(subexperiments_dict.keys()):
         for circ in subexperiments_dict[label]:
             if (
@@ -148,12 +148,8 @@ def execute_experiments(
                 raise ValueError(
                     "Circuits input to execute_experiments should contain no classical registers or bits."
                 )
-        jobs[label] = samplers_dict[label].run(subexperiments_dict[label])
+        results[label] = samplers_dict[label].run(subexperiments_dict[label]).result()
 
-    # Collect the results from each job, and add the number of qpd bits for each circuit to the metadata.
-    results = {
-        label: jobs[label].result() for label in sorted(subexperiments_dict.keys())
-    }
     for label, result in results.items():
         for i, metadata in enumerate(result.metadata):
             metadata["num_qpd_bits"] = len(subexperiments_dict[label][i].cregs[0])
