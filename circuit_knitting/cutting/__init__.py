@@ -29,7 +29,6 @@ Circuit Cutting
     decompose_gates
     generate_cutting_experiments
     execute_experiments
-    CuttingExperimentResults
     reconstruct_expectation_values
 
 .. autosummary::
@@ -38,6 +37,7 @@ Circuit Cutting
     :template: autosummary/class_no_inherited_members.rst
 
     PartitionedCuttingProblem
+    CuttingExperimentResults
     instructions.CutWire
     instructions.Move
 
@@ -87,7 +87,7 @@ from .cutting_decomposition import (
     decompose_gates,
     PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments, CuttingExperimentResults
+from .cutting_evaluation import execute_experiments
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
@@ -99,9 +99,9 @@ __all__ = [
     "decompose_gates",
     "generate_cutting_experiments",
     "execute_experiments",
-    "CuttingExperimentResults",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
+    "CuttingExperimentResults",
     "cut_wires",
     "expand_observables",
 ]

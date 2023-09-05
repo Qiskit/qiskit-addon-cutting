@@ -48,7 +48,7 @@ def execute_experiments(
     subobservables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-    ) -> CuttingExperimentResults:
+) -> CuttingExperimentResults:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -115,14 +115,8 @@ def execute_experiments(
     _validate_samplers(samplers)
 
     # Generate the sub-experiments to run on backend
-    (
-        subexperiments,
-        coefficients,
-        _,
-    ) = _generate_cutting_experiments(
-        circuits,
-        subobservables,
-        num_samples,
+    subexperiments, coefficients = _generate_cutting_experiments(
+        circuits, subobservables, num_samples
     )
 
     # Set up subexperiments and samplers
@@ -138,6 +132,8 @@ def execute_experiments(
         assert isinstance(samplers, dict)
         samplers_dict = samplers
 
+    # Make sure all input circuits are clear of classical regs.
+    # Submit a job for each circuit partition.
     jobs = {}
     for label in sorted(subexperiments_dict.keys()):
         for circ in subexperiments_dict[label]:
@@ -154,7 +150,7 @@ def execute_experiments(
                 )
         jobs[label] = samplers_dict[label].run(subexperiments_dict[label])
 
-    # Run experiments and append QPD bit information to the metadata
+    # Collect the results from each job, and add the number of qpd bits for each circuit to the metadata.
     results = {
         label: jobs[label].result() for label in sorted(subexperiments_dict.keys())
     }
@@ -162,6 +158,7 @@ def execute_experiments(
         for i, metadata in enumerate(result.metadata):
             metadata["num_qpd_bits"] = len(subexperiments_dict[label][i].cregs[0])
 
+    # If the input was a circuit, the output results should be a single SamplerResult instance
     results_out = results
     if isinstance(circuits, QuantumCircuit):
         assert len(results_out.keys()) == 1
@@ -319,25 +316,6 @@ def _generate_cutting_experiments(
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 subexperiments_dict[label].append(meas_qc)
 
-    # Generate legacy subexperiments list
-    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
-    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-        subexperiments_legacy.append([])
-        for i, (subcircuit, label) in enumerate(
-            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-        ):
-            map_ids_tmp = map_ids
-            if is_separated:
-                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
-            )
-            subexperiments_legacy[-1].append([])
-            so = subsystem_observables[label]
-            for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments_legacy[-1][-1].append(meas_qc)
-
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
         str | int, list[QuantumCircuit]
@@ -347,7 +325,7 @@ def _generate_cutting_experiments(
         assert len(subexperiments_out.keys()) == 1
         subexperiments_out = list(subexperiments_dict.values())[0]
 
-    return subexperiments_out, weights, subexperiments_legacy
+    return subexperiments_out, weights
 
 
 def _get_mapping_ids_by_partition(
