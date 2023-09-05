@@ -13,17 +13,14 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple
 from collections import defaultdict
 from collections.abc import Sequence
-from itertools import chain
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.primitives import BaseSampler, Sampler as TerraSampler
+from qiskit.primitives import BaseSampler, Sampler as TerraSampler, SamplerResult
 from qiskit_aer.primitives import Sampler as AerSampler
-from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
@@ -43,7 +40,9 @@ def execute_experiments(
     subobservables: PauliList | dict[str | int, PauliList],
     num_samples: int,
     samplers: BaseSampler | dict[str | int, BaseSampler],
-) -> CuttingExperimentResults:
+) -> tuple[
+    SamplerResult | dict[str | int, SamplerResult], list[tuple[float, WeightType]]
+]:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
 
@@ -121,6 +120,7 @@ def execute_experiments(
     )
 
     # Set up subexperiments and samplers
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = {}
     if isinstance(subexperiments, list):
         subexperiments_dict = {"A": subexperiments}
     else:
@@ -132,16 +132,34 @@ def execute_experiments(
         assert isinstance(samplers, dict)
         samplers_dict = samplers
 
+    jobs = {}
+    for label in sorted(subexperiments_dict.keys()):
+        for circ in subexperiments_dict[label]:
+            if (
+                len(circ.cregs) != 2
+                or circ.cregs[1].name != "observable_measurements"
+                or circ.cregs[0].name != "qpd_measurements"
+                or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
+            ):
+                # If the classical bits/registers are in any other format than expected, the user must have
+                # input them, so we can just raise this generic error in any case.
+                raise ValueError(
+                    "Circuits input to execute_experiments should contain no classical registers or bits."
+                )
+        jobs[label] = samplers_dict[label].run(subexperiments_dict[label])
+
     # Run experiments and append QPD bit information to the metadata
-    results = {label: samplers_dict[label].run(subexperiments_dict[label]).result() for label in sorted(subexperiments.keys())}
+    results = {
+        label: jobs[label].result() for label in sorted(subexperiments_dict.keys())
+    }
     for label, result in results.items():
         for i, metadata in enumerate(result.metadata):
-            metadata['num_qpd_bits'] = len(subexperiments_dict[label][i].cregs[0])
+            metadata["num_qpd_bits"] = len(subexperiments_dict[label][i].cregs[0])
 
     results_out = results
     if isinstance(circuits, QuantumCircuit):
-        assert len(results_dict.keys()) == 1
-        results_out = results_dict[list(results_dict.keys())[0]]
+        assert len(results_out.keys()) == 1
+        results_out = results[list(results.keys())[0]]
 
     return results_out, coefficients
 
@@ -324,54 +342,6 @@ def _generate_cutting_experiments(
         subexperiments_out = list(subexperiments_dict.values())[0]
 
     return subexperiments_out, weights, subexperiments_legacy
-
-
-def _run_experiments_batch(
-    subexperiments: Sequence[Sequence[QuantumCircuit]],
-    sampler: BaseSampler,
-) -> list[list[tuple[QuasiDistribution, int]]]:
-    """Run subexperiments on the backend."""
-    num_qpd_bits_flat = []
-
-    # Run all the experiments in one big batch
-    experiments_flat = list(chain.from_iterable(subexperiments))
-
-    for circ in experiments_flat:
-        if (
-            len(circ.cregs) != 2
-            or circ.cregs[1].name != "observable_measurements"
-            or circ.cregs[0].name != "qpd_measurements"
-            or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
-        ):
-            # If the classical bits/registers are in any other format than expected, the user must have
-            # input them, so we can just raise this generic error in any case.
-            raise ValueError(
-                "Circuits input to execute_experiments should contain no classical registers or bits."
-            )
-
-        num_qpd_bits_flat.append(len(circ.cregs[0]))
-
-    # Run all of the batched experiments
-    results_flat = sampler.run(experiments_flat).result()
-
-
-    # Reshape the output data to match the input
-    results_reshaped: list[list[SamplerResult]] = [[] for _ in subexperiments]
-    count = 0
-    for i, subcirc in enumerate(subexperiments):
-        for j in range(len(subcirc)):
-            quasi_dists_reshaped[i].append(quasi_dists_flat[count])
-            count += 1
-
-    # Create the counts tuples, which include the number of QPD measurement bits
-    results: list[list[SamplerResult]] = [
-        [] for _ in range(len(subexperiments))
-    ]
-    for i, sample in enumerate(results_reshaped):
-        for j, prob_dict in enumerate(sample):
-            quasi_dists[i].append((prob_dict, num_qpd_bits[i][j]))
-
-    return quasi_dists
 
 
 def _get_mapping_ids_by_partition(
