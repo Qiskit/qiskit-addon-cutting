@@ -98,7 +98,7 @@ def reconstruct_expectation_values(
         label: ObservableCollection(subobservables)
         for label, subobservables in subobservables_by_subsystem.items()
     }
-    sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
+    sorted_subsystems = sorted(subsystem_observables.keys())
 
     # Reconstruct the expectation values
     for i in range(len(coefficients)):
@@ -110,8 +110,8 @@ def reconstruct_expectation_values(
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
             for k, cog in enumerate(so.groups):
-                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]  # type: ignore
-                for outcome, quasi_prob in quasi_probs.items():  # type: ignore
+                quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]
+                for outcome, quasi_prob in quasi_probs.items():
                     subsystem_expvals[k] += quasi_prob * _process_outcome(
                         results_dict[label].metadata[i * len(so.groups) + k][
                             "num_qpd_bits"

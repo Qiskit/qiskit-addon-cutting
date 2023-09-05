@@ -239,7 +239,6 @@ def _generate_cutting_experiments(
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
-    list[list[list[QuantumCircuit]]],
 ]:
     if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
         raise ValueError(
@@ -288,7 +287,7 @@ def _generate_cutting_experiments(
 
     # Calculate terms in coefficient calculation
     kappa = np.prod([basis.kappa for basis in bases])
-    num_samples = sum([value[0] for value in random_samples.values()])  # type: ignore
+    num_samples = sum([value[0] for value in random_samples.values()])
 
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
