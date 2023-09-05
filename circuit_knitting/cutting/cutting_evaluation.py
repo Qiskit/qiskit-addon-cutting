@@ -62,7 +62,7 @@ def execute_experiments(
         samplers: Sampler(s) on which to run the sub-experiments.
 
     Returns:
-        - A list of :class:`~qiskit.primitives.SamplerResult` instances -- one for each partition.
+        - One :class:`~qiskit.primitives.SamplerResult` instance for each partition.
         - Coefficients corresponding to each unique subexperiment's sampling frequency
 
     Raises:
@@ -132,7 +132,7 @@ def execute_experiments(
         assert isinstance(samplers, dict)
         samplers_dict = samplers
 
-    # Make sure all input circuits are clear of classical regs.
+    # Make sure the first two cregs in each circuit are for QPD and observable measurements
     # Submit a job for each circuit partition.
     jobs = {}
     for label in sorted(subexperiments_dict.keys()):

@@ -66,6 +66,8 @@ def reconstruct_expectation_values(
     Raises:
         ValueError: ``observables`` and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
+        ValueError: ``num_qpd_bits`` must be set for all result metadata dictionaries.
+        TypeError: ``num_qpd_bits`` must be an integer.
     """
     if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
         raise ValueError(
@@ -112,13 +114,19 @@ def reconstruct_expectation_values(
             for k, cog in enumerate(so.groups):
                 quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]
                 for outcome, quasi_prob in quasi_probs.items():
-                    subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        results_dict[label].metadata[i * len(so.groups) + k][
-                            "num_qpd_bits"
-                        ],
-                        cog,
-                        outcome,
-                    )
+                    try:
+                        subsystem_expvals[k] += quasi_prob * _process_outcome(
+                            results_dict[label].metadata[i * len(so.groups) + k][
+                                "num_qpd_bits"
+                            ],
+                            cog,
+                            outcome,
+                        )
+                    except KeyError:
+                        raise ValueError(
+                            "The num_qpd_bits field must be set in each subexperiment "
+                            "result metadata dictionary."
+                        )
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
@@ -150,7 +158,13 @@ def _process_outcome(
         and each result will be either +1 or -1.
     """
     outcome = _outcome_to_int(outcome)
-    qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
+    try:
+        qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
+    except TypeError:
+        raise TypeError(
+            f"num_qpd_bits must be an integer, but a {type(num_qpd_bits)} was passed."
+        )
+
     meas_outcomes = outcome >> num_qpd_bits
 
     # qpd_factor will be -1 or +1, depending on the overall parity of qpd

@@ -107,6 +107,31 @@ class TestCuttingReconstruction(unittest.TestCase):
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
+        with self.subTest("Test num_qpd_bits"):
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            results.metadata[0]["num_qpd_bits"] = 1.0
+            weights = [(0.5, WeightType.EXACT)]
+            subexperiments = [QuantumCircuit(2)]
+            creg1 = ClassicalRegister(1, name="qpd_measurements")
+            creg2 = ClassicalRegister(2, name="observable_measurements")
+            subexperiments[0].add_register(creg1)
+            subexperiments[0].add_register(creg2)
+            observables = PauliList(["ZZ"])
+            with pytest.raises(TypeError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "num_qpd_bits must be an integer, but a <class 'float'> was passed."
+            )
+            results.metadata[0] = {}
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "The num_qpd_bits field must be set in each subexperiment result metadata dictionary."
+            )
 
     @data(
         ("000", [1, 1, 1]),
