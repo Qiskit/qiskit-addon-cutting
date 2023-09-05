@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    The :func:`execute_experiments` function now returns a :class:`~qiskit.primitives.SamplerResult` instance for each circuit partition, rather than the 3D list of quasi-distributions returned previously. The quasi-distributions for each subexperiment can be accessed via the ``SamplerResult.quasi_dists[i]`` field. The number of QPD bits contained in each subexperiment will be included in the output within each ``SamplerResult.metadata[i]["num_qpd_bits"] field. The output of this function is still valid as input to :func:`reconstruct_expectation_values`.
