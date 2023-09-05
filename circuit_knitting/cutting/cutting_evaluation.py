@@ -70,7 +70,7 @@ def execute_experiments(
         ValueError: The types of ``circuits`` and ``subobservables`` arguments are incompatible.
         ValueError: ``SingleQubitQPDGate``\ s are not supported in unseparable circuits.
         ValueError: The keys for the input dictionaries are not equivalent.
-        ValueError: One or more input circuit contains classical registers.
+        ValueError: The input circuits may not contain any classical registers or bits.
         ValueError: If multiple samplers are passed, each one must be unique.
     """
     if not num_samples >= 1:
@@ -230,6 +230,101 @@ def _append_measurement_circuit(
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc
+
+
+def _generate_cutting_experiments(
+    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
+    observables: PauliList | dict[str | int, PauliList],
+    num_samples: int | float,
+) -> tuple[
+    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[tuple[float, WeightType]],
+]:
+    if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
+        raise ValueError(
+            "If the input circuits is a QuantumCircuit, the observables must be a PauliList."
+        )
+    if isinstance(circuits, dict) and not isinstance(observables, dict):
+        raise ValueError(
+            "If the input circuits are contained in a dictionary keyed by partition labels, the input observables must also be represented by such a dictionary."
+        )
+    if not num_samples >= 1:
+        raise ValueError("num_samples must be at least 1.")
+
+    # Retrieving the unique bases, QPD gates, and decomposed observables is slightly different
+    # depending on the format of the execute_experiments input args, but the 2nd half of this function
+    # can be shared between both cases.
+    if isinstance(circuits, QuantumCircuit):
+        is_separated = False
+        subcircuit_list = [circuits]
+        subobservables_by_subsystem = decompose_observables(
+            observables, "A" * len(observables[0])
+        )
+        subsystem_observables = {
+            label: ObservableCollection(subobservables)
+            for label, subobservables in subobservables_by_subsystem.items()
+        }
+        # Gather the unique bases from the circuit
+        bases, qpd_gate_ids = _get_bases(circuits)
+        subcirc_qpd_gate_ids = [qpd_gate_ids]
+
+    else:
+        is_separated = True
+        subcircuit_list = [circuits[key] for key in sorted(circuits.keys())]
+        # Gather the unique bases across the subcircuits
+        subcirc_qpd_gate_ids, subcirc_map_ids = _get_mapping_ids_by_partition(
+            subcircuit_list
+        )
+        bases = _get_bases_by_partition(subcircuit_list, subcirc_qpd_gate_ids)
+
+        # Create the commuting observable groups
+        subsystem_observables = {
+            label: ObservableCollection(so) for label, so in observables.items()
+        }
+
+    # Sample the joint quasiprobability decomposition
+    random_samples = generate_qpd_weights(bases, num_samples=num_samples)
+
+    # Calculate terms in coefficient calculation
+    kappa = np.prod([basis.kappa for basis in bases])
+    num_samples = sum([value[0] for value in random_samples.values()])
+
+    # Sort samples in descending order of frequency
+    sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
+
+    # Generate the output experiments and weights
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
+    weights: list[tuple[float, WeightType]] = []
+    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
+        actual_coeff = np.prod(
+            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
+        )
+        sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
+        weights.append((sampled_coeff, weight_type))
+        map_ids_tmp = map_ids
+        for i, (subcircuit, label) in enumerate(
+            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
+        ):
+            if is_separated:
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+            decomp_qc = decompose_qpd_instructions(
+                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+            )
+            so = subsystem_observables[label]
+            for j, cog in enumerate(so.groups):
+                meas_qc = _append_measurement_circuit(decomp_qc, cog)
+                subexperiments_dict[label].append(meas_qc)
+
+    # If the input was a single quantum circuit, return the subexperiments as a list
+    subexperiments_out: list[QuantumCircuit] | dict[
+        str | int, list[QuantumCircuit]
+    ] = dict(subexperiments_dict)
+    assert isinstance(subexperiments_out, dict)
+    if isinstance(circuits, QuantumCircuit):
+        assert len(subexperiments_out.keys()) == 1
+        subexperiments_out = list(subexperiments_dict.values())[0]
+
+    return subexperiments_out, weights
 
 
 def _get_mapping_ids_by_partition(
