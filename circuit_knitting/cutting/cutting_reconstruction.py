@@ -107,7 +107,6 @@ def reconstruct_expectation_values(
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
             so = subsystem_observables[label]
-            coeff = coefficients[i]
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
