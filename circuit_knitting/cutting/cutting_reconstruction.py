@@ -114,17 +114,19 @@ def reconstruct_expectation_values(
                 quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]
                 for outcome, quasi_prob in quasi_probs.items():
                     try:
-                        subsystem_expvals[k] += quasi_prob * _process_outcome(
-                            results_dict[label].metadata[i * len(so.groups) + k][
-                                "num_qpd_bits"
-                            ],
-                            cog,
-                            outcome,
-                        )
+                        num_qpd_bits = results_dict[label].metadata[
+                            i * len(so.groups) + k
+                        ]["num_qpd_bits"]
                     except KeyError:
                         raise ValueError(
                             "The num_qpd_bits field must be set in each subexperiment "
                             "result metadata dictionary."
+                        )
+                    else:
+                        subsystem_expvals[k] += quasi_prob * _process_outcome(
+                            num_qpd_bits,
+                            cog,
+                            outcome,
                         )
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
