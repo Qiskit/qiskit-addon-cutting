@@ -103,7 +103,7 @@ def reconstruct_expectation_values(
     sorted_subsystems = sorted(subsystem_observables.keys())
 
     # Reconstruct the expectation values
-    for i in range(len(coefficients)):
+    for i, coeff in enumerate(coefficients):
         current_expvals = np.ones((len(expvals),))
         for label in sorted_subsystems:
             so = subsystem_observables[label]
