@@ -42,7 +42,7 @@ def reconstruct_expectation_values(
             to the results from each partition's subexperiments.
 
             The subexperiment results are expected to be ordered in the same way the subexperiments
-            are ordered in the output of :func:`generate_cutting_experiments` -- one result for every
+            are ordered in the output of :func:`.generate_cutting_experiments` -- one result for every
             sample and observable, as shown below. The Qiskit Sampler primitive will return the results
             in the same order the experiments are submitted, so users who do not use :func:`generate_cutting_experiments`
             to generate their experiments should take care to format their subexperiments correctly before submitting them
