@@ -35,7 +35,7 @@ def reconstruct_expectation_values(
 
     Args:
         results: The results from running the cutting subexperiments. If the cut circuit
-            was not partitioned between qubits and run separately, the input should be
+            was not partitioned between qubits and run separately, this argument should be
             a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping
             a single partition to the results. If the circuit was partitioned and its
             pieces run separately, the input should be a dictionary mapping partition labels
