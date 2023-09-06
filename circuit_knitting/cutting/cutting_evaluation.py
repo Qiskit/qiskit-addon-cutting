@@ -63,7 +63,7 @@ def execute_experiments(
 
     Returns:
         - One :class:`~qiskit.primitives.SamplerResult` instance for each partition.
-        - Coefficients corresponding to each unique subexperiment's sampling frequency
+        - Coefficients corresponding to each unique subexperiment's contribution to the reconstructed result
 
     Raises:
         ValueError: The number of requested samples must be at least one.
