@@ -50,10 +50,10 @@ def reconstruct_expectation_values(
 
             :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`
 
-        coefficients: The weights associated with each unique subexperiment. Each weight is a tuple
-            containing the scalar value as well as the :class:`WeightType`, which denotes
-            how the value was generated. The contributions from each subexperiment result to the final
-            expectation value will be scaled by this value.
+        coefficients: A sequence containing the coefficient associated with each unique subexperiment. Each element is a tuple
+            containing the coefficient (a ``float``) together with its :class:`.WeightType`, which denotes
+            how the value was generated. The contribution from each subexperiment will be multiplied by
+            its corresponding coefficient, and the resulting terms will be summed to obtain the reconstructed expectation value.
         observables: The observable(s) for which the expectation values will be calculated.
             This should be a :class:`~qiskit.quantum_info.PauliList` if ``results`` is a
             :class:`~qiskit.primitives.SamplerResult` instance. Otherwise, it should be a
