@@ -38,7 +38,7 @@ def reconstruct_expectation_values(
             was not partitioned between qubits and run separately, this argument should be
             a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping
             a single partition to the results. If the circuit was partitioned and its
-            pieces run separately, the input should be a dictionary mapping partition labels
+            pieces were run separately, this argument should be a dictionary mapping partition labels
             to the results from each partition's subexperiments.
 
             The subexperiment results are expected to be ordered in the same way the subexperiments
