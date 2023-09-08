@@ -30,6 +30,7 @@ from qiskit_nature.second_q.problems import (
 from qiskit_nature.second_q.transformers import ActiveSpaceTransformer
 from qiskit_nature.second_q.formats import get_ao_to_mo_from_qcschema
 from qiskit_nature.second_q.hamiltonians import ElectronicEnergy
+from qiskit_nature.second_q.operators import Tensor
 
 from circuit_knitting.forging import (
     EntanglementForgingAnsatz,
@@ -106,6 +107,10 @@ class TestEntanglementForgingGroundStateSolver(unittest.TestCase):
         problem = driver.to_problem(basis=ElectronicBasis.AO)
         qcschema = driver.to_qcschema()
         mo_coeff = get_ao_to_mo_from_qcschema(qcschema).coefficients.alpha["+-"]
+        if isinstance(mo_coeff, Tensor):
+            # Unwrap the Tensor in Qiskit Nature 0.7 and later
+            # to be compatible with qiskit-nature/pull/1248
+            mo_coeff = mo_coeff.array
 
         # Specify the ansatz and bitstrings
         ansatz = EntanglementForgingAnsatz(
