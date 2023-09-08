@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    :func:`.reconstruct_expectation_values` now takes, as its first argument, a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping partition labels to :class:`~qiskit.primitives.SamplerResult` instances.  This new ``results`` argument replaces the old ``quasi_dists`` argument. The :class:`~qiskit.primitives.SamplerResult` instances are expected to contain the number of QPD bits used in each circuit input to the Sampler. This should be specified in the ``num_qpd_bits`` field of the experiment result metadata.

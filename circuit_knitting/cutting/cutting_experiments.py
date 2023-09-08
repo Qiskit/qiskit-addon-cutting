@@ -69,7 +69,7 @@ def generate_cutting_experiments(
             to the same cut.
         ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
     """
-    subexperiments, weights, _ = _generate_cutting_experiments(
+    subexperiments, weights = _generate_cutting_experiments(
         circuits, observables, num_samples
     )
     return subexperiments, weights
