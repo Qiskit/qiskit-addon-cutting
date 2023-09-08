@@ -15,8 +15,7 @@ from copy import deepcopy
 
 import pytest
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.result import QuasiDistribution
-from qiskit.primitives import Sampler as TerraSampler
+from qiskit.primitives import Sampler as TerraSampler, SamplerResult
 from qiskit_aer.primitives import Sampler as AerSampler
 from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction, Clbit
 from qiskit.circuit.library.standard_gates import XGate
@@ -67,7 +66,10 @@ class TestCuttingEvaluation(unittest.TestCase):
             quasi_dists, coefficients = execute_experiments(
                 self.circuit, self.observable, num_samples=50, samplers=self.sampler
             )
-            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual(
+                quasi_dists,
+                SamplerResult(quasi_dists=[{3: 1.0}], metadata=[{"num_qpd_bits": 0}]),
+            )
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Basic test with dicts"):
             circ1 = QuantumCircuit(1)
@@ -100,15 +102,15 @@ class TestCuttingEvaluation(unittest.TestCase):
                 num_samples=50,
                 samplers={"A": self.sampler, "B": deepcopy(self.sampler)},
             )
-            self.assertEqual(
-                [
-                    [
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                    ]
-                ],
-                quasi_dists,
-            )
+            comp_result = {
+                "A": SamplerResult(
+                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
+                ),
+                "B": SamplerResult(
+                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
+                ),
+            }
+            self.assertEqual(quasi_dists, comp_result)
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Terra/Aer samplers with dicts"):
             circ1 = QuantumCircuit(1)

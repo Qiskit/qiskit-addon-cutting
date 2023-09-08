@@ -16,14 +16,12 @@ from __future__ import annotations
 from typing import NamedTuple
 from collections import defaultdict
 from collections.abc import Sequence
-from itertools import chain
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.primitives import BaseSampler, Sampler as TerraSampler
+from qiskit.primitives import BaseSampler, Sampler as TerraSampler, SamplerResult
 from qiskit_aer.primitives import Sampler as AerSampler
-from qiskit.result import QuasiDistribution
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.iteration import strict_zip
@@ -41,7 +39,7 @@ from .cutting_decomposition import decompose_observables
 class CuttingExperimentResults(NamedTuple):
     """Circuit cutting subexperiment results and sampling coefficients."""
 
-    quasi_dists: list[list[list[tuple[QuasiDistribution, int]]]]
+    results: SamplerResult | dict[str | int, SamplerResult]
     coeffs: Sequence[tuple[float, WeightType]]
 
 
@@ -64,10 +62,8 @@ def execute_experiments(
         samplers: Sampler(s) on which to run the sub-experiments.
 
     Returns:
-        - A 3D list of length-2 tuples holding the quasi-distributions and QPD bit information
-          for each sub-experiment. The shape of the list is: (``num_unique_samples``, ``num_partitions``, ``num_commuting_observ_groups``)
-        - Coefficients corresponding to each unique subexperiment's
-          sampling frequency
+        - One :class:`~qiskit.primitives.SamplerResult` instance for each partition.
+        - Coefficients corresponding to each unique subexperiment's contribution to the reconstructed result
 
     Raises:
         ValueError: The number of requested samples must be at least one.
@@ -119,59 +115,52 @@ def execute_experiments(
     _validate_samplers(samplers)
 
     # Generate the sub-experiments to run on backend
-    (
-        _,
-        coefficients,
-        subexperiments,
-    ) = _generate_cutting_experiments(
-        circuits,
-        subobservables,
-        num_samples,
+    subexperiments, coefficients = _generate_cutting_experiments(
+        circuits, subobservables, num_samples
     )
 
-    # Create a list of samplers to use -- one for each batch
-    if isinstance(samplers, BaseSampler):
-        samplers_by_batch = [samplers]
-        batches = [
-            [
-                sample[i]
-                for sample in subexperiments
-                for i in range(len(subexperiments[0]))
-            ]
-        ]
+    # Set up subexperiments and samplers
+    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = {}
+    if isinstance(subexperiments, list):
+        subexperiments_dict = {"A": subexperiments}
     else:
-        samplers_by_batch = [samplers[key] for key in sorted(samplers.keys())]
-        batches = [
-            [sample[i] for sample in subexperiments]
-            for i in range(len(subexperiments[0]))
-        ]
+        assert isinstance(subexperiments, dict)
+        subexperiments_dict = subexperiments
+    if isinstance(samplers, BaseSampler):
+        samplers_dict = {key: samplers for key in subexperiments_dict.keys()}
+    else:
+        assert isinstance(samplers, dict)
+        samplers_dict = samplers
 
-    # There should be one batch per input sampler
-    assert len(samplers_by_batch) == len(batches)
+    # Make sure the first two cregs in each circuit are for QPD and observable measurements
+    # Run a job for each partition and collect results
+    results = {}
+    for label in sorted(subexperiments_dict.keys()):
+        for circ in subexperiments_dict[label]:
+            if (
+                len(circ.cregs) != 2
+                or circ.cregs[1].name != "observable_measurements"
+                or circ.cregs[0].name != "qpd_measurements"
+                or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
+            ):
+                # If the classical bits/registers are in any other format than expected, the user must have
+                # input them, so we can just raise this generic error in any case.
+                raise ValueError(
+                    "Circuits input to execute_experiments should contain no classical registers or bits."
+                )
+        results[label] = samplers_dict[label].run(subexperiments_dict[label]).result()
 
-    # Run each batch of sub-experiments
-    quasi_dists_by_batch = [
-        _run_experiments_batch(
-            batches[i],
-            samplers_by_batch[i],
-        )
-        for i in range(len(samplers_by_batch))
-    ]
+    for label, result in results.items():
+        for i, metadata in enumerate(result.metadata):
+            metadata["num_qpd_bits"] = len(subexperiments_dict[label][i].cregs[0])
 
-    # Build the output data structure to match the shape of input subexperiments
-    quasi_dists: list[list[list[tuple[dict[str, int], int]]]] = [
-        [] for _ in range(len(subexperiments))
-    ]
-    count = 0
-    for i in range(len(subexperiments)):
-        for j in range(len(subexperiments[0])):
-            if len(samplers_by_batch) == 1:
-                quasi_dists[i].append(quasi_dists_by_batch[0][count])
-                count += 1
-            else:
-                quasi_dists[i].append(quasi_dists_by_batch[j][i])
+    # If the input was a circuit, the output results should be a single SamplerResult instance
+    results_out = results
+    if isinstance(circuits, QuantumCircuit):
+        assert len(results_out.keys()) == 1
+        results_out = results[list(results.keys())[0]]
 
-    return CuttingExperimentResults(quasi_dists, coefficients)
+    return CuttingExperimentResults(results=results_out, coeffs=coefficients)
 
 
 def _append_measurement_circuit(
@@ -246,7 +235,6 @@ def _generate_cutting_experiments(
 ) -> tuple[
     list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
-    list[list[list[QuantumCircuit]]],
 ]:
     if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
         raise ValueError(
@@ -295,7 +283,7 @@ def _generate_cutting_experiments(
 
     # Calculate terms in coefficient calculation
     kappa = np.prod([basis.kappa for basis in bases])
-    num_samples = sum([value[0] for value in random_samples.values()])  # type: ignore
+    num_samples = sum([value[0] for value in random_samples.values()])
 
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
@@ -323,25 +311,6 @@ def _generate_cutting_experiments(
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 subexperiments_dict[label].append(meas_qc)
 
-    # Generate legacy subexperiments list
-    subexperiments_legacy: list[list[list[QuantumCircuit]]] = []
-    for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
-        subexperiments_legacy.append([])
-        for i, (subcircuit, label) in enumerate(
-            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-        ):
-            map_ids_tmp = map_ids
-            if is_separated:
-                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
-            )
-            subexperiments_legacy[-1].append([])
-            so = subsystem_observables[label]
-            for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments_legacy[-1][-1].append(meas_qc)
-
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
         str | int, list[QuantumCircuit]
@@ -351,56 +320,7 @@ def _generate_cutting_experiments(
         assert len(subexperiments_out.keys()) == 1
         subexperiments_out = list(subexperiments_dict.values())[0]
 
-    return subexperiments_out, weights, subexperiments_legacy
-
-
-def _run_experiments_batch(
-    subexperiments: Sequence[Sequence[QuantumCircuit]],
-    sampler: BaseSampler,
-) -> list[list[tuple[QuasiDistribution, int]]]:
-    """Run subexperiments on the backend."""
-    num_qpd_bits_flat = []
-
-    # Run all the experiments in one big batch
-    experiments_flat = list(chain.from_iterable(subexperiments))
-
-    for circ in experiments_flat:
-        if (
-            len(circ.cregs) != 2
-            or circ.cregs[1].name != "observable_measurements"
-            or circ.cregs[0].name != "qpd_measurements"
-            or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
-        ):
-            # If the classical bits/registers are in any other format than expected, the user must have
-            # input them, so we can just raise this generic error in any case.
-            raise ValueError(
-                "Circuits input to execute_experiments should contain no classical registers or bits."
-            )
-
-        num_qpd_bits_flat.append(len(circ.cregs[0]))
-
-    # Run all of the batched experiments
-    quasi_dists_flat = sampler.run(experiments_flat).result().quasi_dists
-
-    # Reshape the output data to match the input
-    quasi_dists_reshaped: list[list[QuasiDistribution]] = [[] for _ in subexperiments]
-    num_qpd_bits: list[list[int]] = [[] for _ in subexperiments]
-    count = 0
-    for i, subcirc in enumerate(subexperiments):
-        for j in range(len(subcirc)):
-            quasi_dists_reshaped[i].append(quasi_dists_flat[count])
-            num_qpd_bits[i].append(num_qpd_bits_flat[count])
-            count += 1
-
-    # Create the counts tuples, which include the number of QPD measurement bits
-    quasi_dists: list[list[tuple[dict[str, float], int]]] = [
-        [] for _ in range(len(subexperiments))
-    ]
-    for i, sample in enumerate(quasi_dists_reshaped):
-        for j, prob_dict in enumerate(sample):
-            quasi_dists[i].append((prob_dict, num_qpd_bits[i][j]))
-
-    return quasi_dists
+    return subexperiments_out, weights
 
 
 def _get_mapping_ids_by_partition(
