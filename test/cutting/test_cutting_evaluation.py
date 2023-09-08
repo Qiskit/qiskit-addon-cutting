@@ -27,10 +27,7 @@ from circuit_knitting.cutting.qpd import (
     TwoQubitQPDGate,
     QPDBasis,
 )
-from circuit_knitting.cutting.cutting_evaluation import (
-    _append_measurement_circuit,
-    execute_experiments,
-)
+from circuit_knitting.cutting.cutting_evaluation import execute_experiments
 from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
 
@@ -317,35 +314,6 @@ class TestCuttingEvaluation(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
-            )
-
-    def test_append_measurement_circuit(self):
-        qc = self.qc1.copy()
-        with self.subTest("In place"):
-            qcx = qc.copy()
-            assert _append_measurement_circuit(qcx, self.cog, inplace=True) is qcx
-        with self.subTest("Out of place"):
-            assert _append_measurement_circuit(qc, self.cog) is not qc
-        with self.subTest("Correct measurement circuit"):
-            qc2 = self.qc2.copy()
-            qc2.measure(0, 1)
-            qc2.h(1)
-            qc2.measure(1, 2)
-            assert _append_measurement_circuit(qc, self.cog) == qc2
-        with self.subTest("Mismatch between qubit_locations and number of qubits"):
-            with pytest.raises(ValueError) as e_info:
-                _append_measurement_circuit(qc, self.cog, qubit_locations=[0])
-            assert (
-                e_info.value.args[0]
-                == "qubit_locations has 1 element(s) but the observable(s) have 2 qubit(s)."
-            )
-        with self.subTest("Mismatched qubits, no qubit_locations provided"):
-            cog = CommutingObservableGroup(Pauli("X"), [Pauli("X")])
-            with pytest.raises(ValueError) as e_info:
-                _append_measurement_circuit(qc, cog)
-            assert (
-                e_info.value.args[0]
-                == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
 
     def test_workflow_with_unused_qubits(self):

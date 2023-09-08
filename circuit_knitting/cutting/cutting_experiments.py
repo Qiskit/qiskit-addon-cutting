@@ -22,7 +22,14 @@ from qiskit.quantum_info import PauliList
 
 from ..utils.iteration import strict_zip
 from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
-from .qpd import WeightType, QPDBasis, SingleQubitQPDGate, TwoQubitQPDGate, generate_qpd_weights, decompose_qpd_instructions
+from .qpd import (
+    WeightType,
+    QPDBasis,
+    SingleQubitQPDGate,
+    TwoQubitQPDGate,
+    generate_qpd_weights,
+    decompose_qpd_instructions,
+)
 from .cutting_decomposition import decompose_observables
 
 

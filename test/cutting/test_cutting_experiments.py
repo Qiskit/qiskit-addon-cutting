@@ -14,8 +14,8 @@ import unittest
 
 import pytest
 import numpy as np
-from qiskit.quantum_info import PauliList
-from qiskit.circuit import QuantumCircuit
+from qiskit.quantum_info import PauliList, Pauli
+from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.circuit.library.standard_gates import CXGate
 
 from circuit_knitting.cutting.qpd import (
@@ -23,9 +23,11 @@ from circuit_knitting.cutting.qpd import (
     TwoQubitQPDGate,
     QPDBasis,
 )
+from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting.cutting import generate_cutting_experiments
 from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
+from circuit_knitting.cutting.cutting_experiments import _append_measurement_circuit
 
 
 class TestCuttingExperiments(unittest.TestCase):
@@ -148,4 +150,38 @@ class TestCuttingExperiments(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "SingleQubitQPDGates are not supported in unseparable circuits."
+            )
+
+    def test_append_measurement_circuit(self):
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        qc.add_register(ClassicalRegister(1, name="qpd_measurements"))
+        cog = CommutingObservableGroup(Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"])))
+        qc2 = qc.copy()
+        qc2.add_register(ClassicalRegister(2, name="observable_measurements"))
+        with self.subTest("In place"):
+            qcx = qc.copy()
+            assert _append_measurement_circuit(qcx, cog, inplace=True) is qcx
+        with self.subTest("Out of place"):
+            assert _append_measurement_circuit(qc, cog) is not qc
+        with self.subTest("Correct measurement circuit"):
+            qc2.measure(0, 1)
+            qc2.h(1)
+            qc2.measure(1, 2)
+            assert _append_measurement_circuit(qc, cog) == qc2
+        with self.subTest("Mismatch between qubit_locations and number of qubits"):
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog, qubit_locations=[0])
+            assert (
+                e_info.value.args[0]
+                == "qubit_locations has 1 element(s) but the observable(s) have 2 qubit(s)."
+            )
+        with self.subTest("Mismatched qubits, no qubit_locations provided"):
+            cog = CommutingObservableGroup(Pauli("X"), [Pauli("X")])
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog)
+            assert (
+                e_info.value.args[0]
+                == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
