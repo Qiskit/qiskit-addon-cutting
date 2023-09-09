@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from typing import NamedTuple
-from collections.abc import Sequence
+from collections.abc import Sequence, Hashable
 
 from qiskit.circuit import QuantumCircuit
 from qiskit.quantum_info import PauliList
@@ -28,15 +28,15 @@ from .cutting_experiments import generate_cutting_experiments
 class CuttingExperimentResults(NamedTuple):
     """Circuit cutting subexperiment results and sampling coefficients."""
 
-    results: SamplerResult | dict[str | int, SamplerResult]
+    results: SamplerResult | dict[Hashable, SamplerResult]
     coeffs: Sequence[tuple[float, WeightType]]
 
 
 def execute_experiments(
-    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
-    subobservables: PauliList | dict[str | int, PauliList],
+    circuits: QuantumCircuit | dict[Hashable, QuantumCircuit],
+    subobservables: PauliList | dict[Hashable, PauliList],
     num_samples: int,
-    samplers: BaseSampler | dict[str | int, BaseSampler],
+    samplers: BaseSampler | dict[Hashable, BaseSampler],
 ) -> CuttingExperimentResults:
     r"""
     Generate the sampled circuits, append the observables, and run the sub-experiments.
@@ -90,7 +90,7 @@ def execute_experiments(
 
     if isinstance(samplers, dict):
         # Ensure that each sampler is unique
-        collision_dict: dict[int, str | int] = {}
+        collision_dict: dict[int, Hashable] = {}
         for k, v in samplers.items():
             if id(v) in collision_dict:
                 raise ValueError(
@@ -109,7 +109,7 @@ def execute_experiments(
     )
 
     # Set up subexperiments and samplers
-    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = {}
+    subexperiments_dict: dict[Hashable, list[QuantumCircuit]] = {}
     if isinstance(subexperiments, list):
         subexperiments_dict = {"A": subexperiments}
     else:
@@ -124,7 +124,7 @@ def execute_experiments(
     # Make sure the first two cregs in each circuit are for QPD and observable measurements
     # Run a job for each partition and collect results
     results = {}
-    for label in sorted(subexperiments_dict.keys()):
+    for label in subexperiments_dict.keys():
         for circ in subexperiments_dict[label]:
             if (
                 len(circ.cregs) != 2
@@ -152,7 +152,7 @@ def execute_experiments(
     return CuttingExperimentResults(results=results_out, coeffs=coefficients)
 
 
-def _validate_samplers(samplers: BaseSampler | dict[str | int, BaseSampler]) -> None:
+def _validate_samplers(samplers: BaseSampler | dict[Hashable, BaseSampler]) -> None:
     """Replace unsupported statevector-based Samplers with ExactSampler."""
     if isinstance(samplers, BaseSampler):
         if (
