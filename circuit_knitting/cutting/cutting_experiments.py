@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Sequence, Hashable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
@@ -34,11 +34,11 @@ from .cutting_decomposition import decompose_observables
 
 
 def generate_cutting_experiments(
-    circuits: QuantumCircuit | dict[str | int, QuantumCircuit],
-    observables: PauliList | dict[str | int, PauliList],
+    circuits: QuantumCircuit | dict[Hashable, QuantumCircuit],
+    observables: PauliList | dict[Hashable, PauliList],
     num_samples: int | float,
 ) -> tuple[
-    list[QuantumCircuit] | dict[str | int, list[QuantumCircuit]],
+    list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
 ]:
     r"""
@@ -98,7 +98,7 @@ def generate_cutting_experiments(
     # can be shared between both cases.
     if isinstance(circuits, QuantumCircuit):
         is_separated = False
-        subcircuit_list = [circuits]
+        subcircuit_dict: dict[Hashable, QuantumCircuit] = {"A": circuits}
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
@@ -108,16 +108,16 @@ def generate_cutting_experiments(
         }
         # Gather the unique bases from the circuit
         bases, qpd_gate_ids = _get_bases(circuits)
-        subcirc_qpd_gate_ids = [qpd_gate_ids]
+        subcirc_qpd_gate_ids: dict[Hashable, list[list[int]]] = {"A": qpd_gate_ids}
 
     else:
         is_separated = True
-        subcircuit_list = [circuits[key] for key in sorted(circuits.keys())]
+        subcircuit_dict = circuits
         # Gather the unique bases across the subcircuits
         subcirc_qpd_gate_ids, subcirc_map_ids = _get_mapping_ids_by_partition(
-            subcircuit_list
+            subcircuit_dict
         )
-        bases = _get_bases_by_partition(subcircuit_list, subcirc_qpd_gate_ids)
+        bases = _get_bases_by_partition(subcircuit_dict, subcirc_qpd_gate_ids)
 
         # Create the commuting observable groups
         subsystem_observables = {
@@ -135,7 +135,7 @@ def generate_cutting_experiments(
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
     # Generate the output experiments and their respective coefficients
-    subexperiments_dict: dict[str | int, list[QuantumCircuit]] = defaultdict(list)
+    subexperiments_dict: dict[Hashable, list[QuantumCircuit]] = defaultdict(list)
     coefficients: list[tuple[float, WeightType]] = []
     for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
         actual_coeff = np.prod(
@@ -144,22 +144,20 @@ def generate_cutting_experiments(
         sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
         coefficients.append((sampled_coeff, weight_type))
         map_ids_tmp = map_ids
-        for i, (subcircuit, label) in enumerate(
-            strict_zip(subcircuit_list, sorted(subsystem_observables.keys()))
-        ):
+        for label, so in subsystem_observables.items():
+            subcircuit = subcircuit_dict[label]
             if is_separated:
-                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[i])
+                map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[label])
             decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[i], map_ids_tmp
+                subcircuit, subcirc_qpd_gate_ids[label], map_ids_tmp
             )
-            so = subsystem_observables[label]
             for j, cog in enumerate(so.groups):
                 meas_qc = _append_measurement_circuit(decomp_qc, cog)
                 subexperiments_dict[label].append(meas_qc)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
-        str | int, list[QuantumCircuit]
+        Hashable, list[QuantumCircuit]
     ] = dict(subexperiments_dict)
     assert isinstance(subexperiments_out, dict)
     if isinstance(circuits, QuantumCircuit):
@@ -170,16 +168,16 @@ def generate_cutting_experiments(
 
 
 def _get_mapping_ids_by_partition(
-    circuits: Sequence[QuantumCircuit],
-) -> tuple[list[list[list[int]]], list[list[int]]]:
+    circuits: dict[Hashable, QuantumCircuit],
+) -> tuple[dict[Hashable, list[list[int]]], dict[Hashable, list[int]]]:
     """Get indices to the QPD gates in each subcircuit and relevant map ids."""
     # Collect QPDGate id's and relevant map id's for each subcircuit
-    subcirc_qpd_gate_ids: list[list[list[int]]] = []
-    subcirc_map_ids: list[list[int]] = []
+    subcirc_qpd_gate_ids: dict[Hashable, list[list[int]]] = {}
+    subcirc_map_ids: dict[Hashable, list[int]] = {}
     decomp_ids = set()
-    for circ in circuits:
-        subcirc_qpd_gate_ids.append([])
-        subcirc_map_ids.append([])
+    for label, circ in circuits.items():
+        subcirc_qpd_gate_ids[label] = []
+        subcirc_map_ids[label] = []
         for i, inst in enumerate(circ.data):
             if isinstance(inst.operation, SingleQubitQPDGate):
                 try:
@@ -194,24 +192,24 @@ def _get_mapping_ids_by_partition(
                         "belonging to the same cut to be sampled jointly."
                     )
                 decomp_ids.add(decomp_id)
-                subcirc_qpd_gate_ids[-1].append([i])
-                subcirc_map_ids[-1].append(decomp_id)
+                subcirc_qpd_gate_ids[label].append([i])
+                subcirc_map_ids[label].append(decomp_id)
 
     return subcirc_qpd_gate_ids, subcirc_map_ids
 
 
 def _get_bases_by_partition(
-    circuits: Sequence[QuantumCircuit], subcirc_qpd_gate_ids: list[list[list[int]]]
+    circuits: dict[Hashable, QuantumCircuit],
+    subcirc_qpd_gate_ids: dict[Hashable, list[list[int]]],
 ) -> list[QPDBasis]:
     """Get a list of each unique QPD basis across the subcircuits."""
     # Collect the bases corresponding to each decomposed operation
     bases_dict = {}
-    for i, subcirc in enumerate(subcirc_qpd_gate_ids):
+    for label, subcirc in subcirc_qpd_gate_ids.items():
+        circuit = circuits[label]
         for basis_id in subcirc:
-            decomp_id = int(
-                circuits[i].data[basis_id[0]].operation.label.split("_")[-1]
-            )
-            bases_dict[decomp_id] = circuits[i].data[basis_id[0]].operation.basis
+            decomp_id = int(circuit.data[basis_id[0]].operation.label.split("_")[-1])
+            bases_dict[decomp_id] = circuit.data[basis_id[0]].operation.basis
     bases = [bases_dict[key] for key in sorted(bases_dict.keys())]
 
     return bases

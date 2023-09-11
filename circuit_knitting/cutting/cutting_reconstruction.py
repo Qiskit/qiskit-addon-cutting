@@ -13,7 +13,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Sequence, Hashable
 
 import numpy as np
 from qiskit.quantum_info import PauliList
@@ -26,9 +26,9 @@ from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    results: SamplerResult | dict[str | int, SamplerResult],
+    results: SamplerResult | dict[Hashable, SamplerResult],
     coefficients: Sequence[tuple[float, WeightType]],
-    observables: PauliList | dict[str | int, PauliList],
+    observables: PauliList | dict[Hashable, PauliList],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
@@ -85,7 +85,7 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
-        results_dict: dict[str | int, SamplerResult] = {"A": results}
+        results_dict: dict[Hashable, SamplerResult] = {"A": results}
         expvals = np.zeros(len(observables))
 
     else:
@@ -100,13 +100,11 @@ def reconstruct_expectation_values(
         label: ObservableCollection(subobservables)
         for label, subobservables in subobservables_by_subsystem.items()
     }
-    sorted_subsystems = sorted(subsystem_observables.keys())
 
     # Reconstruct the expectation values
     for i, coeff in enumerate(coefficients):
         current_expvals = np.ones((len(expvals),))
-        for label in sorted_subsystems:
-            so = subsystem_observables[label]
+        for label, so in subsystem_observables.items():
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
