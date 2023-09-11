@@ -1,0 +1,9 @@
+---
+deprecations:
+  - |
+    The :func:`.execute_experiments` function has been deprecated.
+    Going forward, users should first call
+    :func:`.generate_cutting_experiments` to generate the
+    subexperiment circuits and then submit these circuits directly to
+    the desired Sampler(s).  The :ref:`tutorials <circuit cutting
+    tutorials>` have been updated with this new workflow.

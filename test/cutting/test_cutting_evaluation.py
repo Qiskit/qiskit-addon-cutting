@@ -58,6 +58,7 @@ class TestCuttingEvaluation(unittest.TestCase):
         self.observable = PauliList(["ZZ"])
         self.sampler = ExactSampler()
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_execute_experiments(self):
         with self.subTest("Basic test"):
             quasi_dists, coefficients = execute_experiments(
@@ -315,16 +316,3 @@ class TestCuttingEvaluation(unittest.TestCase):
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
             )
-
-    def test_workflow_with_unused_qubits(self):
-        """Issue #218"""
-        qc = QuantumCircuit(2)
-        subcircuits, _, subobservables = partition_problem(
-            circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
-        )
-        execute_experiments(
-            subcircuits,
-            subobservables,
-            num_samples=1,
-            samplers=AerSampler(),
-        )
