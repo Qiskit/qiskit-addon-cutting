@@ -38,7 +38,7 @@ class TestCuttingExperiments(unittest.TestCase):
                 TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
                 qargs=[0, 1],
             )
-            comp_weights = [
+            comp_coeffs = [
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
@@ -46,11 +46,11 @@ class TestCuttingExperiments(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, coeffs = generate_cutting_experiments(
                 qc, PauliList(["ZZ"]), np.inf
             )
-            assert weights == comp_weights
-            assert len(weights) == len(subexperiments)
+            assert coeffs == comp_coeffs
+            assert len(coeffs) == len(subexperiments)
             for exp in subexperiments:
                 assert isinstance(exp, QuantumCircuit)
 
@@ -68,7 +68,7 @@ class TestCuttingExperiments(unittest.TestCase):
                 ),
                 qargs=[1],
             )
-            comp_weights = [
+            comp_coeffs = [
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
@@ -76,11 +76,11 @@ class TestCuttingExperiments(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, coeffs = generate_cutting_experiments(
                 {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
             )
-            assert weights == comp_weights
-            assert len(weights) == len(subexperiments["A"])
+            assert coeffs == comp_coeffs
+            assert len(coeffs) == len(subexperiments["A"])
             for circ in subexperiments["A"]:
                 assert isinstance(circ, QuantumCircuit)
 

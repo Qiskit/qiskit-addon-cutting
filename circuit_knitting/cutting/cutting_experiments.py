@@ -42,7 +42,7 @@ def generate_cutting_experiments(
     list[tuple[float, WeightType]],
 ]:
     r"""
-    Generate cutting subexperiments and their associated weights.
+    Generate cutting subexperiments and their associated coefficients.
 
     If the input, ``circuits``, is a :class:`QuantumCircuit` instance, the
     output subexperiments will be contained within a 1D array, and ``observables`` is
@@ -56,7 +56,7 @@ def generate_cutting_experiments(
 
         :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`
 
-    The weights will always be returned as a 1D array -- one weight for each unique sample.
+    The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.
 
     Args:
         circuits: The circuit(s) to partition and separate
@@ -65,14 +65,14 @@ def generate_cutting_experiments(
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
     Returns:
-        A tuple containing the cutting experiments and their associated weights.
+        A tuple containing the cutting experiments and their associated coefficients.
         If the input circuits is a :class:`QuantumCircuit` instance, the output subexperiments
         will be a sequence of circuits -- one for every unique sample and observable. If the
         input circuits are represented as a dictionary keyed by partition labels, the output
         subexperiments will also be a dictionary keyed by partition labels and containing
         the subexperiments for each partition.
-        The weights are always a sequence of length-2 tuples, where each tuple contains the
-        weight and the :class:`WeightType`. Each weight corresponds to one unique sample.
+        The coefficients are always a sequence of length-2 tuples, where each tuple contains the
+        coefficient and the :class:`WeightType`. Each coefficient corresponds to one unique sample.
 
     Raises:
         ValueError: ``num_samples`` must be at least one.
@@ -134,15 +134,15 @@ def generate_cutting_experiments(
     # Sort samples in descending order of frequency
     sorted_samples = sorted(random_samples.items(), key=lambda x: x[1][0], reverse=True)
 
-    # Generate the output experiments and weights
+    # Generate the output experiments and their respective coefficients
     subexperiments_dict: dict[Hashable, list[QuantumCircuit]] = defaultdict(list)
-    weights: list[tuple[float, WeightType]] = []
+    coefficients: list[tuple[float, WeightType]] = []
     for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
         actual_coeff = np.prod(
             [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
         )
         sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
-        weights.append((sampled_coeff, weight_type))
+        coefficients.append((sampled_coeff, weight_type))
         map_ids_tmp = map_ids
         for label, so in subsystem_observables.items():
             subcircuit = subcircuit_dict[label]
@@ -164,7 +164,7 @@ def generate_cutting_experiments(
         assert len(subexperiments_out.keys()) == 1
         subexperiments_out = list(subexperiments_dict.values())[0]
 
-    return subexperiments_out, weights
+    return subexperiments_out, coefficients
 
 
 def _get_mapping_ids_by_partition(
