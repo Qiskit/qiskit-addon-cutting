@@ -14,6 +14,7 @@
 import pytest
 from copy import deepcopy
 
+from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -99,3 +100,16 @@ def test_exotic_labels(label1, label2):
         subobservables,
     )
     assert len(simulated_expvals) == len(observables)
+
+
+def test_workflow_with_unused_qubits():
+    """Issue #218"""
+    qc = QuantumCircuit(2)
+    subcircuits, _, subobservables = partition_problem(
+        circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
+    )
+    generate_cutting_experiments(
+        subcircuits,
+        subobservables,
+        num_samples=10,
+    )

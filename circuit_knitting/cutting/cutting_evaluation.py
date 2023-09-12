@@ -19,6 +19,7 @@ from collections.abc import Sequence, Hashable
 from qiskit.circuit import QuantumCircuit
 from qiskit.quantum_info import PauliList
 from qiskit.primitives import BaseSampler, Sampler as TerraSampler, SamplerResult
+from qiskit.utils import deprecate_func
 from qiskit_aer.primitives import Sampler as AerSampler
 
 from .qpd import WeightType
@@ -32,6 +33,16 @@ class CuttingExperimentResults(NamedTuple):
     coeffs: Sequence[tuple[float, WeightType]]
 
 
+@deprecate_func(
+    since="0.4.0",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no earlier than v0.5.0",
+    additional_msg=(
+        "Going forward, users should first call ``generate_cutting_experiments()`` "
+        "to generate the subexperiment circuits and then submit these "
+        "circuits directly to the desired Sampler(s)."
+    ),
+)
 def execute_experiments(
     circuits: QuantumCircuit | dict[Hashable, QuantumCircuit],
     subobservables: PauliList | dict[Hashable, PauliList],

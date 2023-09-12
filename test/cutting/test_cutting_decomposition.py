@@ -210,7 +210,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 partition_problem(circuit, partition_labels, observables=observable)
             assert (
                 e_info.value.args[0]
-                == "Circuits input to execute_experiments should contain no classical registers or bits."
+                == "Circuits input to partition_problem should contain no classical registers or bits."
             )
         with self.subTest("Unsupported phase"):
             # Split 4q HWEA in middle of qubits
@@ -273,7 +273,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 cut_gates(qc, [0])
             assert (
                 e_info.value.args[0]
-                == "Circuits input to execute_experiments should contain no classical registers or bits."
+                == "Circuits input to cut_gates should contain no classical registers or bits."
             )
 
     def test_unused_qubits(self):

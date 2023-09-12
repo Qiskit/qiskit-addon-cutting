@@ -143,7 +143,7 @@ def cut_gates(
     """
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to cut_gates should contain no classical registers or bits."
         )
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
@@ -218,7 +218,7 @@ def partition_problem(
 
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to partition_problem should contain no classical registers or bits."
         )
 
     # Determine partition labels from connectivity (ignoring TwoQubitQPDGates)
