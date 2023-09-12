@@ -115,11 +115,11 @@ def reconstruct_expectation_values(
                         num_qpd_bits = results_dict[label].metadata[
                             i * len(so.groups) + k
                         ]["num_qpd_bits"]
-                    except KeyError:
+                    except KeyError as ex:
                         raise ValueError(
                             "The num_qpd_bits field must be set in each subexperiment "
                             "result metadata dictionary."
-                        )
+                        ) from ex
                     else:
                         subsystem_expvals[k] += quasi_prob * _process_outcome(
                             num_qpd_bits,
@@ -159,10 +159,10 @@ def _process_outcome(
     outcome = _outcome_to_int(outcome)
     try:
         qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
-    except TypeError:
+    except TypeError as ex:
         raise TypeError(
             f"num_qpd_bits must be an integer, but a {type(num_qpd_bits)} was passed."
-        )
+        ) from ex
 
     meas_outcomes = outcome >> num_qpd_bits
 
