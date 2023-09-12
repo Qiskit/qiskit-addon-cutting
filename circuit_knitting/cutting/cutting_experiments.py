@@ -182,7 +182,7 @@ def _get_mapping_ids_by_partition(
             if isinstance(inst.operation, SingleQubitQPDGate):
                 try:
                     decomp_id = int(inst.operation.label.split("_")[-1])
-                except (AttributeError, ValueError):
+                except (AttributeError, ValueError) as ex:
                     raise ValueError(
                         "SingleQubitQPDGate instances in input circuit(s) must have their "
                         'labels suffixed with "_<id>", where <id> is the index of the cut '
@@ -190,7 +190,7 @@ def _get_mapping_ids_by_partition(
                         "SingleQubitQPDGates belonging to the same cut, N, should have labels "
                         ' formatted as "<your_label>_N". This allows SingleQubitQPDGates '
                         "belonging to the same cut to be sampled jointly."
-                    )
+                    ) from ex
                 decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[label].append([i])
                 subcirc_map_ids[label].append(decomp_id)
