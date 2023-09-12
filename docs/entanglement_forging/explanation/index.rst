@@ -138,28 +138,6 @@ orbital). Furthermore, in the case of water, it turns out that orbital 3
 symmetry to the other orbitals, so excitations to orbital 3 are
 suppressed. For water, we thus freeze orbitals 0 and 3.
 
-
-Example: Water molecule
-^^^^^^^^^^^^^^^^^^^^^^^
-
-The total number of orbitals (core + valence) = 7 orbitals
-
-Frozen orbital approximation = 2 orbitals
-
-Active space orbitals = total number of orbitals – frozen orbitals = 5
-orbitals (bitstring size is set to 5)
-
-Leading excitation analysis = 3 unique bitstrings
-
-.. code:: python
-
-    >>> from circuit_knitting.utils import reduce_bitstrings
-    >>> orbitals_to_reduce = [0,3]
-    >>> bitstrings = [(1,1,1,1,1,0,0), (1,0,1,1,1,0,1), (1,0,1,1,1,1,0)]
-    >>> reduced_bitstrings = reduce_bitstrings(bitstrings, orbitals_to_reduce)
-    >>> print(f'Bitstrings after orbital reduction: {reduced_bitstrings}')
-    Bitstrings after orbital reduction: [[1, 1, 1, 0, 0], [0, 1, 1, 0, 1], [0, 1, 1, 1, 0]]
-
 A complete example is provided in the `guide on freezing orbitals <../how-tos/freeze-orbitals.ipynb>`_.
 
 .. _Picking the bitstrings:
@@ -198,6 +176,44 @@ Further reduction in computational resources can be achieved by
 that do not participate in electronic excitations (i.e. core orbitals or
 those that lie out of symmetry) by removing the bits that correspond to
 them.
+
+.. _Fixing the Hartree-Fock bitstring:
+
+Fixing the Hartree-Fock bitstring
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In some cases, it is possible to increase the accuracy of simulations and speed up
+the execution by bypassing the experiments associated with the first bitstring and
+replacing those results with the Hartree-Fock energy value.
+
+.. code-block:: python
+   :caption: Fixing the HF energy at each iteration
+       from qiskit_nature.second_q.problems import ElectronicStructureProblem
+       from circuit_knitting.forging import EntanglementForgingGroundStateSolver
+
+       problem = ElectronicStructureProblem(...)
+       hf_energy = ...
+
+       solver = EntanglementForgingGroundStateSolver(
+           ansatz=ansatz,
+           hf_energy=hf_energy
+       )
+
+       result = solver.solve(problem)
+
+This setting requires an ansatz that leaves the Hartree-Fock (HF) state
+unchanged with respect to the optimization parameters. As a rule of thumb,
+this can be achieved by restricting entanglement between the qubits representing
+occupied orbitals (bits = 1) in the HF state and the qubits representing
+unoccupied orbitals (bits = 0) in the HF state.
+
+For example, this figure from [1] shows the A, B, and C qubits entangled with
+the hop gates, D & E qubits entangled with hop gates, while the partition between
+(A,B,C) and (D,E) are only entangled with a CZ gate.
+
+.. figure:: figs/fixed_hf.png
+   :width: 250
+   :alt: Fixing the first bitstring to the HF value
 
 .. _Ansatz design:
 
@@ -261,13 +277,6 @@ Results on hardware will not be as good as on the QASM simulator.
 Getting good results will require using a quantum backend with good
 properties (qubit fidelity, gate fidelity etc.), as well as a lot of
 fine-tuning of parameters.
-
-Pauli grouping
-~~~~~~~~~~~~~~
-
-There is currently no Pauli grouping for the expectation value experiments
-calculated at each iteration, so expectation values are calculated on the
-full Pauli basis. This can result in long training times for larger systems.
 
 References
 ----------

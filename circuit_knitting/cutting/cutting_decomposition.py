@@ -17,6 +17,7 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
+from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
@@ -25,7 +26,7 @@ from qiskit.circuit import (
 from qiskit.quantum_info import PauliList
 
 from ..utils.observable_grouping import observables_restricted_to_subsystem
-from ..utils.transforms import separate_circuit
+from ..utils.transforms import separate_circuit, _partition_labels_from_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
 
@@ -33,29 +34,29 @@ from .qpd.instructions import TwoQubitQPDGate
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
-    subcircuits: dict[str | int, QuantumCircuit]
+    subcircuits: dict[Hashable, QuantumCircuit]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, QuantumCircuit] | None = None
+    subobservables: dict[Hashable, PauliList] | None = None
 
 
 def partition_circuit_qubits(
     circuit: QuantumCircuit, partition_labels: Sequence[Hashable], inplace: bool = False
 ) -> QuantumCircuit:
     r"""
-    Replace all nonlocal gates belonging to more than one partition with instances of :class:`TwoQubitQPDGate`.
+    Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.
 
-    :class:`TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
+    :class:`.TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
 
     Args:
         circuit: The circuit to partition
         partition_labels: A sequence containing a partition label for each qubit in the
             input circuit. Nonlocal gates belonging to more than one partition
-            will be replaced with :class:`TwoQubitQPDGate`\ s.
+            will be replaced with :class:`.TwoQubitQPDGate`\ s.
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
         The output circuit with each nonlocal gate spanning two partitions replaced by a
-        :class:`TwoQubitQPDGate`
+        :class:`.TwoQubitQPDGate`
 
     Raises:
         ValueError: The length of partition_labels does not equal the number of qubits in the circuit.
@@ -95,20 +96,38 @@ def partition_circuit_qubits(
         if isinstance(instruction.operation, TwoQubitQPDGate):
             continue
 
-        decomposition = QPDBasis.from_gate(instruction.operation)
-        qpd_gate = TwoQubitQPDGate(
-            decomposition, label=f"cut_{instruction.operation.name}"
-        )
+        qpd_gate = TwoQubitQPDGate.from_instruction(instruction.operation)
         circuit.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit
 
 
+@deprecate_func(
+    since="0.3",
+    package_name="circuit-knitting-toolbox",
+    removal_timeline="no earlier than v0.4.0",
+    additional_msg=(
+        "Instead, use ``circuit_knitting.cutting.cut_gates`` "
+        "to automatically transform specified gates into "
+        "``TwoQubitQPDGate`` instances."
+    ),
+)
 def decompose_gates(
+    circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
+) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
+    r"""
+    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
+
+    Deprecated as of 0.3.0. Instead, use :func:`~circuit_knitting.cutting.cut_gates`.
+    """
+    return cut_gates(circuit, gate_ids, inplace)
+
+
+def cut_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:
     r"""
-    Transform specified gates into :class:`TwoQubitQPDGate`\ s.
+    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
 
     Args:
         circuit: The circuit containing gates to be decomposed
@@ -116,15 +135,15 @@ def decompose_gates(
         inplace: Flag denoting whether to copy the input circuit before acting on it
 
     Returns:
-        A copy of the input circuit with the specified gates replaced with :class:`TwoQubitGate`\ s
-        and a list of :class:`QPDBasis` instances -- one for each decomposed gate.
+        A copy of the input circuit with the specified gates replaced with :class:`.TwoQubitQPDGate`\ s
+        and a list of :class:`.QPDBasis` instances -- one for each decomposed gate.
 
     Raises:
         ValueError: The input circuit should contain no classical bits or registers.
     """
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to cut_gates should contain no classical registers or bits."
         )
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
@@ -134,9 +153,8 @@ def decompose_gates(
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
         qubit_indices = [circuit.find_bit(qubit).index for qubit in gate.qubits]
-        decomposition = QPDBasis.from_gate(gate.operation)
-        bases.append(decomposition)
-        qpd_gate = TwoQubitQPDGate(decomposition, label=f"cut_{gate.operation.name}")
+        qpd_gate = TwoQubitQPDGate.from_instruction(gate.operation)
+        bases.append(qpd_gate.basis)
         circuit.data[gate_id] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit, bases
@@ -144,17 +162,27 @@ def decompose_gates(
 
 def partition_problem(
     circuit: QuantumCircuit,
-    partition_labels: Sequence[str | int],
+    partition_labels: Sequence[Hashable] | None = None,
     observables: PauliList | None = None,
 ) -> PartitionedCuttingProblem:
     r"""
-    Separate an input circuit and observable(s) along qubit partition labels.
+    Separate an input circuit and observable(s).
 
-    Circuit qubits with matching partition labels will be grouped together, and non-local
-    gates spanning more than one partition will be replaced with :class:`TwoQubitQPDGate`\ s.
+    If ``partition_labels`` is provided, then qubits with matching partition
+    labels will be grouped together, and non-local gates spanning more than one
+    partition will be cut.
 
-    If provided, the observables will be separated along the boundaries specified by
-    ``partition_labels``.
+    If ``partition_labels`` is not provided, then it will be determined
+    automatically from the connectivity of the circuit.  This automatic
+    determination ignores any :class:`.TwoQubitQPDGate`\ s in the ``circuit``,
+    as these denote instructions that are explicitly destined for cutting.  The
+    resulting partition labels, in the automatic case, will be consecutive
+    integers starting with 0.
+
+    All cut instructions will be replaced with :class:`.SingleQubitQPDGate`\ s.
+
+    If provided, ``observables`` will be separated along the boundaries specified by
+    the partition labels.
 
     Args:
         circuit: The circuit to partition and separate
@@ -174,7 +202,7 @@ def partition_problem(
         ValueError: An input observable has a phase not equal to 1.
         ValueError: The input circuit should contain no classical bits or registers.
     """
-    if len(partition_labels) != circuit.num_qubits:
+    if partition_labels is not None and len(partition_labels) != circuit.num_qubits:
         raise ValueError(
             f"The number of partition labels ({len(partition_labels)}) must equal the number "
             f"of qubits in the circuit ({circuit.num_qubits})."
@@ -190,7 +218,14 @@ def partition_problem(
 
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to partition_problem should contain no classical registers or bits."
+        )
+
+    # Determine partition labels from connectivity (ignoring TwoQubitQPDGates)
+    # if partition_labels is not specified
+    if partition_labels is None:
+        partition_labels = _partition_labels_from_circuit(
+            circuit, ignore=lambda inst: isinstance(inst.operation, TwoQubitQPDGate)
         )
 
     # Partition the circuit with TwoQubitQPDGates and assign the order via their labels
@@ -201,7 +236,7 @@ def partition_problem(
     for inst in qpd_circuit.data:
         if isinstance(inst.operation, TwoQubitQPDGate):
             bases.append(inst.operation.basis)
-            inst.operation.label = inst.operation.label + f"_{i}"
+            inst.operation.label = f"{inst.operation.label}_{i}"
             i += 1
 
     # Separate the decomposed circuit into its subcircuits
@@ -223,8 +258,8 @@ def partition_problem(
 
 
 def decompose_observables(
-    observables: PauliList, partition_labels: Sequence[str | int]
-) -> dict[str | int, PauliList]:
+    observables: PauliList, partition_labels: Sequence[Hashable]
+) -> dict[Hashable, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 

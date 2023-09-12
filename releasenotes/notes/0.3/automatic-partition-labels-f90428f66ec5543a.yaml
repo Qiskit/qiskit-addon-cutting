@@ -1,0 +1,12 @@
+---
+features:
+  - |
+    :func:`.partition_problem` now works even if ``partition_labels``
+    is not explicitly provided.  In this case, the labels are
+    determined automatically from the connectivity of the input
+    circuit.  For the sake of determining connectivity,
+    :class:`.TwoQubitQPDGate`\ s are ignored, as these instructions
+    are already marked for cutting.  To support this workflow, this
+    release also introduces a new method,
+    :meth:`.TwoQubitQPDGate.from_instruction`, which allows one to
+    create a :class:`.TwoQubitQPDGate` that wraps a given instruction.

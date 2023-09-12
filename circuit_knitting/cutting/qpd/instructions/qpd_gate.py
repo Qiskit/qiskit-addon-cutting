@@ -144,6 +144,12 @@ class TwoQubitQPDGate(BaseQPDGate):
 
         self.definition = qc
 
+    @classmethod
+    def from_instruction(cls, instruction: Instruction, /):
+        """Create a :class:`TwoQubitQPDGate` which represents a cut version of the given ``instruction``."""
+        decomposition = QPDBasis.from_instruction(instruction)
+        return TwoQubitQPDGate(decomposition, label=f"cut_{instruction.name}")
+
 
 class SingleQubitQPDGate(BaseQPDGate):
     """
@@ -200,6 +206,11 @@ class SingleQubitQPDGate(BaseQPDGate):
         for op in base[self.qubit_id]:
             qc.append(CircuitInstruction(op, [qc.qubits[0]], []))
         self.definition = qc
+
+    @property
+    def _directive(self):
+        """``True`` if the ``basis_id`` is unassigned, which implies this instruction cannot be decomposed."""
+        return self.basis_id is None
 
     def __eq__(self, other):
         """Check equivalence for SingleQubitQPDGate class."""

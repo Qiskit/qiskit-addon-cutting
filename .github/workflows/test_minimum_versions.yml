@@ -19,7 +19,7 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -30,7 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install toml typer
           pip install "tox==$(python tools/extremal-python-dependencies.py get-tox-minversion)"
-          python tools/extremal-python-dependencies.py pin-dependencies min --inplace
+          python tools/extremal-python-dependencies.py pin-dependencies-to-minimum --inplace
       - name: Modify tox.ini for more thorough check
         shell: bash
         run: |

@@ -12,6 +12,7 @@
 """Tests for EntanglementForgingKnitter module."""
 
 import os
+import importlib.util
 import unittest
 import pytest
 
@@ -29,6 +30,8 @@ from circuit_knitting.forging import (
     cholesky_decomposition,
     convert_cholesky_operator,
 )
+
+pyscf_available = importlib.util.find_spec("pyscf") is not None
 
 
 class TestEntanglementForgingKnitter(unittest.TestCase):
@@ -72,6 +75,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
 
         return ansatz
 
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_H2(self):
         """
         Test to apply Entanglement Forging to compute the energy of a H2 molecule,
@@ -108,6 +112,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         # Ensure ground state energy output is within tolerance
         self.assertAlmostEqual(energy + energy_shift, -1.121936544469326)
 
+    @unittest.skipIf(not pyscf_available, "pyscf is not installed")
     def test_entanglement_forging_H2O(self):  # pylint: disable=too-many-locals
         """
         Test to apply Entanglement Forging to compute the energy of a H2O molecule,
@@ -229,6 +234,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         self.assertAlmostEqual(energy + energy_shift, -1.1219365445030705)
 
     @pytest.mark.slow
+    @pytest.mark.skipforcoverage
     def test_asymmetric_bitstrings_O2(self):
         """Test for entanglement forging driver."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_o2, self.eri_o2)
@@ -304,6 +310,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         self.assertAlmostEqual(energy + energy_shift, -39.09031477502881)
 
     @pytest.mark.slow
+    @pytest.mark.skipforcoverage
     def test_asymmetric_bitstrings_CN(self):
         """Test for asymmetric bitstrings with hybrid cross terms."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_cn, self.eri_cn)

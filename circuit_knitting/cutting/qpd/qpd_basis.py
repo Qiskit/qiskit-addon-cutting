@@ -15,7 +15,8 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import numpy as np
-from qiskit.circuit import Gate, Instruction
+from qiskit.circuit import Instruction
+from qiskit.utils import deprecate_func
 
 
 class QPDBasis:
@@ -114,23 +115,50 @@ class QPDBasis:
         return self._kappa**2
 
     @staticmethod
-    def from_gate(gate: Gate) -> "QPDBasis":
+    @deprecate_func(
+        since="0.3.0",
+        package_name="circuit-knitting-toolbox",
+        removal_timeline="no earlier than v0.4.0",
+        additional_msg=(
+            "This method has been renamed to ``QPDBasis.from_instruction()``."
+        ),
+    )
+    def from_gate(gate: Instruction) -> QPDBasis:  # pragma: no cover
         """
-        Generate a QPDBasis object, given a supported operation.
+        Generate a :class:`.QPDBasis` object, given a supported operation.
 
         This static method is provided for convenience; it simply
-        calls :func:`~qpd.qpd.qpdbasis_to_gate` under the hood.
+        calls :func:`~qpd.qpd.qpdbasis_from_instruction` under the hood.
 
         Args:
-            gate: The gate from which to instantiate a decomposition
+            gate: The instruction from which to instantiate a decomposition
 
         Returns:
             The newly-instantiated :class:`QPDBasis` object
         """
         # pylint: disable=cyclic-import
-        from .qpd import qpdbasis_from_gate
+        from .qpd import qpdbasis_from_instruction
 
-        return qpdbasis_from_gate(gate)
+        return qpdbasis_from_instruction(gate)
+
+    @staticmethod
+    def from_instruction(gate: Instruction, /) -> QPDBasis:
+        """
+        Generate a :class:`.QPDBasis` object, given a supported operation.
+
+        This static method is provided for convenience; it simply
+        calls :func:`~qpd.qpd.qpdbasis_from_instruction` under the hood.
+
+        Args:
+            gate: The instruction from which to instantiate a decomposition
+
+        Returns:
+            The newly-instantiated :class:`QPDBasis` object
+        """
+        # pylint: disable=cyclic-import
+        from .qpd import qpdbasis_from_instruction
+
+        return qpdbasis_from_instruction(gate)
 
     def __eq__(self, other):
         """Check equivalence for QPDBasis class."""

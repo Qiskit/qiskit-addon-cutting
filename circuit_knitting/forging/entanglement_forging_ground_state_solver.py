@@ -25,7 +25,6 @@ from typing import (
 import scipy
 import numpy as np
 
-from qiskit.algorithms.minimum_eigensolvers import MinimumEigensolverResult
 from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit_nature.second_q.problems import (
     ElectronicStructureProblem,
@@ -33,7 +32,7 @@ from qiskit_nature.second_q.problems import (
     ElectronicBasis,
 )
 from qiskit_ibm_runtime import QiskitRuntimeService, Options
-from qiskit.opflow import PauliSumOp
+from qiskit.quantum_info import SparsePauliOp
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_knitter import EntanglementForgingKnitter
@@ -130,6 +129,7 @@ class EntanglementForgingGroundStateSolver:
         backend_names: str | list[str] | None = None,
         options: Options | list[Options] | None = None,
         mo_coeff: np.ndarray | None = None,
+        hf_energy: float | None = None,
     ):
         """
         Assign the necessary class variables and initialize any defaults.
@@ -140,10 +140,13 @@ class EntanglementForgingGroundStateSolver:
             optimizer: Optimizer to use to optimize the ansatz circuit parameters
             initial_point: Initial values for ansatz parameters
             orbitals_to_reduce: List of orbital indices to remove from the problem before
-                decomposition.
+                decomposition. See :ref:`Freezing orbitals` for more information.
             backend_names: Backend name or list of backend names to use during parallel computation
             options: Options or list of options to be applied to the backends
             mo_coeff: Coefficients for converting an input problem to MO basis
+            hf_energy: The Hartree-Fock energy to use at each iteration. If this is left unset,
+                the energy will be calculated using quantum experiments. See :ref:`Fixing the Hartree-Fock bitstring`
+                for more information.
 
         Returns:
             None
@@ -158,6 +161,7 @@ class EntanglementForgingGroundStateSolver:
         self._orbitals_to_reduce = orbitals_to_reduce
         self.backend_names = backend_names  # type: ignore
         self.options = options
+        self.hf_energy = hf_energy
         self._mo_coeff = mo_coeff
         self._optimizer: Optimizer | MINIMIZER = optimizer or SPSA()
 
@@ -247,6 +251,16 @@ class EntanglementForgingGroundStateSolver:
         """Set the coefficients for converting integrals to the MO basis."""
         self._mo_coeff = mo_coeff
 
+    @property
+    def hf_energy(self) -> float | None:
+        """Return the Hartree-Fock energy."""
+        return self._hf_energy
+
+    @hf_energy.setter
+    def hf_energy(self, hf_energy: float | None) -> None:
+        """Set the Hartree-Fock energy."""
+        self._hf_energy = hf_energy
+
     def solve(
         self,
         problem: ElectronicStructureProblem,
@@ -285,18 +299,24 @@ class EntanglementForgingGroundStateSolver:
         hamiltonian_terms = self.get_qubit_operators(problem)
         ef_operator = convert_cholesky_operator(hamiltonian_terms, self._ansatz)
 
-        # Set the knitter class field
+        # Shift the hf value so it can be entered into the Schmidt matrix
+        fixed_hf_value = None
+        if self.hf_energy is not None:
+            fixed_hf_value = self.hf_energy - self._energy_shift
         if self._service is not None:
             backend_names = self._backend_names or ["ibmq_qasm_simulator"]
             self._knitter = EntanglementForgingKnitter(
                 self._ansatz,
+                fixed_hf_value=fixed_hf_value,
                 service=self._service,
                 backend_names=backend_names,
                 options=self._options,
             )
         else:
             self._knitter = EntanglementForgingKnitter(
-                self._ansatz, options=self._options
+                self._ansatz,
+                fixed_hf_value=fixed_hf_value,
+                options=self._options,
             )
         self._history = EntanglementForgingHistory()
         self._eval_count = 0
@@ -317,14 +337,11 @@ class EntanglementForgingGroundStateSolver:
 
         # Create the EntanglementForgingResult from the results from the
         # results of eigenvalue minimization and other meta information
-        min_eigsolver_result = MinimumEigensolverResult()
-        min_eigsolver_result.eigenvalue = optimal_evaluation.eigenvalue
-        min_eigsolver_result.eigenstate = optimal_evaluation.eigenstate
-        result = EntanglementForgingResult.from_minimum_eigensolver_result(
-            min_eigsolver_result
-        )
-        result.energy_shift = self._energy_shift
+        result = EntanglementForgingResult()
+        result.eigenvalues = np.asarray([optimal_evaluation.eigenvalue])
+        result.eigenstates = [(optimal_evaluation.eigenstate, None)]
         result.history = self._history.evaluations
+        result.energy_shift = self._energy_shift
         result.elapsed_time = elapsed_time
 
         # Close any runtime sessions
@@ -341,7 +358,7 @@ class EntanglementForgingGroundStateSolver:
         Args:
             operator: The decomposed Hamiltonian in entanglement forging format
         Returns:
-            Callable function which provides an estimation of the mihnimum eigenvalue
+            Callable function which provides an estimation of the minimum eigenvalue
             of the input operator given some ansatz circuit parameters.
         """
 
@@ -363,7 +380,7 @@ class EntanglementForgingGroundStateSolver:
     def get_qubit_operators(
         self,
         problem: ElectronicStructureProblem,
-    ) -> list[PauliSumOp]:
+    ) -> list[SparsePauliOp]:
         """Construct decomposed qubit operators from an ``ElectronicStructureProblem``.
 
         Args:

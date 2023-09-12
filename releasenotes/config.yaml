@@ -1,4 +1,5 @@
 ---
 encoding: utf8
 default_branch: main
-unreleased_version_title: "Upcoming release (``main`` branch)"
+unreleased_version_title: "Upcoming release"
+earliest_version: 0.1.0
