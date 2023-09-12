@@ -35,7 +35,7 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("simple circuit and observable"):
             qc = QuantumCircuit(2)
             qc.append(
-                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                TwoQubitQPDGate(QPDBasis.from_instruction(CXGate()), label="cut_cx"),
                 qargs=[0, 1],
             )
             comp_coeffs = [
@@ -58,13 +58,13 @@ class TestCuttingExperiments(unittest.TestCase):
             qc = QuantumCircuit(2)
             qc.append(
                 SingleQubitQPDGate(
-                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=0
+                    QPDBasis.from_instruction(CXGate()), label="cut_cx_0", qubit_id=0
                 ),
                 qargs=[0],
             )
             qc.append(
                 SingleQubitQPDGate(
-                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=1
+                    QPDBasis.from_instruction(CXGate()), label="cut_cx_0", qubit_id=1
                 ),
                 qargs=[1],
             )
@@ -109,7 +109,7 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("test bad label"):
             qc = QuantumCircuit(2)
             qc.append(
-                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                TwoQubitQPDGate(QPDBasis.from_instruction(CXGate()), label="cut_cx"),
                 qargs=[0, 1],
             )
             partitioned_problem = partition_problem(
@@ -142,7 +142,9 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("test single qubit qpd gate in unseparated circuit"):
             qc = QuantumCircuit(2)
             qc.append(
-                SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 0, label="cut_cx_0"),
+                SingleQubitQPDGate(
+                    QPDBasis.from_instruction(CXGate()), 0, label="cut_cx_0"
+                ),
                 qargs=[0],
             )
             with pytest.raises(ValueError) as e_info:
