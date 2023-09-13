@@ -1,0 +1,7 @@
+---
+prelude: |
+  The primary goal of this release is to modify the circuit cutting
+  workflow to enable direct use of the Sampler primitive.  Previously,
+  the Sampler was called in :func:`.execute_experiments`, a function
+  which is now deprecated in favor of
+  :func:`.generate_cutting_experiments`.
