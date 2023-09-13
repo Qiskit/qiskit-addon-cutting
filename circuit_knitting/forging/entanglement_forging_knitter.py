@@ -199,7 +199,7 @@ class EntanglementForgingKnitter:
                         "ambiguous how to combine the options with the backends."
                     )
         # For now, we only assign the parameters to a copy of the ansatz
-        circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
+        circuit_u = self._ansatz.circuit_u.assign_parameters(ansatz_parameters)
 
         # Create the tensor and superposition stateprep circuits
         # tensor_ansatze   = [U|bi⟩      for |bi⟩       in  tensor_circuits]
