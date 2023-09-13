@@ -223,7 +223,7 @@ def create_dd_bin(
         subcircuit_entries, subcircuit_instance_probabilities
     )
 
-    bin = dd_build(
+    return dd_build(
         summation_terms=summation_terms,
         subcircuit_entry_probs=subcircuit_entry_probabilities,
         num_cuts=cuts["num_cuts"],
@@ -233,8 +233,6 @@ def create_dd_bin(
         subcircuit_instances=subcircuit_instances,
         num_threads=num_threads,
     )
-
-    return bin
 
 
 def reconstruct_dd_full_distribution(
