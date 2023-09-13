@@ -5,16 +5,16 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Entanglement Forging How-To Guides" href="../how-tos/index.html" /><link rel="prev" title="Tutorial 2: Entanglement Forging with Quantum Serverless" href="../tutorials/tutorial_2_forging_with_quantum_serverless.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>Explanatory material for the entanglement forging module - Circuit Knitting Toolbox 0.3.0</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>Explanatory material for the entanglement forging module - Circuit Knitting Toolbox 0.4.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -216,6 +230,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.generate_cutting_experiments.html">circuit_knitting.cutting.generate_cutting_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
@@ -317,9 +332,9 @@
         </div>
         <article role="main">
           <section id="explanatory-material-for-the-entanglement-forging-module">
-<h1>Explanatory material for the entanglement forging module<a class="headerlink" href="#explanatory-material-for-the-entanglement-forging-module" title="Permalink to this heading">#</a></h1>
+<h1>Explanatory material for the entanglement forging module<a class="headerlink" href="#explanatory-material-for-the-entanglement-forging-module" title="Link to this heading">#</a></h1>
 <section id="overview-of-entanglement-forging">
-<h2>Overview of entanglement forging<a class="headerlink" href="#overview-of-entanglement-forging" title="Permalink to this heading">#</a></h2>
+<h2>Overview of entanglement forging<a class="headerlink" href="#overview-of-entanglement-forging" title="Link to this heading">#</a></h2>
 <p>Entanglement forging [1] was introduced as a way to reduce the number of
 qubits necessary to perform quantum simulation of chemical or physical
 systems. In general, to simulate <span class="math notranslate nohighlight">\(n\)</span> orbitals in a chemistry problem,
@@ -352,12 +367,12 @@ sub-experiments.</p>
 <figure class="align-default" id="id4">
 <img alt="Entanglement Forging Infographic" src="../../_images/forging_info_graphic.png" />
 <figcaption>
-<p><span class="caption-text">Entanglement Forging Infographic</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
+<p><span class="caption-text">Entanglement Forging Infographic</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="entanglement-forging-procedure">
-<h2>Entanglement Forging Procedure<a class="headerlink" href="#entanglement-forging-procedure" title="Permalink to this heading">#</a></h2>
+<h2>Entanglement Forging Procedure<a class="headerlink" href="#entanglement-forging-procedure" title="Link to this heading">#</a></h2>
 <p>Entanglement Forging leverages near-term, heuristic algorithms, such as
 VQE, to provide an estimate of the <span class="math notranslate nohighlight">\(2n\)</span>-qubit expectation value. It
 does so by assuming a parameterized ansatz for the wavefunction of each
@@ -393,7 +408,7 @@ generally lead to less accuracy in the estimation of the expectation
 value.</p>
 </section>
 <section id="scaling">
-<h2>Scaling<a class="headerlink" href="#scaling" title="Permalink to this heading">#</a></h2>
+<h2>Scaling<a class="headerlink" href="#scaling" title="Link to this heading">#</a></h2>
 <p>The execution time scales differently with various properties of the
 simulations, and is indicated in the table below.</p>
 <div class="table-wrapper docutils container">
@@ -457,7 +472,7 @@ the ansatz</span></a></p></td>
 </table>
 </div>
 <section id="freezing-orbitals">
-<span id="id1"></span><h3>Freezing orbitals<a class="headerlink" href="#freezing-orbitals" title="Permalink to this heading">#</a></h3>
+<span id="id1"></span><h3>Freezing orbitals<a class="headerlink" href="#freezing-orbitals" title="Link to this heading">#</a></h3>
 <p>Since the execution time scales with the 5th power in the number of
 orbitals, it’s a good idea to simplify the problem (if possible) by
 eliminating some of the orbitals. Some knowledge of chemistry is useful
@@ -470,9 +485,9 @@ suppressed. For water, we thus freeze orbitals 0 and 3.</p>
 <p>A complete example is provided in the <a class="reference internal" href="../how-tos/freeze-orbitals.html"><span class="doc">guide on freezing orbitals</span></a>.</p>
 </section>
 <section id="picking-the-bitstrings">
-<span id="id2"></span><h3>Picking the bitstrings<a class="headerlink" href="#picking-the-bitstrings" title="Permalink to this heading">#</a></h3>
+<span id="id2"></span><h3>Picking the bitstrings<a class="headerlink" href="#picking-the-bitstrings" title="Link to this heading">#</a></h3>
 <section id="general-considerations">
-<h4>General Considerations<a class="headerlink" href="#general-considerations" title="Permalink to this heading">#</a></h4>
+<h4>General Considerations<a class="headerlink" href="#general-considerations" title="Link to this heading">#</a></h4>
 <p>Picking appropriate bitstrings requires prior knowledge of the molecular
 electronic structure.</p>
 <p>In general, the exact electronic wavefunction is a superposition of all
@@ -501,14 +516,14 @@ those that lie out of symmetry) by removing the bits that correspond to
 them.</p>
 </section>
 <section id="fixing-the-hartree-fock-bitstring">
-<span id="id3"></span><h4>Fixing the Hartree-Fock bitstring<a class="headerlink" href="#fixing-the-hartree-fock-bitstring" title="Permalink to this heading">#</a></h4>
+<span id="id3"></span><h4>Fixing the Hartree-Fock bitstring<a class="headerlink" href="#fixing-the-hartree-fock-bitstring" title="Link to this heading">#</a></h4>
 <p>In some cases, it is possible to increase the accuracy of simulations and speed up
 the execution by bypassing the experiments associated with the first bitstring and
 replacing those results with the Hartree-Fock energy value.</p>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Fixing the HF energy at each iteration
 from qiskit_nature.second_q.problems import ElectronicStructureProblem
-from circuit_knitting.forging import EntanglementForgingGroundStateSolver</span><a class="headerlink" href="#id5" title="Permalink to this code">#</a></div>
+from circuit_knitting.forging import EntanglementForgingGroundStateSolver</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">problem</span> <span class="o">=</span> <span class="n">ElectronicStructureProblem</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
     <span class="n">hf_energy</span> <span class="o">=</span> <span class="o">...</span>
 
@@ -535,7 +550,7 @@ the hop gates, D &amp; E qubits entangled with hop gates, while the partition be
 </section>
 </section>
 <section id="designing-the-ansatz-used-in-entanglement-forging">
-<span id="ansatz-design"></span><h3>Designing the ansatz used in Entanglement Forging<a class="headerlink" href="#designing-the-ansatz-used-in-entanglement-forging" title="Permalink to this heading">#</a></h3>
+<span id="ansatz-design"></span><h3>Designing the ansatz used in Entanglement Forging<a class="headerlink" href="#designing-the-ansatz-used-in-entanglement-forging" title="Link to this heading">#</a></h3>
 <p>Because entanglement forging leverages a near-term, heuristic algorithm
 (namely, VQE), a judicious choice for the VQE ansatz can improve
 performance. Note that one way to design the ansatz is by endowing the
@@ -547,9 +562,9 @@ if applicable).</p>
 </section>
 </section>
 <section id="current-limitations">
-<h2>⚠️ Current limitations<a class="headerlink" href="#current-limitations" title="Permalink to this heading">#</a></h2>
+<h2>⚠️ Current limitations<a class="headerlink" href="#current-limitations" title="Link to this heading">#</a></h2>
 <section id="ansatz-bitstrings">
-<h3>Ansatz &amp; bitstrings<a class="headerlink" href="#ansatz-bitstrings" title="Permalink to this heading">#</a></h3>
+<h3>Ansatz &amp; bitstrings<a class="headerlink" href="#ansatz-bitstrings" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>It is currently an open problem how to pick the best circuit
 (ansatze) for VQE (and thus Entanglement Forging) for a given system.</p></li>
@@ -569,7 +584,7 @@ defined by the complex numbers.</p></li>
 </ul>
 </section>
 <section id="results">
-<h3>Results<a class="headerlink" href="#results" title="Permalink to this heading">#</a></h3>
+<h3>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>In the current implementation, only the energy of the final state is
 available. It would be useful to have a feature to output the 1- and
@@ -594,7 +609,7 @@ available. It would be useful to have a feature to output the 1- and
 </ul>
 </section>
 <section id="running-on-quantum-hardware">
-<h3>Running on quantum hardware<a class="headerlink" href="#running-on-quantum-hardware" title="Permalink to this heading">#</a></h3>
+<h3>Running on quantum hardware<a class="headerlink" href="#running-on-quantum-hardware" title="Link to this heading">#</a></h3>
 <p>Results on hardware will not be as good as on the QASM simulator.
 Getting good results will require using a quantum backend with good
 properties (qubit fidelity, gate fidelity etc.), as well as a lot of
@@ -602,7 +617,7 @@ fine-tuning of parameters.</p>
 </section>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
 <p>This module is based on the theory and experiment described in the
 following paper:</p>
 <p>[1] Andrew Eddins, Mario Motta, Tanvi P. Gujarati, Sergey Bravyi,
@@ -706,9 +721,9 @@ of quantum simulators by entanglement forging</em>,
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c02300dd"></script>
+    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

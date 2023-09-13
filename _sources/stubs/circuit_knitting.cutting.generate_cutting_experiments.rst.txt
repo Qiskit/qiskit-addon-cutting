@@ -1,0 +1,6 @@
+﻿circuit\_knitting.cutting.generate\_cutting\_experiments
+========================================================
+
+.. currentmodule:: circuit_knitting.cutting
+
+.. autofunction:: generate_cutting_experiments

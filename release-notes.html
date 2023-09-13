@@ -5,16 +5,16 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="circuit_knitting.utils.transforms.SeparatedCircuits" href="stubs/circuit_knitting.utils.transforms.SeparatedCircuits.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>Release Notes - Circuit Knitting Toolbox 0.3.0</title>
-      <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>Release Notes - Circuit Knitting Toolbox 0.4.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
+      <a href="index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -216,6 +230,7 @@
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.generate_cutting_experiments.html">circuit_knitting.cutting.generate_cutting_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
@@ -317,11 +332,58 @@
         </div>
         <article role="main">
           <section id="release-notes">
-<span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
-<section id="release-notes-0-3-0">
-<span id="id2"></span><h2>0.3.0<a class="headerlink" href="#release-notes-0-3-0" title="Permalink to this heading">#</a></h2>
+<span id="id1"></span><h1>Release Notes<a class="headerlink" href="#release-notes" title="Link to this heading">#</a></h1>
+<section id="release-notes-0-4-0">
+<span id="id2"></span><h2>0.4.0<a class="headerlink" href="#release-notes-0-4-0" title="Link to this heading">#</a></h2>
 <section id="prelude">
-<span id="release-notes-0-3-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">#</a></h3>
+<span id="release-notes-0-4-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Link to this heading">#</a></h3>
+<p>The primary goal of this release is to modify the circuit cutting
+workflow to enable direct use of the Sampler primitive.  Previously,
+the Sampler was called in <a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a>, a function
+which is now deprecated in favor of
+<a class="reference internal" href="stubs/circuit_knitting.cutting.generate_cutting_experiments.html#circuit_knitting.cutting.generate_cutting_experiments" title="circuit_knitting.cutting.generate_cutting_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_cutting_experiments()</span></code></a>.</p>
+</section>
+<section id="new-features">
+<span id="release-notes-0-4-0-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Added a module, <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting.cutting.cutting_experiments</span></code>, which is intended to hold
+functions used for generating the quantum experiments needed for circuit cutting. This module
+will initially hold one function, <a class="reference internal" href="stubs/circuit_knitting.cutting.generate_cutting_experiments.html#circuit_knitting.cutting.generate_cutting_experiments" title="circuit_knitting.cutting.generate_cutting_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_cutting_experiments()</span></code></a>,
+which can be used to generate quantum experiments, given an input circuit containing
+<a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html#circuit_knitting.cutting.qpd.BaseQPDGate" title="circuit_knitting.cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> instances, some observables, and a number
+of times the joint quasi-probability distribution for the cuts should be sampled.</p></li>
+</ul>
+</section>
+<section id="upgrade-notes">
+<span id="release-notes-0-4-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">circuit-knitting-toolbox</span></code> Python package now depends on
+<code class="docutils literal notranslate"><span class="pre">qiskit</span></code> rather than <code class="docutils literal notranslate"><span class="pre">qiskit-terra</span></code>.  This should have no
+user-visible effects, but it is something to keep in mind if one
+sees dependency errors when upgrading CKT.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a> function now returns a <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.SamplerResult.html#qiskit.primitives.SamplerResult" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance for each circuit partition, rather than the 3D list of quasi-distributions returned previously. The quasi-distribution for each subexperiment can be accessed via the <code class="docutils literal notranslate"><span class="pre">quasi_dists</span></code> field of <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.SamplerResult.html#qiskit.primitives.SamplerResult" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a>. The number of QPD bits contained in each subexperiment will be included in the <code class="docutils literal notranslate"><span class="pre">num_qpd_bits</span></code> field of the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> dictionary for each experiment result. The output of this function is still valid as input to <a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values" title="circuit_knitting.cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a>.</p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values" title="circuit_knitting.cutting.reconstruct_expectation_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">reconstruct_expectation_values()</span></code></a> now takes, as its first argument, a <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.SamplerResult.html#qiskit.primitives.SamplerResult" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance or a dictionary mapping partition labels to <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.SamplerResult.html#qiskit.primitives.SamplerResult" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instances.  This new <code class="docutils literal notranslate"><span class="pre">results</span></code> argument replaces the old <code class="docutils literal notranslate"><span class="pre">quasi_dists</span></code> argument. The <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.SamplerResult.html#qiskit.primitives.SamplerResult" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instances are expected to contain the number of QPD bits used in each circuit input to the Sampler. This should be specified in the <code class="docutils literal notranslate"><span class="pre">num_qpd_bits</span></code> field of the experiment result metadata.</p></li>
+</ul>
+</section>
+<section id="deprecation-notes">
+<span id="release-notes-0-4-0-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The <a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a> function has been deprecated.
+Going forward, users should first call
+<a class="reference internal" href="stubs/circuit_knitting.cutting.generate_cutting_experiments.html#circuit_knitting.cutting.generate_cutting_experiments" title="circuit_knitting.cutting.generate_cutting_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_cutting_experiments()</span></code></a> to generate the
+subexperiment circuits and then submit these circuits directly to
+the desired Sampler(s).  The <a class="reference internal" href="circuit_cutting/tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">tutorials</span></a> have been updated with this new workflow.</p></li>
+</ul>
+</section>
+</section>
+<section id="release-notes-0-3-0">
+<span id="id3"></span><h2>0.3.0<a class="headerlink" href="#release-notes-0-3-0" title="Link to this heading">#</a></h2>
+<section id="release-notes-0-3-0-prelude">
+<span id="id4"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-3-0-prelude" title="Link to this heading">#</a></h3>
 <p>The 0.3.0 release introduces significant new features while maintaining
 backwards compatibility with the 0.2.0 release.  The most striking
 change in this release is the shortened module names:
@@ -332,8 +394,8 @@ change in this release is the shortened module names:
 enhancements, including support for wire cutting and for the cutting
 of arbitrary two-qubit gates.</p>
 </section>
-<section id="new-features">
-<span id="release-notes-0-3-0-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-3-0-new-features">
+<span id="id5"></span><h3>New Features<a class="headerlink" href="#release-notes-0-3-0-new-features" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>The circuit cutting module now supports the cutting of arbitrary
 two-qubit gates.  This is supported via a KAK decomposition, using
@@ -399,8 +461,8 @@ e.g. for cut instantiations of
 cutting.  There is a <a class="reference internal" href="circuit_cutting/tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">new tutorial</span></a> that explains how to use it.</p></li>
 </ul>
 </section>
-<section id="upgrade-notes">
-<span id="release-notes-0-3-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-3-0-upgrade-notes">
+<span id="id6"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-3-0-upgrade-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.execute_experiments.html#circuit_knitting.cutting.execute_experiments" title="circuit_knitting.cutting.execute_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_experiments()</span></code></a> no longer creates separate jobs for each subcircuit by default.
 Now, separate jobs are only created if separate <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.BaseSampler.html#qiskit.primitives.BaseSampler" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSampler</span></code></a> instances are provided for each circuit partition.</p></li>
@@ -424,8 +486,8 @@ and <a class="reference internal" href="stubs/circuit_knitting.cutting.partition
 labels prefixed with “cut”, rather than “qpd”.</p></li>
 </ul>
 </section>
-<section id="deprecation-notes">
-<span id="release-notes-0-3-0-deprecation-notes"></span><h3>Deprecation Notes<a class="headerlink" href="#deprecation-notes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-3-0-deprecation-notes">
+<span id="id7"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-3-0-deprecation-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><a class="reference internal" href="stubs/circuit_knitting.cutting.decompose_gates.html#circuit_knitting.cutting.decompose_gates" title="circuit_knitting.cutting.decompose_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_gates()</span></code></a> is deprecated and will be removed no sooner than v0.4.0. Users should migrate to the identical <a class="reference internal" href="stubs/circuit_knitting.cutting.cut_gates.html#circuit_knitting.cutting.cut_gates" title="circuit_knitting.cutting.cut_gates"><code class="xref py py-func docutils literal notranslate"><span class="pre">cut_gates()</span></code></a> function.</p></li>
 </ul>
@@ -457,7 +519,7 @@ a future release of the Circuit Knitting Toolbox.</p>
 </ul>
 </section>
 <section id="bug-fixes">
-<span id="release-notes-0-3-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading">#</a></h3>
+<span id="release-notes-0-3-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed a bug in <a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.decompose_qpd_instructions.html#circuit_knitting.cutting.qpd.decompose_qpd_instructions" title="circuit_knitting.cutting.qpd.decompose_qpd_instructions"><code class="xref py py-func docutils literal notranslate"><span class="pre">decompose_qpd_instructions()</span></code></a> which would
 cause index errors if <a class="reference internal" href="stubs/circuit_knitting.cutting.qpd.TwoQubitQPDGate.html#circuit_knitting.cutting.qpd.TwoQubitQPDGate" title="circuit_knitting.cutting.qpd.TwoQubitQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code></a> indices were
@@ -471,9 +533,9 @@ conditions, such as when reducing the orbitals over which to solve.</p></li>
 </section>
 </section>
 <section id="release-notes-0-2-0">
-<span id="id3"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Permalink to this heading">#</a></h2>
+<span id="id8"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Link to this heading">#</a></h2>
 <section id="release-notes-0-2-0-prelude">
-<span id="id4"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-2-0-prelude" title="Permalink to this heading">#</a></h3>
+<span id="id9"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-2-0-prelude" title="Link to this heading">#</a></h3>
 <p>0.2.0 is centered around the addition of functions which allow for the easy
 implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
 <a class="reference internal" href="circuit_cutting/explanation/index.html#circuit-cutting-explanation"><span class="std std-ref">explanation guide</span></a>.</p>
@@ -489,7 +551,7 @@ functions, namely, the <a class="reference internal" href="stubs/circuit_knittin
 Check out the <a class="reference internal" href="circuit_cutting/tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">tutorials</span></a> for a look at a couple of example circuit cutting workflows.</p>
 </section>
 <section id="release-notes-0-2-0-new-features">
-<span id="id5"></span><h3>New Features<a class="headerlink" href="#release-notes-0-2-0-new-features" title="Permalink to this heading">#</a></h3>
+<span id="id10"></span><h3>New Features<a class="headerlink" href="#release-notes-0-2-0-new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Addition of a <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package which allows for easy
 transformation of <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> gates and wires into elements which may be decomposed to a
@@ -503,7 +565,7 @@ the <a class="reference internal" href="stubs/circuit_knitting.cutting.partition
 </ul>
 </section>
 <section id="known-issues">
-<span id="release-notes-0-2-0-known-issues"></span><h3>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this heading">#</a></h3>
+<span id="release-notes-0-2-0-known-issues"></span><h3>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package only supports <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.PauliList.html#qiskit.quantum_info.PauliList" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code></a> observables for calculating expectation values. Support for calculating
 expectation values for more observable types, including <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.SparsePauliOp.html#qiskit.quantum_info.SparsePauliOp" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SparsePauliOp</span></code></a>, is expected no sooner than 0.3.0.</p></li>
@@ -517,7 +579,7 @@ classical bits, so by extension, it does not yet support dynamic circuits.</p></
 </ul>
 </section>
 <section id="release-notes-0-2-0-upgrade-notes">
-<span id="id6"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-2-0-upgrade-notes" title="Permalink to this heading">#</a></h3>
+<span id="id11"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-2-0-upgrade-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been removed. To run the
 Circuit Knitting Toolbox, you now need Python version 3.8 or
@@ -525,7 +587,7 @@ higher.</p></li>
 </ul>
 </section>
 <section id="release-notes-0-2-0-deprecation-notes">
-<span id="id7"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-2-0-deprecation-notes" title="Permalink to this heading">#</a></h3>
+<span id="id12"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-2-0-deprecation-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.wire_cutting</span></code> namespace
 is now deprecated. It has been renamed to
@@ -539,9 +601,9 @@ reconstruction.</p></li>
 </section>
 </section>
 <section id="release-notes-0-1-0">
-<span id="id8"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">#</a></h2>
+<span id="id13"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Link to this heading">#</a></h2>
 <section id="release-notes-0-1-0-new-features">
-<span id="id9"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Permalink to this heading">#</a></h3>
+<span id="id14"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for Python 3.11.</p></li>
 </ul>
@@ -550,7 +612,7 @@ reconstruction.</p></li>
 </ul>
 </section>
 <section id="release-notes-0-1-0-upgrade-notes">
-<span id="id10"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-1-0-upgrade-notes" title="Permalink to this heading">#</a></h3>
+<span id="id15"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-1-0-upgrade-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The minimum supported version of each Qiskit dependency has been
 updated.  This release depends on <code class="docutils literal notranslate"><span class="pre">qiskit-terra&gt;=0.23.3</span></code>,
@@ -580,7 +642,7 @@ installed for automatic wire cut finding to work.</p></li>
 </ul>
 </section>
 <section id="release-notes-0-1-0-deprecation-notes">
-<span id="id11"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-1-0-deprecation-notes" title="Permalink to this heading">#</a></h3>
+<span id="id16"></span><h3>Deprecation Notes<a class="headerlink" href="#release-notes-0-1-0-deprecation-notes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support for running with Python 3.7 has been deprecated.  Future
 versions of the Circuit Knitting Toolbox will require Python 3.8
@@ -644,11 +706,18 @@ or higher.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
-<li><a class="reference internal" href="#release-notes-0-3-0">0.3.0</a><ul>
+<li><a class="reference internal" href="#release-notes-0-4-0">0.4.0</a><ul>
 <li><a class="reference internal" href="#prelude">Prelude</a></li>
 <li><a class="reference internal" href="#new-features">New Features</a></li>
 <li><a class="reference internal" href="#upgrade-notes">Upgrade Notes</a></li>
 <li><a class="reference internal" href="#deprecation-notes">Deprecation Notes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#release-notes-0-3-0">0.3.0</a><ul>
+<li><a class="reference internal" href="#release-notes-0-3-0-prelude">Prelude</a></li>
+<li><a class="reference internal" href="#release-notes-0-3-0-new-features">New Features</a></li>
+<li><a class="reference internal" href="#release-notes-0-3-0-upgrade-notes">Upgrade Notes</a></li>
+<li><a class="reference internal" href="#release-notes-0-3-0-deprecation-notes">Deprecation Notes</a></li>
 <li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
 </ul>
 </li>
@@ -679,9 +748,9 @@ or higher.</p></li>
   </div>
 </div><script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c02300dd"></script>
+    <script src="_static/documentation_options.js?v=6c02275b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

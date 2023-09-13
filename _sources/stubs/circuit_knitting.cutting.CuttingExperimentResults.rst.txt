@@ -22,6 +22,6 @@
    .. autosummary::
    
       ~CuttingExperimentResults.coeffs
-      ~CuttingExperimentResults.quasi_dists
+      ~CuttingExperimentResults.results
    
    

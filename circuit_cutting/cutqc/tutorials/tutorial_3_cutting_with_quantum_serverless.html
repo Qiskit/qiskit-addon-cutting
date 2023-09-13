@@ -5,17 +5,17 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Entanglement Forging Tutorials" href="../../../entanglement_forging/tutorials/index.html" /><link rel="prev" title="CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting" href="tutorial_2_manual_cutting.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>CutQC Tutorial 3: Circuit Cutting with Quantum Serverless - Circuit Knitting Toolbox 0.3.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>CutQC Tutorial 3: Circuit Cutting with Quantum Serverless - Circuit Knitting Toolbox 0.4.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-code-cells.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -72,6 +72,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -132,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -159,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -217,6 +231,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.generate_cutting_experiments.html">circuit_knitting.cutting.generate_cutting_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
@@ -318,7 +333,7 @@
         </div>
         <article role="main">
           <section id="CutQC-Tutorial-3:-Circuit-Cutting-with-Quantum-Serverless">
-<h1>CutQC Tutorial 3: Circuit Cutting with Quantum Serverless<a class="headerlink" href="#CutQC-Tutorial-3:-Circuit-Cutting-with-Quantum-Serverless" title="Permalink to this heading">#</a></h1>
+<h1>CutQC Tutorial 3: Circuit Cutting with Quantum Serverless<a class="headerlink" href="#CutQC-Tutorial-3:-Circuit-Cutting-with-Quantum-Serverless" title="Link to this heading">#</a></h1>
 <p><strong>Circuit cutting</strong> is a technique to decompose a quantum circuit into smaller circuits, whose results can be knitted together to reconstruct the original circuit output.</p>
 <p>The circuit knitting toolbox implements a wire cutting method presented in <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a> (Tang et al.). This method allows a circuit wire to be cut such that the generated subcircuits are amended by measurements in the Pauli bases and by state preparation of four Pauli eigenstates (see Fig. 4 of <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a>).</p>
 <p>This wire cutting technique is comprised of the following basic steps:</p>
@@ -330,7 +345,7 @@
 <p><a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> is a platform built to enable distributed computing across a variety of classical and quantum backends.</p>
 <p>In this demo, we will show how to use quantum serverless to run portions of this workflow on a remote cluster.</p>
 <section id="Create-a-quantum-circuit-with-Qiskit">
-<h2>Create a quantum circuit with Qiskit<a class="headerlink" href="#Create-a-quantum-circuit-with-Qiskit" title="Permalink to this heading">#</a></h2>
+<h2>Create a quantum circuit with Qiskit<a class="headerlink" href="#Create-a-quantum-circuit-with-Qiskit" title="Link to this heading">#</a></h2>
 <p>In this case, we’ll create a hardware-efficient circuit (<code class="docutils literal notranslate"><span class="pre">EfficientSU2</span></code> from the Qiskit circuit library) with two (linear) entangling layers.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -352,7 +367,7 @@
 <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
 
 <span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="mi">16</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">parameters</span><span class="p">))]</span>
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">bind_parameters</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="n">circuit</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">fold</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -367,7 +382,7 @@
 </div>
 </section>
 <section id="Set-up-Quantum-Serverless">
-<h2>Set up Quantum Serverless<a class="headerlink" href="#Set-up-Quantum-Serverless" title="Permalink to this heading">#</a></h2>
+<h2>Set up Quantum Serverless<a class="headerlink" href="#Set-up-Quantum-Serverless" title="Link to this heading">#</a></h2>
 <p>We can use Quantum Serverless to allocate the steps of wire cutting to various compute resources. For this tutorial, we will use our local CPU cores as our cluster. See the <a class="reference external" href="https://github.com/Qiskit-Extensions/quantum-serverless">Quantum Serverless</a> documentation (and below) for more information about how to use other clusters.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -391,9 +406,9 @@
 </div>
 </section>
 <section id="Decompose-the-circuit-with-wire-cutting">
-<h2>Decompose the circuit with wire cutting<a class="headerlink" href="#Decompose-the-circuit-with-wire-cutting" title="Permalink to this heading">#</a></h2>
+<h2>Decompose the circuit with wire cutting<a class="headerlink" href="#Decompose-the-circuit-with-wire-cutting" title="Link to this heading">#</a></h2>
 <section id="Use-quantum-serverless-to-send-the-cut_circuit_wires-method-to-a-remote-cluster">
-<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">cut_circuit_wires</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-cut_circuit_wires-method-to-a-remote-cluster" title="Permalink to this heading">#</a></h3>
+<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">cut_circuit_wires</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-cut_circuit_wires-method-to-a-remote-cluster" title="Link to this heading">#</a></h3>
 <p>Here we create a wrapper function for the <code class="docutils literal notranslate"><span class="pre">cut_circuit_wires</span></code> function and annotate it with the <code class="docutils literal notranslate"><span class="pre">&#64;run_qiskit_remote()</span></code> decorator from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code>. This allows us to call this function from a serverless context and have it sent for remote execution on the specified cluster.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -432,7 +447,7 @@
 </div>
 </section>
 <section id="Decompose-the-circuit-in-a-serverless-context">
-<h3>Decompose the circuit in a serverless context<a class="headerlink" href="#Decompose-the-circuit-in-a-serverless-context" title="Permalink to this heading">#</a></h3>
+<h3>Decompose the circuit in a serverless context<a class="headerlink" href="#Decompose-the-circuit-in-a-serverless-context" title="Link to this heading">#</a></h3>
 <p>In this example, we will use an automatic method to find cuts matching our criteria. See <a class="reference internal" href="tutorial_1_automatic_cut_finding.html"><span class="doc">tutorial 1</span></a> for how to configure the inputs for the automatic method. See <a class="reference internal" href="tutorial_2_manual_cutting.html"><span class="doc">tutorial 2</span></a> for how to manually cut a circuit.</p>
 <p>We will call the <code class="docutils literal notranslate"><span class="pre">cut_circuit_wires_remote</span></code> function within a <code class="docutils literal notranslate"><span class="pre">QuantumServerless</span></code> context, which means it will be run on the specified cluster. Remember, the default cluster for this demo will use the cores on our local CPU. To specify a new cluster, the <code class="docutils literal notranslate"><span class="pre">QuantumServerless.set_provider</span></code> method should be used.</p>
 <p>When the remote function is called, it will return a “future” object, and Python will continue interpreting the next line of code. The <code class="docutils literal notranslate"><span class="pre">get</span></code> function from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> is a blocking command which should be used to retrieve the results of the remote function via the “future” object. The program will not continue past the <code class="docutils literal notranslate"><span class="pre">get</span></code> call until the results of the remote function are returned.</p>
@@ -496,7 +511,7 @@
 </div>
 </section>
 <section id="The-two-subcircuits-produced">
-<h3>The two subcircuits produced<a class="headerlink" href="#The-two-subcircuits-produced" title="Permalink to this heading">#</a></h3>
+<h3>The two subcircuits produced<a class="headerlink" href="#The-two-subcircuits-produced" title="Link to this heading">#</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -534,9 +549,9 @@
 </section>
 </section>
 <section id="Evaluate-the-subcircuits">
-<h2>Evaluate the subcircuits<a class="headerlink" href="#Evaluate-the-subcircuits" title="Permalink to this heading">#</a></h2>
+<h2>Evaluate the subcircuits<a class="headerlink" href="#Evaluate-the-subcircuits" title="Link to this heading">#</a></h2>
 <section id="Use-quantum-serverless-to-send-the-evaluate_subcircuits-method-to-a-remote-cluster">
-<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">evaluate_subcircuits</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-evaluate_subcircuits-method-to-a-remote-cluster" title="Permalink to this heading">#</a></h3>
+<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">evaluate_subcircuits</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-evaluate_subcircuits-method-to-a-remote-cluster" title="Link to this heading">#</a></h3>
 <p>Here we create a wrapper function for the <code class="docutils literal notranslate"><span class="pre">evaluate_subcircuits</span></code> function and annotate it with the <code class="docutils literal notranslate"><span class="pre">&#64;run_qiskit_remote()</span></code> decorator from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code>. This allows us to call this function from a serverless context and have it sent for remote execution on the specified cluster.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -565,7 +580,7 @@
 </div>
 </section>
 <section id="Set-up-the-Qiskit-Runtime-Service">
-<h3>Set up the Qiskit Runtime Service<a class="headerlink" href="#Set-up-the-Qiskit-Runtime-Service" title="Permalink to this heading">#</a></h3>
+<h3>Set up the Qiskit Runtime Service<a class="headerlink" href="#Set-up-the-Qiskit-Runtime-Service" title="Link to this heading">#</a></h3>
 <p>The Qiskit Runtime Service provides access to IBM Runtime Primitives and quantum backends. See the <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/">Qiskit Runtime documentation</a> for more information. Alternatively, a local statevector simulator can be used with the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -583,7 +598,7 @@
 </div>
 </section>
 <section id="Configure-the-Qiskit-Runtime-Primitive">
-<h3>Configure the Qiskit Runtime Primitive<a class="headerlink" href="#Configure-the-Qiskit-Runtime-Primitive" title="Permalink to this heading">#</a></h3>
+<h3>Configure the Qiskit Runtime Primitive<a class="headerlink" href="#Configure-the-Qiskit-Runtime-Primitive" title="Link to this heading">#</a></h3>
 <p>The wire cutter tool uses a <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> primitive to evaluate the probabilities of each subcircuit. Here, we configure the options for the Runtime Sampler and specify the backend(s) to be used to evaluate the subcircuits. Backends could be <a class="reference external" href="https://quantum-computing.ibm.com/services/resources?tab=systems">simulator(s) and/or quantum device(s)</a>. In this tutorial, two local cores will be used to support each of the parallel backend threads we’ll specify below.</p>
 <p>If no service was set up, the <code class="docutils literal notranslate"><span class="pre">backend_names</span></code> argument will be ignored, and Qiskit Primitives will be used with statevector simulator.</p>
 <div class="nbinput nblast docutils container">
@@ -600,7 +615,7 @@
 </div>
 </section>
 <section id="Evaluate-the-subcircuits-on-the-quantum-backend(s)">
-<h3>Evaluate the subcircuits on the quantum backend(s)<a class="headerlink" href="#Evaluate-the-subcircuits-on-the-quantum-backend(s)" title="Permalink to this heading">#</a></h3>
+<h3>Evaluate the subcircuits on the quantum backend(s)<a class="headerlink" href="#Evaluate-the-subcircuits-on-the-quantum-backend(s)" title="Link to this heading">#</a></h3>
 <p>We will call the <code class="docutils literal notranslate"><span class="pre">evaluate_subcircuits_remote</span></code> function within a <code class="docutils literal notranslate"><span class="pre">QuantumServerless</span></code> context, which means it will be run on the specified cluster. Remember, our local CPU is the default cluster for this demo. To specify a new cluster, the <code class="docutils literal notranslate"><span class="pre">QuantumServerless.set_provider</span></code> method should be used.</p>
 <p>When the remote function is called, it will return a “future” object, and Python will continue interpreting the next line of code. The <code class="docutils literal notranslate"><span class="pre">get</span></code> function from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> is a blocking command which should be used to retrieve the results of the remote function via the “future” object. The program will not continue past the <code class="docutils literal notranslate"><span class="pre">get</span></code> call until the results of the remote function are returned.</p>
 <div class="nbinput nblast docutils container">
@@ -629,9 +644,9 @@
 </section>
 </section>
 <section id="Reconstruct-the-full-circuit-output">
-<h2>Reconstruct the full circuit output<a class="headerlink" href="#Reconstruct-the-full-circuit-output" title="Permalink to this heading">#</a></h2>
+<h2>Reconstruct the full circuit output<a class="headerlink" href="#Reconstruct-the-full-circuit-output" title="Link to this heading">#</a></h2>
 <section id="Use-quantum-serverless-to-send-the-reconstruct_full_distribution-method-to-a-remote-cluster">
-<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">reconstruct_full_distribution</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-reconstruct_full_distribution-method-to-a-remote-cluster" title="Permalink to this heading">#</a></h3>
+<h3>Use <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> to send the <code class="docutils literal notranslate"><span class="pre">reconstruct_full_distribution</span></code> method to a remote cluster<a class="headerlink" href="#Use-quantum-serverless-to-send-the-reconstruct_full_distribution-method-to-a-remote-cluster" title="Link to this heading">#</a></h3>
 <p>Next, the results of the subcircuit experiments are classically postprocessed to reconstruct the original circuit’s full probability distribution.</p>
 <p>Here, we create a wrapper function for the <code class="docutils literal notranslate"><span class="pre">reconstruct_full_distribution</span></code> function and annotate it with the <code class="docutils literal notranslate"><span class="pre">&#64;run_qiskit_remote()</span></code> decorator from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code>. This allows us to call this function from a serverless context and have it sent for remote execution on the specified cluster.</p>
 <div class="nbinput nblast docutils container">
@@ -658,7 +673,7 @@
 </div>
 </section>
 <section id="Reconstruct-the-output">
-<h3>Reconstruct the output<a class="headerlink" href="#Reconstruct-the-output" title="Permalink to this heading">#</a></h3>
+<h3>Reconstruct the output<a class="headerlink" href="#Reconstruct-the-output" title="Link to this heading">#</a></h3>
 <p>We will call the <code class="docutils literal notranslate"><span class="pre">reconstruct_full_distribution_remote</span></code> function within a <code class="docutils literal notranslate"><span class="pre">QuantumServerless</span></code> context, which means it will be run on the specified cluster. Remember, our local CPU is the default cluster for this demo. To specify a new cluster, the <code class="docutils literal notranslate"><span class="pre">QuantumServerless.set_provider</span></code> method should be used.</p>
 <p>When the remote function is called, it will return a “future” object, and Python will continue interpreting the next line of code. The <code class="docutils literal notranslate"><span class="pre">get</span></code> function from <code class="docutils literal notranslate"><span class="pre">quantum-serverless</span></code> is a blocking command which should be used to retrieve the results of the remote function via the “future” object. The program will not continue past the <code class="docutils literal notranslate"><span class="pre">get</span></code> call until the results of the remote function are returned.</p>
 <div class="nbinput nblast docutils container">
@@ -678,7 +693,7 @@
 </section>
 </section>
 <section id="Verify-the-results">
-<h2>Verify the results<a class="headerlink" href="#Verify-the-results" title="Permalink to this heading">#</a></h2>
+<h2>Verify the results<a class="headerlink" href="#Verify-the-results" title="Link to this heading">#</a></h2>
 <p>If the original circuit is small enough, we can use a statevector simulator to check the results of cutting against the original circuit’s exact probability distribution (ground truth).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -691,7 +706,7 @@
 </div>
 </div>
 <section id="The-verify-step-includes-several-metrics">
-<h3>The verify step includes several metrics<a class="headerlink" href="#The-verify-step-includes-several-metrics" title="Permalink to this heading">#</a></h3>
+<h3>The verify step includes several metrics<a class="headerlink" href="#The-verify-step-includes-several-metrics" title="Link to this heading">#</a></h3>
 <p>For example, the chi square loss is computed. Since we’re using the Qiskit Sampler with statevector simulator, we expect the reconstructed distributed to exactly match the ground truth. More info about each metric can be found in the <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/circuit_knitting/utils/metrics.py">utils metrics file</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -721,7 +736,7 @@
 </div>
 </section>
 <section id="Visualize-both-distributions">
-<h3>Visualize both distributions<a class="headerlink" href="#Visualize-both-distributions" title="Permalink to this heading">#</a></h3>
+<h3>Visualize both distributions<a class="headerlink" href="#Visualize-both-distributions" title="Link to this heading">#</a></h3>
 <p>If we calculated the ground truth above, we can visualize a comparison to the reconstructed probabilities</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -891,9 +906,9 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c02300dd"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

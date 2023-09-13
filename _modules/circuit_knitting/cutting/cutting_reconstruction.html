@@ -4,17 +4,17 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.3.0</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.4.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.3.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.3.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -216,6 +230,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.partition_problem.html">circuit_knitting.cutting.partition_problem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.cut_gates.html">circuit_knitting.cutting.cut_gates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.decompose_gates.html">circuit_knitting.cutting.decompose_gates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.generate_cutting_experiments.html">circuit_knitting.cutting.generate_cutting_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.execute_experiments.html">circuit_knitting.cutting.execute_experiments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html">circuit_knitting.cutting.reconstruct_expectation_values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
@@ -323,11 +338,11 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Hashable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
-<span class="kn">from</span> <span class="nn">qiskit.result</span> <span class="kn">import</span> <span class="n">QuasiDistribution</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">SamplerResult</span>
 
 <span class="kn">from</span> <span class="nn">..utils.observable_grouping</span> <span class="kn">import</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">ObservableCollection</span>
 <span class="kn">from</span> <span class="nn">..utils.bitwise</span> <span class="kn">import</span> <span class="n">bit_count</span>
@@ -335,50 +350,73 @@
 <span class="kn">from</span> <span class="nn">.qpd</span> <span class="kn">import</span> <span class="n">WeightType</span>
 
 
-<div class="viewcode-block" id="reconstruct_expectation_values"><a class="viewcode-back" href="../../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values">[docs]</a><span class="k">def</span> <span class="nf">reconstruct_expectation_values</span><span class="p">(</span>
-    <span class="n">quasi_dists</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">QuasiDistribution</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]],</span>
+<div class="viewcode-block" id="reconstruct_expectation_values">
+<a class="viewcode-back" href="../../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values">[docs]</a>
+<span class="k">def</span> <span class="nf">reconstruct_expectation_values</span><span class="p">(</span>
+    <span class="n">results</span><span class="p">:</span> <span class="n">SamplerResult</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">],</span>
     <span class="n">coefficients</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]],</span>
-    <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">],</span>
+    <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reconstruct an expectation value from the results of the sub-experiments.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and</span>
-<span class="sd">            QPD bit information from each sub-experiment. Its expected shape is</span>
-<span class="sd">            (num_unique_samples, num_partitions, num_commuting_observ_groups)</span>
-<span class="sd">        coefficients: A sequence of coefficients, such that each coefficient is associated</span>
-<span class="sd">            with one unique sample. The length of ``coefficients`` should equal</span>
-<span class="sd">            the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical</span>
-<span class="sd">            value and the ``WeightType`` denoting how the value was generated.</span>
+<span class="sd">        results: The results from running the cutting subexperiments. If the cut circuit</span>
+<span class="sd">            was not partitioned between qubits and run separately, this argument should be</span>
+<span class="sd">            a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping</span>
+<span class="sd">            a single partition to the results. If the circuit was partitioned and its</span>
+<span class="sd">            pieces were run separately, this argument should be a dictionary mapping partition labels</span>
+<span class="sd">            to the results from each partition&#39;s subexperiments.</span>
+
+<span class="sd">            The subexperiment results are expected to be ordered in the same way the subexperiments</span>
+<span class="sd">            are ordered in the output of :func:`.generate_cutting_experiments` -- one result for every</span>
+<span class="sd">            sample and observable, as shown below. The Qiskit Sampler primitive will return the results</span>
+<span class="sd">            in the same order the experiments are submitted, so users who do not use :func:`.generate_cutting_experiments`</span>
+<span class="sd">            to generate their experiments should take care to order their subexperiments as follows before submitting them</span>
+<span class="sd">            to the sampler primitive:</span>
+
+<span class="sd">            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`</span>
+
+<span class="sd">        coefficients: A sequence containing the coefficient associated with each unique subexperiment. Each element is a tuple</span>
+<span class="sd">            containing the coefficient (a ``float``) together with its :class:`.WeightType`, which denotes</span>
+<span class="sd">            how the value was generated. The contribution from each subexperiment will be multiplied by</span>
+<span class="sd">            its corresponding coefficient, and the resulting terms will be summed to obtain the reconstructed expectation value.</span>
 <span class="sd">        observables: The observable(s) for which the expectation values will be calculated.</span>
-<span class="sd">            This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit</span>
-<span class="sd">            was not separated into subcircuits. If the decomposed circuit was separated, this</span>
-<span class="sd">            should be a dictionary mapping from partition label to subobservables.</span>
+<span class="sd">            This should be a :class:`~qiskit.quantum_info.PauliList` if ``results`` is a</span>
+<span class="sd">            :class:`~qiskit.primitives.SamplerResult` instance. Otherwise, it should be a</span>
+<span class="sd">            dictionary mapping partition labels to the observables associated with that partition.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        A ``list`` of ``float``\ s, such that each float is a simulated expectation</span>
+<span class="sd">        A ``list`` of ``float``\ s, such that each float is an expectation</span>
 <span class="sd">        value corresponding to the input observable in the same position</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.</span>
+<span class="sd">        ValueError: ``observables`` and ``results`` are of incompatible types.</span>
 <span class="sd">        ValueError: An input observable has a phase not equal to 1.</span>
+<span class="sd">        ValueError: ``num_qpd_bits`` must be set for all result metadata dictionaries.</span>
+<span class="sd">        TypeError: ``num_qpd_bits`` must be an integer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coefficients</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">quasi_dists</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The number of unique samples in the quasi_dists list (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">quasi_dists</span><span class="p">)</span><span class="si">}</span><span class="s2">) does &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;not equal the number of coefficients (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coefficients</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="s2">&quot;If observables is a PauliList, results must be a SamplerResult instance.&quot;</span>
         <span class="p">)</span>
-    <span class="c1"># Create the commuting observable groups</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;If observables is a dictionary, results must also be a dictionary.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># If circuit was not separated, transform input data structures to dictionary format</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">phase</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observables</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An input observable has a phase not equal to 1.&quot;</span><span class="p">)</span>
         <span class="n">subobservables_by_subsystem</span> <span class="o">=</span> <span class="n">decompose_observables</span><span class="p">(</span>
             <span class="n">observables</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">observables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="p">)</span>
+        <span class="n">results_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
         <span class="n">expvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">observables</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">results_dict</span> <span class="o">=</span> <span class="n">results</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subobservable</span> <span class="ow">in</span> <span class="n">observables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">phase</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">subobservable</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;An input observable has a phase not equal to 1.&quot;</span><span class="p">)</span>
@@ -390,21 +428,31 @@
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subobservables</span> <span class="ow">in</span> <span class="n">subobservables_by_subsystem</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
 
-    <span class="c1"># Assign each weight&#39;s sign and calculate the expectation values for each observable</span>
+    <span class="c1"># Reconstruct the expectation values</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coefficients</span><span class="p">):</span>
-        <span class="n">sorted_subsystems</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">subsystem_observables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>  <span class="c1"># type: ignore</span>
         <span class="n">current_expvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">expvals</span><span class="p">),))</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_subsystems</span><span class="p">):</span>
-            <span class="n">so</span> <span class="o">=</span> <span class="n">subsystem_observables</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">so</span> <span class="ow">in</span> <span class="n">subsystem_observables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">subsystem_expvals</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">commuting_observables</span><span class="p">))</span> <span class="k">for</span> <span class="n">cog</span> <span class="ow">in</span> <span class="n">so</span><span class="o">.</span><span class="n">groups</span>
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">cog</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-                <span class="n">quasi_probs</span> <span class="o">=</span> <span class="n">quasi_dists</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">quasi_probs</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quasi_prob</span> <span class="ow">in</span> <span class="n">quasi_probs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span>
-                        <span class="n">quasi_dists</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">cog</span><span class="p">,</span> <span class="n">outcome</span>
-                    <span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">num_qpd_bits</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span>
+                            <span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span>
+                        <span class="p">][</span><span class="s2">&quot;num_qpd_bits&quot;</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;The num_qpd_bits field must be set in each subexperiment &quot;</span>
+                            <span class="s2">&quot;result metadata dictionary.&quot;</span>
+                        <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span>
+                            <span class="n">num_qpd_bits</span><span class="p">,</span>
+                            <span class="n">cog</span><span class="p">,</span>
+                            <span class="n">outcome</span><span class="p">,</span>
+                        <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">subobservable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subobservables_by_subsystem</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
                 <span class="n">current_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
@@ -414,6 +462,7 @@
         <span class="n">expvals</span> <span class="o">+=</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">current_expvals</span>
 
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">expvals</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_process_outcome</span><span class="p">(</span>
@@ -436,7 +485,13 @@
 <span class="sd">        and each result will be either +1 or -1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">outcome</span> <span class="o">=</span> <span class="n">_outcome_to_int</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-    <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_qpd_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_qpd_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_qpd_bits must be an integer, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">num_qpd_bits</span><span class="p">)</span><span class="si">}</span><span class="s2"> was passed.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+
     <span class="n">meas_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&gt;&gt;</span> <span class="n">num_qpd_bits</span>
 
     <span class="c1"># qpd_factor will be -1 or +1, depending on the overall parity of qpd</span>
@@ -501,9 +556,9 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=c02300dd"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/thebelab-helper.js"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
