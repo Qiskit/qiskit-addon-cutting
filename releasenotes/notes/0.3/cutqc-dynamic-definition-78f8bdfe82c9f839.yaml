@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Dynamic Definition code has been added to the
+    :mod:`~circuit_knitting.cutting.cutqc` module.
+    See pull request `#285 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/pull/285>`__
+    for details.

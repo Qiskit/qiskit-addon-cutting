@@ -10,13 +10,16 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Test for the transform_to_move function."""
+"""Tests for single qubit wire cutting functions."""
 from __future__ import annotations
 
-from pytest import fixture, mark
+from pytest import fixture, mark, raises
 from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
+from qiskit.quantum_info import PauliList
 from circuit_knitting.cutting.instructions import Move, CutWire
-from circuit_knitting.cutting import transform_cuts_to_moves
+from circuit_knitting.cutting.qpd.instructions import TwoQubitQPDGate
+from circuit_knitting.cutting import cut_wires, expand_observables
+from circuit_knitting.cutting.wire_cutting_transforms import _transform_cuts_to_moves
 
 
 @fixture
@@ -206,7 +209,7 @@ def resulting_circuit4() -> tuple[QuantumCircuit, list[int]]:
 )
 def test_transform_cuts_to_moves(request, sample_circuit, resulting_circuit):
     """Tests the transformation of CutWire to Move instruction."""
-    assert request.getfixturevalue(resulting_circuit)[0] == transform_cuts_to_moves(
+    assert request.getfixturevalue(resulting_circuit)[0] == _transform_cuts_to_moves(
         request.getfixturevalue(sample_circuit)
     )
 
@@ -225,7 +228,7 @@ def test_circuit_mapping(request, sample_circuit, resulting_circuit):
     sample_circuit = request.getfixturevalue(sample_circuit)
     resulting_mapping = request.getfixturevalue(resulting_circuit)[1]
 
-    final_circuit = transform_cuts_to_moves(sample_circuit)
+    final_circuit = _transform_cuts_to_moves(sample_circuit)
     final_mapping = [
         final_circuit.find_bit(qubit).index for qubit in sample_circuit.qubits
     ]
@@ -248,7 +251,7 @@ def test_circuit_mapping(request, sample_circuit, resulting_circuit):
 def test_qreg_name_num(request, sample_circuit):
     """Tests the number and name of qregs in initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_cuts_to_moves(sample_circuit)
+    final_circuit = _transform_cuts_to_moves(sample_circuit)
 
     # Tests number of qregs in initial and final circuits
     assert len(sample_circuit.qregs) == len(final_circuit.qregs)
@@ -272,7 +275,7 @@ def test_qreg_name_num(request, sample_circuit):
 def test_qreg_size(request, sample_circuit):
     """Tests the size of qregs in initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_cuts_to_moves(sample_circuit)
+    final_circuit = _transform_cuts_to_moves(sample_circuit)
 
     # Tests size of qregs in initial and final circuits
     for sample_qreg, final_qreg in zip(
@@ -294,7 +297,7 @@ def test_qreg_size(request, sample_circuit):
 def test_circuit_width(request, sample_circuit):
     """Tests the width of the initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_cuts_to_moves(sample_circuit)
+    final_circuit = _transform_cuts_to_moves(sample_circuit)
     total_cut_wire = len(sample_circuit.get_instructions("cut_wire"))
 
     # Tests width of initial and final circuit
@@ -313,7 +316,7 @@ def test_circuit_width(request, sample_circuit):
 def test_creg(request, sample_circuit):
     """Tests the number and size of cregs in the initial and final circuits."""
     sample_circuit = request.getfixturevalue(sample_circuit)
-    final_circuit = transform_cuts_to_moves(sample_circuit)
+    final_circuit = _transform_cuts_to_moves(sample_circuit)
 
     # Tests number of cregs in initial and final circuits
     assert len(sample_circuit.cregs) == len(final_circuit.cregs)
@@ -323,3 +326,88 @@ def test_creg(request, sample_circuit):
         final_circuit.cregs,
     ):
         assert sample_creg.size == final_creg.size
+
+
+def test_cut_wires():
+    qc = QuantumCircuit(2)
+    qc.h(0)
+    qc.h(1)
+    qc.append(CutWire(), [1])
+    qc.s(0)
+    qc.s(1)
+    qc_out = cut_wires(qc)
+    qpd_gate = qc_out.data[2].operation
+    assert isinstance(qpd_gate, TwoQubitQPDGate)
+    assert qpd_gate.label == "cut_move"
+
+
+class TestExpandObservables:
+    def test_expand_observables(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit()
+        qc1.add_bits(
+            [
+                qc0.qubits[0],
+                Qubit(),
+                Qubit(),
+                qc0.qubits[1],
+                qc0.qubits[2],
+                Qubit(),
+            ]
+        )
+        observables_in = PauliList(
+            [
+                "XYZ",
+                "iIXZ",
+                "-YYZ",
+                "-iZZZ",
+            ]
+        )
+        observables_expected = PauliList(
+            [
+                "IXYIIZ",
+                "iIIXIIZ",
+                "-IYYIIZ",
+                "-iIZZIIZ",
+            ]
+        )
+        observables_out = expand_observables(observables_in, qc0, qc1)
+        assert observables_out == observables_expected
+
+    def test_with_zero_qubits(self):
+        qc0 = QuantumCircuit()
+        qc1 = QuantumCircuit(3)
+        observables_in = PauliList(["", ""])
+        observables_expected = PauliList(["III"] * 2)
+        observables_out = expand_observables(observables_in, qc0, qc1)
+        assert observables_out == observables_expected
+
+    def test_with_mismatched_qubit_count(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit(4)
+        obs = PauliList(["IZIZ"])
+        with raises(ValueError) as e_info:
+            expand_observables(obs, qc0, qc1)
+        assert (
+            e_info.value.args[0]
+            == "The `observables` and `original_circuit` must have the same number of qubits. (4 != 3)"
+        )
+
+    def test_with_non_subset(self):
+        qc0 = QuantumCircuit(3)
+        qc1 = QuantumCircuit()
+        qc1.add_bits(
+            [
+                qc0.qubits[0],
+                Qubit(),
+                qc0.qubits[1],
+                Qubit(),
+            ]
+        )
+        obs = PauliList(["IZZ"])
+        with raises(ValueError) as e_info:
+            expand_observables(obs, qc0, qc1)
+        assert (
+            e_info.value.args[0]
+            == "The 2-th qubit of the `original_circuit` cannot be found in the `final_circuit`."
+        )

@@ -40,9 +40,9 @@ class TestCuttingDecomposition(unittest.TestCase):
         circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
         qpd_circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
 
-        # We will instantiate 2 QPDBasis objects using from_gate
+        # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)
-        rxx_decomp = QPDBasis.from_gate(rxx_gate)
+        rxx_decomp = QPDBasis.from_instruction(rxx_gate)
 
         # Create two QPDGates and specify each of their bases
         # Labels are only used for visualizations
@@ -210,7 +210,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 partition_problem(circuit, partition_labels, observables=observable)
             assert (
                 e_info.value.args[0]
-                == "Circuits input to execute_experiments should contain no classical registers or bits."
+                == "Circuits input to partition_problem should contain no classical registers or bits."
             )
         with self.subTest("Unsupported phase"):
             # Split 4q HWEA in middle of qubits
@@ -232,9 +232,9 @@ class TestCuttingDecomposition(unittest.TestCase):
             qc.rx(np.pi / 4, 1)
             qc.rx(np.pi / 4, 3)
             qc.cx(0, 1)
-            qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [1, 2])
+            qc.append(TwoQubitQPDGate(QPDBasis.from_instruction(Move())), [1, 2])
             qc.cx(2, 3)
-            qc.append(TwoQubitQPDGate(QPDBasis.from_gate(Move())), [2, 1])
+            qc.append(TwoQubitQPDGate(QPDBasis.from_instruction(Move())), [2, 1])
             qc.cx(0, 1)
             subcircuits, bases, subobservables = partition_problem(
                 qc, "AABB", observables=PauliList(["IZIZ"])
@@ -260,12 +260,7 @@ class TestCuttingDecomposition(unittest.TestCase):
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
             compare_qc = QuantumCircuit(2)
-            compare_qc.append(
-                CircuitInstruction(
-                    TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
-                    qubits=[0, 1],
-                )
-            )
+            compare_qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [0, 1])
 
             qc = QuantumCircuit(2)
             qc.cx(0, 1)
@@ -278,7 +273,7 @@ class TestCuttingDecomposition(unittest.TestCase):
                 cut_gates(qc, [0])
             assert (
                 e_info.value.args[0]
-                == "Circuits input to execute_experiments should contain no classical registers or bits."
+                == "Circuits input to cut_gates should contain no classical registers or bits."
             )
 
     def test_unused_qubits(self):
