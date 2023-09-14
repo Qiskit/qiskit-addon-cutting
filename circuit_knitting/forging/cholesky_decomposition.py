@@ -30,6 +30,10 @@ from qiskit_nature.second_q.operators.tensor_ordering import (
     to_chemist_ordering,
     to_physicist_ordering,
 )
+from qiskit_nature.second_q.operators.symmetric_two_body import (
+    SymmetricTwoBodyIntegrals,
+    unfold,
+)
 
 from .entanglement_forging_ansatz import EntanglementForgingAnsatz
 from .entanglement_forging_operator import EntanglementForgingOperator
@@ -84,6 +88,10 @@ def cholesky_decomposition(
     eri = to_chemist_ordering(
         problem.hamiltonian.electronic_integrals.two_body.alpha["++--"]
     )
+    if isinstance(hcore, SymmetricTwoBodyIntegrals):
+        hcore = unfold(hcore)
+    if isinstance(eri, SymmetricTwoBodyIntegrals):
+        eri = unfold(eri)
     num_alpha = problem.num_alpha
     if num_alpha is None:
         raise ValueError(
