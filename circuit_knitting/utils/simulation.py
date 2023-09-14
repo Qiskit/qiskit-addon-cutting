@@ -152,7 +152,7 @@ class ExactSampler(BaseSampler):
         self,
         circuits: tuple[QuantumCircuit, ...],
         parameter_values: Sequence[Sequence[float]],
-        **run_options,
+        **ignored_run_options,
     ) -> SamplerResult:
         metadata: list[dict[str, Any]] = [{} for _ in range(len(circuits))]
         bound_circuits = [
