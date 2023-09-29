@@ -276,14 +276,21 @@ def _append_measurement_circuit(
     if not inplace:
         qc = qc.copy()
 
+    # If the circuit has no measurements, the Sampler will fail.  So, we
+    # measure one qubit as a temporary workaround to
+    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422
+    pauli_indices = cog.pauli_indices
+    if not pauli_indices:
+        pauli_indices = [0]
+
     # Append the appropriate measurements to qc
-    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
+    obs_creg = ClassicalRegister(len(pauli_indices), name="observable_measurements")
     qc.add_register(obs_creg)
     # Implement the necessary basis rotations and measurements, as
     # in BackendEstimator._measurement_circuit().
     genobs_x = cog.general_observable.x
     genobs_z = cog.general_observable.z
-    for clbit, subqubit in enumerate(cog.pauli_indices):
+    for clbit, subqubit in enumerate(pauli_indices):
         # subqubit is the index of the qubit in the subsystem.
         # actual_qubit is its index in the system of interest (if different).
         actual_qubit = qubit_locations[subqubit]
