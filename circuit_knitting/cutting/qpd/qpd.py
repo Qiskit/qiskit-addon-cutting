@@ -858,7 +858,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     # https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf
     if gate.name in ("rxx", "crx"):
         pauli = XGate()
-        r_plus = RXGate(0.5 * np.pi)
+        r_plus = SXGate()
         # x basis measurement (and back again)
         measurement_0 = [HGate(), QPDMeasure(), HGate()]
     elif gate.name in ("ryy", "cry"):
@@ -869,7 +869,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
     else:
         assert gate.name in ("rzz", "crz")
         pauli = ZGate()
-        r_plus = RZGate(0.5 * np.pi)
+        r_plus = SGate()
         # z basis measurement
         measurement_0 = [QPDMeasure()]
 
@@ -901,7 +901,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
                     operations.append(SdgGate())
                 operations.insert(0, HGate())
                 operations.append(HGate())
-        rot = type(r_plus)(-theta)
+        rot = {"x": RXGate, "y": RYGate, "z": RZGate}[gate.name[2]](-theta)
         for operations in unique_by_id(m[1] for m in maps):
             operations.append(rot)
 
