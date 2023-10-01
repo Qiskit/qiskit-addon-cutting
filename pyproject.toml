@@ -73,7 +73,7 @@ lint = [
     "pydocstyle==6.3.0",
     "mypy==1.5.1",
     "reno>=3.4.0",
-    "pylint==2.17.5",
+    "pylint==2.17.7",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
     "toml",
 ]
