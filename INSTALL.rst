@@ -182,7 +182,8 @@ take care when installing the toolbox, depending on which tools they
 intend to use.
   
   - The automatic wire cut search in the ``cutqc`` package depends
-    on CPLEX, which is only available on Intel chips.
+    on CPLEX, which is only available on Intel chips and is not yet available
+    for Python 3.12.
   - The entanglement forging tool requires PySCF, which does not support Windows.
 
 In each case, one method that is guaranteed to work is to :ref:`use
