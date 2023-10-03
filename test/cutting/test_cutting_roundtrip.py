@@ -42,6 +42,7 @@ from qiskit.circuit.library.standard_gates import (
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
+from qiskit_aer.primitives import Sampler
 
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
@@ -146,6 +147,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
     phases = np.array([(-1j) ** obs.phase for obs in observables])
     observables_nophase = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
+    
 
     estimator = Estimator()
     exact_expvals = (
@@ -179,3 +181,30 @@ def test_cutting_exact_reconstruction(example_circuit):
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))
 
     assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)
+
+
+def test_sampler_fail(example_circuit):
+
+""" This test checks if the sampler throws an error if you pass it a subscircuit with no measurements. Tests temporary workaround to Issue #422. 
+    This test passes if no exceptions are raised.
+"""
+
+    qc=example_circuit
+    observable_to_test=PauliList(["IIZ"]) #Without the workaround to Issue #422, this throws a Sampler error.
+    sampler=Sampler()
+    subcircuits, bases, subobservables = partition_problem(
+       qc, "AAB", observables=observable_to_test
+    )
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
+    )
+    samplers = {
+    label: Sampler() for label in subexperiments.keys()
+    }
+    results = {
+    label: sampler.run(subexperiments[label]).result()
+    for label, sampler in samplers.items()
+    }
+    _=results
+
+
