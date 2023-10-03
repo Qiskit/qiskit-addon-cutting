@@ -731,7 +731,7 @@ def _nonlocal_qpd_basis_from_u(
     #
     # Projective measurements in each basis
     A0x = [HGate(), QPDMeasure(), HGate()]
-    A0y = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+    A0y = [SXGate(), QPDMeasure(), SXdgGate()]
     A0z = [QPDMeasure()]
     # Single qubit rotations that swap two axes.  There are "plus" and "minus"
     # versions of these rotations.  The "minus" rotations also flip the sign
@@ -865,7 +865,7 @@ def _(gate: RXXGate | RYYGate | RZZGate | CRXGate | CRYGate | CRZGate):
         pauli = YGate()
         r_plus = RYGate(0.5 * np.pi)
         # y basis measurement (and back again)
-        measurement_0 = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+        measurement_0 = [SXGate(), QPDMeasure(), SXdgGate()]
     else:
         assert gate.name in ("rzz", "crz")
         pauli = ZGate()
@@ -1035,15 +1035,15 @@ def _theta_from_instruction(gate: Gate, /) -> float:
 def _(gate: Move):
     i_measurement = [Reset()]
     x_measurement = [HGate(), QPDMeasure(), Reset()]
-    y_measurement = [SdgGate(), HGate(), QPDMeasure(), Reset()]
+    y_measurement = [SXGate(), QPDMeasure(), Reset()]
     z_measurement = [QPDMeasure(), Reset()]
 
     prep_0 = [Reset()]
     prep_1 = [Reset(), XGate()]
     prep_plus = [Reset(), HGate()]
     prep_minus = [Reset(), XGate(), HGate()]
-    prep_iplus = [Reset(), HGate(), SGate()]
-    prep_iminus = [Reset(), XGate(), HGate(), SGate()]
+    prep_iplus = [Reset(), SXdgGate()]
+    prep_iminus = [Reset(), XGate(), SXdgGate()]
 
     # https://arxiv.org/abs/1904.00102v2 Eqs. (12)-(19)
     maps1, maps2, coeffs = zip(
