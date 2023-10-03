@@ -294,6 +294,7 @@ def _append_measurement_circuit(
             else:
                 # Rotate X basis to Z basis
                 qc.h(actual_qubit)
+        # Measure in Z basis
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc
