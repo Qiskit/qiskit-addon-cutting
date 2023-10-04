@@ -147,7 +147,6 @@ def test_cutting_exact_reconstruction(example_circuit):
     observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
     phases = np.array([(-1j) ** obs.phase for obs in observables])
     observables_nophase = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
-    
 
     estimator = Estimator()
     exact_expvals = (
@@ -184,27 +183,25 @@ def test_cutting_exact_reconstruction(example_circuit):
 
 
 def test_sampler_fail(example_circuit):
+    """This test checks if the sampler throws an error if you pass it a subscircuit with no measurements. Tests temporary workaround to Issue #422.
 
-""" This test checks if the sampler throws an error if you pass it a subscircuit with no measurements. Tests temporary workaround to Issue #422. 
     This test passes if no exceptions are raised.
-"""
 
-    qc=example_circuit
-    observable_to_test=PauliList(["IIZ"]) #Without the workaround to Issue #422, this throws a Sampler error.
-    sampler=Sampler()
+    """
+
+    qc = example_circuit
+    observable_to_test = PauliList(
+        ["IIZ"]
+    )  # Without the workaround to Issue #422, this throws a Sampler error.
     subcircuits, bases, subobservables = partition_problem(
-       qc, "AAB", observables=observable_to_test
+        qc, "AAB", observables=observable_to_test
     )
     subexperiments, coefficients = generate_cutting_experiments(
         subcircuits, subobservables, num_samples=np.inf
     )
-    samplers = {
-    label: Sampler() for label in subexperiments.keys()
-    }
+    samplers = {label: Sampler() for label in subexperiments.keys()}
     results = {
-    label: sampler.run(subexperiments[label]).result()
-    for label, sampler in samplers.items()
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
     }
-    _=results
-
-
+    _ = results
