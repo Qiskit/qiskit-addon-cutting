@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="circuit_knitting.forging.EntanglementForgingOperator" href="circuit_knitting.forging.EntanglementForgingOperator.html" /><link rel="prev" title="Entanglement Forging" href="../apidocs/entanglement_forging.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
         <title>circuit_knitting.forging.EntanglementForgingKnitter - Circuit Knitting Toolbox 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
@@ -346,12 +346,12 @@ ansatz parameters and Schmidt coefficients.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting.forging.EntanglementForgingAnsatz.html#circuit_knitting.forging.EntanglementForgingAnsatz" title="circuit_knitting.forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a>) – The container for the circuit structure and bitstrings to be used
 (and generate the stateprep circuits)</p></li>
-<li><p><strong>fixed_hf_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><em>None</em>) – This value will be used instead of calculating the Hartree-Fock energy.
+<li><p><strong>fixed_hf_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><em>None</em>) – This value will be used instead of calculating the Hartree-Fock energy.
 This value should represent the Hartree-Fock energy shifted by the nuclear repulsion energy.
 The HF energy needs to be shifted in order to be used in the Schmidt matrix.</p></li>
 <li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
-<li><p><strong>backend_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
-<li><p><strong>options</strong> (<em>Options</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
+<li><p><strong>backend_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -367,12 +367,12 @@ The HF energy needs to be shifted in order to be used in the Schmidt matrix.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ansatz</strong> (<a class="reference internal" href="circuit_knitting.forging.EntanglementForgingAnsatz.html#circuit_knitting.forging.EntanglementForgingAnsatz" title="circuit_knitting.forging.EntanglementForgingAnsatz"><em>EntanglementForgingAnsatz</em></a>) – The container for the circuit structure and bitstrings to be used
 (and generate the stateprep circuits)</p></li>
-<li><p><strong>fixed_hf_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><em>None</em>) – This value will be used instead of calculating the Hartree-Fock energy.
+<li><p><strong>fixed_hf_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> | </em><em>None</em>) – This value will be used instead of calculating the Hartree-Fock energy.
 This value should represent the Hartree-Fock energy shifted by the nuclear repulsion energy.
 The HF energy needs to be shifted in order to be used in the Schmidt matrix.</p></li>
 <li><p><strong>service</strong> (<em>QiskitRuntimeService</em><em> | </em><em>None</em>) – The service used to spawn Qiskit primitives and runtime jobs</p></li>
-<li><p><strong>backend_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
-<li><p><strong>options</strong> (<em>Options</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
+<li><p><strong>backend_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Names of the backends to use for calculating expectation values</p></li>
+<li><p><strong>options</strong> (<em>Options</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><em>Options</em><em>] </em><em>| </em><em>None</em>) – Options to use with the backends</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

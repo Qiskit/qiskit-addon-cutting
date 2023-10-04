@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="circuit_knitting.cutting.qpd.qpdbasis_from_instruction" href="circuit_knitting.cutting.qpd.qpdbasis_from_instruction.html" /><link rel="prev" title="circuit_knitting.cutting.qpd.generate_qpd_samples" href="circuit_knitting.cutting.qpd.generate_qpd_samples.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
         <title>circuit_knitting.cutting.qpd.decompose_qpd_instructions - Circuit Knitting Toolbox 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
@@ -341,10 +341,10 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>circuit</strong> (<em>QuantumCircuit</em>) – The circuit containing QPD instructions</p></li>
-<li><p><strong>instruction_ids</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em><em>]</em>) – A 2D sequence, such that each inner sequence corresponds to indices
+<li><p><strong>instruction_ids</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>]</em><em>]</em>) – A 2D sequence, such that each inner sequence corresponds to indices
 of instructions comprising one decomposition in the circuit. The elements within a
 common sequence belong to a common decomposition and should be sampled together.</p></li>
-<li><p><strong>map_ids</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>] </em><em>| </em><em>None</em>) – Indices to a specific linear mapping to be applied to the decompositions
+<li><p><strong>map_ids</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>] </em><em>| </em><em>None</em>) – Indices to a specific linear mapping to be applied to the decompositions
 in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
 according to the decompositions’ joint probability distribution.</p></li>
 </ul>
@@ -360,13 +360,13 @@ outcomes (accessible at <code class="docutils literal notranslate"><span class="
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – An index in <code class="docutils literal notranslate"><span class="pre">instruction_ids</span></code> corresponds to a gate which is not a
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – An index in <code class="docutils literal notranslate"><span class="pre">instruction_ids</span></code> corresponds to a gate which is not a
     <a class="reference internal" href="circuit_knitting.cutting.qpd.BaseQPDGate.html#circuit_knitting.cutting.qpd.BaseQPDGate" title="circuit_knitting.cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> instance.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – A list within instruction_ids is not length 1 or 2.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – The total number of indices in <code class="docutils literal notranslate"><span class="pre">instruction_ids</span></code> does not equal the number
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – A list within instruction_ids is not length 1 or 2.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The total number of indices in <code class="docutils literal notranslate"><span class="pre">instruction_ids</span></code> does not equal the number
     of <a class="reference internal" href="circuit_knitting.cutting.qpd.BaseQPDGate.html#circuit_knitting.cutting.qpd.BaseQPDGate" title="circuit_knitting.cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> instances in the circuit.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – Gates within the same decomposition hold different QPD bases.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – Length of <code class="docutils literal notranslate"><span class="pre">map_ids</span></code> does not equal the number of decompositions in the circuit.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – Gates within the same decomposition hold different QPD bases.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – Length of <code class="docutils literal notranslate"><span class="pre">map_ids</span></code> does not equal the number of decompositions in the circuit.</p></li>
 </ul>
 </dd>
 </dl>

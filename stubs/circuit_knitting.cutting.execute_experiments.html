@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="circuit_knitting.cutting.reconstruct_expectation_values" href="circuit_knitting.cutting.reconstruct_expectation_values.html" /><link rel="prev" title="circuit_knitting.cutting.generate_cutting_experiments" href="circuit_knitting.cutting.generate_cutting_experiments.html" />
 
-    <!-- Generated with Sphinx 7.2.5 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
         <title>circuit_knitting.cutting.execute_experiments - Circuit Knitting Toolbox 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
@@ -343,13 +343,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuits</strong> (<em>QuantumCircuit</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>QuantumCircuit</em><em>]</em>) – The circuit(s) resulting from decomposing nonlocal gates</p></li>
-<li><p><strong>subobservables</strong> (<em>PauliList</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>PauliList</em><em>]</em>) – The subobservable(s) corresponding to the circuit(s). If
+<li><p><strong>circuits</strong> (<em>QuantumCircuit</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>QuantumCircuit</em><em>]</em>) – The circuit(s) resulting from decomposing nonlocal gates</p></li>
+<li><p><strong>subobservables</strong> (<em>PauliList</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>PauliList</em><em>]</em>) – The subobservable(s) corresponding to the circuit(s). If
 a <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.circuit.QuantumCircuit.html#qiskit.circuit.QuantumCircuit" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> is submitted for the <code class="docutils literal notranslate"><span class="pre">circuits</span></code> argument,
 a <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.PauliList.html#qiskit.quantum_info.PauliList" title="(in Qiskit v0.44)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code></a> is expected; otherwise, a mapping
 from partition label to subobservables is expected.</p></li>
-<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The number of samples to draw from the quasiprobability distribution</p></li>
-<li><p><strong>samplers</strong> (<em>BaseSampler</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>BaseSampler</em><em>]</em>) – Sampler(s) on which to run the sub-experiments.</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of samples to draw from the quasiprobability distribution</p></li>
+<li><p><strong>samplers</strong> (<em>BaseSampler</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>BaseSampler</em><em>]</em>) – Sampler(s) on which to run the sub-experiments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -364,12 +364,12 @@ from partition label to subobservables is expected.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – The number of requested samples must be at least one.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – The types of <code class="docutils literal notranslate"><span class="pre">circuits</span></code> and <code class="docutils literal notranslate"><span class="pre">subobservables</span></code> arguments are incompatible.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – <code class="docutils literal notranslate"><span class="pre">SingleQubitQPDGate</span></code>s are not supported in unseparable circuits.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – The keys for the input dictionaries are not equivalent.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – The input circuits may not contain any classical registers or bits.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If multiple samplers are passed, each one must be unique.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The number of requested samples must be at least one.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The types of <code class="docutils literal notranslate"><span class="pre">circuits</span></code> and <code class="docutils literal notranslate"><span class="pre">subobservables</span></code> arguments are incompatible.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – <code class="docutils literal notranslate"><span class="pre">SingleQubitQPDGate</span></code>s are not supported in unseparable circuits.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The keys for the input dictionaries are not equivalent.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – The input circuits may not contain any classical registers or bits.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If multiple samplers are passed, each one must be unique.</p></li>
 </ul>
 </dd>
 </dl>
