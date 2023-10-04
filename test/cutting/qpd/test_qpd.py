@@ -57,9 +57,9 @@ class TestQPDFunctions(unittest.TestCase):
         # Use HWEA for simplicity and easy visualization
         qpd_circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
 
-        # We will instantiate 2 QPDBasis objects using from_gate
+        # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)
-        rxx_decomp = QPDBasis.from_gate(rxx_gate)
+        rxx_decomp = QPDBasis.from_instruction(rxx_gate)
 
         # Create two QPDGates and specify each of their bases
         # Labels are only used for visualizations
@@ -144,7 +144,7 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("Single QPD gate"):
             circ = QuantumCircuit(2)
             circ_compare = circ.copy()
-            qpd_basis = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            qpd_basis = QPDBasis.from_instruction(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(qpd_basis)
             circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
             decomp_circ = decompose_qpd_instructions(circ, [[0]], map_ids=[0])
@@ -160,7 +160,7 @@ class TestQPDFunctions(unittest.TestCase):
                 == "The number of map IDs (1) must equal the number of decompositions in the circuit (2)."
             )
         with self.subTest("Test unordered indices"):
-            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            decomp = QPDBasis.from_instruction(RXXGate(np.pi / 3))
             qpd_gate1 = TwoQubitQPDGate(basis=decomp)
             qpd_gate2 = TwoQubitQPDGate(basis=decomp)
 
@@ -178,7 +178,7 @@ class TestQPDFunctions(unittest.TestCase):
             creg = ClassicalRegister(1, name="qpd_measurements")
             dx_circ_truth.add_register(creg)
             dx_circ_truth.h(0)
-            dx_circ_truth.rx(np.pi / 2, 1)
+            dx_circ_truth.sx(1)
             dx_circ_truth.measure(0, 0)
             dx_circ_truth.h(0)
             dx_circ = decompose_qpd_instructions(qpd_circ, [[0]], [2])
@@ -193,7 +193,7 @@ class TestQPDFunctions(unittest.TestCase):
                 == "Each decomposition must contain either one or two elements. Found a decomposition with (0) elements."
             )
         with self.subTest("test_mismatching_qpd_ids"):
-            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            decomp = QPDBasis.from_instruction(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(basis=decomp)
             qc = QuantumCircuit(2)
             qc.h(0)
@@ -216,8 +216,8 @@ class TestQPDFunctions(unittest.TestCase):
                 == "A circuit data index (3) corresponds to a non-QPDGate (h)."
             )
         with self.subTest("test_mismatching_qpd_bases"):
-            decomp1 = QPDBasis.from_gate(RXXGate(np.pi / 3))
-            decomp2 = QPDBasis.from_gate(RXXGate(np.pi / 4))
+            decomp1 = QPDBasis.from_instruction(RXXGate(np.pi / 3))
+            decomp2 = QPDBasis.from_instruction(RXXGate(np.pi / 4))
             qpd_gate1 = SingleQubitQPDGate(basis=decomp1, qubit_id=0)
             qpd_gate2 = SingleQubitQPDGate(basis=decomp2, qubit_id=1)
             qc = QuantumCircuit(2)
@@ -230,7 +230,7 @@ class TestQPDFunctions(unittest.TestCase):
                 == "Gates within the same decomposition must share an equivalent QPDBasis."
             )
         with self.subTest("test_unspecified_qpd_gates"):
-            decomp = QPDBasis.from_gate(RXXGate(np.pi / 3))
+            decomp = QPDBasis.from_instruction(RXXGate(np.pi / 3))
             qpd_gate = TwoQubitQPDGate(basis=decomp)
             qpd_gate1 = SingleQubitQPDGate(basis=decomp, qubit_id=0)
             qpd_gate2 = SingleQubitQPDGate(basis=decomp, qubit_id=1)
@@ -264,6 +264,7 @@ class TestQPDFunctions(unittest.TestCase):
         (CSGate(), 1 + np.sqrt(2)),
         (CSdgGate(), 1 + np.sqrt(2)),
         (CSXGate(), 1 + np.sqrt(2)),
+        (CSXGate().inverse(), 1 + np.sqrt(2)),
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
@@ -271,7 +272,7 @@ class TestQPDFunctions(unittest.TestCase):
     )
     @unpack
     def test_optimal_kappa_for_known_gates(self, instruction, gamma):
-        assert np.isclose(qpdbasis_from_gate(instruction).kappa, gamma)
+        assert np.isclose(qpdbasis_from_instruction(instruction).kappa, gamma)
 
     @data(
         (RXXGate(np.pi / 7), 5, 5),
@@ -289,7 +290,7 @@ class TestQPDFunctions(unittest.TestCase):
         (CRYGate(np.pi), 5, 5),
     )
     @unpack
-    def test_qpdbasis_from_gate_unique_maps(
+    def test_qpdbasis_from_instruction_unique_maps(
         self, instruction, q0_num_unique, q1_num_unique
     ):
         """
@@ -297,7 +298,7 @@ class TestQPDFunctions(unittest.TestCase):
 
         Make sure it is as expected based on the instruction provided.
         """
-        basis = qpdbasis_from_gate(instruction)
+        basis = qpdbasis_from_instruction(instruction)
         # Consider only maps with non-zero weight
         relevant_maps = [
             m for m, w in zip(basis.maps, basis.coeffs) if not np.isclose(w, 0)
@@ -319,10 +320,10 @@ class TestQPDFunctions(unittest.TestCase):
         ([RXXGate(0.1)] * 16, 10000, 2001),
     )
     @unpack
-    def test_generate_qpd_weights_from_gates(
+    def test_generate_qpd_weights_from_instructions(
         self, gates, num_samples, expected_exact, expected_sampled=None
     ):
-        bases = [QPDBasis.from_gate(gate) for gate in gates]
+        bases = [QPDBasis.from_instruction(gate) for gate in gates]
         samples = generate_qpd_weights(bases, num_samples)
 
         counts = Counter(weight_type for _, weight_type in samples.values())
@@ -442,6 +443,7 @@ class TestQPDFunctions(unittest.TestCase):
                 "cz",
                 "ch",
                 "csx",
+                "csxdg",
                 "cs",
                 "csdg",
                 "cp",

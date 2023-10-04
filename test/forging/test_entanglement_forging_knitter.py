@@ -234,6 +234,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         self.assertAlmostEqual(energy + energy_shift, -1.1219365445030705)
 
     @pytest.mark.slow
+    @pytest.mark.skipforcoverage
     def test_asymmetric_bitstrings_O2(self):
         """Test for entanglement forging driver."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_o2, self.eri_o2)
@@ -309,6 +310,7 @@ class TestEntanglementForgingKnitter(unittest.TestCase):
         self.assertAlmostEqual(energy + energy_shift, -39.09031477502881)
 
     @pytest.mark.slow
+    @pytest.mark.skipforcoverage
     def test_asymmetric_bitstrings_CN(self):
         """Test for asymmetric bitstrings with hybrid cross terms."""
         hamiltonian = ElectronicEnergy.from_raw_integrals(self.hcore_cn, self.eri_cn)

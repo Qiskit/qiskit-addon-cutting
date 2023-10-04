@@ -9,14 +9,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-import pytest
-import unittest
 
+import unittest
 from copy import deepcopy
 
+import pytest
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.result import QuasiDistribution
-from qiskit.primitives import Sampler as TerraSampler
+from qiskit.primitives import Sampler as TerraSampler, SamplerResult
 from qiskit_aer.primitives import Sampler as AerSampler
 from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction, Clbit
 from qiskit.circuit.library.standard_gates import XGate
@@ -28,10 +27,7 @@ from circuit_knitting.cutting.qpd import (
     TwoQubitQPDGate,
     QPDBasis,
 )
-from circuit_knitting.cutting.cutting_evaluation import (
-    _append_measurement_circuit,
-    execute_experiments,
-)
+from circuit_knitting.cutting.cutting_evaluation import execute_experiments
 from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
 
@@ -62,12 +58,16 @@ class TestCuttingEvaluation(unittest.TestCase):
         self.observable = PauliList(["ZZ"])
         self.sampler = ExactSampler()
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_execute_experiments(self):
         with self.subTest("Basic test"):
             quasi_dists, coefficients = execute_experiments(
                 self.circuit, self.observable, num_samples=50, samplers=self.sampler
             )
-            self.assertEqual([[[(QuasiDistribution({3: 1.0}), 0)]]], quasi_dists)
+            self.assertEqual(
+                quasi_dists,
+                SamplerResult(quasi_dists=[{3: 1.0}], metadata=[{"num_qpd_bits": 0}]),
+            )
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Basic test with dicts"):
             circ1 = QuantumCircuit(1)
@@ -100,15 +100,15 @@ class TestCuttingEvaluation(unittest.TestCase):
                 num_samples=50,
                 samplers={"A": self.sampler, "B": deepcopy(self.sampler)},
             )
-            self.assertEqual(
-                [
-                    [
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                        [(QuasiDistribution({1: 1.0}), 0)],
-                    ]
-                ],
-                quasi_dists,
-            )
+            comp_result = {
+                "A": SamplerResult(
+                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
+                ),
+                "B": SamplerResult(
+                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
+                ),
+            }
+            self.assertEqual(quasi_dists, comp_result)
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Terra/Aer samplers with dicts"):
             circ1 = QuantumCircuit(1)
@@ -215,7 +215,7 @@ class TestCuttingEvaluation(unittest.TestCase):
                 )
             assert (
                 e_info.value.args[0]
-                == "The number of requested samples must be positive."
+                == "The number of requested samples must be at least 1."
             )
         with self.subTest("Dict of non-unique samplers"):
             qc = QuantumCircuit(2)
@@ -316,45 +316,3 @@ class TestCuttingEvaluation(unittest.TestCase):
                 e_info.value.args[0]
                 == "Circuits input to execute_experiments should contain no classical registers or bits."
             )
-
-    def test_append_measurement_circuit(self):
-        qc = self.qc1.copy()
-        with self.subTest("In place"):
-            qcx = qc.copy()
-            assert _append_measurement_circuit(qcx, self.cog, inplace=True) is qcx
-        with self.subTest("Out of place"):
-            assert _append_measurement_circuit(qc, self.cog) is not qc
-        with self.subTest("Correct measurement circuit"):
-            qc2 = self.qc2.copy()
-            qc2.measure(0, 1)
-            qc2.h(1)
-            qc2.measure(1, 2)
-            assert _append_measurement_circuit(qc, self.cog) == qc2
-        with self.subTest("Mismatch between qubit_locations and number of qubits"):
-            with pytest.raises(ValueError) as e_info:
-                _append_measurement_circuit(qc, self.cog, qubit_locations=[0])
-            assert (
-                e_info.value.args[0]
-                == "qubit_locations has 1 element(s) but the observable(s) have 2 qubit(s)."
-            )
-        with self.subTest("Mismatched qubits, no qubit_locations provided"):
-            cog = CommutingObservableGroup(Pauli("X"), [Pauli("X")])
-            with pytest.raises(ValueError) as e_info:
-                _append_measurement_circuit(qc, cog)
-            assert (
-                e_info.value.args[0]
-                == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
-            )
-
-    def test_workflow_with_unused_qubits(self):
-        """Issue #218"""
-        qc = QuantumCircuit(2)
-        subcircuits, _, subobservables = partition_problem(
-            circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
-        )
-        execute_experiments(
-            subcircuits,
-            subobservables,
-            num_samples=1,
-            samplers=AerSampler(),
-        )

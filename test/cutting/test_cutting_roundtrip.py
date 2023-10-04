@@ -46,7 +46,7 @@ from qiskit.primitives import Estimator
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
     partition_problem,
-    execute_experiments,
+    generate_cutting_experiments,
     reconstruct_expectation_values,
 )
 from circuit_knitting.cutting.instructions import Move
@@ -69,6 +69,7 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [CHGate()],
         [ECRGate()],
         [CSXGate()],
+        [CSXGate().inverse()],
         [CSGate()],
         [CSdgGate()],
         [RYYGate(0.0)],
@@ -153,18 +154,25 @@ def test_cutting_exact_reconstruction(example_circuit):
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
-    if np.random.randint(2):
-        samplers = ExactSampler()
-    else:
-        samplers = {label: ExactSampler() for label in subcircuits.keys()}
-    quasi_dists, coefficients = execute_experiments(
-        circuits=subcircuits,
-        subobservables=subobservables,
-        num_samples=np.inf,
-        samplers=samplers,
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
     )
+    if np.random.randint(2):
+        # Re-use a single sample
+        sampler = ExactSampler()
+        samplers = {label: sampler for label in subcircuits.keys()}
+    else:
+        # One sampler per partition
+        samplers = {label: ExactSampler() for label in subcircuits.keys()}
+    results = {
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
+    }
+    for label in results:
+        for i, subexperiment in enumerate(subexperiments[label]):
+            results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
     simulated_expvals = reconstruct_expectation_values(
-        quasi_dists, coefficients, subobservables
+        results, coefficients, subobservables
     )
     simulated_expvals *= phases
 

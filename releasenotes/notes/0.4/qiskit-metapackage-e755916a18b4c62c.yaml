@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    The ``circuit-knitting-toolbox`` Python package now depends on
+    ``qiskit`` rather than ``qiskit-terra``.  This should have no
+    user-visible effects, but it is something to keep in mind if one
+    sees dependency errors when upgrading CKT.
