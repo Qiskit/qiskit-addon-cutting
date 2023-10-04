@@ -829,17 +829,17 @@ def _nonlocal_qpd_basis_from_u(
 
 
 @_register_qpdbasis_from_instruction("swap")
-def _(gate: SwapGate):
+def _(unused_gate: SwapGate):
     return _nonlocal_qpd_basis_from_u([(1 + 1j) / np.sqrt(8)] * 4)
 
 
 @_register_qpdbasis_from_instruction("iswap")
-def _(gate: iSwapGate):
+def _(unused_gate: iSwapGate):
     return _nonlocal_qpd_basis_from_u([0.5, 0.5j, 0.5j, 0.5])
 
 
 @_register_qpdbasis_from_instruction("dcx")
-def _(gate: DCXGate):
+def _(unused_gate: DCXGate):
     retval = qpdbasis_from_instruction(iSwapGate())
     # Modify basis according to DCXGate definition in Qiskit circuit library
     # https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
@@ -948,7 +948,7 @@ def _(gate: CPhaseGate):
 
 
 @_register_qpdbasis_from_instruction("csx")
-def _(gate: CSXGate):
+def _(unused_gate: CSXGate):
     retval = qpdbasis_from_instruction(CRXGate(np.pi / 2))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TGate())
@@ -956,7 +956,7 @@ def _(gate: CSXGate):
 
 
 @_register_qpdbasis_from_instruction("csxdg")
-def _(gate: ControlledGate):
+def _(unused_gate: ControlledGate):
     retval = qpdbasis_from_instruction(CRXGate(-np.pi / 2))
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, TdgGate())
@@ -1002,7 +1002,7 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
 
 
 @_register_qpdbasis_from_instruction("ecr")
-def _(gate: ECRGate):
+def _(unused_gate: ECRGate):
     retval = qpdbasis_from_instruction(CXGate())
     # Modify basis according to ECRGate definition in Qiskit circuit library
     # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
@@ -1032,7 +1032,7 @@ def _theta_from_instruction(gate: Gate, /) -> float:
 
 
 @_register_qpdbasis_from_instruction("move")
-def _(gate: Move):
+def _(unused_gate: Move):
     i_measurement = [Reset()]
     x_measurement = [HGate(), QPDMeasure(), Reset()]
     y_measurement = [SXGate(), QPDMeasure(), Reset()]
