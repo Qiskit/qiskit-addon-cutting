@@ -289,8 +289,12 @@ def _append_measurement_circuit(
         actual_qubit = qubit_locations[subqubit]
         if genobs_x[subqubit]:
             if genobs_z[subqubit]:
-                qc.sdg(actual_qubit)
-            qc.h(actual_qubit)
+                # Rotate Y basis to Z basis
+                qc.sx(actual_qubit)
+            else:
+                # Rotate X basis to Z basis
+                qc.h(actual_qubit)
+        # Measure in Z basis
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc

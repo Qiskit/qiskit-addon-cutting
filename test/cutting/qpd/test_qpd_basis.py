@@ -51,7 +51,7 @@ class TestQPDBasis(unittest.TestCase):
         y_gate = YGate()
         y_r_plus = RYGate(1 * np.pi / 2)
         y_r_minus = RYGate(-1 * np.pi / 2)
-        y_measure = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+        y_measure = [SXGate(), QPDMeasure(), SXdgGate()]
         self.truth_ryy_maps = [
             ([], []),
             ([y_gate], [y_gate]),
