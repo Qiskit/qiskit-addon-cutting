@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+    The order of the classical registers in the generated experiments
+    has been swapped.  The ``"observable_measurements"`` register now
+    comes first, and the ``"qpd_measurements"`` register now comes
+    second.  As a result of this change, it is no longer necessary to
+    manually insert ``num_qpd_bits`` into the ``metadata`` for each
+    experiment's result.

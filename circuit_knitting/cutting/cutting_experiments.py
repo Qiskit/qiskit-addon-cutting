@@ -148,12 +148,13 @@ def generate_cutting_experiments(
             subcircuit = subcircuit_dict[label]
             if is_separated:
                 map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[label])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[label], map_ids_tmp
-            )
             for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments_dict[label].append(meas_qc)
+                new_qc = _append_measurement_register(subcircuit, cog)
+                decompose_qpd_instructions(
+                    new_qc, subcirc_qpd_gate_ids[label], map_ids_tmp, inplace=True
+                )
+                _append_measurement_circuit(new_qc, cog, inplace=True)
+                subexperiments_dict[label].append(new_qc)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[
@@ -231,6 +232,35 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
     return bases, qpd_gate_ids
 
 
+def _append_measurement_register(
+    qc: QuantumCircuit,
+    cog: CommutingObservableGroup,
+    /,
+    *,
+    inplace: bool = False,
+):
+    """Append a new classical register for the given ``CommutingObservableGroup``.
+
+    The new register will be named ``"observable_measurements"`` and will be
+    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+
+    Args:
+        qc: The quantum circuit
+        cog: The commuting observable set for which to construct measurements
+        inplace: Whether to operate on the circuit in place (default: ``False``)
+
+    Returns:
+        The modified circuit
+    """
+    if not inplace:
+        qc = qc.copy()
+
+    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
+    qc.add_register(obs_creg)
+
+    return qc
+
+
 def _append_measurement_circuit(
     qc: QuantumCircuit,
     cog: CommutingObservableGroup,
@@ -239,15 +269,15 @@ def _append_measurement_circuit(
     qubit_locations: Sequence[int] | None = None,
     inplace: bool = False,
 ) -> QuantumCircuit:
-    """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
+    """Append measurement instructions for the given ``CommutingObservableGroup``.
 
-    The new register will be named ``"observable_measurements"`` and will be
-    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+    The measurement results will be placed in a register with the name
+    ``"observable_measurements"``.  Such a register can be created by calling
+    :func:`_append_measurement_register` before calling the current function.
 
     Args:
         qc: The quantum circuit
-        cog: The commuting observable set for
-            which to construct measurements
+        cog: The commuting observable set for which to construct measurements
         qubit_locations: A ``Sequence`` whose length is the number of qubits
             in the observables, where each element holds that qubit's corresponding
             index in the circuit.  By default, the circuit and observables are assumed
@@ -273,12 +303,27 @@ def _append_measurement_circuit(
                 f"qubit_locations has {len(qubit_locations)} element(s) but the "
                 f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
             )
+
+    # Find observable_measurements register
+    for reg in qc.cregs:
+        if reg.name == "observable_measurements":
+            obs_creg = reg
+            break
+    else:
+        raise ValueError('Cannot locate "observable_measurements" register')
+
+    if obs_creg.size != len(cog.pauli_indices):
+        raise ValueError(
+            '"observable_measurements" register is the wrong size '
+            "for the given commuting observable group "
+            f"({obs_creg.size} != {len(cog.pauli_indices)})"
+        )
+
     if not inplace:
         qc = qc.copy()
 
     # Append the appropriate measurements to qc
-    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
-    qc.add_register(obs_creg)
+    #
     # Implement the necessary basis rotations and measurements, as
     # in BackendEstimator._measurement_circuit().
     genobs_x = cog.general_observable.x

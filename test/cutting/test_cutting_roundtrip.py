@@ -168,9 +168,6 @@ def test_cutting_exact_reconstruction(example_circuit):
         label: sampler.run(subexperiments[label]).result()
         for label, sampler in samplers.items()
     }
-    for label in results:
-        for i, subexperiment in enumerate(subexperiments[label]):
-            results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
     simulated_expvals = reconstruct_expectation_values(
         results, coefficients, subobservables
     )
