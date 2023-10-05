@@ -28,7 +28,6 @@ from circuit_knitting.cutting import (
     cutting_decomposition,
     cutting_evaluation,
     cutting_reconstruction,
-    wire_cutting,
 )
 
 __all__ = [
@@ -55,7 +54,6 @@ sys.modules[
     "circuit_knitting_toolbox.circuit_cutting.qpd.instructions.qpd_measure"
 ] = qpd.instructions.qpd_measure
 sys.modules["circuit_knitting_toolbox.circuit_cutting.cutqc"] = cutqc
-sys.modules["circuit_knitting_toolbox.circuit_cutting.wire_cutting"] = wire_cutting
 sys.modules[
     "circuit_knitting_toolbox.circuit_cutting.cutting_decomposition"
 ] = cutting_decomposition

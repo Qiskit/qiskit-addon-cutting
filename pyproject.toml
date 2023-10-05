@@ -28,9 +28,7 @@ requires-python = ">=3.8"
 
 dependencies = [
     "numpy>=1.23.0",
-    # scipy is currently bounded from above because scipy 1.11 removed the
-    # `sym_pos` kwarg from `scipy.linalg.solve`, but pyscf has not yet been updated.
-    "scipy>=1.5.2,<1.11",
+    "scipy>=1.5.2",
     "rustworkx>=0.12.0",
     "qiskit-aer>=0.12.0",
     "qiskit>=0.43.0",
@@ -113,11 +111,11 @@ only-include = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
-[tool.coverage.run]
-omit = [
-    # deprecated import location(s)
-    "circuit_knitting/cutting/wire_cutting.py",
-]
+#[tool.coverage.run]
+#omit = [
+#    # deprecated import location(s)
+#    "circuit_knitting/path/to/deprecated/module",
+#]
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
