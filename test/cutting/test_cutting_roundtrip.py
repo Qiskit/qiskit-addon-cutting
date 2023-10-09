@@ -194,7 +194,7 @@ def test_sampler_with_identity_subobservable(example_circuit):
     qc = example_circuit
     observable_to_test = PauliList(
         ["IIZ"]
-    )  # Without the workaround to Issue #422, this throws a Sampler error.
+    )  # Without the workaround to Issue #422, this observable causes a Sampler error.
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observable_to_test
     )
