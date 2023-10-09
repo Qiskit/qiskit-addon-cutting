@@ -184,7 +184,7 @@ def test_cutting_exact_reconstruction(example_circuit):
 
 def test_sampler_with_identity_subobservable(example_circuit):
     """This test ensures that the sampler does not throw an error if you pass it a subcircuit with no observable measurements.
-    
+
     Tests temporary workaround to Issue #422.
 
     This test passes if no exceptions are raised.
