@@ -182,8 +182,10 @@ def test_cutting_exact_reconstruction(example_circuit):
     assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)
 
 
-def test_sampler_fail(example_circuit):
-    """This test checks if the sampler throws an error if you pass it a subscircuit with no measurements. Tests temporary workaround to Issue #422.
+def test_sampler_with_identity_subobservable(example_circuit):
+    """This test ensures that the sampler does not throw an error if you pass it a subcircuit with no observable measurements.
+    
+    Tests temporary workaround to Issue #422.
 
     This test passes if no exceptions are raised.
 
