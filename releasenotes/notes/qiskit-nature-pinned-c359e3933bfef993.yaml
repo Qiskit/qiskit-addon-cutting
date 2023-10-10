@@ -1,0 +1,6 @@
+---
+other:
+  - |
+    ``qiskit-nature`` is now pinned to version 0.6.X, as the
+    entanglement forging code has not yet been updated to work with
+    Qiskit Nature 0.7.0.
