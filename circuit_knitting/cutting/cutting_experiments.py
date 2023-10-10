@@ -255,7 +255,9 @@ def _append_measurement_register(
     if not inplace:
         qc = qc.copy()
 
-    obs_creg = ClassicalRegister(len(cog.pauli_indices), name="observable_measurements")
+    pauli_indices = _get_pauli_indices(cog)
+
+    obs_creg = ClassicalRegister(len(pauli_indices), name="observable_measurements")
     qc.add_register(obs_creg)
 
     return qc
@@ -312,11 +314,13 @@ def _append_measurement_circuit(
     else:
         raise ValueError('Cannot locate "observable_measurements" register')
 
-    if obs_creg.size != len(cog.pauli_indices):
+    pauli_indices = _get_pauli_indices(cog)
+
+    if obs_creg.size != len(pauli_indices):
         raise ValueError(
             '"observable_measurements" register is the wrong size '
             "for the given commuting observable group "
-            f"({obs_creg.size} != {len(cog.pauli_indices)})"
+            f"({obs_creg.size} != {len(pauli_indices)})"
         )
 
     if not inplace:
@@ -328,7 +332,7 @@ def _append_measurement_circuit(
     # in BackendEstimator._measurement_circuit().
     genobs_x = cog.general_observable.x
     genobs_z = cog.general_observable.z
-    for clbit, subqubit in enumerate(cog.pauli_indices):
+    for clbit, subqubit in enumerate(pauli_indices):
         # subqubit is the index of the qubit in the subsystem.
         # actual_qubit is its index in the system of interest (if different).
         actual_qubit = qubit_locations[subqubit]
@@ -343,3 +347,14 @@ def _append_measurement_circuit(
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc
+
+
+def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
+    """Return the indices to qubits to be measured."""
+    # If the circuit has no measurements, the Sampler will fail.  So, we
+    # measure one qubit as a temporary workaround to
+    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422
+    pauli_indices = cog.pauli_indices
+    if not pauli_indices:
+        pauli_indices = [0]
+    return pauli_indices
