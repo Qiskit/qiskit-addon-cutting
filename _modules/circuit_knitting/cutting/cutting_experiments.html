@@ -604,14 +604,21 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+    <span class="c1"># If the circuit has no measurements, the Sampler will fail.  So, we</span>
+    <span class="c1"># measure one qubit as a temporary workaround to</span>
+    <span class="c1"># https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422</span>
+    <span class="n">pauli_indices</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">pauli_indices</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pauli_indices</span><span class="p">:</span>
+        <span class="n">pauli_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="c1"># Append the appropriate measurements to qc</span>
-    <span class="n">obs_creg</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">pauli_indices</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;observable_measurements&quot;</span><span class="p">)</span>
+    <span class="n">obs_creg</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;observable_measurements&quot;</span><span class="p">)</span>
     <span class="n">qc</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">obs_creg</span><span class="p">)</span>
     <span class="c1"># Implement the necessary basis rotations and measurements, as</span>
     <span class="c1"># in BackendEstimator._measurement_circuit().</span>
     <span class="n">genobs_x</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">general_observable</span><span class="o">.</span><span class="n">x</span>
     <span class="n">genobs_z</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">general_observable</span><span class="o">.</span><span class="n">z</span>
-    <span class="k">for</span> <span class="n">clbit</span><span class="p">,</span> <span class="n">subqubit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">pauli_indices</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">clbit</span><span class="p">,</span> <span class="n">subqubit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">):</span>
         <span class="c1"># subqubit is the index of the qubit in the subsystem.</span>
         <span class="c1"># actual_qubit is its index in the system of interest (if different).</span>
         <span class="n">actual_qubit</span> <span class="o">=</span> <span class="n">qubit_locations</span><span class="p">[</span><span class="n">subqubit</span><span class="p">]</span>
