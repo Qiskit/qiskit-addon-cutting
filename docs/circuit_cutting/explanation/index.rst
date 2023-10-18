@@ -10,11 +10,11 @@ Circuit cutting is a technique to increase the size of circuits we can run on qu
 
 Key terms
 -----------------
-* subcircuits: The set of circuits resulting from cutting gates in a :class:`QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain :class:`SingleQubitQPDGate`\ s and will be used to instantiate each unique subexperiment.
+* subcircuits: The set of circuits resulting from cutting gates in a :class:`~qiskit.circuit.QuantumCircuit` and then separating the disconnected qubit subsets into smaller circuits. These circuits contain :class:`.SingleQubitQPDGate`\ s and will be used to instantiate each unique subexperiment.
 
-* subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their :class:`BaseQPDGate`\ s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.
+* subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their :class:`.BaseQPDGate`\ s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.
 
-* decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting :class:`BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
+* decompose: We try to honor the Qiskit notion of "decompose" in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. *Occasionally*, we may use the term "decompose" to refer to the act of inserting :class:`.BaseQPDGate` instances into quantum circuits as "decomposing" a gate or wire; however, we try to use terms like "partition" and "cut" when referring to this to avoid ambiguity with Qiskit language.
 
 Circuit cutting as a quasiprobability decomposition (QPD)
 ---------------------------------------------------------
