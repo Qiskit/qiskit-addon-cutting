@@ -42,11 +42,12 @@ from qiskit.circuit.library.standard_gates import (
 from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
+from qiskit_aer.primitives import Sampler
 
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
     partition_problem,
-    execute_experiments,
+    generate_cutting_experiments,
     reconstruct_expectation_values,
 )
 from circuit_knitting.cutting.instructions import Move
@@ -154,21 +155,55 @@ def test_cutting_exact_reconstruction(example_circuit):
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
-    if np.random.randint(2):
-        samplers = ExactSampler()
-    else:
-        samplers = {label: ExactSampler() for label in subcircuits.keys()}
-    quasi_dists, coefficients = execute_experiments(
-        circuits=subcircuits,
-        subobservables=subobservables,
-        num_samples=np.inf,
-        samplers=samplers,
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
     )
+    if np.random.randint(2):
+        # Re-use a single sample
+        sampler = ExactSampler()
+        samplers = {label: sampler for label in subcircuits.keys()}
+    else:
+        # One sampler per partition
+        samplers = {label: ExactSampler() for label in subcircuits.keys()}
+    results = {
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
+    }
+    for label in results:
+        for i, subexperiment in enumerate(subexperiments[label]):
+            results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
     simulated_expvals = reconstruct_expectation_values(
-        quasi_dists, coefficients, subobservables
+        results, coefficients, subobservables
     )
     simulated_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))
 
     assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)
+
+
+def test_sampler_with_identity_subobservable(example_circuit):
+    """This test ensures that the sampler does not throw an error if you pass it a subcircuit with no observable measurements.
+
+    Tests temporary workaround to Issue #422.
+
+    This test passes if no exceptions are raised.
+
+    """
+
+    qc = example_circuit
+    observable_to_test = PauliList(
+        ["IIZ"]
+    )  # Without the workaround to Issue #422, this observable causes a Sampler error.
+    subcircuits, bases, subobservables = partition_problem(
+        qc, "AAB", observables=observable_to_test
+    )
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
+    )
+    samplers = {label: Sampler() for label in subexperiments.keys()}
+    results = {
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
+    }
+    _ = results

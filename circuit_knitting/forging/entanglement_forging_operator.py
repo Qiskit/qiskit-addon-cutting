@@ -58,12 +58,15 @@ class EntanglementForgingOperator:  # noqa: D301
         Returns:
             Printable representation of class
         """
-        repr = "EntanglementForgingOperator\nTensor Paulis:\n"
-        repr += str(self.tensor_paulis)
-        repr += "\nSuperposition Paulis:\n"
-        repr += str(self.superposition_paulis)
-        repr += "\nTensor Weight Matrix:\n"
-        repr += np.array_str(self.w_ij, precision=4, suppress_small=True)
-        repr += "\nSuperposition Weight Matrix:\n"
-        repr += np.array_str(self.w_ab, precision=4, suppress_small=True)
-        return repr
+        return "".join(
+            (
+                "EntanglementForgingOperator\nTensor Paulis:\n",
+                str(self.tensor_paulis),
+                "\nSuperposition Paulis:\n",
+                str(self.superposition_paulis),
+                "\nTensor Weight Matrix:\n",
+                np.array_str(self.w_ij, precision=4, suppress_small=True),
+                "\nSuperposition Weight Matrix:\n",
+                np.array_str(self.w_ab, precision=4, suppress_small=True),
+            )
+        )

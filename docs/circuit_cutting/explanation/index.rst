@@ -87,7 +87,7 @@ For more information on the KAK decomposition, see:
 
 Current limitations
 -------------------
-* ``PauliList`` is the only supported observable format until no sooner than CKT v0.4.0.
+* ``PauliList`` is the only supported observable format until no sooner than CKT v0.5.0.
 
 References
 ----------
