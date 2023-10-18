@@ -32,7 +32,7 @@ For more detailed information on the quasiprobability decomposition technique, r
 
 Sampling overhead
 -----------------
-The sampling overhead is the factor by which the number of samples must increase for the quasiprobability decomposition to result in the same amount of error, $\epsilon$, as one would get by sampling the original circuit. Cutting CNOT and CZ gates incurs a sampling overhead of roughly $O(9^k/\epsilon^2)$, where $k$ is the number of cuts [`2 <https://arxiv.org/abs/1909.07534>`__]; however, other gates may have higher or lower exponential bases. For example, the sampling overhead resulting from cutting SWAP gates scales with complexity $O(49^k/\epsilon^2)$ [`3 <https://arxiv.org/abs/2006.11174>`__]. Cutting wires with local operations (LO) only incurs a sampling overhead of $4^{2k}$ [`4 <https://arxiv.org/abs/2302.03366>`__].
+The sampling overhead is the factor by which the number of samples must increase for the quasiprobability decomposition to result in the same amount of error, :math:`\epsilon`, as one would get by sampling the original circuit. Cutting CNOT and CZ gates incurs a sampling overhead of roughly :math:`O(9^k/\epsilon^2)`, where :math:`k` is the number of cuts [`2 <https://arxiv.org/abs/1909.07534>`__]; however, other gates may have higher or lower exponential bases. For example, the sampling overhead resulting from cutting SWAP gates scales with complexity :math:`O(49^k/\epsilon^2)` [`3 <https://arxiv.org/abs/2006.11174>`__]. Cutting wires with local operations (LO) only incurs a sampling overhead of :math:`4^{2k}` [`4 <https://arxiv.org/abs/2302.03366>`__].
 
 Sample weights in CKT
 ---------------------
