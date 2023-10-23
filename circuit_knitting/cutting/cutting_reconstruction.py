@@ -22,6 +22,7 @@ from qiskit.primitives import SamplerResult
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
+from .cutting_experiments import _get_pauli_indices
 from .qpd import WeightType
 
 
@@ -136,7 +137,7 @@ def _process_outcome(
         this vector correspond to the elements of ``cog.commuting_observables``,
         and each result will be either +1 or -1.
     """
-    num_meas_bits = len(cog.pauli_indices)
+    num_meas_bits = len(_get_pauli_indices(cog))
 
     outcome = _outcome_to_int(outcome)
     meas_outcomes = outcome & ((1 << num_meas_bits) - 1)
