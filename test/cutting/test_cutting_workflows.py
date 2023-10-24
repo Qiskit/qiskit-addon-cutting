@@ -94,12 +94,12 @@ def test_exotic_labels(label1, label2):
         for i, subexperiment in enumerate(subexperiments[label]):
             results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
 
-    simulated_expvals = reconstruct_expectation_values(
+    reconstructed_expvals = reconstruct_expectation_values(
         results,
         coefficients,
         subobservables,
     )
-    assert len(simulated_expvals) == len(observables)
+    assert len(reconstructed_expvals) == len(observables)
 
 
 def test_workflow_with_unused_qubits():
