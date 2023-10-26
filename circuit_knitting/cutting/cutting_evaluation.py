@@ -132,15 +132,15 @@ def execute_experiments(
         assert isinstance(samplers, dict)
         samplers_dict = samplers
 
-    # Make sure the first two cregs in each circuit are for QPD and observable measurements
+    # Make sure the first two cregs in each circuit are for observable and QPD measurements, respectively.
     # Run a job for each partition and collect results
     results = {}
     for label in subexperiments_dict.keys():
         for circ in subexperiments_dict[label]:
             if (
                 len(circ.cregs) != 2
-                or circ.cregs[1].name != "observable_measurements"
-                or circ.cregs[0].name != "qpd_measurements"
+                or circ.cregs[0].name != "observable_measurements"
+                or circ.cregs[1].name != "qpd_measurements"
                 or sum([reg.size for reg in circ.cregs]) != circ.num_clbits
             ):
                 # If the classical bits/registers are in any other format than expected, the user must have
@@ -149,10 +149,6 @@ def execute_experiments(
                     "Circuits input to execute_experiments should contain no classical registers or bits."
                 )
         results[label] = samplers_dict[label].run(subexperiments_dict[label]).result()
-
-    for label, result in results.items():
-        for i, metadata in enumerate(result.metadata):
-            metadata["num_qpd_bits"] = len(subexperiments_dict[label][i].cregs[0])
 
     # If the input was a circuit, the output results should be a single SamplerResult instance
     results_out = results

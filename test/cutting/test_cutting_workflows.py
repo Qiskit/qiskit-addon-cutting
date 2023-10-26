@@ -90,10 +90,6 @@ def test_exotic_labels(label1, label2):
         for label, sampler in samplers.items()
     }
 
-    for label in results:
-        for i, subexperiment in enumerate(subexperiments[label]):
-            results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
-
     reconstructed_expvals = reconstruct_expectation_values(
         results,
         coefficients,

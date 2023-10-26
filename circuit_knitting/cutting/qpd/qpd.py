@@ -500,6 +500,8 @@ def decompose_qpd_instructions(
     circuit: QuantumCircuit,
     instruction_ids: Sequence[Sequence[int]],
     map_ids: Sequence[int] | None = None,
+    *,
+    inplace: bool = False,
 ) -> QuantumCircuit:
     r"""
     Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
@@ -529,7 +531,9 @@ def decompose_qpd_instructions(
         ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit.
     """
     _validate_qpd_instructions(circuit, instruction_ids)
-    new_qc = circuit.copy()
+
+    if not inplace:
+        circuit = circuit.copy()  # pragma: no cover
 
     if map_ids is not None:
         if len(instruction_ids) != len(map_ids):
@@ -540,12 +544,12 @@ def decompose_qpd_instructions(
         # If mapping is specified, set each gate's mapping
         for i, decomp_gate_ids in enumerate(instruction_ids):
             for gate_id in decomp_gate_ids:
-                new_qc.data[gate_id].operation.basis_id = map_ids[i]
+                circuit.data[gate_id].operation.basis_id = map_ids[i]
 
     # Convert all instances of BaseQPDGate in the circuit to Qiskit instructions
-    _decompose_qpd_instructions(new_qc, instruction_ids)
+    _decompose_qpd_instructions(circuit, instruction_ids)
 
-    return new_qc
+    return circuit
 
 
 _qpdbasis_from_instruction_funcs: dict[str, Callable[[Instruction], QPDBasis]] = {}
