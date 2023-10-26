@@ -22,6 +22,7 @@ from qiskit.primitives import SamplerResult
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
+from .cutting_experiments import _get_pauli_indices
 from .qpd import WeightType
 
 
@@ -66,8 +67,6 @@ def reconstruct_expectation_values(
     Raises:
         ValueError: ``observables`` and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
-        ValueError: ``num_qpd_bits`` must be set for all result metadata dictionaries.
-        TypeError: ``num_qpd_bits`` must be an integer.
     """
     if isinstance(observables, PauliList) and not isinstance(results, SamplerResult):
         raise ValueError(
@@ -111,21 +110,7 @@ def reconstruct_expectation_values(
             for k, cog in enumerate(so.groups):
                 quasi_probs = results_dict[label].quasi_dists[i * len(so.groups) + k]
                 for outcome, quasi_prob in quasi_probs.items():
-                    try:
-                        num_qpd_bits = results_dict[label].metadata[
-                            i * len(so.groups) + k
-                        ]["num_qpd_bits"]
-                    except KeyError as ex:
-                        raise ValueError(
-                            "The num_qpd_bits field must be set in each subexperiment "
-                            "result metadata dictionary."
-                        ) from ex
-                    else:
-                        subsystem_expvals[k] += quasi_prob * _process_outcome(
-                            num_qpd_bits,
-                            cog,
-                            outcome,
-                        )
+                    subsystem_expvals[k] += quasi_prob * _process_outcome(cog, outcome)
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
@@ -138,16 +123,12 @@ def reconstruct_expectation_values(
 
 
 def _process_outcome(
-    num_qpd_bits: int, cog: CommutingObservableGroup, outcome: int | str, /
+    cog: CommutingObservableGroup, outcome: int | str, /
 ) -> np.typing.NDArray[np.float64]:
     """
     Process a single outcome of a QPD experiment with observables.
 
     Args:
-        num_qpd_bits: The number of QPD measurements in the circuit. It is
-            assumed that the second to last creg in the generating circuit
-            is the creg  containing the QPD measurements, and the last
-            creg is associated with the observable measurements.
         cog: The observable set being measured by the current experiment
         outcome: The outcome of the classical bits
 
@@ -156,15 +137,11 @@ def _process_outcome(
         this vector correspond to the elements of ``cog.commuting_observables``,
         and each result will be either +1 or -1.
     """
-    outcome = _outcome_to_int(outcome)
-    try:
-        qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
-    except TypeError as ex:
-        raise TypeError(
-            f"num_qpd_bits must be an integer, but a {type(num_qpd_bits)} was passed."
-        ) from ex
+    num_meas_bits = len(_get_pauli_indices(cog))
 
-    meas_outcomes = outcome >> num_qpd_bits
+    outcome = _outcome_to_int(outcome)
+    meas_outcomes = outcome & ((1 << num_meas_bits) - 1)
+    qpd_outcomes = outcome >> num_meas_bits
 
     # qpd_factor will be -1 or +1, depending on the overall parity of qpd
     # measurements.

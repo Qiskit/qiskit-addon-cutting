@@ -31,6 +31,7 @@ dependencies = [
     "rustworkx>=0.12.0",
     "qiskit-aer>=0.12.0",
     "qiskit>=0.43.0",
+    "qiskit-algorithms>=0.2.1",
     "qiskit-nature>=0.6.0, <0.7",
     "qiskit-ibm-runtime>=0.9.2",
 ]
