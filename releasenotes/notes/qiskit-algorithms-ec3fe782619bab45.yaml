@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    CKT now depends on the `qiskit-algorithms
+    <https://github.com/qiskit-community/qiskit-algorithms>`__
+    package.  This new package replaces the ``qiskit.algorithms``
+    module, which was deprecated in Qiskit 0.44.
