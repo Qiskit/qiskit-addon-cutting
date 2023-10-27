@@ -92,12 +92,7 @@ class TestSingleQubitQPDGate(unittest.TestCase):
     def test_missing_basis_id(self):
         maps = [([XGate()], [YGate()])]
         basis = QPDBasis(maps, [1.0])
-        with pytest.raises(ValueError) as e_info:
-            SingleQubitQPDGate(basis=basis, qubit_id=0).definition
-        self.assertEqual(
-            "Missing 'basis_id': unable to realize SingleQubitQPDGate.",
-            e_info.value.args[0],
-        )
+        assert SingleQubitQPDGate(basis=basis, qubit_id=0).definition is None
 
     def test_compare_1q_and_2q(self):
         maps = [([XGate()], [YGate()])]
