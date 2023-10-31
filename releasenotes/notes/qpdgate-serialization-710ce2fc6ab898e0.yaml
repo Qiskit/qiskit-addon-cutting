@@ -1,8 +1,8 @@
 ---
 fixes:
   - |
-    It is now possible to serialize :class:`.SingleQubitQPDGate`, but
-    there are still some other issues that remain with serialization
-    and deserialization.  See issue `#455
+    It is now possible to serialize :class:`.SingleQubitQPDGate`\ s,
+    but some other issues with serialization and deserialization still
+    remain.  See issue `#455
     <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/445>`__
     for details.
