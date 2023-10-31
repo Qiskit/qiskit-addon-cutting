@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="CutQC (legacy circuit cutting implementation)" href="../cutqc/index.html" /><link rel="prev" title="How to generate exact sampling coefficients" href="how_to_generate_exact_sampling_coefficients.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>How to place wire cuts using a single-qubit CutWire instruction - Circuit Knitting Toolbox 0.4.0</title>
+        <title>How to place wire cuts using a single-qubit CutWire instruction - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -565,10 +565,7 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subexperiment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
-        <span class="n">results</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;num_qpd_bits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subexperiment</span><span class="o">.</span><span class="n">cregs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">reconstructed_expvals</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reconstructed_expvals</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span>
     <span class="n">coefficients</span><span class="p">,</span>
     <span class="n">subobservables</span><span class="p">,</span>
@@ -696,7 +693,7 @@ Relative errors in estimation: [0.01264952, 0.00368749, -0.02581648]
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

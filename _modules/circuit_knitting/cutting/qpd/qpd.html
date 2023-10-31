@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>circuit_knitting.cutting.qpd.qpd - Circuit Knitting Toolbox 0.4.0</title>
+        <title>circuit_knitting.cutting.qpd.qpd - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -836,6 +836,8 @@
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
     <span class="n">instruction_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="n">map_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replace all QPD instructions in the circuit with local Qiskit operations and measurements.</span>
@@ -865,7 +867,9 @@
 <span class="sd">        ValueError: Length of ``map_ids`` does not equal the number of decompositions in the circuit.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_validate_qpd_instructions</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">instruction_ids</span><span class="p">)</span>
-    <span class="n">new_qc</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># pragma: no cover</span>
 
     <span class="k">if</span> <span class="n">map_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instruction_ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">map_ids</span><span class="p">):</span>
@@ -876,12 +880,12 @@
         <span class="c1"># If mapping is specified, set each gate&#39;s mapping</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">decomp_gate_ids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">instruction_ids</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">gate_id</span> <span class="ow">in</span> <span class="n">decomp_gate_ids</span><span class="p">:</span>
-                <span class="n">new_qc</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">gate_id</span><span class="p">]</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">basis_id</span> <span class="o">=</span> <span class="n">map_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">gate_id</span><span class="p">]</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">basis_id</span> <span class="o">=</span> <span class="n">map_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="c1"># Convert all instances of BaseQPDGate in the circuit to Qiskit instructions</span>
-    <span class="n">_decompose_qpd_instructions</span><span class="p">(</span><span class="n">new_qc</span><span class="p">,</span> <span class="n">instruction_ids</span><span class="p">)</span>
+    <span class="n">_decompose_qpd_instructions</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">instruction_ids</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">new_qc</span></div>
+    <span class="k">return</span> <span class="n">circuit</span></div>
 
 
 
@@ -1071,7 +1075,7 @@
     <span class="c1">#</span>
     <span class="c1"># Projective measurements in each basis</span>
     <span class="n">A0x</span> <span class="o">=</span> <span class="p">[</span><span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">()]</span>
-    <span class="n">A0y</span> <span class="o">=</span> <span class="p">[</span><span class="n">SdgGate</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">SGate</span><span class="p">()]</span>
+    <span class="n">A0y</span> <span class="o">=</span> <span class="p">[</span><span class="n">SXGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">SXdgGate</span><span class="p">()]</span>
     <span class="n">A0z</span> <span class="o">=</span> <span class="p">[</span><span class="n">QPDMeasure</span><span class="p">()]</span>
     <span class="c1"># Single qubit rotations that swap two axes.  There are &quot;plus&quot; and &quot;minus&quot;</span>
     <span class="c1"># versions of these rotations.  The &quot;minus&quot; rotations also flip the sign</span>
@@ -1169,17 +1173,17 @@
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;swap&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">SwapGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">SwapGate</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_nonlocal_qpd_basis_from_u</span><span class="p">([(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;iswap&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">iSwapGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">iSwapGate</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_nonlocal_qpd_basis_from_u</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;dcx&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">DCXGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">DCXGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">iSwapGate</span><span class="p">())</span>
     <span class="c1"># Modify basis according to DCXGate definition in Qiskit circuit library</span>
     <span class="c1"># https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944</span>
@@ -1198,18 +1202,18 @@
     <span class="c1"># https://iopscience.iop.org/article/10.1088/1367-2630/abd7bc/pdf</span>
     <span class="k">if</span> <span class="n">gate</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;rxx&quot;</span><span class="p">,</span> <span class="s2">&quot;crx&quot;</span><span class="p">):</span>
         <span class="n">pauli</span> <span class="o">=</span> <span class="n">XGate</span><span class="p">()</span>
-        <span class="n">r_plus</span> <span class="o">=</span> <span class="n">RXGate</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">r_plus</span> <span class="o">=</span> <span class="n">SXGate</span><span class="p">()</span>
         <span class="c1"># x basis measurement (and back again)</span>
         <span class="n">measurement_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">()]</span>
     <span class="k">elif</span> <span class="n">gate</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ryy&quot;</span><span class="p">,</span> <span class="s2">&quot;cry&quot;</span><span class="p">):</span>
         <span class="n">pauli</span> <span class="o">=</span> <span class="n">YGate</span><span class="p">()</span>
         <span class="n">r_plus</span> <span class="o">=</span> <span class="n">RYGate</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
         <span class="c1"># y basis measurement (and back again)</span>
-        <span class="n">measurement_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">SdgGate</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">SGate</span><span class="p">()]</span>
+        <span class="n">measurement_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">SXGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">SXdgGate</span><span class="p">()]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">gate</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;rzz&quot;</span><span class="p">,</span> <span class="s2">&quot;crz&quot;</span><span class="p">)</span>
         <span class="n">pauli</span> <span class="o">=</span> <span class="n">ZGate</span><span class="p">()</span>
-        <span class="n">r_plus</span> <span class="o">=</span> <span class="n">RZGate</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">r_plus</span> <span class="o">=</span> <span class="n">SGate</span><span class="p">()</span>
         <span class="c1"># z basis measurement</span>
         <span class="n">measurement_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">QPDMeasure</span><span class="p">()]</span>
 
@@ -1241,7 +1245,7 @@
                     <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SdgGate</span><span class="p">())</span>
                 <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">HGate</span><span class="p">())</span>
                 <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HGate</span><span class="p">())</span>
-        <span class="n">rot</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">r_plus</span><span class="p">)(</span><span class="o">-</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">rot</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">RXGate</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">RYGate</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">RZGate</span><span class="p">}[</span><span class="n">gate</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">]](</span><span class="o">-</span><span class="n">theta</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">operations</span> <span class="ow">in</span> <span class="n">unique_by_id</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">maps</span><span class="p">):</span>
             <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rot</span><span class="p">)</span>
 
@@ -1288,7 +1292,7 @@
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;csx&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">CSXGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">CSXGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">CRXGate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">operations</span> <span class="ow">in</span> <span class="n">unique_by_id</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">retval</span><span class="o">.</span><span class="n">maps</span><span class="p">):</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">TGate</span><span class="p">())</span>
@@ -1296,7 +1300,7 @@
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;csxdg&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">ControlledGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">ControlledGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">CRXGate</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">operations</span> <span class="ow">in</span> <span class="n">unique_by_id</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">retval</span><span class="o">.</span><span class="n">maps</span><span class="p">):</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">TdgGate</span><span class="p">())</span>
@@ -1342,7 +1346,7 @@
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;ecr&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">ECRGate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">ECRGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">CXGate</span><span class="p">())</span>
     <span class="c1"># Modify basis according to ECRGate definition in Qiskit circuit library</span>
     <span class="c1"># https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663</span>
@@ -1372,18 +1376,18 @@
 
 
 <span class="nd">@_register_qpdbasis_from_instruction</span><span class="p">(</span><span class="s2">&quot;move&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">Move</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">Move</span><span class="p">):</span>
     <span class="n">i_measurement</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">()]</span>
     <span class="n">x_measurement</span> <span class="o">=</span> <span class="p">[</span><span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">Reset</span><span class="p">()]</span>
-    <span class="n">y_measurement</span> <span class="o">=</span> <span class="p">[</span><span class="n">SdgGate</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">Reset</span><span class="p">()]</span>
+    <span class="n">y_measurement</span> <span class="o">=</span> <span class="p">[</span><span class="n">SXGate</span><span class="p">(),</span> <span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">Reset</span><span class="p">()]</span>
     <span class="n">z_measurement</span> <span class="o">=</span> <span class="p">[</span><span class="n">QPDMeasure</span><span class="p">(),</span> <span class="n">Reset</span><span class="p">()]</span>
 
     <span class="n">prep_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">()]</span>
     <span class="n">prep_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">XGate</span><span class="p">()]</span>
     <span class="n">prep_plus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">()]</span>
     <span class="n">prep_minus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">XGate</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">()]</span>
-    <span class="n">prep_iplus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">SGate</span><span class="p">()]</span>
-    <span class="n">prep_iminus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">XGate</span><span class="p">(),</span> <span class="n">HGate</span><span class="p">(),</span> <span class="n">SGate</span><span class="p">()]</span>
+    <span class="n">prep_iplus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">SXdgGate</span><span class="p">()]</span>
+    <span class="n">prep_iminus</span> <span class="o">=</span> <span class="p">[</span><span class="n">Reset</span><span class="p">(),</span> <span class="n">XGate</span><span class="p">(),</span> <span class="n">SXdgGate</span><span class="p">()]</span>
 
     <span class="c1"># https://arxiv.org/abs/1904.00102v2 Eqs. (12)-(19)</span>
     <span class="n">maps1</span><span class="p">,</span> <span class="n">maps2</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
@@ -1591,7 +1595,7 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/thebelab-helper.js"></script>

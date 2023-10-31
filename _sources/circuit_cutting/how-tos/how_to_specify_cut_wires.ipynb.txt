@@ -348,9 +348,6 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "for label in results:\n",
-    "    for i, subexperiment in enumerate(subexperiments[label]):\n",
-    "        results[label].metadata[i][\"num_qpd_bits\"] = len(subexperiment.cregs[0])\n",
     "reconstructed_expvals = reconstruct_expectation_values(\n",
     "    results,\n",
     "    coefficients,\n",

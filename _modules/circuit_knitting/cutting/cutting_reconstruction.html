@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.4.0</title>
+        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -347,6 +347,7 @@
 <span class="kn">from</span> <span class="nn">..utils.observable_grouping</span> <span class="kn">import</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">ObservableCollection</span>
 <span class="kn">from</span> <span class="nn">..utils.bitwise</span> <span class="kn">import</span> <span class="n">bit_count</span>
 <span class="kn">from</span> <span class="nn">.cutting_decomposition</span> <span class="kn">import</span> <span class="n">decompose_observables</span>
+<span class="kn">from</span> <span class="nn">.cutting_experiments</span> <span class="kn">import</span> <span class="n">_get_pauli_indices</span>
 <span class="kn">from</span> <span class="nn">.qpd</span> <span class="kn">import</span> <span class="n">WeightType</span>
 
 
@@ -375,7 +376,7 @@
 <span class="sd">            to generate their experiments should take care to order their subexperiments as follows before submitting them</span>
 <span class="sd">            to the sampler primitive:</span>
 
-<span class="sd">            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`</span>
+<span class="sd">            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`</span>
 
 <span class="sd">        coefficients: A sequence containing the coefficient associated with each unique subexperiment. Each element is a tuple</span>
 <span class="sd">            containing the coefficient (a ``float``) together with its :class:`.WeightType`, which denotes</span>
@@ -393,8 +394,6 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: ``observables`` and ``results`` are of incompatible types.</span>
 <span class="sd">        ValueError: An input observable has a phase not equal to 1.</span>
-<span class="sd">        ValueError: ``num_qpd_bits`` must be set for all result metadata dictionaries.</span>
-<span class="sd">        TypeError: ``num_qpd_bits`` must be an integer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -438,21 +437,7 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">cog</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
                 <span class="n">quasi_probs</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quasi_prob</span> <span class="ow">in</span> <span class="n">quasi_probs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">num_qpd_bits</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span>
-                            <span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span>
-                        <span class="p">][</span><span class="s2">&quot;num_qpd_bits&quot;</span><span class="p">]</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;The num_qpd_bits field must be set in each subexperiment &quot;</span>
-                            <span class="s2">&quot;result metadata dictionary.&quot;</span>
-                        <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span>
-                            <span class="n">num_qpd_bits</span><span class="p">,</span>
-                            <span class="n">cog</span><span class="p">,</span>
-                            <span class="n">outcome</span><span class="p">,</span>
-                        <span class="p">)</span>
+                    <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span><span class="n">cog</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">subobservable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subobservables_by_subsystem</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
                 <span class="n">current_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
@@ -466,16 +451,12 @@
 
 
 <span class="k">def</span> <span class="nf">_process_outcome</span><span class="p">(</span>
-    <span class="n">num_qpd_bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Process a single outcome of a QPD experiment with observables.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        num_qpd_bits: The number of QPD measurements in the circuit. It is</span>
-<span class="sd">            assumed that the second to last creg in the generating circuit</span>
-<span class="sd">            is the creg  containing the QPD measurements, and the last</span>
-<span class="sd">            creg is associated with the observable measurements.</span>
 <span class="sd">        cog: The observable set being measured by the current experiment</span>
 <span class="sd">        outcome: The outcome of the classical bits</span>
 
@@ -484,15 +465,11 @@
 <span class="sd">        this vector correspond to the elements of ``cog.commuting_observables``,</span>
 <span class="sd">        and each result will be either +1 or -1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">outcome</span> <span class="o">=</span> <span class="n">_outcome_to_int</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_qpd_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;num_qpd_bits must be an integer, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">num_qpd_bits</span><span class="p">)</span><span class="si">}</span><span class="s2"> was passed.&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+    <span class="n">num_meas_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_pauli_indices</span><span class="p">(</span><span class="n">cog</span><span class="p">))</span>
 
-    <span class="n">meas_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&gt;&gt;</span> <span class="n">num_qpd_bits</span>
+    <span class="n">outcome</span> <span class="o">=</span> <span class="n">_outcome_to_int</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+    <span class="n">meas_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_meas_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&gt;&gt;</span> <span class="n">num_meas_bits</span>
 
     <span class="c1"># qpd_factor will be -1 or +1, depending on the overall parity of qpd</span>
     <span class="c1"># measurements.</span>
@@ -556,7 +533,7 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/thebelab-helper.js"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Wire Cutting Phrased as a Two-Qubit Move Instruction" href="03_wire_cutting_via_move_instruction.html" /><link rel="prev" title="Gate Cutting to Reduce Circuit Width" href="01_gate_cutting_to_reduce_circuit_width.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>Gate Cutting to Reduce Circuit Depth - Circuit Knitting Toolbox 0.4.0</title>
+        <title>Gate Cutting to Reduce Circuit Depth - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -366,7 +366,7 @@
 </section>
 <section id="Specify-some-observables">
 <h2>Specify some observables<a class="headerlink" href="#Specify-some-observables" title="Link to this heading">#</a></h2>
-<p>Currently, only <code class="docutils literal notranslate"><span class="pre">Pauli</span></code> observables with phase equal to 1 are supported. Full support for <code class="docutils literal notranslate"><span class="pre">SparsePauliOp</span></code> is expected in CKT v0.5.0.</p>
+<p>Currently, only <code class="docutils literal notranslate"><span class="pre">Pauli</span></code> observables with phase equal to 1 are supported. Full support for <code class="docutils literal notranslate"><span class="pre">SparsePauliOp</span></code> is expected in CKT v0.6.0.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -565,15 +565,11 @@ QPD subexperiment depth after transpile: 26
 <section id="Reconstruct-the-expectation-values">
 <h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">#</a></h2>
 <p>Use the subexperiment results, subobservables, and sampling coefficients to reconstruct the expectation value of the original circuit.</p>
-<p>Include the number of bits used for cutting measurements in the results metadata. This will be automated in a future release, but users must specify it manually for now.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">)):</span>
-    <span class="n">results</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;num_qpd_bits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">cregs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 <span class="n">reconstructed_expvals</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span>
@@ -726,7 +722,7 @@ Relative errors in estimation: [0.01232348, 0.06557993, 0.02284735, -0.0773048, 
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

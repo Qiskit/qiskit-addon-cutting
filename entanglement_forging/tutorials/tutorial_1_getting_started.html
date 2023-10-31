@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Tutorial 2: Entanglement Forging with Quantum Serverless" href="tutorial_2_forging_with_quantum_serverless.html" /><link rel="prev" title="Entanglement Forging Tutorials" href="index.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>Tutorial 1: Entanglement Forging for estimating the ground state energy of the H2 molecule - Circuit Knitting Toolbox 0.4.0</title>
+        <title>Tutorial 1: Entanglement Forging for estimating the ground state energy of the H2 molecule - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -432,10 +432,10 @@ q_1: ┤1                     ├
 </section>
 <section id="Set-up-EntanglementForgingGroundStateSolver">
 <h2>Set up <code class="docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code><a class="headerlink" href="#Set-up-EntanglementForgingGroundStateSolver" title="Link to this heading">#</a></h2>
-<p>Next, we set up the <code class="docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code>. It is passed the ansatz, a classical optimizer (<a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.algorithms.optimizers.COBYLA.html?highlight=cobyla#qiskit.algorithms.optimizers.COBYLA">COBYLA</a>, in this case), and an initial point.</p>
+<p>Next, we set up the <code class="docutils literal notranslate"><span class="pre">EntanglementForgingGroundStateSolver</span></code>. It is passed the ansatz, a classical optimizer (<a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.optimizers.COBYLA.html">COBYLA</a>, in this case), and an initial point.</p>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ansatz</span></code> field is required.</p></li>
-<li><p>If no optimizer is passed, <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.algorithms.optimizers.SPSA.html">SPSA</a> with default settings will be used.</p></li>
+<li><p>If no optimizer is passed, <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.optimizers.SPSA.html">SPSA</a> with default settings will be used.</p></li>
 <li><p>If a Qiskit Runtime Service is not passed, then a local simulator will be used with the <a class="reference external" href="https://qiskit.org/documentation/apidoc/primitives.html">Qiskit Primitives</a>, and the <code class="docutils literal notranslate"><span class="pre">backend_names</span></code> argument will be ignored.</p></li>
 <li><p>If multiple backend names are passed, the expectation value calculations at each iteration will be divided evenly among them and calculated in parallel.</p></li>
 <li><p>If a single options argument is passed, it will be used for all backends. If a list of options is passed, they will be synchronized with the backends 1:1</p></li>
@@ -447,7 +447,7 @@ q_1: ┤1                     ├
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit.algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span>
 <span class="kn">from</span> <span class="nn">circuit_knitting.forging</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">EntanglementForgingGroundStateSolver</span><span class="p">,</span>
 <span class="p">)</span>
@@ -660,7 +660,7 @@ Parameters:
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

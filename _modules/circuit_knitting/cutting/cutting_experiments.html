@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.08.19 -->
-        <title>circuit_knitting.cutting.cutting_experiments - Circuit Knitting Toolbox 0.4.0</title>
+        <title>circuit_knitting.cutting.cutting_experiments - Circuit Knitting Toolbox 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.4.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.4.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -381,7 +381,7 @@
 
 <span class="sd">    In both cases, the subexperiment lists are ordered as follows:</span>
 
-<span class="sd">        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N}, sample_{1}observable_{0}, \ldots, sample_{M}observable_{N}]`</span>
+<span class="sd">        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`</span>
 
 <span class="sd">    The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.</span>
 
@@ -475,12 +475,13 @@
             <span class="n">subcircuit</span> <span class="o">=</span> <span class="n">subcircuit_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">is_separated</span><span class="p">:</span>
                 <span class="n">map_ids_tmp</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">map_ids</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">subcirc_map_ids</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
-            <span class="n">decomp_qc</span> <span class="o">=</span> <span class="n">decompose_qpd_instructions</span><span class="p">(</span>
-                <span class="n">subcircuit</span><span class="p">,</span> <span class="n">subcirc_qpd_gate_ids</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">map_ids_tmp</span>
-            <span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">cog</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-                <span class="n">meas_qc</span> <span class="o">=</span> <span class="n">_append_measurement_circuit</span><span class="p">(</span><span class="n">decomp_qc</span><span class="p">,</span> <span class="n">cog</span><span class="p">)</span>
-                <span class="n">subexperiments_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meas_qc</span><span class="p">)</span>
+                <span class="n">new_qc</span> <span class="o">=</span> <span class="n">_append_measurement_register</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">,</span> <span class="n">cog</span><span class="p">)</span>
+                <span class="n">decompose_qpd_instructions</span><span class="p">(</span>
+                    <span class="n">new_qc</span><span class="p">,</span> <span class="n">subcirc_qpd_gate_ids</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">map_ids_tmp</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">_append_measurement_circuit</span><span class="p">(</span><span class="n">new_qc</span><span class="p">,</span> <span class="n">cog</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">subexperiments_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_qc</span><span class="p">)</span>
 
     <span class="c1"># If the input was a single quantum circuit, return the subexperiments as a list</span>
     <span class="n">subexperiments_out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span>
@@ -559,6 +560,37 @@
     <span class="k">return</span> <span class="n">bases</span><span class="p">,</span> <span class="n">qpd_gate_ids</span>
 
 
+<span class="k">def</span> <span class="nf">_append_measurement_register</span><span class="p">(</span>
+    <span class="n">qc</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append a new classical register for the given ``CommutingObservableGroup``.</span>
+
+<span class="sd">    The new register will be named ``&quot;observable_measurements&quot;`` and will be</span>
+<span class="sd">    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        qc: The quantum circuit</span>
+<span class="sd">        cog: The commuting observable set for which to construct measurements</span>
+<span class="sd">        inplace: Whether to operate on the circuit in place (default: ``False``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The modified circuit</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">qc</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">pauli_indices</span> <span class="o">=</span> <span class="n">_get_pauli_indices</span><span class="p">(</span><span class="n">cog</span><span class="p">)</span>
+
+    <span class="n">obs_creg</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;observable_measurements&quot;</span><span class="p">)</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">obs_creg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qc</span>
+
+
 <span class="k">def</span> <span class="nf">_append_measurement_circuit</span><span class="p">(</span>
     <span class="n">qc</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
     <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span>
@@ -567,15 +599,15 @@
     <span class="n">qubit_locations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Append measurement instructions for the given ``CommutingObservableGroup``.</span>
 
-<span class="sd">    The new register will be named ``&quot;observable_measurements&quot;`` and will be</span>
-<span class="sd">    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.</span>
+<span class="sd">    The measurement results will be placed in a register with the name</span>
+<span class="sd">    ``&quot;observable_measurements&quot;``.  Such a register can be created by calling</span>
+<span class="sd">    :func:`_append_measurement_register` before calling the current function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        qc: The quantum circuit</span>
-<span class="sd">        cog: The commuting observable set for</span>
-<span class="sd">            which to construct measurements</span>
+<span class="sd">        cog: The commuting observable set for which to construct measurements</span>
 <span class="sd">        qubit_locations: A ``Sequence`` whose length is the number of qubits</span>
 <span class="sd">            in the observables, where each element holds that qubit&#39;s corresponding</span>
 <span class="sd">            index in the circuit.  By default, the circuit and observables are assumed</span>
@@ -601,19 +633,29 @@
                 <span class="sa">f</span><span class="s2">&quot;qubit_locations has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">qubit_locations</span><span class="p">)</span><span class="si">}</span><span class="s2"> element(s) but the &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;observable(s) have </span><span class="si">{</span><span class="n">cog</span><span class="o">.</span><span class="n">general_observable</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2"> qubit(s).&quot;</span>
             <span class="p">)</span>
+
+    <span class="c1"># Find observable_measurements register</span>
+    <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">qc</span><span class="o">.</span><span class="n">cregs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">reg</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;observable_measurements&quot;</span><span class="p">:</span>
+            <span class="n">obs_creg</span> <span class="o">=</span> <span class="n">reg</span>
+            <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot locate &quot;observable_measurements&quot; register&#39;</span><span class="p">)</span>
+
+    <span class="n">pauli_indices</span> <span class="o">=</span> <span class="n">_get_pauli_indices</span><span class="p">(</span><span class="n">cog</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">obs_creg</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;observable_measurements&quot; register is the wrong size &#39;</span>
+            <span class="s2">&quot;for the given commuting observable group &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">obs_creg</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
         <span class="n">qc</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># If the circuit has no measurements, the Sampler will fail.  So, we</span>
-    <span class="c1"># measure one qubit as a temporary workaround to</span>
-    <span class="c1"># https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422</span>
-    <span class="n">pauli_indices</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">pauli_indices</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">pauli_indices</span><span class="p">:</span>
-        <span class="n">pauli_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
     <span class="c1"># Append the appropriate measurements to qc</span>
-    <span class="n">obs_creg</span> <span class="o">=</span> <span class="n">ClassicalRegister</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pauli_indices</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;observable_measurements&quot;</span><span class="p">)</span>
-    <span class="n">qc</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">obs_creg</span><span class="p">)</span>
+    <span class="c1">#</span>
     <span class="c1"># Implement the necessary basis rotations and measurements, as</span>
     <span class="c1"># in BackendEstimator._measurement_circuit().</span>
     <span class="n">genobs_x</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">general_observable</span><span class="o">.</span><span class="n">x</span>
@@ -624,11 +666,26 @@
         <span class="n">actual_qubit</span> <span class="o">=</span> <span class="n">qubit_locations</span><span class="p">[</span><span class="n">subqubit</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">genobs_x</span><span class="p">[</span><span class="n">subqubit</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">genobs_z</span><span class="p">[</span><span class="n">subqubit</span><span class="p">]:</span>
-                <span class="n">qc</span><span class="o">.</span><span class="n">sdg</span><span class="p">(</span><span class="n">actual_qubit</span><span class="p">)</span>
-            <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">actual_qubit</span><span class="p">)</span>
+                <span class="c1"># Rotate Y basis to Z basis</span>
+                <span class="n">qc</span><span class="o">.</span><span class="n">sx</span><span class="p">(</span><span class="n">actual_qubit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Rotate X basis to Z basis</span>
+                <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">actual_qubit</span><span class="p">)</span>
+        <span class="c1"># Measure in Z basis</span>
         <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">actual_qubit</span><span class="p">,</span> <span class="n">obs_creg</span><span class="p">[</span><span class="n">clbit</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">qc</span>
+
+
+<span class="k">def</span> <span class="nf">_get_pauli_indices</span><span class="p">(</span><span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the indices to qubits to be measured.&quot;&quot;&quot;</span>
+    <span class="c1"># If the circuit has no measurements, the Sampler will fail.  So, we</span>
+    <span class="c1"># measure one qubit as a temporary workaround to</span>
+    <span class="c1"># https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422</span>
+    <span class="n">pauli_indices</span> <span class="o">=</span> <span class="n">cog</span><span class="o">.</span><span class="n">pauli_indices</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pauli_indices</span><span class="p">:</span>
+        <span class="n">pauli_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">pauli_indices</span>
 </pre></div>
         </article>
       </div>
@@ -669,7 +726,7 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/thebelab-helper.js"></script>
