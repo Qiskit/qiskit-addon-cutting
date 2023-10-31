@@ -483,7 +483,6 @@ def find_wire_cuts(
         subcircuits: Sequence[Any] = cut_solution["subcircuits"]
         num_cuts: int = cut_solution["num_cuts"]
         _print_cutter_result(
-            num_subcircuit=len(subcircuits),
             num_cuts=num_cuts,
             subcircuits=subcircuits,
             counter=counter,
@@ -558,7 +557,6 @@ def cut_circuit_wire(
     if verbose:
         print("-" * 20)
         _print_cutter_result(
-            num_subcircuit=len(cut_solution["subcircuits"]),
             num_cuts=cut_solution["num_cuts"],
             subcircuits=cut_solution["subcircuits"],
             counter=cut_solution["counter"],
@@ -569,7 +567,6 @@ def cut_circuit_wire(
 
 
 def _print_cutter_result(
-    num_subcircuit: int,
     num_cuts: int,
     subcircuits: Sequence[QuantumCircuit],
     counter: dict[int, dict[str, int]],
@@ -579,7 +576,6 @@ def _print_cutter_result(
     Pretty print the results.
 
     Args:
-        num_subciruit: The number of subcircuits
         num_cuts: The number of cuts
         subcircuits: The list of subcircuits
         counter: The dictionary containing all meta information regarding
@@ -589,7 +585,8 @@ def _print_cutter_result(
     Returns:
         None
     """
-    for subcircuit_idx in range(num_subcircuit):
+    print(f"num_cuts = {num_cuts}")
+    for subcircuit_idx, subcircuit in enumerate(subcircuits):
         print("subcircuit %d" % subcircuit_idx)
         print(
             "\u03C1 qubits = %d, O qubits = %d, width = %d, effective = %d, depth = %d, size = %d"
@@ -602,7 +599,7 @@ def _print_cutter_result(
                 counter[subcircuit_idx]["size"],
             )
         )
-        print(subcircuits[subcircuit_idx])
+        print(subcircuit)
     print("Estimated cost = %.3e" % classical_cost, flush=True)
 
 

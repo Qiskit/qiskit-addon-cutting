@@ -26,8 +26,8 @@ class TestQPDBasis(unittest.TestCase):
     def setUp(self):
         # RXX decomp
         x_gate = XGate()
-        x_r_plus = RXGate(1 * np.pi / 2)
-        x_r_minus = RXGate(-1 * np.pi / 2)
+        x_r_plus = SXGate()
+        x_r_minus = SXdgGate()
         x_measure = [HGate(), QPDMeasure(), HGate()]
         self.truth_rxx_maps = [
             ([], []),
@@ -51,7 +51,7 @@ class TestQPDBasis(unittest.TestCase):
         y_gate = YGate()
         y_r_plus = RYGate(1 * np.pi / 2)
         y_r_minus = RYGate(-1 * np.pi / 2)
-        y_measure = [SdgGate(), HGate(), QPDMeasure(), HGate(), SGate()]
+        y_measure = [SXGate(), QPDMeasure(), SXdgGate()]
         self.truth_ryy_maps = [
             ([], []),
             ([y_gate], [y_gate]),
@@ -72,8 +72,8 @@ class TestQPDBasis(unittest.TestCase):
 
         # RZZ decomp
         z_gate = ZGate()
-        z_r_plus = RZGate(1 * np.pi / 2)
-        z_r_minus = RZGate(-1 * np.pi / 2)
+        z_r_plus = SGate()
+        z_r_minus = SdgGate()
         z_measure = [QPDMeasure()]
         self.truth_rzz_maps = [
             ([], []),

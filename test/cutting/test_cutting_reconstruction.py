@@ -30,15 +30,6 @@ from circuit_knitting.cutting.cutting_reconstruction import (
 @ddt
 class TestCuttingReconstruction(unittest.TestCase):
     def setUp(self):
-        qc = QuantumCircuit(2)
-        qc.h(0)
-        qc.cx(0, 1)
-        self.qc0 = qc.copy()
-        qc.add_register(ClassicalRegister(1, name="qpd_measurements"))
-        self.qc1 = qc.copy()
-        qc.add_register(ClassicalRegister(2, name="observable_measurements"))
-        self.qc2 = qc
-
         self.cog = CommutingObservableGroup(
             Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"]))
         )
@@ -48,11 +39,10 @@ class TestCuttingReconstruction(unittest.TestCase):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(1.0, WeightType.EXACT)]
             subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
+            creg1 = ClassicalRegister(2, name="observable_measurements")
+            creg2 = ClassicalRegister(1, name="qpd_measurements")
             subexperiments[0].add_register(creg1)
             subexperiments[0].add_register(creg2)
             observables = PauliList(["ZZ"])
@@ -62,7 +52,6 @@ class TestCuttingReconstruction(unittest.TestCase):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
             subexperiments = {"A": QuantumCircuit(2)}
             observables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
@@ -84,11 +73,10 @@ class TestCuttingReconstruction(unittest.TestCase):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT)]
             subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
+            creg1 = ClassicalRegister(2, name="observable_measurements")
+            creg2 = ClassicalRegister(1, name="qpd_measurements")
             subexperiments[0].add_register(creg1)
             subexperiments[0].add_register(creg2)
             observables = PauliList(["iZZ"])
@@ -107,49 +95,23 @@ class TestCuttingReconstruction(unittest.TestCase):
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
-        with self.subTest("Test num_qpd_bits"):
-            results = SamplerResult(
-                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
-            )
-            results.metadata[0]["num_qpd_bits"] = 1.0
-            weights = [(0.5, WeightType.EXACT)]
-            subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
-            subexperiments[0].add_register(creg1)
-            subexperiments[0].add_register(creg2)
-            observables = PauliList(["ZZ"])
-            with pytest.raises(TypeError) as e_info:
-                reconstruct_expectation_values(results, weights, observables)
-            assert (
-                e_info.value.args[0]
-                == "num_qpd_bits must be an integer, but a <class 'float'> was passed."
-            )
-            results.metadata[0] = {}
-            with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(results, weights, observables)
-            assert (
-                e_info.value.args[0]
-                == "The num_qpd_bits field must be set in each subexperiment result metadata dictionary."
-            )
 
     @data(
         ("000", [1, 1, 1]),
-        ("001", [-1, -1, -1]),
-        ("010", [-1, 1, -1]),
-        ("011", [1, -1, 1]),
-        ("100", [1, -1, -1]),
-        ("101", [-1, 1, 1]),
-        ("110", [-1, -1, 1]),
+        ("001", [-1, 1, -1]),
+        ("010", [1, -1, -1]),
+        ("011", [-1, -1, 1]),
+        ("100", [-1, -1, -1]),
+        ("101", [1, -1, 1]),
+        ("110", [-1, 1, 1]),
         ("111", [1, 1, -1]),
     )
     @unpack
     def test_process_outcome(self, outcome, expected):
-        num_qpd_bits = len(self.qc2.cregs[-2])
         for o in (
             outcome,
             f"0b{outcome}",
             int(f"0b{outcome}", 0),
             hex(int(f"0b{outcome}", 0)),
         ):
-            assert np.all(_process_outcome(num_qpd_bits, self.cog, o) == expected)
+            assert np.all(_process_outcome(self.cog, o) == expected)

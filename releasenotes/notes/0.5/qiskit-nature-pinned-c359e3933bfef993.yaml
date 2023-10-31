@@ -1,0 +1,8 @@
+---
+other:
+  - |
+    ``qiskit-nature`` is now pinned to version 0.6.X, as the
+    entanglement forging code has not yet been updated to work with
+    Qiskit Nature 0.7.0.  Compatibility with Qiskit Nature 0.7.0 is
+    tracked by `issue #406
+    <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/406>`__.

@@ -44,7 +44,7 @@ jobs:
           name: html_docs
           path: ./docs/_build/html
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.4' }}
+        if: ${{ github.ref == 'refs/heads/stable/0.5' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

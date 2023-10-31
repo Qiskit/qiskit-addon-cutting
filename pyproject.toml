@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.4.0"
+version = "0.5.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -27,13 +27,12 @@ requires-python = ">=3.8"
 
 dependencies = [
     "numpy>=1.23.0",
-    # scipy is currently bounded from above because scipy 1.11 removed the
-    # `sym_pos` kwarg from `scipy.linalg.solve`, but pyscf has not yet been updated.
-    "scipy>=1.5.2,<1.11",
+    "scipy>=1.5.2",
     "rustworkx>=0.13.0",
     "qiskit-aer>=0.12.0",
     "qiskit>=0.44.1",
-    "qiskit-nature>=0.6.0",
+    "qiskit-algorithms>=0.2.1",
+    "qiskit-nature>=0.6.0, <0.7",
     "qiskit-ibm-runtime>=0.12.2",
 ]
 
@@ -73,7 +72,7 @@ lint = [
     "pydocstyle==6.3.0",
     "mypy==1.5.1",
     "reno>=3.4.0",
-    "pylint==2.17.5",
+    "pylint==2.17.7",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
     "toml",
 ]
@@ -112,11 +111,11 @@ only-include = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
-[tool.coverage.run]
-omit = [
-    # deprecated import location(s)
-    "circuit_knitting/cutting/wire_cutting.py",
-]
+#[tool.coverage.run]
+#omit = [
+#    # deprecated import location(s)
+#    "circuit_knitting/path/to/deprecated/module",
+#]
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
