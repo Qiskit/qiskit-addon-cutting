@@ -1,0 +1,8 @@
+---
+prelude: |
+  The primary purpose of this release is to swap the order of the
+  classical registers in the circuits generated the
+  :mod:`circuit_knitting.cutting` module.  With this change,
+  ``"observable_measurements"`` now comes before
+  ``"qpd_measurements"``, and there is no longer a need to insert
+  ``num_qpd_bits`` into the result metadata by hand.
