@@ -13,9 +13,11 @@
 
 import unittest
 import copy
+import io
 
 import pytest
-from qiskit.circuit.library.standard_gates import XGate, YGate, ZGate
+from qiskit import QuantumCircuit, qpy
+from qiskit.circuit.library.standard_gates import CXGate, XGate, YGate, ZGate
 
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
@@ -102,3 +104,10 @@ class TestSingleQubitQPDGate(unittest.TestCase):
         # Call both eq methods, since single qubit implements a slightly different equivalence
         self.assertFalse(inst_2q == inst_1q)
         self.assertFalse(inst_1q == inst_2q)
+
+    def test_qpy_serialization(self):
+        qc = QuantumCircuit(2)
+        qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [0, 1])
+
+        f = io.BytesIO()
+        qpy.dump(qc, f)
