@@ -104,7 +104,6 @@ notebook-dependencies = [
 [tool.hatch.build.targets.wheel]
 only-include = [
     "circuit_knitting",
-    "circuit_knitting_toolbox",
 ]
 
 [tool.autoflake]
