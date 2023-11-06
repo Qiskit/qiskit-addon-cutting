@@ -95,12 +95,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [Move(), Move()],
     ]
 )
-def example_circuit(
-    request,
-) -> tuple[QuantumCircuit, QuantumCircuit, list[list[int]]]:
+def example_circuit(request) -> QuantumCircuit:
     """Fixture for an example circuit.
-
-    Returns both the original and one with QPDGates as a tuple.
 
     Except for the parametrized gates, the system can be separated according to
     the partition labels "AAB".
