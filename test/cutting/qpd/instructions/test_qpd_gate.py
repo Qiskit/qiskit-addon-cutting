@@ -13,9 +13,11 @@
 
 import unittest
 import copy
+import io
 
 import pytest
-from qiskit.circuit.library.standard_gates import XGate, YGate, ZGate
+from qiskit import QuantumCircuit, qpy
+from qiskit.circuit.library.standard_gates import CXGate, XGate, YGate, ZGate
 
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
@@ -92,12 +94,7 @@ class TestSingleQubitQPDGate(unittest.TestCase):
     def test_missing_basis_id(self):
         maps = [([XGate()], [YGate()])]
         basis = QPDBasis(maps, [1.0])
-        with pytest.raises(ValueError) as e_info:
-            SingleQubitQPDGate(basis=basis, qubit_id=0).definition
-        self.assertEqual(
-            "Missing 'basis_id': unable to realize SingleQubitQPDGate.",
-            e_info.value.args[0],
-        )
+        assert SingleQubitQPDGate(basis=basis, qubit_id=0).definition is None
 
     def test_compare_1q_and_2q(self):
         maps = [([XGate()], [YGate()])]
@@ -107,3 +104,10 @@ class TestSingleQubitQPDGate(unittest.TestCase):
         # Call both eq methods, since single qubit implements a slightly different equivalence
         self.assertFalse(inst_2q == inst_1q)
         self.assertFalse(inst_1q == inst_2q)
+
+    def test_qpy_serialization(self):
+        qc = QuantumCircuit(2)
+        qc.append(TwoQubitQPDGate.from_instruction(CXGate()), [0, 1])
+
+        f = io.BytesIO()
+        qpy.dump(qc, f)

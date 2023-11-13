@@ -34,9 +34,9 @@ from .qpd.instructions import TwoQubitQPDGate
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
-    subcircuits: dict[str | int, QuantumCircuit]
+    subcircuits: dict[Hashable, QuantumCircuit]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, PauliList] | None = None
+    subobservables: dict[Hashable, PauliList] | None = None
 
 
 def partition_circuit_qubits(
@@ -143,7 +143,7 @@ def cut_gates(
     """
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to cut_gates should contain no classical registers or bits."
         )
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
@@ -162,7 +162,7 @@ def cut_gates(
 
 def partition_problem(
     circuit: QuantumCircuit,
-    partition_labels: Sequence[str | int] | None = None,
+    partition_labels: Sequence[Hashable] | None = None,
     observables: PauliList | None = None,
 ) -> PartitionedCuttingProblem:
     r"""
@@ -218,7 +218,7 @@ def partition_problem(
 
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to partition_problem should contain no classical registers or bits."
         )
 
     # Determine partition labels from connectivity (ignoring TwoQubitQPDGates)
@@ -258,8 +258,8 @@ def partition_problem(
 
 
 def decompose_observables(
-    observables: PauliList, partition_labels: Sequence[str | int]
-) -> dict[str | int, PauliList]:
+    observables: PauliList, partition_labels: Sequence[Hashable]
+) -> dict[Hashable, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 

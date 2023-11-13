@@ -14,7 +14,7 @@ import unittest
 
 import pytest
 import numpy as np
-from qiskit.quantum_info import PauliList
+from qiskit.quantum_info import PauliList, Pauli
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library.standard_gates import CXGate
 
@@ -23,9 +23,14 @@ from circuit_knitting.cutting.qpd import (
     TwoQubitQPDGate,
     QPDBasis,
 )
+from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting.cutting import generate_cutting_experiments
 from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
+from circuit_knitting.cutting.cutting_experiments import (
+    _append_measurement_register,
+    _append_measurement_circuit,
+)
 
 
 class TestCuttingExperiments(unittest.TestCase):
@@ -33,10 +38,10 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("simple circuit and observable"):
             qc = QuantumCircuit(2)
             qc.append(
-                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                TwoQubitQPDGate(QPDBasis.from_instruction(CXGate()), label="cut_cx"),
                 qargs=[0, 1],
             )
-            comp_weights = [
+            comp_coeffs = [
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
@@ -44,11 +49,11 @@ class TestCuttingExperiments(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, coeffs = generate_cutting_experiments(
                 qc, PauliList(["ZZ"]), np.inf
             )
-            assert weights == comp_weights
-            assert len(weights) == len(subexperiments)
+            assert coeffs == comp_coeffs
+            assert len(coeffs) == len(subexperiments)
             for exp in subexperiments:
                 assert isinstance(exp, QuantumCircuit)
 
@@ -56,17 +61,17 @@ class TestCuttingExperiments(unittest.TestCase):
             qc = QuantumCircuit(2)
             qc.append(
                 SingleQubitQPDGate(
-                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=0
+                    QPDBasis.from_instruction(CXGate()), label="cut_cx_0", qubit_id=0
                 ),
                 qargs=[0],
             )
             qc.append(
                 SingleQubitQPDGate(
-                    QPDBasis.from_gate(CXGate()), label="cut_cx_0", qubit_id=1
+                    QPDBasis.from_instruction(CXGate()), label="cut_cx_0", qubit_id=1
                 ),
                 qargs=[1],
             )
-            comp_weights = [
+            comp_coeffs = [
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
                 (0.5, WeightType.EXACT),
@@ -74,11 +79,11 @@ class TestCuttingExperiments(unittest.TestCase):
                 (0.5, WeightType.EXACT),
                 (-0.5, WeightType.EXACT),
             ]
-            subexperiments, weights = generate_cutting_experiments(
+            subexperiments, coeffs = generate_cutting_experiments(
                 {"A": qc}, {"A": PauliList(["ZY"])}, np.inf
             )
-            assert weights == comp_weights
-            assert len(weights) == len(subexperiments["A"])
+            assert coeffs == comp_coeffs
+            assert len(coeffs) == len(subexperiments["A"])
             for circ in subexperiments["A"]:
                 assert isinstance(circ, QuantumCircuit)
 
@@ -107,7 +112,7 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("test bad label"):
             qc = QuantumCircuit(2)
             qc.append(
-                TwoQubitQPDGate(QPDBasis.from_gate(CXGate()), label="cut_cx"),
+                TwoQubitQPDGate(QPDBasis.from_instruction(CXGate()), label="cut_cx"),
                 qargs=[0, 1],
             )
             partitioned_problem = partition_problem(
@@ -140,7 +145,9 @@ class TestCuttingExperiments(unittest.TestCase):
         with self.subTest("test single qubit qpd gate in unseparated circuit"):
             qc = QuantumCircuit(2)
             qc.append(
-                SingleQubitQPDGate(QPDBasis.from_gate(CXGate()), 0, label="cut_cx_0"),
+                SingleQubitQPDGate(
+                    QPDBasis.from_instruction(CXGate()), 0, label="cut_cx_0"
+                ),
                 qargs=[0],
             )
             with pytest.raises(ValueError) as e_info:
@@ -148,4 +155,67 @@ class TestCuttingExperiments(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "SingleQubitQPDGates are not supported in unseparable circuits."
+            )
+
+    def test_append_measurement_register(self):
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        cog = CommutingObservableGroup(Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"])))
+        with self.subTest("In place"):
+            qcx = qc.copy()
+            assert _append_measurement_register(qcx, cog, inplace=True) is qcx
+        with self.subTest("Out of place"):
+            assert _append_measurement_register(qc, cog) is not qc
+        with self.subTest("Correct number of bits"):
+            assert _append_measurement_register(qc, cog).num_clbits == len(
+                cog.pauli_indices
+            )
+
+    def test_append_measurement_circuit(self):
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        cog = CommutingObservableGroup(Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"])))
+        _append_measurement_register(qc, cog, inplace=True)
+        with self.subTest("In place"):
+            qcx = qc.copy()
+            assert _append_measurement_circuit(qcx, cog, inplace=True) is qcx
+        with self.subTest("Out of place"):
+            assert _append_measurement_circuit(qc, cog) is not qc
+        with self.subTest("Correct measurement circuit"):
+            qc2 = qc.copy()
+            qc2.measure(0, 0)
+            qc2.h(1)
+            qc2.measure(1, 1)
+            assert _append_measurement_circuit(qc, cog) == qc2
+        with self.subTest("Mismatch between qubit_locations and number of qubits"):
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog, qubit_locations=[0])
+            assert (
+                e_info.value.args[0]
+                == "qubit_locations has 1 element(s) but the observable(s) have 2 qubit(s)."
+            )
+        with self.subTest("No observable_measurements register"):
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(QuantumCircuit(2), cog)
+            assert (
+                e_info.value.args[0]
+                == 'Cannot locate "observable_measurements" register'
+            )
+        with self.subTest("observable_measurements register has wrong size"):
+            cog2 = CommutingObservableGroup(Pauli("XI"), list(PauliList(["XI"])))
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog2)
+            assert (
+                e_info.value.args[0]
+                == '"observable_measurements" register is the wrong size for the given commuting observable group (2 != 1)'
+            )
+        with self.subTest("Mismatched qubits, no qubit_locations provided"):
+            cog = CommutingObservableGroup(Pauli("X"), [Pauli("X")])
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog)
+            assert (
+                e_info.value.args[0]
+                == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )

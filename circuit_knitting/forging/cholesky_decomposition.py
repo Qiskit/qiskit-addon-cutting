@@ -141,7 +141,7 @@ def convert_cholesky_operator(
     Args:
         operator: A `List[SparsePauliOp]` containing the single-body Hamiltonian followed
             by the Cholesky operators
-            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_N]
+            shape: [single-body hamiltonian, cholesky_0, ..., cholesky_{N-1}]
         ansatz: The ansatz for which to compute expectation values of operator. The
             `EntanglementForgingAnsatz` also contains the bitstrings for each subsystem
 

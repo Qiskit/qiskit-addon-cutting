@@ -17,10 +17,9 @@ import importlib.util
 
 import pytest
 import numpy as np
-from qiskit.algorithms.optimizers import SPSA
+from qiskit_algorithms.optimizers import SPSA, COBYLA
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.circuit.library import TwoLocal
-from qiskit.algorithms.optimizers import COBYLA
 from qiskit_nature.units import DistanceUnit
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.problems import (

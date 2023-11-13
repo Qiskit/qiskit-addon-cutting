@@ -152,11 +152,11 @@ class ExactSampler(BaseSampler):
         self,
         circuits: tuple[QuantumCircuit, ...],
         parameter_values: Sequence[Sequence[float]],
-        **run_options,
+        **ignored_run_options,
     ) -> SamplerResult:
         metadata: list[dict[str, Any]] = [{} for _ in range(len(circuits))]
         bound_circuits = [
-            circuit if len(value) == 0 else circuit.bind_parameters(value)
+            circuit if len(value) == 0 else circuit.assign_parameters(value)
             for circuit, value in strict_zip(circuits, parameter_values)
         ]
         probabilities = [simulate_statevector_outcomes(qc) for qc in bound_circuits]

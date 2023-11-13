@@ -199,7 +199,7 @@ class EntanglementForgingKnitter:
                         "ambiguous how to combine the options with the backends."
                     )
         # For now, we only assign the parameters to a copy of the ansatz
-        circuit_u = self._ansatz.circuit_u.bind_parameters(ansatz_parameters)
+        circuit_u = self._ansatz.circuit_u.assign_parameters(ansatz_parameters)
 
         # Create the tensor and superposition stateprep circuits
         # tensor_ansatze   = [U|bi⟩      for |bi⟩       in  tensor_circuits]
@@ -428,8 +428,9 @@ class EntanglementForgingKnitter:
                         f"There was a problem closing session id ({session_id}). "
                         "No backend to associate with session."
                     )
-                session = Session(service=self.service, backend=self._backend_names[i])
-                session._session_id = session_id
+                session = Session.from_id(
+                    session_id, service=self.service, backend=self._backend_names[i]
+                )
                 session.close()
 
         return
@@ -658,8 +659,7 @@ def _estimate_expvals(
                 "If passing a QiskitRuntimeService, a list of backend names must be specified."
             )
         service = QiskitRuntimeService(**service_args)
-        session = Session(service=service, backend=backend_name)
-        session._session_id = session_id
+        session = Session.from_id(session_id, service=service, backend=backend_name)
         estimator = Estimator(session=session, options=options)
 
         job = estimator.run(

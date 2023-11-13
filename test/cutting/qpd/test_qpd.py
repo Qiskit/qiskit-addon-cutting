@@ -178,7 +178,7 @@ class TestQPDFunctions(unittest.TestCase):
             creg = ClassicalRegister(1, name="qpd_measurements")
             dx_circ_truth.add_register(creg)
             dx_circ_truth.h(0)
-            dx_circ_truth.rx(np.pi / 2, 1)
+            dx_circ_truth.sx(1)
             dx_circ_truth.measure(0, 0)
             dx_circ_truth.h(0)
             dx_circ = decompose_qpd_instructions(qpd_circ, [[0]], [2])
