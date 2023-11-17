@@ -25,7 +25,7 @@ from typing import (
 import scipy
 import numpy as np
 
-from qiskit.algorithms.optimizers import SPSA, Optimizer, OptimizerResult
+from qiskit_algorithms.optimizers import SPSA, Optimizer, OptimizerResult
 from qiskit_nature.second_q.problems import (
     ElectronicStructureProblem,
     EigenstateResult,
