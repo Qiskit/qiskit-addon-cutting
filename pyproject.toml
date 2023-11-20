@@ -92,7 +92,7 @@ docs = [
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex,pyscf]",
     "quantum-serverless>=0.0.7",
-    "aiohttp!=3.9.0",
+    "async-timeout",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
