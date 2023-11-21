@@ -59,6 +59,12 @@ Transforms (:mod:`circuit_knitting.utils.transforms`)
 =============================================================
 
 .. automodule:: circuit_knitting.utils.transforms
+
+===================================================================
+Transpiler passes (:mod:`circuit_knitting.utils.transpiler_passes`)
+===================================================================
+
+.. automodule:: circuit_knitting.utils.transpiler_passes
 """
 
 from .orbital_reduction import reduce_bitstrings
