@@ -90,7 +90,6 @@ def generate_cutting_experiments(
             appended to the gate label so they may be associated with other gates belonging
             to the same cut.
         ValueError: :class:`SingleQubitQPDGate` instances are not allowed in unseparated circuits.
-
     """
     if isinstance(circuits, QuantumCircuit) and not isinstance(observables, PauliList):
         raise ValueError(
