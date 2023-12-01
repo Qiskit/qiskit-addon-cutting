@@ -32,7 +32,7 @@ dependencies = [
     "qiskit-aer>=0.12.0",
     "qiskit>=0.44.1",
     "qiskit-algorithms>=0.2.1",
-    "qiskit-nature>=0.6.0, <0.7",
+    "qiskit-nature>=0.6.0, <0.8",
     "qiskit-ibm-runtime>=0.12.2",
 ]
 
