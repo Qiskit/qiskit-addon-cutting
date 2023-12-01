@@ -70,7 +70,7 @@ style = [
 lint = [
     "circuit-knitting-toolbox[style]",
     "pydocstyle==6.3.0",
-    "mypy==1.6.1",
+    "mypy==1.7.1",
     "reno>=3.4.0",
     "pylint==3.0.2",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
