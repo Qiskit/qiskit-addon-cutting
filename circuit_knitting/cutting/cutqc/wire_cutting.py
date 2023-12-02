@@ -618,7 +618,7 @@ def _cuts_parser(
         that are affected by these cuts
     """
     dag = circuit_to_dag(circ)
-    positions = []
+    positions: list[tuple[Qubit, int]] = []
     for position in cuts:
         if len(position) != 2:
             raise ValueError(
