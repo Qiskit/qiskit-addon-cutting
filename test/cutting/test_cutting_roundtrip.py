@@ -16,6 +16,7 @@ import logging
 
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import UnitaryGate
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
@@ -39,7 +40,6 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
-from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
 from qiskit_aer.primitives import Sampler
@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 
 
 def append_random_unitary(circuit: QuantumCircuit, qubits):
-    circuit.append(UnitaryGate(random_unitary(2 ** len(qubits))), qubits)
+    circuit.unitary(random_unitary(2 ** len(qubits)), qubits)
 
 
 @pytest.fixture(

@@ -32,6 +32,7 @@ from qiskit.circuit import (
     Measure,
     Reset,
 )
+from qiskit.circuit.library import UnitaryGate
 from qiskit.circuit.library.standard_gates import (
     XGate,
     YGate,
@@ -66,7 +67,6 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
-from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomposition
 from qiskit.utils import deprecate_func
 
