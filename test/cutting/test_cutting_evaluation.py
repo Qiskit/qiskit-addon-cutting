@@ -66,7 +66,7 @@ class TestCuttingEvaluation(unittest.TestCase):
             )
             self.assertEqual(
                 quasi_dists,
-                SamplerResult(quasi_dists=[{3: 1.0}], metadata=[{"num_qpd_bits": 0}]),
+                SamplerResult(quasi_dists=[{3: 1.0}], metadata=[{}]),
             )
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
         with self.subTest("Basic test with dicts"):
@@ -101,12 +101,8 @@ class TestCuttingEvaluation(unittest.TestCase):
                 samplers={"A": self.sampler, "B": deepcopy(self.sampler)},
             )
             comp_result = {
-                "A": SamplerResult(
-                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
-                ),
-                "B": SamplerResult(
-                    quasi_dists=[{1: 1.0}], metadata=[{"num_qpd_bits": 0}]
-                ),
+                "A": SamplerResult(quasi_dists=[{1: 1.0}], metadata=[{}]),
+                "B": SamplerResult(quasi_dists=[{1: 1.0}], metadata=[{}]),
             }
             self.assertEqual(quasi_dists, comp_result)
             self.assertEqual([(1.0, WeightType.EXACT)], coefficients)
@@ -220,7 +216,7 @@ class TestCuttingEvaluation(unittest.TestCase):
         with self.subTest("Dict of non-unique samplers"):
             qc = QuantumCircuit(2)
             qc.x(0)
-            qc.cnot(0, 1)
+            qc.cx(0, 1)
             subcircuits, _, subobservables = partition_problem(
                 circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
             )

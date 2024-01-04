@@ -14,14 +14,12 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-
 from qiskit.circuit import QuantumCircuit, Instruction, CircuitInstruction
 
 from ..qpd_basis import QPDBasis
 
 
-class BaseQPDGate(Instruction, ABC):
+class BaseQPDGate(Instruction):
     """Base class for a gate to be decomposed using quasiprobability decomposition."""
 
     def __init__(
@@ -100,11 +98,6 @@ class BaseQPDGate(Instruction, ABC):
             and self.name == other.name
             and self.label == other.label
         )
-
-    @abstractmethod
-    def _define(self) -> None:
-        """Generate a decomposed gate."""
-        raise NotImplementedError  # pragma: no cover
 
 
 class TwoQubitQPDGate(BaseQPDGate):
@@ -198,9 +191,10 @@ class SingleQubitQPDGate(BaseQPDGate):
 
     def _define(self) -> None:
         if self.basis_id is None:
-            raise ValueError(
-                "Missing 'basis_id': unable to realize SingleQubitQPDGate."
-            )
+            # With basis_id is not set, it does not make sense to define this
+            # operation in terms of more fundamental instructions, so we have
+            # self.definition remain as None.
+            return
         qc = QuantumCircuit(1)
         base = self.basis.maps[self.basis_id]
         for op in base[self.qubit_id]:

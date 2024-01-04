@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    The :func:`.generate_cutting_experiments` function now performs
+    some optimizations on the generated circuits before returning them
+    to the user.  In particular, it performs the
+    :class:`~qiskit.transpiler.passes.RemoveResetInZeroState`,
+    :class:`.RemoveFinalReset`, and :class:`.ConsolidateResets`
+    passes, so that circuits with cut wires and no re-used qubits are
+    transformed into subexperiments that contain no
+    :class:`~qiskit.circuit.library.Reset`\ s.  This allows such circuits to
+    work on a greater variety of hardware backends.
