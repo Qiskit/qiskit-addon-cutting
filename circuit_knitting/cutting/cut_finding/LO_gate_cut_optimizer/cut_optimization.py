@@ -32,12 +32,6 @@ def CutOptimizationCostFunc(state, func_args):
     return (state.lowerBoundGamma(), state.getMaxWidth())
 
 
-def CutOptimizationStratumFunc(state, func_args):
-    """Return stratum function for stratified beam search.
-    """
-    return int(np.log2(state.lowerBoundGamma()))
-
-
 def CutOptimizationUpperBoundCostFunc(goal_state, func_args):
     """Return the gamma upper bound."""
     return (goal_state.upperBoundGamma(), np.inf)
@@ -88,7 +82,6 @@ def CutOptimizationGoalStateFunc(state, func_args):
 # the cut optimization search space.
 cut_optimization_search_funcs = SearchFunctions(
     cost_func=CutOptimizationCostFunc,
-    stratum_func=CutOptimizationStratumFunc,
     upperbound_cost_func=CutOptimizationUpperBoundCostFunc,
     next_state_func=CutOptimizationNextStateFunc,
     goal_state_func=CutOptimizationGoalStateFunc,
