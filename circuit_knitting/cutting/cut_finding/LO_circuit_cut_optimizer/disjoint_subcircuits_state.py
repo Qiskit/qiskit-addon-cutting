@@ -190,9 +190,9 @@ class DisjointSubcircuitsState:
 
         if simple:  # print only a subset of properties.
             #    print(self.lowerBoundGamma(), self.gamma_UB, self.getMaxWidth())
-            #    print(debugActionListWithNames(self.actions))
+                print('Actions:', PrintActionListWithNames(self.actions))
             #    print(self.no_merge)
-            print(cut_actions_sublist)
+            #print(cut_actions_sublist)
         else:
             print("wiremap", self.wiremap)
             print("num_wires", self.num_wires)
@@ -481,7 +481,7 @@ def calcRootBellPairsGamma(root_bell_pairs):
 def PrintActionListWithNames(action_list):
     """Replace the action objects that appear in action lists
     in DisjointSubcircuitsState objects with the corresponding
-    action names for readability and print.
+    action names for readability, and print.
     """
 
     return [[x[0].getName()] + x[1:] for x in action_list]
