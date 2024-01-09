@@ -80,8 +80,10 @@ class CircuitInterface(ABC):
     @abstractmethod
     def insertGateCut(self, gate_ID, cut_type):
         """Derived classes must override this function and mark the specified
-        gate as being cut.  The cut type can be "LO", "LOCCWithAncillas",
-        or "LOCCNoAncillas"."""
+        gate as being cut.  The cut type can only be "LO" in this release.
+        In the future, support for "LOCCWithAncillas" and "LOCCNoAncillas".
+        will be added.
+        """
 
         assert False, "Derived classes must override insertGateCut()"
 
@@ -94,7 +96,9 @@ class CircuitInterface(ABC):
         is also provided as input to allow the wire choice to be verified.
         The ID of the new wire/qubit is also provided, which can then be used
         internally in derived classes to create new wires/qubits as needed.
-        The cut type can be "LO", "LOCCWithAncillas", or "LOCCNoAncillas"."""
+        The cut type can only be "LO" in this release. In the future, support
+        for "LOCCWithAncillas" and "LOCCNoAncillas" will be added.
+        """
 
         assert False, "Derived classes must override insertWireCut()"
 
@@ -105,7 +109,8 @@ class CircuitInterface(ABC):
         list_of_wire_cuts must be a list of wire-cut quadruples of the form:
             [..., (<gate_ID>, <input_ID>, <src_wire_ID>, <dest_wire_ID>), ...]
 
-        The assumed cut type is "LOCCNoAncillas"."""
+        The assumed cut type is "LOCCNoAncillas".
+        """
 
         assert False, "Derived classes must override insertParallelWireCut()"
 
@@ -113,7 +118,8 @@ class CircuitInterface(ABC):
     def defineSubcircuits(self, list_of_list_of_wires):
         """Derived classes must override this function.  The input is a
         list of subcircuits where each subcircuit is specified as a
-        list of wire IDs."""
+        list of wire IDs.
+        """
 
         assert False, "Derived classes must override defineSubcircuits()"
 
@@ -208,12 +214,12 @@ class SimpleGateList(CircuitInterface):
         )
 
     def getNumQubits(self):
-        """Return the number of qubits in the input circuit"""
+        """Return the number of qubits in the input circuit."""
 
         return self.num_qubits
 
     def getNumWires(self):
-        """Return the number of wires/qubits in the cut circuit"""
+        """Return the number of wires/qubits in the cut circuit."""
 
         return self.qubit_names.getNumItems()
 
@@ -355,11 +361,12 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
 
         out = list(range(self.getNumWires()))
+    #    print('wire_map:', wire_map)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
-
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
+    #    print('subcircuits:', self.subcircuits)
         return "".join(out)
 
     def makeWireMapping(self, name_mapping):
