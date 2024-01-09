@@ -17,6 +17,9 @@ from qiskit import QuantumCircuit
 
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
+from .circuit_interface import SimpleGateList
+from .lo_cuts_optimizer import LOCutsOptimizer
+from .utils import QCtoCCOCircuit
 
 
 def find_cuts(
@@ -24,4 +27,38 @@ def find_cuts(
     optimization: OptimizationSettings | dict[str, str | int],
     constraints: DeviceConstraints | dict[str, int],
 ):
-    pass
+    circuit_cco = QCtoCCOCircuit(circuit)
+    interface = SimpleGateList(circuit_cco)
+
+    if isinstance(optimization, dict):
+        opt_settings = OptimizationSettings.from_dict(optimization)
+    else:
+        opt_settings = optimization
+
+    # Hard-code the optimization type to best-first
+    opt_settings.setEngineSelection("CutOptimization", "BestFirst")
+
+    if isinstance(constraints, dict):
+        constraint_settings = DeviceConstraints.from_dict(constraints)
+    else:
+        constraint_settings = constraints
+
+    optimizer = LOCutsOptimizer(interface, opt_settings, constraint_settings)
+    out = optimizer.optimize()
+
+    print(
+        " Gamma =",
+        None if (out is None) else out.upperBoundGamma(),
+        ", Min_gamma_reached =",
+        optimizer.minimumReached(),
+    )
+    if out is not None:
+        out.print(simple=True)
+    else:
+        print(out)
+
+    print(
+        "Subcircuits:",
+        interface.exportSubcircuitsAsString(name_mapping="default"),
+        "\n",
+    )
