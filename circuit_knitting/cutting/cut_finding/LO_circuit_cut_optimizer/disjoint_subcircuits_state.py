@@ -1,7 +1,7 @@
 """File containing the class needed for representing search-space states when cutting circuits."""
 import copy
 import numpy as np
-from collections import Counter
+from collections import Counter, namedtuple
 
 
 class DisjointSubcircuitsState:
@@ -162,6 +162,8 @@ class DisjointSubcircuitsState:
         #                 Gate=[cut_actions[i][1][0], cut_actions[i][1][1]],
         #             )
         #         )
+        #     elif (cut_actions[i][0] == "CutLeftWire") or (cut_actions[i][0] ==  ("CutRightWire")):
+
 
         cut_actions = PrintActionListWithNames(self.actions)
         cut_actions_sublist = []
@@ -172,7 +174,7 @@ class DisjointSubcircuitsState:
                 cut_actions_sublist.append(
                     {
                         "Cut action": cut_actions[i][0],
-                        "Cut location:": {
+                        "Cut location": {
                             "Gate": [cut_actions[i][1][0], cut_actions[i][1][1]]
                         },
                         "Input wire": cut_actions[i][2][0][0],
