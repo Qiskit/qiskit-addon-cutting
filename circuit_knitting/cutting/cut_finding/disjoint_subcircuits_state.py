@@ -176,13 +176,14 @@ class DisjointSubcircuitsState:
         #         )
         #     elif (cut_actions[i][0] == "CutLeftWire") or (cut_actions[i][0] ==  ("CutRightWire")):
 
-
         cut_actions = PrintActionListWithNames(self.actions)
         cut_actions_sublist = []
 
         # Output formatting for LO gate and wire cuts.
         for i in range(len(cut_actions)):
-            if (cut_actions[i][0] == "CutLeftWire") or (cut_actions[i][0] ==  ("CutRightWire")):
+            if (cut_actions[i][0] == "CutLeftWire") or (
+                cut_actions[i][0] == ("CutRightWire")
+            ):
                 cut_actions_sublist.append(
                     {
                         "Cut action": cut_actions[i][0],
@@ -471,7 +472,6 @@ class DisjointSubcircuitsState:
 
         scc_subcircuits = [(s,) for s in range(len(subcircuits))]
         scc_order = np.zeros((len(scc_subcircuits), len(scc_subcircuits)), dtype=bool)
-
 
 
 def calcRootBellPairsGamma(root_bell_pairs):
