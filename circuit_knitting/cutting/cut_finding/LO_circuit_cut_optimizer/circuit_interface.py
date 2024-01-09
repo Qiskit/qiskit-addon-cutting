@@ -243,7 +243,8 @@ class SimpleGateList(CircuitInterface):
         wire/qubit ID of the source wire to be cut is also provided as
         input to allow the wire choice to be verified.  The ID of the
         (new) destination wire/qubit must also be provided.  The cut
-        type can be "LO", "LOCCWithAncillas", or "LOCCNoAncillas".
+        type as of now can only be "LO", with the options "LOCCWithAncillas"
+        and "LOCCNoAncillas" being added in the future.
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
@@ -344,15 +345,10 @@ class SimpleGateList(CircuitInterface):
 
         out = list(range(self.getNumWires()))
         alphabet = string.ascii_uppercase + string.ascii_lowercase
-        #print(out)
-
+        
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
-
-        # print (wire_map)
-        # print(self.subcircuits)        
-        # print(out)
         return "".join(out)
 
     def makeWireMapping(self, name_mapping):

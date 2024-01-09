@@ -167,10 +167,8 @@ class DisjointSubcircuitsState:
         cut_actions_sublist = []
 
         # Output formatting for LO gate and wire cuts.
-        # Temporary and needs to be updated later on.
-
         for i in range(len(cut_actions)):
-            if cut_actions[i][0] == ("CutLeftWire" or "CutRightWire"):
+            if (cut_actions[i][0] == "CutLeftWire") or (cut_actions[i][0] ==  ("CutRightWire")):
                 cut_actions_sublist.append(
                     {
                         "Cut action": cut_actions[i][0],
@@ -187,12 +185,14 @@ class DisjointSubcircuitsState:
                         "Cut Gate": [cut_actions[i][1][0], cut_actions[i][1][1]],
                     }
                 )
+        if not cut_actions_sublist:
+            cut_actions_sublist = cut_actions
 
         if simple:  # print only a subset of properties.
             #    print(self.lowerBoundGamma(), self.gamma_UB, self.getMaxWidth())
-                print('Actions:', PrintActionListWithNames(self.actions))
+            #    print('Actions:', PrintActionListWithNames(self.actions))
             #    print(self.no_merge)
-            #print(cut_actions_sublist)
+            print(cut_actions_sublist)
         else:
             print("wiremap", self.wiremap)
             print("num_wires", self.num_wires)
