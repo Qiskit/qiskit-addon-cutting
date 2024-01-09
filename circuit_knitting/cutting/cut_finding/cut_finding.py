@@ -15,5 +15,13 @@ from __future__ import annotations
 
 from qiskit import QuantumCircuit
 
-def find_cuts(circuit: QuantumCircuit):
+from .optimization_settings import OptimizationSettings
+from .quantum_device_constraints import DeviceConstraints
+
+
+def find_cuts(
+    circuit: QuantumCircuit,
+    optimization: OptimizationSettings | dict[str, str | int],
+    constraints: DeviceConstraints | dict[str, int],
+):
     pass
