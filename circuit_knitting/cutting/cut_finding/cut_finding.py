@@ -14,19 +14,38 @@
 from __future__ import annotations
 
 from qiskit import QuantumCircuit
+from qiskit.circuit import CircuitInstruction
 
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 from .circuit_interface import SimpleGateList
 from .lo_cuts_optimizer import LOCutsOptimizer
 from .utils import QCtoCCOCircuit
+from ..instructions import CutWire
+from ..cutting_decomposition import cut_gates
 
 
 def find_cuts(
     circuit: QuantumCircuit,
     optimization: OptimizationSettings | dict[str, str | int],
     constraints: DeviceConstraints | dict[str, int],
-):
+) -> QuantumCircuit:
+    """
+    Find cut locations in a circuit, given optimization settings and QPU constraints.
+
+    Args:
+        circuit: The circuit to cut
+        optimization: Settings for controlling optimizer behavior. Currently,
+            only a best-first optimizer is supported. For a list of supported
+            optimization settings, see :class:`.OptimizationSettings`.
+        constraints: QPU constraints used to generate the cut location search space.
+            For information on how to specify QPU constraints, see :class:`.DeviceConstraints`.
+
+    Returns:
+        A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
+        resulting from cutting these gates will be runnable on the devices
+        specified in ``constraints``.
+    """
     circuit_cco = QCtoCCOCircuit(circuit)
     interface = SimpleGateList(circuit_cco)
 
@@ -43,22 +62,36 @@ def find_cuts(
     else:
         constraint_settings = constraints
 
+    # Hard-code the optimizer to an LO-only optimizer
     optimizer = LOCutsOptimizer(interface, opt_settings, constraint_settings)
-    out = optimizer.optimize()
 
-    print(
-        " Gamma =",
-        None if (out is None) else out.upperBoundGamma(),
-        ", Min_gamma_reached =",
-        optimizer.minimumReached(),
-    )
-    if out is not None:
-        out.print(simple=True)
-    else:
-        print(out)
+    # Find cut locations
+    opt_out = optimizer.optimize()
 
-    print(
-        "Subcircuits:",
-        interface.exportSubcircuitsAsString(name_mapping="default"),
-        "\n",
-    )
+    wire_cut_actions = []
+    gate_ids = []
+    for action in opt_out.actions:
+        if action[0].getName() == "CutTwoQubitGate":
+            gate_ids.append(action[1][0])
+        else:
+            wire_cut_actions.append(action)
+
+    # First, replace all gates to cut with BaseQPDGate instances.
+    # This assumes each gate to cut is replaced 1-to-1 with a QPD gate.
+    # This may not hold in the future as we stop treating gate cuts individually
+    circ_out = cut_gates(circuit, gate_ids)[0]
+
+    # Insert all the wire cuts
+    counter = 0
+    for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
+        if action[0].getName() == "CutTwoQubitGate":
+            continue
+        inst_id = action[1][0]
+        qubit_id = action[2][0][0] - 1
+        circ_out.data.insert(
+            inst_id + counter,
+            CircuitInstruction(CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []),
+        )
+        counter += 1
+
+    return circ_out
