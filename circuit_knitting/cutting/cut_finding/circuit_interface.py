@@ -1,5 +1,16 @@
-"""File containing the classes required to represent quantum circuits in a format
- native to the circuit cutting optimizer."""
+# This code is a Qiskit project.
+
+# (C) Copyright IBM 2024.
+
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+"""Quantum circuit representation compatible with cut-finding optimizers."""
+
 import copy
 import string
 import numpy as np
@@ -346,7 +357,11 @@ class SimpleGateList(CircuitInterface):
         out = list(range(self.getNumWires()))
         print('wire_map:', wire_map)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
+<<<<<<< HEAD
         print('getNumWires:', out)
+=======
+
+>>>>>>> 4251c20aec29d30c79e8f8258b6bf45a66d927e2
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
