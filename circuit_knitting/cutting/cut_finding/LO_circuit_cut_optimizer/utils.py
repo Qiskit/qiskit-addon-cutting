@@ -1,5 +1,4 @@
 """File containing helper functions that are used in the code."""
-import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction
 from .best_first_search import BestFirstSearch

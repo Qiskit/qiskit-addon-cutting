@@ -39,7 +39,7 @@ class ActionNames:
         """
 
         assert (
-            not action_object.getName() in self.action_dict
+            action_object.getName() not in self.action_dict
         ), f"Action {action_object.getName()} is already defined"
 
         self.action_dict[action_object.getName()] = action_object
@@ -48,11 +48,11 @@ class ActionNames:
 
         if isinstance(group_name, list) or isinstance(group_name, tuple):
             for name in group_name:
-                if not name in self.group_dict:
+                if name not in self.group_dict:
                     self.group_dict[name] = list()
                 self.group_dict[name].append(action_object)
         else:
-            if not group_name in self.group_dict:
+            if group_name not in self.group_dict:
                 self.group_dict[group_name] = list()
             self.group_dict[group_name].append(action_object)
 

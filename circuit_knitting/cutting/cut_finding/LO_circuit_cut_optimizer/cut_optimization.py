@@ -9,7 +9,6 @@ from .search_space_generator import (
 )
 from .disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
-    PrintActionListWithNames,
 )
 
 

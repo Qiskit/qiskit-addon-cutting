@@ -441,7 +441,7 @@ class NameToIDMap:
         item ID is assigned.
         """
 
-        if not item_name in self.item_dict:
+        if item_name not in self.item_dict:
             while self.next_ID in self.ID_dict:
                 self.next_ID += 1
 
@@ -454,9 +454,9 @@ class NameToIDMap:
     def defineID(self, item_ID, item_name):
         """Assign a spefiic ID number to an item name."""
 
-        assert not item_ID in self.ID_dict, f"item ID {item_ID} already assigned"
+        assert item_ID not in self.ID_dict, f"item ID {item_ID} already assigned"
         assert (
-            not item_name in self.item_dict
+            item_name not in self.item_dict
         ), f"item name {item_name} already assigned"
 
         self.item_dict[item_name] = item_ID

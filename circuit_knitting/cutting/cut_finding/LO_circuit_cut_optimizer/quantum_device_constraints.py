@@ -1,5 +1,4 @@
 """File containing the class used for specifying characteristics of the target QPU."""
-import numpy as np
 
 
 class DeviceConstraints:

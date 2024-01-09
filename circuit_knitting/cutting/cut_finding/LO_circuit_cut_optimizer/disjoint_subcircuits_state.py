@@ -1,7 +1,7 @@
 """File containing the class needed for representing search-space states when cutting circuits."""
 import copy
 import numpy as np
-from collections import Counter, namedtuple
+from collections import Counter
 
 
 class DisjointSubcircuitsState:
@@ -209,13 +209,13 @@ class DisjointSubcircuitsState:
     def getNumQubits(self):
         """Return the number of qubits in the circuit."""
 
-        if not (self.wiremap is None):
+        if self.wiremap is not None:
             return self.wiremap.shape[0]
 
     def getMaxWidth(self):
         """Return the maximum width across subcircuits."""
 
-        if not (self.width is None):
+        if self.width is not None:
             return np.amax(self.width)
 
     def getSubCircuitIndices(self):
@@ -223,7 +223,7 @@ class DisjointSubcircuitsState:
         the current cut circuit.
         """
 
-        if not (self.uptree is None):
+        if self.uptree is not None:
             return [i for i, j in enumerate(self.uptree[: self.num_wires]) if i == j]
 
     def getWireRootMapping(self):
@@ -322,7 +322,7 @@ class DisjointSubcircuitsState:
         """
 
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
-            f"Arguments must be roots: "
+            "Arguments must be roots: "
             + f"{root_1} != {self.uptree[root_1]} "
             + f"or {root_2} != {self.uptree[root_2]}"
         )
@@ -401,7 +401,7 @@ class DisjointSubcircuitsState:
         """
 
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
-            f"Arguments must be roots: "
+            "Arguments must be roots: "
             + f"{root_1} != {self.uptree[root_1]} "
             + f"or {root_2} != {self.uptree[root_2]}"
         )

@@ -1,5 +1,4 @@
 """File containing the wrapper class for optimizing LO gate and wire cuts."""
-from itertools import count
 from .cut_optimization import CutOptimization
 from .cut_optimization import disjoint_subcircuit_actions
 from .cut_optimization import CutOptimizationNextStateFunc
