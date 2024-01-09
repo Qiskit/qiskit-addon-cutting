@@ -21,6 +21,7 @@ Circuit Cutting
     :toctree: ../stubs/
     :nosignatures:
 
+    find_cuts
     cut_wires
     expand_observables
     partition_circuit_qubits
@@ -80,6 +81,7 @@ CutQC
     cutqc.reconstruct_full_distribution
 """
 
+from .cut_finding import find_cuts
 from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
@@ -93,6 +95,7 @@ from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
 
 __all__ = [
+    "find_cuts",
     "partition_circuit_qubits",
     "partition_problem",
     "cut_gates",
