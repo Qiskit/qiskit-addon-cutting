@@ -11,9 +11,13 @@
 
 """Class used for specifying characteristics of the target QPU."""
 
+from __future__ import annotations
 
+from dataclasses import dataclass
+
+
+@dataclass
 class DeviceConstraints:
-
     """Class for specifying the characteristics of the target quantum
     processor that the optimizer must respect in order for the resulting
     subcircuits to be executable on the target processor.
@@ -31,16 +35,19 @@ class DeviceConstraints:
     ValueError: num_QPUs must be a positive integer.
     """
 
-    def __init__(self, qubits_per_QPU, num_QPUs):
-        if not (isinstance(qubits_per_QPU, int) and qubits_per_QPU > 0):
-            raise ValueError("qubits_per_QPU must be a positive definite integer.")
+    qubits_per_QPU: int
+    num_QPUs: int
 
-        if not (isinstance(num_QPUs, int) and num_QPUs > 0):
-            raise ValueError("num_QPUs must be a positive definite integer.")
-
-        self.qubits_per_QPU = qubits_per_QPU
-        self.num_QPUs = num_QPUs
+    def __post_init__(self):
+        if self.qubits_per_QPU < 1 or self.num_QPUs < 1:
+            raise ValueError(
+                "qubits_per_QPU and num_QPUs must be positive definite integers."
+            )
 
     def getQPUWidth(self):
         """Return the number of qubits supported on each individual QPU."""
         return self.qubits_per_QPU
+
+    @classmethod
+    def from_dict(cls, options: dict[str, int]):
+        return cls(**options)

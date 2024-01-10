@@ -11,9 +11,13 @@
 
 """Class for specifying parameters that control the optimization."""
 
+from __future__ import annotations
 
+from dataclasses import dataclass
+
+
+@dataclass
 class OptimizationSettings:
-
     """Class for specifying parameters that control the optimization.
 
     Member Variables:
@@ -70,36 +74,23 @@ class OptimizationSettings:
     ValueError: beam_width must be a positive definite integer.
     """
 
-    def __init__(
-        self,
-        max_gamma=1024,
-        max_backjumps=10000,
-        greedy_multiplier=None,
-        beam_width=30,
-        rand_seed=None,
-        LO=True,
-        LOCC_ancillas=False,
-        LOCC_no_ancillas=False,
-        engine_selections={"PhaseOneStageOneNoQubitReuse": "Greedy"},
-    ):
-        if not (isinstance(max_gamma, int) and max_gamma > 0):
+    max_gamma: int = 1024
+    max_backjumps: int = 10_000
+    greedy_multiplier: float | int | None = None
+    beam_width: int = 30
+    rand_seed: int | None = None
+    LO: bool = True
+    LOCC_ancillas: bool = False
+    LOCC_no_ancillas: bool = False
+    engine_selections: dict[str, str] | None = None
+
+    def __post_init__(self):
+        if self.max_gamma < 1:
             raise ValueError("max_gamma must be a positive definite integer.")
-
-        if not (isinstance(max_backjumps, int) and max_backjumps >= 0):
+        if self.max_backjumps < 0:
             raise ValueError("max_backjumps must be a positive semi-definite integer.")
-
-        if not (isinstance(beam_width, int) and beam_width > 0):
+        if self.beam_width < 1:
             raise ValueError("beam_width must be a positive definite integer.")
-
-        self.max_gamma = max_gamma
-        self.max_backjumps = max_backjumps
-        self.greedy_multiplier = greedy_multiplier
-        self.beam_width = beam_width
-        self.rand_seed = rand_seed
-        self.engine_selections = engine_selections.copy()
-        self.LO = LO
-        self.LOCC_ancillas = LOCC_ancillas
-        self.LOCC_no_ancillas = LOCC_no_ancillas
 
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
@@ -108,6 +99,8 @@ class OptimizationSettings:
         self.wire_cut_LO = self.LO
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
+        if self.engine_selections is None:
+            self.engine_selections = {"PhaseOneStageOneNoQubitReuse": "Greedy"}
 
     def getMaxGamma(self):
         """Return the max gamma."""
@@ -188,3 +181,7 @@ class OptimizationSettings:
             out.append("WireCut")
 
         return out
+
+    @classmethod
+    def from_dict(cls, options: dict[str, int]):
+        return cls(**options)
