@@ -70,9 +70,7 @@ def CCOtoQCCircuit(interface):
             i
         ]  # the operation, including gate names and qubits acted on.
         gate_qubits = len(op) - 1  # number of qubits involved in the operation.
-        if (
-            cut_types[i] is None
-        ):  # only append gates that are not cut to qc_cut. 
+        if cut_types[i] is None:  # only append gates that are not cut to qc_cut.
             if type(op[0]) is tuple:
                 params = [i for i in op[0][1:]]
                 gate_name = op[0][0]
