@@ -361,13 +361,11 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
 
         out = list(range(self.getNumWires()))
-    #    print('wire_map:', wire_map)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
         print('getNumWires:', out)
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
-    #    print('subcircuits:', self.subcircuits)
         return "".join(out)
 
     def makeWireMapping(self, name_mapping):
