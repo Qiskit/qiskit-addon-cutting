@@ -35,27 +35,17 @@ def QCtoCCOCircuit(circuit: QuantumCircuit):
     """
 
     circuit_list_rep = list()
-    num_circuit_instructions = len(circuit.data)
-
-    for i in range(num_circuit_instructions):
-        gate_instruction = circuit.data[i]
-        instruction_name = gate_instruction.operation.name
-        qubit_ref = gate_instruction.qubits
-        params = gate_instruction.operation.params
-        circuit_element = instruction_name
-
-        if (
-            circuit_element == "barrier" and len(qubit_ref) == circuit.num_qubits
-        ):  # barrier across all qubits is not assigned to a specific qubit.
-            circuit_list_rep.append(circuit_element)
+    for i, inst in enumerate(circuit.data):
+        # Barrier on all qubits not assigned to a specific qubit
+        if inst.operation.name == "barrier" and len(inst.qubits) == circuit.num_qubits:
+            circuit_list_rep.append(inst.operation.name)
         else:
-            circuit_element = (circuit_element,)
+            circuit_element = (inst.operation.name,)
             if params:
-                circuit_element += tuple(params[i] for i in range(len(params)))
+                circuit_element += tuple(inst.operation.params)
                 circuit_element = (circuit_element,)
-            for j in range(len(qubit_ref)):
-                qubit_index = qubit_ref[j].index
-                circuit_element += (qubit_index,)
+            for qubit in inst.qubits:
+                circuit_element += (qubit.index,)
             circuit_list_rep.append(circuit_element)
 
     return circuit_list_rep
