@@ -41,7 +41,7 @@ def QCtoCCOCircuit(circuit: QuantumCircuit):
             circuit_list_rep.append(inst.operation.name)
         else:
             circuit_element = (inst.operation.name,)
-            if params:
+            if inst.operation.params:
                 circuit_element += tuple(inst.operation.params)
                 circuit_element = (circuit_element,)
             for qubit in inst.qubits:
