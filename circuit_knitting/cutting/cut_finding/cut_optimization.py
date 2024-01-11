@@ -140,7 +140,7 @@ class CutOptimization:
     CutOptimization focuses on using circuit cutting to create disjoint subcircuits.
     It then uses upper and lower bounds on the resulting
     gamma in order to decide where and how to cut while deferring the exact
-    choices of quasiprobability decompositions to Stage Two.
+    choices of quasiprobability decompositions.
 
     Member Variables:
 
