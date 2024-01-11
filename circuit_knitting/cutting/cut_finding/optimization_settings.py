@@ -100,7 +100,7 @@ class OptimizationSettings:
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
         if self.engine_selections is None:
-            self.engine_selections = {"PhaseOneStageOneNoQubitReuse": "Greedy"}
+            self.engine_selections = {"CutOptimization": "Greedy"}
 
     def getMaxGamma(self):
         """Return the max gamma."""
