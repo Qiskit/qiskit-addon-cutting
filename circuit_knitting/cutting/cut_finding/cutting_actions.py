@@ -124,15 +124,15 @@ class ActionApplyGate(DisjointSearchAction):
         specification: gate_spec.
         """
 
-        if len(gate_spec[1]) > 3:
+        gate = gate_spec[1]  # extract the gate from gate specification.
+        if len(gate.qubits) > 2:
             # The function multiqubitNextState handles
             # gates that act on 3 or more qubits.
             return self.multiqubitNextState(state, gate_spec, max_width)
 
-        gate = gate_spec[1]  # extract the gate from gate specification.
-        r1 = state.findQubitRoot(gate[1])  # extract the root wire for the first qubit
+        r1 = state.findQubitRoot(gate.qubits[0])  # extract the root wire for the first qubit
         # acted on by the given 2-qubit gate.
-        r2 = state.findQubitRoot(gate[2])  # extract the root wire for the second qubit
+        r2 = state.findQubitRoot(gate.qubits[1])  # extract the root wire for the second qubit
         # acted on by the given 2-qubit gate.
 
         # If applying the gate would cause the number of qubits to exceed
@@ -160,7 +160,7 @@ class ActionApplyGate(DisjointSearchAction):
         """
 
         gate = gate_spec[1]
-        roots = list(set([state.findQubitRoot(q) for q in gate[1:]]))
+        roots = list(set([state.findQubitRoot(q) for q in gate.qubits]))
         new_width = sum([state.width[r] for r in roots])
 
         # If applying the gate would cause the number of qubits to exceed
@@ -267,7 +267,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         """
 
         # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1]) != 3:
+        if len(gate_spec[1].qubits) != 2:
             return list()
 
         gamma_LB, num_bell_pairs, gamma_UB = self.getCostParams(gate_spec)
@@ -276,8 +276,8 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
             return list()
 
         gate = gate_spec[1]
-        q1 = gate[1]
-        q2 = gate[2]
+        q1 = gate.qubits[0]
+        q2 = gate.qubits[1]
         w1 = state.getWire(q1)
         w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
@@ -346,11 +346,12 @@ disjoint_subcircuit_actions.defineAction(ActionCutTwoQubitGate())
 
 
 def lookupCostParams(gate_dict, gate_spec, default_value):
-    gate_name = gate_spec[1][0]
+    gate_name = gate_spec[1].name
 
     if gate_name in gate_dict:
         return gate_dict[gate_name]
 
+    # DO WE NEED THIS LOGIC? WHY WOULD THE NAME BE A TUPLE OR LIST?
     elif isinstance(gate_name, tuple) or isinstance(gate_name, list):
         if gate_name[0] in gate_dict:
             return gate_dict[gate_name[0]](gate_name)
@@ -379,7 +380,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         """
 
         # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1]) != 3:
+        if len(gate_spec[1].qubits) != 2:
             return list()
 
         # If the wire-cut limit would be exceeded, return the empty list
@@ -387,8 +388,8 @@ class ActionCutLeftWire(DisjointSearchAction):
             return list()
 
         gate = gate_spec[1]
-        q1 = gate[1]
-        q2 = gate[2]
+        q1 = gate.qubits[0]
+        q2 = gate.qubits[1]
         w1 = state.getWire(q1)
         w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
@@ -515,7 +516,7 @@ class ActionCutRightWire(DisjointSearchAction):
         """
 
         # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1]) != 3:
+        if len(gate_spec[1].qubits) != 2:
             return list()
 
         # If the wire-cut limit would be exceeded, return the empty list
@@ -523,8 +524,8 @@ class ActionCutRightWire(DisjointSearchAction):
             return list()
 
         gate = gate_spec[1]
-        q1 = gate[1]
-        q2 = gate[2]
+        q1 = gate.qubits[0]
+        q2 = gate.qubits[1]
         w1 = state.getWire(q1)
         w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
@@ -608,7 +609,7 @@ class ActionCutBothWires(DisjointSearchAction):
         """
 
         # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1]) != 3:
+        if len(gate_spec[1].qubits) != 2:
             return list()
 
         # If the wire-cut limit would be exceeded, return the empty list
@@ -620,8 +621,8 @@ class ActionCutBothWires(DisjointSearchAction):
             return list()
 
         gate = gate_spec[1]
-        q1 = gate[1]
-        q2 = gate[2]
+        q1 = gate.qubits[0]
+        q2 = gate.qubits[1]
         w1 = state.getWire(q1)
         w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
@@ -704,10 +705,10 @@ class ActionMultiWireCut(DisjointSearchAction):
         gate = gate_spec[1]
 
         # If the gate is applied to two or fewer qubits, return the empty list
-        if len(gate) <= 3:
+        if len(gate.qubits) <= 2:
             return list()
 
-        input_pairs = [(i + 1, state.findQubitRoot(q)) for i, q in enumerate(gate[1:])]
+        input_pairs = [(i + 1, state.findQubitRoot(q)) for i, q in enumerate(gate.qubits)]
         subcircuits = list(set([pair[1] for pair in input_pairs]))
 
         return self.nextStateRecurse(
@@ -809,7 +810,7 @@ class ActionMultiWireCut(DisjointSearchAction):
         cut_triples = list()
 
         for i, root in cuts:
-            qubit = gate[i]
+            qubit = gate.qubits[i]
             wire = new_state.getWire(qubit)
             rnew = new_state.newWire(qubit)
             cut_triples.append((i, wire, rnew))
