@@ -266,7 +266,6 @@ class BestFirstSearch:
                 self.num_backjumps += 1
 
             prev_depth = depth
-
             if self.goal_state_func(state, *args):
                 self.penultimate_stats = self.getStats()
                 self.updateUpperBoundGoalState(state, *args)
