@@ -64,7 +64,7 @@ class OptimizationSettings:
     wire_cut_LOCC_no_ancillas (bool) is a flag that indicates that
     LOCC wire cuts with no ancillas should be included in the optimization.
 
-    NOTE: The current release only support LO gate and wire cuts. LOCC
+    NOTE: The current release only supports LO gate and wire cuts. LOCC
     flags have been incorporated with an eye towards future releases.
 
     Raises:
@@ -117,15 +117,6 @@ class OptimizationSettings:
     def setEngineSelection(self, stage_of_optimization, engine_name):
         """Return the name of the search engine to employ."""
         self.engine_selections[stage_of_optimization] = engine_name
-
-    def clearAllCutTypes(self):
-        """Reset the flags for all circuit cutting types"""
-
-        self.gate_cut_LO = False
-        self.gate_cut_LOCC_with_ancillas = False
-        self.wire_cut_LO = False
-        self.wire_cut_LOCC_with_ancillas = False
-        self.wire_cut_LOCC_no_ancillas = False
 
     def setGateCutTypes(self):
         """Select which gate-cut types to include in the optimization.

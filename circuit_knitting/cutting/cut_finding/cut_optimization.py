@@ -73,7 +73,7 @@ def CutOptimizationNextStateFunc(state, func_args):
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled
     # in the search
-    if len(gate_spec[1].qubits) == 2:  # change to ==3
+    if len(gate_spec[1].qubits) == 2:
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
         action_list = func_args.search_actions.getGroup("MultiqubitGates")

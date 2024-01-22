@@ -350,10 +350,6 @@ class BestFirstSearch:
                 self.pqueue.put(state, depth, cost)
                 self.num_enqueues += 1
 
-                # if (bfs_debug > 2):
-                #     print()
-                #     state.print(simple=True)
-
     def updateMinimumReached(self, min_cost):
         """Update the minimum_reached flag indicating
         that a global optimum has been reached.

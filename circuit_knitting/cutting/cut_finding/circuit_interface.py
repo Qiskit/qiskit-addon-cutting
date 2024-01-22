@@ -45,8 +45,6 @@ class CircuitInterface(ABC):
         """Derived classes must override this function and return the number
         of qubits in the input circuit."""
 
-        assert False, "Derived classes must override getNumQubits()"
-
     @abstractmethod
     def getMultiQubitGates(self):
         """Derived classes must override this function and return a list that
@@ -88,17 +86,11 @@ class CircuitInterface(ABC):
         the allowed cut types are 'None', 'GateCut', 'WireCut', and 'AbsorbGate'.
         """
 
-        assert False, "Derived classes must override getMultiQubitGates()"
-
     @abstractmethod
     def insertGateCut(self, gate_ID, cut_type):
         """Derived classes must override this function and mark the specified
         gate as being cut.  The cut type can only be "LO" in this release.
-        In the future, support for "LOCCWithAncillas" and "LOCCNoAncillas".
-        will be added.
         """
-
-        assert False, "Derived classes must override insertGateCut()"
 
     @abstractmethod
     def insertWireCut(self, gate_ID, input_ID, src_wire_ID, dest_wire_ID, cut_type):
@@ -109,11 +101,8 @@ class CircuitInterface(ABC):
         is also provided as input to allow the wire choice to be verified.
         The ID of the new wire/qubit is also provided, which can then be used
         internally in derived classes to create new wires/qubits as needed.
-        The cut type can only be "LO" in this release. In the future, support
-        for "LOCCWithAncillas" and "LOCCNoAncillas" will be added.
+        The cut type can only be "LO" in this release.
         """
-
-        assert False, "Derived classes must override insertWireCut()"
 
 
     @abstractmethod
@@ -123,7 +112,6 @@ class CircuitInterface(ABC):
         list of wire IDs.
         """
 
-        assert False, "Derived classes must override defineSubcircuits()"
 
 
 class SimpleGateList(CircuitInterface):
@@ -220,6 +208,8 @@ class SimpleGateList(CircuitInterface):
             (len(self.scc_subcircuits), len(self.scc_subcircuits)), dtype=bool
         )
 
+
+
     def getNumQubits(self):
         """Return the number of qubits in the input circuit."""
 
@@ -252,8 +242,8 @@ class SimpleGateList(CircuitInterface):
         return subcircuit
 
     def insertGateCut(self, gate_ID, cut_type):
-        """Mark the specified gate as being cut.  The cut type can
-        be "LO", "LOCCWithAncillas", or "LOCCNoAncillas".
+        """Mark the specified gate as being cut.  The cut type in this release
+        can only be "LO".
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
@@ -266,8 +256,7 @@ class SimpleGateList(CircuitInterface):
         wire/qubit ID of the source wire to be cut is also provided as
         input to allow the wire choice to be verified.  The ID of the
         (new) destination wire/qubit must also be provided.  The cut
-        type as of now can only be "LO", with the options "LOCCWithAncillas"
-        and "LOCCNoAncillas" being added in the future.
+        type in this release can only be "LO".
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
@@ -346,7 +335,6 @@ class SimpleGateList(CircuitInterface):
         out = dict()
         for in_wire, out_wire in enumerate(self.output_wires):
             out[self.qubit_names.getName(in_wire)] = wire_map[out_wire]
-
         return out
 
     def exportSubcircuitsAsString(self, name_mapping="default"):
@@ -359,12 +347,11 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
 
         out = list(range(self.getNumWires()))
-        #    print('wire_map:', wire_map)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
-        #    print('subcircuits:', self.subcircuits)
+    
         return "".join(out)
 
     def makeWireMapping(self, name_mapping):
@@ -452,7 +439,9 @@ class NameToIDMap:
         If the hashable item does not yet appear in the item dictionary, a new
         item ID is assigned.
         """
-        if item_name not in self.item_dict:
+
+
+        if not item_name in self.item_dict:
             while self.next_ID in self.ID_dict:
                 self.next_ID += 1
 

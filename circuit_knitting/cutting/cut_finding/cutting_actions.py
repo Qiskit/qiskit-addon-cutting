@@ -25,15 +25,11 @@ class DisjointSearchAction(ABC):
 
     @abstractmethod
     def getName(self):
-        """Derived classes must return the look-up name of the action"""
-
-        assert False, "Derived classes must override getName()"
+        """Derived classes must return the look-up name of the action."""
 
     @abstractmethod
     def getGroupNames(self):
-        """Derived classes must return a list of group names"""
-
-        assert False, "Derived classes must override getGroupNames()"
+        """Derived classes must return a list of group names."""
 
     @abstractmethod
     def nextStatePrimitive(self, state, gate_spec, max_width):
@@ -41,9 +37,8 @@ class DisjointSearchAction(ABC):
         result from applying all variations of the action to gate_spec
         in the specified DisjointSubcircuitsState state, subject to the
         constraint that the number of resulting qubits (wires) in each
-        subcircuit cannot exceed max_width"""
-
-        assert False, "Derived classes must override nextState()"
+        subcircuit cannot exceed max_width.
+        """
 
     def nextState(self, state, gate_spec, max_width):
         """Return a list of search states that result from applying the
@@ -152,7 +147,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
     """Action class that implements the action of
         cutting a two-qubit gate.
-    .
 
         TODO: The list of supported gates needs to be expanded.
     """
