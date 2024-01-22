@@ -83,9 +83,13 @@ class ActionApplyGate(DisjointSearchAction):
             # gates that act on 3 or more qubits.
             return self.multiqubitNextState(state, gate_spec, max_width)
 
-        r1 = state.findQubitRoot(gate.qubits[0])  # extract the root wire for the first qubit
+        r1 = state.findQubitRoot(
+            gate.qubits[0]
+        )  # extract the root wire for the first qubit
         # acted on by the given 2-qubit gate.
-        r2 = state.findQubitRoot(gate.qubits[1])  # extract the root wire for the second qubit
+        r2 = state.findQubitRoot(
+            gate.qubits[1]
+        )  # extract the root wire for the second qubit
         # acted on by the given 2-qubit gate.
 
         # If applying the gate would cause the number of qubits to exceed
@@ -158,48 +162,64 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
         self.gate_dict = {
             "cx": (1, 1, 3),
+            "cy": (1, 1, 3),
+            "cz": (1, 1, 3),
+            "ch": (3, 0, 3),
+            "cp": (1, 1, 3),
+            "cs": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
+            "csdg": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
+            "csx": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
             "swap": (1, 2, 7),
             "iswap": (1, 2, 7),
+            "dcx": (7, 0, 7),
+            "ecr": (3, 0, 3),
             "crx": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                )
+            ),
+            "cp": (
+                lambda t: (
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    0,
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                 )
             ),
             "cry": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                 )
             ),
             "crz": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    1 + 2 * np.abs(np.sin(t[0] / 2)),
                 )
             ),
             "rxx": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                 )
             ),
             "ryy": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                 )
             ),
             "rzz": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[1])),
+                    1 + 2 * np.abs(np.sin(t[0])),
                 )
             ),
         }
@@ -272,14 +292,13 @@ disjoint_subcircuit_actions.defineAction(ActionCutTwoQubitGate())
 
 def lookupCostParams(gate_dict, gate_spec, default_value):
     gate_name = gate_spec[1].name
-
-    if gate_name in gate_dict:
+    params = gate_spec[1].params
+    if len(params) == 0:
         return gate_dict[gate_name]
 
-    # DO WE NEED THIS LOGIC? WHY WOULD THE NAME BE A TUPLE OR LIST?
-    elif isinstance(gate_name, tuple) or isinstance(gate_name, list):
-        if gate_name[0] in gate_dict:
-            return gate_dict[gate_name[0]](gate_name)
+    else:
+        if gate_name in gate_dict:
+            return gate_dict[gate_name]((gate_name, *params))
 
     return default_value
 
@@ -527,7 +546,9 @@ class ActionMultiWireCut(DisjointSearchAction):
         if len(gate.qubits) <= 2:
             return list()
 
-        input_pairs = [(i + 1, state.findQubitRoot(q)) for i, q in enumerate(gate.qubits)]
+        input_pairs = [
+            (i + 1, state.findQubitRoot(q)) for i, q in enumerate(gate.qubits)
+        ]
         subcircuits = list(set([pair[1] for pair in input_pairs]))
 
         return self.nextStateRecurse(
