@@ -102,17 +102,6 @@ class CircuitInterface(ABC):
 
         assert False, "Derived classes must override insertWireCut()"
 
-    @abstractmethod
-    def insertParallelWireCut(self, list_of_wire_cuts):
-        """Derived classes must override this function and insert a parallel
-        LOCC wire cut without ancillas into the circuit.  The
-        list_of_wire_cuts must be a list of wire-cut quadruples of the form:
-            [..., (<gate_ID>, <input_ID>, <src_wire_ID>, <dest_wire_ID>), ...]
-
-        The assumed cut type is "LOCCNoAncillas".
-        """
-
-        assert False, "Derived classes must override insertParallelWireCut()"
 
     @abstractmethod
     def defineSubcircuits(self, list_of_list_of_wires):
@@ -292,14 +281,6 @@ class SimpleGateList(CircuitInterface):
         qubit = self.circuit[gate_ID][0][input_ID]
         self.output_wires[qubit] = dest_wire_ID
 
-    def insertParallelWireCut(self, list_of_wire_cuts):
-        """Insert a parallel LOCC wire cut without ancillas into the circuit.
-        The list_of_wire_cuts must be a list of wire-cut quadruples of
-        the form:
-            [..., (<gate_ID>, <input_ID>, <src_wire_ID>, <dest_wire_ID>), ...]
-        """
-
-        assert False, "insertParallelWireCut() not yet implemented"
 
     def defineSubcircuits(self, list_of_list_of_wires):
         """Assign subcircuits where each subcircuit is
@@ -465,7 +446,7 @@ class NameToIDMap:
         return self.item_dict[item_name]
 
     def defineID(self, item_ID, item_name):
-        """Assign a spefiic ID number to an item name."""
+        """Assign a specific ID number to an item name."""
 
         assert item_ID not in self.ID_dict, f"item ID {item_ID} already assigned"
         assert (

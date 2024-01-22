@@ -78,7 +78,7 @@ def find_cuts(
 
     # First, replace all gates to cut with BaseQPDGate instances.
     # This assumes each gate to cut is replaced 1-to-1 with a QPD gate.
-    # This may not hold in the future as we stop treating gate cuts individually
+    # This may not hold in the future as we stop treating gate cuts individually.
     circ_out = cut_gates(circuit, gate_ids)[0]
 
     # Insert all the wire cuts

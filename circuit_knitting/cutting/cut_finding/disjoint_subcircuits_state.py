@@ -13,7 +13,7 @@
 
 import copy
 import numpy as np
-from collections import Counter, namedtuple
+from collections import Counter
 
 
 class DisjointSubcircuitsState:
