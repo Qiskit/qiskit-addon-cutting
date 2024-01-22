@@ -11,10 +11,23 @@
 
 """Quantum circuit representation compatible with cut-finding optimizers."""
 
+from __future__ import annotations
+
 import copy
 import string
-import numpy as np
+from typing import NamedTuple
 from abc import ABC, abstractmethod
+
+import numpy as np
+
+
+class CircuitElement(NamedTuple):
+    """Named tuple for specifying a circuit element."""
+
+    name: str
+    params: list
+    qubits: tuple
+    gamma: float | int
 
 
 class CircuitInterface(ABC):
@@ -178,14 +191,19 @@ class SimpleGateList(CircuitInterface):
 
         for gate in input_circuit:
             self.cut_type.append(None)
-            if not isinstance(gate, list) and not isinstance(gate, tuple):
-                self.circuit.append([copy.deepcopy(gate), None])
-                self.new_circuit.append(copy.deepcopy(gate))
-
+            if not isinstance(gate, CircuitElement):
+                assert gate == "barrier"
+                self.circuit.append([gate, None])
+                self.new_circuit.append(gate)
             else:
-                gate_spec = [gate[0]] + [self.qubit_names.getID(x) for x in gate[1:]]
-                self.circuit.append([copy.deepcopy(gate_spec), None])
-                self.new_circuit.append(copy.deepcopy(gate_spec))
+                gate_spec = CircuitElement(
+                    name=gate.name,
+                    params=gate.params,
+                    qubits=tuple(self.qubit_names.getID(x) for x in gate.qubits),
+                    gamma=gate.gamma,
+                )
+                self.circuit.append([gate_spec, None])
+                self.new_circuit.append(gate_spec)
 
         self.new_gate_ID_map = np.arange(len(self.circuit), dtype=int)
         self.num_qubits = self.qubit_names.getArraySizeNeeded()
@@ -225,11 +243,10 @@ class SimpleGateList(CircuitInterface):
         The <index> is the list index of the corresponding element in
         self.circuit
         """
-
         subcircuit = list()
         for k, gate in enumerate(self.circuit):
-            if isinstance(gate[0], list):
-                if len(gate[0]) > 2 and gate[0][0] != "barrier":
+            if gate[0] != "barrier":
+                if len(gate[0].qubits) > 1 and gate[0].name != "barrier":
                     subcircuit.append([k] + gate)
 
         return subcircuit
@@ -435,7 +452,6 @@ class NameToIDMap:
         If the hashable item does not yet appear in the item dictionary, a new
         item ID is assigned.
         """
-
         if item_name not in self.item_dict:
             while self.next_ID in self.ID_dict:
                 self.next_ID += 1

@@ -11,9 +11,14 @@
 
 """Helper functions that are used in the code."""
 
+from __future__ import annotations
+
 from qiskit import QuantumCircuit
-from qiskit.circuit import Instruction
+from qiskit.circuit import Instruction, Gate
+
 from .best_first_search import BestFirstSearch
+from .circuit_interface import CircuitElement
+from ..qpd import QPDBasis
 
 
 def QCtoCCOCircuit(circuit: QuantumCircuit):
@@ -33,19 +38,20 @@ def QCtoCCOCircuit(circuit: QuantumCircuit):
 
     TODO: Extend this function to allow for circuits with (mid-circuit or other) measurements, as needed.
     """
-
-    circuit_list_rep = list()
+    circuit_list_rep = []
     for inst in circuit.data:
-        # Barrier on all qubits not assigned to a specific qubit
         if inst.operation.name == "barrier" and len(inst.qubits) == circuit.num_qubits:
             circuit_list_rep.append(inst.operation.name)
         else:
-            circuit_element = (inst.operation.name,)
-            if inst.operation.params:
-                circuit_element += tuple(inst.operation.params)
-                circuit_element = (circuit_element,)
-            for qubit in inst.qubits:
-                circuit_element += (qubit.index,)
+            gamma = None
+            if isinstance(inst.operation, Gate) and len(inst.qubits) == 2:
+                gamma = QPDBasis.from_instruction(inst.operation).kappa
+            circuit_element = CircuitElement(
+                inst.operation.name,
+                params=inst.operation.params,
+                qubits=tuple(circuit.find_bit(q).index for q in inst.qubits),
+                gamma=gamma,
+            )
             circuit_list_rep.append(circuit_element)
 
     return circuit_list_rep

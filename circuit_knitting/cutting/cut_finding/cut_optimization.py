@@ -73,7 +73,7 @@ def CutOptimizationNextStateFunc(state, func_args):
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled
     # in the search
-    if len(gate_spec[1]) == 3:  
+    if len(gate_spec[1].qubits) == 2:  # change to ==3
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
         action_list = func_args.search_actions.getGroup("MultiqubitGates")
@@ -84,7 +84,6 @@ def CutOptimizationNextStateFunc(state, func_args):
     next_state_list = []
     for action in action_list:
         next_state_list.extend(action.nextState(state, gate_spec, func_args.qpu_width))
-
     return next_state_list
 
 
@@ -92,7 +91,6 @@ def CutOptimizationGoalStateFunc(state, func_args):
     """Return True if the input state is a goal state (i.e., the cutting decisions made satisfy
     the device constraints and the optimization settings).
     """
-
     return state.getSearchLevel() >= len(func_args.entangling_gates)
 
 
@@ -123,7 +121,6 @@ def greedyCutOptimization(
     start_state = DisjointSubcircuitsState(
         circuit_interface.getNumQubits(), maxWireCutsCircuit(circuit_interface)
     )
-
     return greedyBestFirstSearch(start_state, search_space_funcs, func_args)
 
 
@@ -256,7 +253,6 @@ class CutOptimization:
         of cuts can be made without exceeding the minimum upper bound across
         all cutting decisions previously returned and the optimization settings.
         """
-
         state, cost = self.search_engine.optimizationPass(self.func_args)
 
         if state is None and not self.goal_state_returned:
