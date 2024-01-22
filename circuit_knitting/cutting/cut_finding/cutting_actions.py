@@ -59,49 +59,7 @@ class DisjointSearchAction(ABC):
 
         return next_list
 
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Derived classes must register the action in the specified
-        AssignmentSettings object, where the action was applied to gate_spec
-        with the action arguments cut_args"""
-
-        assert False, "Derived classes must override registerCut()"
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Derived classes must initialize the action in the specified
-        AssignmentSettings object, where the action was applied to gate_spec
-        with the action arguments cut_args. Intialization is performed after
-        all actions have been registered."""
-
-        assert False, "Derived classes must override initializeCut()"
-
-    def nextAssignment(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        """Return a list of next assignment states that result from
-        applying assignment actions to the input assignment state.
-        """
-
-        next_list = self.nextAssignmentPrimitive(
-            assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-        )
-
-        for next_state in next_list:
-            next_state.setNextLevel(assign_state)
-
-        return next_list
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        """Derived classes must retrieve the appropriate group of QPD
-        assignment actions from assign_actions, and then collect and
-        return the combined list of next assignment states that result
-        from applying those actions to the input assignment state, with
-        the constraint object, gate_spec, and cut_args provided as inputs
-        to the nextState() methods of those assignment actions."""
-
-        assert False, "Derived classes must override initializeCut()"
-
+    
 
 class ActionApplyGate(DisjointSearchAction):
 
@@ -125,15 +83,11 @@ class ActionApplyGate(DisjointSearchAction):
         """
 
         if len(gate_spec[1]) > 3:
-            # The function multiqubitNextState handles
-            # gates that act on 3 or more qubits.
             return self.multiqubitNextState(state, gate_spec, max_width)
 
-        gate = gate_spec[1]  # extract the gate from gate specification.
-        r1 = state.findQubitRoot(gate[1])  # extract the root wire for the first qubit
-        # acted on by the given 2-qubit gate.
-        r2 = state.findQubitRoot(gate[2])  # extract the root wire for the second qubit
-        # acted on by the given 2-qubit gate.
+        gate = gate_spec[1] 
+        r1 = state.findQubitRoot(gate[1])  
+        r2 = state.findQubitRoot(gate[2]) 
 
         # If applying the gate would cause the number of qubits to exceed
         # the qubit limit, then do not apply the gate
@@ -156,7 +110,8 @@ class ActionApplyGate(DisjointSearchAction):
 
     def multiqubitNextState(self, state, gate_spec, max_width):
         """Return the new state that results from applying
-        ActionApplyGate to state given a multiqubit gate specification: gate_spec.
+        ActionApplyGate to state given a multiqubit (3 or more qubits)
+        gate specification: gate_spec.
         """
 
         gate = gate_spec[1]
@@ -304,34 +259,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
     def getCostParams(self, gate_spec):
         return lookupCostParams(self.gate_dict, gate_spec, (None, None, None))
 
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Register the gate cuts made by a ActionCutTwoQubitGate action
-        in an AssignmentSettings object.
-        """
-
-        assignment_settings.registerGateCut(gate_spec, cut_args[0][0])
-        assignment_settings.registerGateCut(gate_spec, cut_args[1][0])
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Initialize the gate cuts made by a ActionCutTwoQubitGate action
-        in an AssignmentSettings object.
-        """
-
-        assignment_settings.initGateCut(gate_spec, cut_args[0][0])
-        assignment_settings.initGateCut(gate_spec, cut_args[1][0])
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        action_list = assign_actions.getGroup("TwoQubitGateCut")
-
-        new_list = list()
-        for action in action_list:
-            new_list.extend(
-                action.nextState(assign_state, constraint_obj, gate_spec, cut_args)
-            )
-
-        return new_list
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, args):
         """Insert an LO gate cut into the input circuit for the specified gate
@@ -413,31 +340,6 @@ class ActionCutLeftWire(DisjointSearchAction):
 
         return [new_state]
 
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Register the wire cuts made by a ActionCutLeftWire action
-        in an AssignmentSettings object.
-        """
-
-        registerAllWireCuts(assignment_settings, gate_spec, cut_args)
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Initialize the wire cuts made by a ActionCutLeftWire action
-        in an AssignmentSettings object.
-        """
-
-        for gate_input in [pair[0] for pair in cut_args]:
-            assignment_settings.initWireCut(gate_spec, gate_input)
-
-        assignment_settings.initApplyGate(gate_spec)
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        action_list = assign_actions.getGroup("WireCut")
-
-        return assignWireCuts(
-            action_list, assign_state, constraint_obj, gate_spec, cut_args
-        )
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified
@@ -450,36 +352,6 @@ class ActionCutLeftWire(DisjointSearchAction):
 ### Adds ActionCutLeftWire to the object disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutLeftWire())
 
-
-def registerAllWireCuts(assignment_settings, gate_spec, cut_args):
-    """Register a list of wire cuts in an AssignmentSettings object."""
-
-    for cut_triple in cut_args:
-        assignment_settings.registerWireCut(gate_spec, cut_triple)
-
-
-def assignWireCuts(action_list, assign_state, constraint_obj, gate_spec, tuple_list):
-    if len(tuple_list) <= 0:
-        return [
-            assign_state,
-        ]
-
-    wire_cut = tuple_list[0]
-    new_states = list()
-    for action in action_list:
-        new_states.extend(
-            action.nextState(assign_state, constraint_obj, gate_spec, wire_cut)
-        )
-
-    final_states = list()
-    for state in new_states:
-        final_states.extend(
-            assignWireCuts(
-                action_list, state, constraint_obj, gate_spec, tuple_list[1:]
-            )
-        )
-
-    return final_states
 
 
 def insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args):
@@ -549,31 +421,6 @@ class ActionCutRightWire(DisjointSearchAction):
 
         return [new_state]
 
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Register the wire cuts made by a ActionCutRightWire action
-        in an AssignmentSettings object.
-        """
-
-        registerAllWireCuts(assignment_settings, gate_spec, cut_args)
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Initialize the wire cuts made by a ActionCutRightWire action
-        in an AssignmentSettings object.
-        """
-
-        for gate_input in [pair[0] for pair in cut_args]:
-            assignment_settings.initWireCut(gate_spec, gate_input)
-
-        assignment_settings.initApplyGate(gate_spec)
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        action_list = assign_actions.getGroup("WireCut")
-
-        return assignWireCuts(
-            action_list, assign_state, constraint_obj, gate_spec, cut_args
-        )
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified
@@ -642,32 +489,6 @@ class ActionCutBothWires(DisjointSearchAction):
         new_state.addAction(self, gate_spec, (1, w1, rnew_1), (2, w2, rnew_2))
 
         return [new_state]
-
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Register the wire cuts made by a ActionCutBothWires action
-        in an AssignmentSettings object.
-        """
-
-        registerAllWireCuts(assignment_settings, gate_spec, cut_args)
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Initialize the wire cuts made by a ActionCutBothWires action
-        in an AssignmentSettings object.
-        """
-
-        for gate_input in [pair[0] for pair in cut_args]:
-            assignment_settings.initWireCut(gate_spec, gate_input)
-
-        assignment_settings.initApplyGate(gate_spec)
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        action_list = assign_actions.getGroup("WireCut")
-
-        return assignWireCuts(
-            action_list, assign_state, constraint_obj, gate_spec, cut_args
-        )
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified
@@ -822,32 +643,6 @@ class ActionMultiWireCut(DisjointSearchAction):
             new_state.gamma_UB *= 4
 
         return cut_triples
-
-    def registerCut(self, assignment_settings, gate_spec, cut_args):
-        """Register the wire cuts made by a ActionMultiWireCut action
-        in an AssignmentSettings object.
-        """
-
-        registerAllWireCuts(assignment_settings, gate_spec, cut_args)
-
-    def initializeCut(self, assignment_settings, gate_spec, cut_args):
-        """Initialize the wire cuts made by a ActionMultiWireCut action
-        in an AssignmentSettings object.
-        """
-
-        for gate_input in [pair[0] for pair in cut_args]:
-            assignment_settings.initWireCut(gate_spec, gate_input)
-
-        assignment_settings.initApplyGate(gate_spec)
-
-    def nextAssignmentPrimitive(
-        self, assign_state, constraint_obj, gate_spec, cut_args, assign_actions
-    ):
-        action_list = assign_actions.getGroup("WireCut")
-
-        return assignWireCuts(
-            action_list, assign_state, constraint_obj, gate_spec, cut_args
-        )
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified

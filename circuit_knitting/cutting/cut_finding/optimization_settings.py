@@ -55,9 +55,6 @@ class OptimizationSettings:
     gate_cut_LOCC_with_ancillas (bool) is a flag that indicates that
     LOCC gate cuts with ancillas should be included in the optimization.
 
-    gate_cut_LOCC_no_ancillas (bool) is a flag that indicates that
-    LOCC gate cuts with no ancillas should be included in the optimization.
-
     wire_cut_LO (bool) is a flag that indicates that LO wire cuts should be
     included in the optimization.
 
@@ -66,6 +63,9 @@ class OptimizationSettings:
 
     wire_cut_LOCC_no_ancillas (bool) is a flag that indicates that
     LOCC wire cuts with no ancillas should be included in the optimization.
+
+    NOTE: The current release only support LO gate and wire cuts. LOCC
+    flags have been incorporated with an eye towards future releases.
 
     Raises:
 
@@ -76,8 +76,6 @@ class OptimizationSettings:
 
     max_gamma: int = 1024
     max_backjumps: int = 10_000
-    greedy_multiplier: float | int | None = None
-    beam_width: int = 30
     rand_seed: int | None = None
     LO: bool = True
     LOCC_ancillas: bool = False
@@ -89,8 +87,6 @@ class OptimizationSettings:
             raise ValueError("max_gamma must be a positive definite integer.")
         if self.max_backjumps < 0:
             raise ValueError("max_backjumps must be a positive semi-definite integer.")
-        if self.beam_width < 1:
-            raise ValueError("beam_width must be a positive definite integer.")
 
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
@@ -100,7 +96,7 @@ class OptimizationSettings:
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
         if self.engine_selections is None:
-            self.engine_selections = {"CutOptimization": "Greedy"}
+            self.engine_selections = {"CutOptimization": "BestFirst"}
 
     def getMaxGamma(self):
         """Return the max gamma."""
@@ -109,14 +105,6 @@ class OptimizationSettings:
     def getMaxBackJumps(self):
         """Return the maximum number of allowed search backjumps."""
         return self.max_backjumps
-
-    def getGreedyMultiplier(self):
-        """Return the greedy multiplier."""
-        return self.greedy_multiplier
-
-    def getBeamWidth(self):
-        """Return the beam width."""
-        return self.beam_width
 
     def getRandSeed(self):
         """Return the random seed."""
@@ -135,24 +123,20 @@ class OptimizationSettings:
 
         self.gate_cut_LO = False
         self.gate_cut_LOCC_with_ancillas = False
-        self.gate_cut_LOCC_no_ancillas = False
-
         self.wire_cut_LO = False
         self.wire_cut_LOCC_with_ancillas = False
         self.wire_cut_LOCC_no_ancillas = False
 
     def setGateCutTypes(self):
         """Select which gate-cut types to include in the optimization.
-        The default is to include all gate-cut types.
+        The default is to include LO gate cuts.
         """
-
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
-        self.gate_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
     def setWireCutTypes(self):
         """Select which wire-cut types to include in the optimization.
-        The default is to include all wire-cut types.
+        The default is to include LO wire cuts.
         """
 
         self.wire_cut_LO = self.LO
@@ -169,7 +153,6 @@ class OptimizationSettings:
         if (
             self.gate_cut_LO
             or self.gate_cut_LOCC_with_ancillas
-            or self.gate_cut_LOCC_no_ancillas
         ):
             out.append("GateCut")
 

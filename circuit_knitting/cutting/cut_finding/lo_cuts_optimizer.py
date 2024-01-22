@@ -22,8 +22,7 @@ from .search_space_generator import SearchFunctions, SearchSpaceGenerator
 
 ### Functions for generating the cut optimization search space
 cut_optimization_search_funcs = SearchFunctions(
-    cost_func=CutOptimizationUpperBoundCostFunc,  # Change to CutOptimizationCostFunc with LOCC
-    # or after the new LO QPD's are incorporated into CKT.
+    cost_func=CutOptimizationUpperBoundCostFunc,  # Valid choice only for LO cuts.
     upperbound_cost_func=CutOptimizationUpperBoundCostFunc,
     next_state_func=CutOptimizationNextStateFunc,
     goal_state_func=CutOptimizationGoalStateFunc,

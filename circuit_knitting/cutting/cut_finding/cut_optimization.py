@@ -73,7 +73,7 @@ def CutOptimizationNextStateFunc(state, func_args):
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled
     # in the search
-    if len(gate_spec[1]) <= 3:  # change to ==3
+    if len(gate_spec[1]) == 3:  
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
         action_list = func_args.search_actions.getGroup("MultiqubitGates")
@@ -119,7 +119,6 @@ def greedyCutOptimization(
     func_args.search_actions = search_actions
     func_args.max_gamma = optimization_settings.getMaxGamma()
     func_args.qpu_width = device_constraints.getQPUWidth()
-    func_args.greedy_multiplier = optimization_settings.getGreedyMultiplier()
 
     start_state = DisjointSubcircuitsState(
         circuit_interface.getNumQubits(), maxWireCutsCircuit(circuit_interface)
@@ -205,7 +204,6 @@ class CutOptimization:
         self.func_args.search_actions = self.search_actions
         self.func_args.max_gamma = self.settings.getMaxGamma()
         self.func_args.qpu_width = self.constraints.getQPUWidth()
-        self.func_args.greedy_multiplier = self.settings.getGreedyMultiplier()
 
         # Perform an initial greedy best-first search to determine an upper
         # bound for the optimal gamma
@@ -254,11 +252,9 @@ class CutOptimization:
 
     def optimizationPass(self):
         """Produce, at each call, a goal state representing a distinct
-        set of cutting decisions.  The first goal state returned corresponds
-        to cutting decisions that minimize the lower bound on the resulting gamma.
-        None is returned once no additional choices of cuts can be made without
-        exceeding the minimum upper bound across all cutting decisions previously
-        returned and the optimization settings.
+        set of cutting decisions. None is returned once no additional choices
+        of cuts can be made without exceeding the minimum upper bound across
+        all cutting decisions previously returned and the optimization settings.
         """
 
         state, cost = self.search_engine.optimizationPass(self.func_args)
