@@ -216,7 +216,7 @@ class TestCuttingEvaluation(unittest.TestCase):
         with self.subTest("Dict of non-unique samplers"):
             qc = QuantumCircuit(2)
             qc.x(0)
-            qc.cnot(0, 1)
+            qc.cx(0, 1)
             subcircuits, _, subobservables = partition_problem(
                 circuit=qc, partition_labels="AB", observables=PauliList(["XX"])
             )
