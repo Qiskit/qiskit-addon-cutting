@@ -67,14 +67,6 @@ class ActionNames:
                 self.group_dict[group_name] = list()
             self.group_dict[group_name].append(action_object)
 
-    def defineActionList(self, action_list):
-        """Inserts the specified action object into the look-up
-        dictionaries using the name of the action and its group
-        names"""
-
-        for action in action_list:
-            self.defineAction(action)
-
     def getAction(self, action_name):
         """Return the action object associated with the specified name.
         None is returned if there is no associated action object.
@@ -92,27 +84,6 @@ class ActionNames:
         if group_name in self.group_dict:
             return self.group_dict[group_name]
         return None
-
-    def getGroupActionNames(self, group_name):
-        """Return a list of the names of action objects associated with
-        the group_name. None is returned if there are no associated action
-        objects.
-        """
-
-        if group_name in self.group_dict:
-            return [a.getName() for a in self.group_dict[group_name]]
-        return None
-
-    def getActionNameList(self):
-        """Return a list of action names that have been defined."""
-
-        return list(self.action_dict.keys())
-
-    def getGroupNameList(self):
-        """Return a list of group names that have been defined."""
-
-        return list(self.group_dict.keys())
-
 
 def getActionSubset(action_list, action_groups):
     """Return the subset of actions in action_list whose group affiliations

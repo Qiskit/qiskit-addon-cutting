@@ -15,17 +15,18 @@ from __future__ import annotations
 
 import copy
 import string
+import numpy as np
 from typing import NamedTuple
 from abc import ABC, abstractmethod
 
-import numpy as np
+
 
 
 class CircuitElement(NamedTuple):
     """Named tuple for specifying a circuit element."""
 
     name: str
-    params: list
+    params: list 
     qubits: tuple
     gamma: float | int
 
@@ -183,15 +184,15 @@ class SimpleGateList(CircuitInterface):
                 assert gate == "barrier"
                 self.circuit.append([gate, None])
                 self.new_circuit.append(gate)
-            else:
-                gate_spec = CircuitElement(
+            else: 
+                 gate_spec = CircuitElement(
                     name=gate.name,
                     params=gate.params,
                     qubits=tuple(self.qubit_names.getID(x) for x in gate.qubits),
                     gamma=gate.gamma,
                 )
-                self.circuit.append([gate_spec, None])
-                self.new_circuit.append(gate_spec)
+            self.circuit.append([gate_spec, None])
+            self.new_circuit.append(gate_spec)
 
         self.new_gate_ID_map = np.arange(len(self.circuit), dtype=int)
         self.num_qubits = self.qubit_names.getArraySizeNeeded()
@@ -261,6 +262,7 @@ class SimpleGateList(CircuitInterface):
 
         gate_pos = self.new_gate_ID_map[gate_ID]
         new_gate_spec = self.new_circuit[gate_pos]
+        print (new_gate_spec, input_ID)
 
         assert src_wire_ID == new_gate_spec[input_ID], (
             f"Input wire ID {src_wire_ID} does not match "

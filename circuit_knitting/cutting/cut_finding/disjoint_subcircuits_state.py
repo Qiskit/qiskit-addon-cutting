@@ -162,20 +162,6 @@ class DisjointSubcircuitsState:
     def print(self, simple=False):
         """Print the various properties of a DisjointSubcircuitState."""
 
-        # cut_actions = PrintActionListWithNames(self.actions)
-        # cut_actions_sublist = []
-        # Cut = namedtuple("Cut", ["Action", "Gate"])
-
-        # for i in range(len(cut_actions)):
-        #     if cut_actions[i][0] == "CutTwoQubitGate":
-        #         cut_actions_sublist.append(
-        #             Cut(
-        #                 Action=cut_actions[i][0],
-        #                 Gate=[cut_actions[i][1][0], cut_actions[i][1][1]],
-        #             )
-        #         )
-        #     elif (cut_actions[i][0] == "CutLeftWire") or (cut_actions[i][0] ==  ("CutRightWire")):
-
         cut_actions = PrintActionListWithNames(self.actions)
         cut_actions_sublist = []
 
