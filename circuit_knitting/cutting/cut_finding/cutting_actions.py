@@ -141,16 +141,16 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
             "ecr": (1, 1, 3),
             "crx": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                 )
             ),
             "cp": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                 )
             ),
             "cp": (
@@ -162,37 +162,37 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
             ),
             "cry": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                 )
             ),
             "crz": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0] / 2)),
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                 )
             ),
             "rxx": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                 )
             ),
             "ryy": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                 )
             ),
             "rzz": (
                 lambda t: (
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                     0,
-                    1 + 2 * np.abs(np.sin(t[0])),
+                    1 + 2 * np.abs(np.sin(t[1])),
                 )
             ),
         }
