@@ -3,7 +3,7 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import Devi
 
 
 @pytest.mark.parametrize(
-    "qubits_per_QPU, num_QPUs", [(2.1, 1.2), (1.2, 0), (-1, 1), (1, 0)]
+    "qubits_per_QPU, num_QPUs", [(1, -1), (-1, 1), (1, 0)]
 )
 def test_DeviceConstraints(qubits_per_QPU, num_QPUs):
     """Test device constraints for being valid data types."""

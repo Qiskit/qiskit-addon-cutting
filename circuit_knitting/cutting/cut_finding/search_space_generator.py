@@ -10,8 +10,15 @@
 # that they have been altered from the originals.
 
 """Classes needed to generate and explore a search space."""
+from __future__ import annotations
 
+from dataclasses import dataclass
 
+from typing import Callable
+
+from .cutting_actions import DisjointSearchAction
+
+@dataclass
 class ActionNames:
 
     """Class that maps action names to individual action objects
@@ -25,9 +32,12 @@ class ActionNames:
     group_dict (dict) maps group names to lists of action objects.
     """
 
-    def __init__(self):
-        self.action_dict = dict()
-        self.group_dict = dict()
+    # def __init__(self):
+    #     self.action_dict = dict()
+    #     self.group_dict = dict()
+
+    action_dict: dict[str, DisjointSearchAction]
+    group_dict: dict[str, DisjointSearchAction]
 
     def copy(self, list_of_groups=None):
         """Return a copy of self that contains only those actions
@@ -102,7 +112,7 @@ def getActionSubset(action_list, action_groups):
         a for a in action_list if len(groups.intersection(set(a.getGroupNames()))) > 0
     ]
 
-
+@dataclass
 class SearchFunctions:
 
     """Container class for holding functions needed to generate and explore
@@ -170,25 +180,33 @@ class SearchFunctions:
     is None is likewise equivalent to an infinite min-cost bound.
     """
 
-    def __init__(
-        self,
-        cost_func=None,
-        stratum_func=None,
-        greedy_bound_func=None,
-        next_state_func=None,
-        goal_state_func=None,
-        upperbound_cost_func=None,
-        mincost_bound_func=None,
-    ):
-        self.cost_func = cost_func
-        self.stratum_func = stratum_func
-        self.greedy_bound_func = greedy_bound_func
-        self.next_state_func = next_state_func
-        self.goal_state_func = goal_state_func
-        self.upperbound_cost_func = upperbound_cost_func
-        self.mincost_bound_func = mincost_bound_func
+    # def __init__(
+    #     self,
+    #     cost_func=None,
+    #     stratum_func=None,
+    #     greedy_bound_func=None,
+    #     next_state_func=None,
+    #     goal_state_func=None,
+    #     upperbound_cost_func=None,
+    #     mincost_bound_func=None,
+    # ):
+    #     self.cost_func = cost_func
+    #     self.stratum_func = stratum_func
+    #     self.greedy_bound_func = greedy_bound_func
+    #     self.next_state_func = next_state_func
+    #     self.goal_state_func = goal_state_func
+    #     self.upperbound_cost_func = upperbound_cost_func
+    #     self.mincost_bound_func = mincost_bound_func
 
+    cost_func:  Callable  = None,
+    stratum_func: Callable  = None,
+    greedy_bound_func: Callable = None,
+    next_state_func: Callable = None,
+    oal_state_func: Callable  = None,
+    upperbound_cost_func: Callable = None,
+    mincost_bound_func: Callable = None
 
+@dataclass
 class SearchSpaceGenerator:
 
     """Container class for holding both the functions and the
@@ -205,6 +223,10 @@ class SearchSpaceGenerator:
     functions by a search engine.
     """
 
-    def __init__(self, functions=None, actions=None):
-        self.functions = functions
-        self.actions = actions
+
+    # def __init__(self, functions=None, actions=None):
+    #     self.functions = functions
+    #     self.actions = actions
+
+    functions: SearchFunctions = None
+    actions: ActionNames = None

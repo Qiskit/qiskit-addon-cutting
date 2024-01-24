@@ -1,5 +1,4 @@
-import numpy as np
-from pytest import fixture, raises
+from pytest import fixture
 from numpy import inf
 from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
 from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimization

@@ -1,4 +1,3 @@
-import numpy as np
 from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
 
 

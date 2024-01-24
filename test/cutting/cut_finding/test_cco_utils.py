@@ -66,8 +66,6 @@ def test_QCtoCCOCircuit(test_circuit, known_output):
     test_circuit_internal = QCtoCCOCircuit(test_circuit)
     assert test_circuit_internal == known_output
 
-
-# TODO: Expand test below to cover the wire cutting case.
 def test_CCOtoQCCircuit(InternalTestCircuit):
     qc_cut = CCOtoQCCircuit(InternalTestCircuit)
     assert qc_cut.data == [

@@ -75,7 +75,7 @@ class OptimizationSettings:
     """
 
     max_gamma: int = 1024
-    max_backjumps: int = 10_000
+    max_backjumps: int = 10000
     rand_seed: int | None = None
     LO: bool = True
     LOCC_ancillas: bool = False

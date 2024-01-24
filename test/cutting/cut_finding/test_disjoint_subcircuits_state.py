@@ -1,4 +1,3 @@
-import io, sys
 from pytest import mark, raises, fixture
 from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
@@ -8,11 +7,7 @@ from circuit_knitting.cutting.cut_finding.cut_optimization import (
     disjoint_subcircuit_actions,
 )
 
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
-    PrintActionListWithNames,
-)
 
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import calcRootBellPairsGamma
 
 
 @mark.parametrize("num_qubits, max_wire_cuts", [(2.1, 1.2), (None, -1), (-1, None)])

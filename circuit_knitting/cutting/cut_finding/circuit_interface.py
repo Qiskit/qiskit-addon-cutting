@@ -183,11 +183,11 @@ class SimpleGateList(CircuitInterface):
             if not isinstance(gate, CircuitElement):
                 assert gate == "barrier"
                 self.circuit.append([gate, None])
-                self.new_circuit.append(gate)
+                self.new_circuit.append(gate),
             else: 
-                 gate_spec = CircuitElement(
+                    gate_spec = CircuitElement(
                     name=gate.name,
-                    params=gate.params,
+                    params = gate.params,
                     qubits=tuple(self.qubit_names.getID(x) for x in gate.qubits),
                     gamma=gate.gamma,
                 )
@@ -261,10 +261,10 @@ class SimpleGateList(CircuitInterface):
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
+        new_gate = self.new_circuit[gate_pos]
         new_gate_spec = self.new_circuit[gate_pos]
-        print (new_gate_spec, input_ID)
 
-        assert src_wire_ID == new_gate_spec[input_ID], (
+        assert src_wire_ID == new_gate_spec[input_ID ], (
             f"Input wire ID {src_wire_ID} does not match "
             + f"new_circuit wire ID {new_gate_spec[input_ID]}"
         )
@@ -443,7 +443,7 @@ class NameToIDMap:
         """
 
 
-        if not item_name in self.item_dict:
+        if item_name not in self.item_dict:
             while self.next_ID in self.ID_dict:
                 self.next_ID += 1
 
