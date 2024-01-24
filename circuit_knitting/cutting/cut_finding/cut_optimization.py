@@ -49,7 +49,6 @@ def CutOptimizationCostFunc(state, func_args):
 
 def CutOptimizationUpperBoundCostFunc(goal_state, func_args):
     """Return the gamma upper bound."""
-
     return (goal_state.upperBoundGamma(), np.inf)
 
 
@@ -73,13 +72,12 @@ def CutOptimizationNextStateFunc(state, func_args):
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled
     # in the search
-    if len(gate_spec[1].qubits) == 2:  # change to ==3
+    if len(gate_spec[1].qubits) == 2:
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
         action_list = func_args.search_actions.getGroup("MultiqubitGates")
 
     action_list = getActionSubset(action_list, gate_spec[2])
-
     # Apply the search actions to generate a list of next states
     next_state_list = []
     for action in action_list:
@@ -237,7 +235,6 @@ class CutOptimization:
             self.search_funcs,
             stop_at_first_min=False,
         )
-
         sq.initialize([start_state], self.func_args)
 
         # Use the upper bound for the optimal gamma to constrain the search
@@ -254,7 +251,6 @@ class CutOptimization:
         all cutting decisions previously returned and the optimization settings.
         """
         state, cost = self.search_engine.optimizationPass(self.func_args)
-
         if state is None and not self.goal_state_returned:
             state = self.greedy_goal_state
             cost = self.search_funcs.cost_func(state, self.func_args)

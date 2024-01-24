@@ -26,7 +26,7 @@ class CircuitElement(NamedTuple):
 
     name: str
     params: list
-    qubits: tuple
+    qubits: list
     gamma: float | int
 
 
@@ -188,23 +188,21 @@ class SimpleGateList(CircuitInterface):
         self.circuit = list()
         self.new_circuit = list()
         self.cut_type = list()
-
         for gate in input_circuit:
             self.cut_type.append(None)
             if not isinstance(gate, CircuitElement):
                 assert gate == "barrier"
-                self.circuit.append([gate, None])
-                self.new_circuit.append(gate)
+                self.circuit.append([copy.deepcopy(gate), None])
+                self.new_circuit.append(copy.deepcopy(gate))
             else:
                 gate_spec = CircuitElement(
                     name=gate.name,
                     params=gate.params,
-                    qubits=tuple(self.qubit_names.getID(x) for x in gate.qubits),
+                    qubits=[self.qubit_names.getID(x) for x in gate.qubits],
                     gamma=gate.gamma,
                 )
-                self.circuit.append([gate_spec, None])
-                self.new_circuit.append(gate_spec)
-
+                self.circuit.append([copy.deepcopy(gate_spec), None])
+                self.new_circuit.append(copy.deepcopy(gate_spec))
         self.new_gate_ID_map = np.arange(len(self.circuit), dtype=int)
         self.num_qubits = self.qubit_names.getArraySizeNeeded()
         self.output_wires = np.arange(self.num_qubits, dtype=int)
@@ -273,9 +271,10 @@ class SimpleGateList(CircuitInterface):
         gate_pos = self.new_gate_ID_map[gate_ID]
         new_gate_spec = self.new_circuit[gate_pos]
 
-        assert src_wire_ID == new_gate_spec[input_ID], (
+        # Gate inputs are numbered starting from 1, so we must decrement the index to qubits
+        assert src_wire_ID == new_gate_spec.qubits[input_ID-1], (
             f"Input wire ID {src_wire_ID} does not match "
-            + f"new_circuit wire ID {new_gate_spec[input_ID]}"
+            + f"new_circuit wire ID {new_gate_spec.qubits[input_ID-1]}"
         )
 
         # If the new wire does not yet exist, then define it
@@ -287,6 +286,7 @@ class SimpleGateList(CircuitInterface):
         # follows the wire-cut insertion point
         wire_map = np.arange(self.qubit_names.getArraySizeNeeded(), dtype=int)
         wire_map[src_wire_ID] = dest_wire_ID
+
         self.replaceWireIDs(self.new_circuit[gate_pos:], wire_map)
 
         # Insert a move operator
@@ -295,7 +295,7 @@ class SimpleGateList(CircuitInterface):
         self.new_gate_ID_map[gate_ID:] += 1
 
         # Update the output wires
-        qubit = self.circuit[gate_ID][0][input_ID]
+        qubit = self.circuit[gate_ID][0].qubits[input_ID-1]
         self.output_wires[qubit] = dest_wire_ID
 
 
@@ -422,10 +422,9 @@ class SimpleGateList(CircuitInterface):
         """Iterate through a list of gates and replaces wire IDs with the
         values defined by the wire_map.
         """
-
         for gate in gate_list:
-            for k in range(1, len(gate)):
-                gate[k] = wire_map[gate[k]]
+            for k in range(len(gate.qubits)):
+                gate.qubits[k] = wire_map[gate.qubits[k]]
 
 
 class NameToIDMap:
