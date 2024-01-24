@@ -277,7 +277,6 @@ class SimpleGateList(CircuitInterface):
 
         gate_pos = self.new_gate_ID_map[gate_ID]
         new_gate_spec = self.new_circuit[gate_pos]
-        print (new_gate_spec, input_ID)
 
         # Gate inputs are numbered starting from 1, so we must decrement the index to qubits
         assert src_wire_ID == new_gate_spec.qubits[input_ID-1], (
