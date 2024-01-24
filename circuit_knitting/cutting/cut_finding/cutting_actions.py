@@ -76,7 +76,6 @@ class ActionApplyGate(DisjointSearchAction):
         ActionApplyGate to state given the two-qubit gate
         specification: gate_spec.
         """
-
         gate = gate_spec[1]  # extract the gate from gate specification.
         if len(gate.qubits) > 2:
             # The function multiqubitNextState handles
@@ -91,7 +90,6 @@ class ActionApplyGate(DisjointSearchAction):
             gate.qubits[1]
         )  # extract the root wire for the second qubit
         # acted on by the given 2-qubit gate.
-
         # If applying the gate would cause the number of qubits to exceed
         # the qubit limit, then do not apply the gate
         if r1 != r2 and state.width[r1] + state.width[r2] > max_width:
@@ -108,7 +106,6 @@ class ActionApplyGate(DisjointSearchAction):
             new_state.mergeRoots(r1, r2)
 
         new_state.addAction(self, gate_spec)
-
         return [new_state]
 
 
@@ -133,15 +130,15 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
             "cx": (1, 1, 3),
             "cy": (1, 1, 3),
             "cz": (1, 1, 3),
-            "ch": (3, 0, 3),
+            "ch": (1, 1, 3),
             "cp": (1, 1, 3),
-            "cs": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
-            "csdg": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
-            "csx": (1, 1, 1 + 2 * np.sin(np.pi / 4)),
+            "cs": (1, 2, 7),
+            "csdg": (1, 3, 15),
+            "csx": (1, 2, 7),
             "swap": (1, 2, 7),
             "iswap": (1, 2, 7),
-            "dcx": (7, 0, 7),
-            "ecr": (3, 0, 3),
+            "dcx": (1, 2, 7),
+            "ecr": (1, 1, 3),
             "crx": (
                 lambda t: (
                     1 + 2 * np.abs(np.sin(t[0] / 2)),
@@ -154,6 +151,13 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
                     1 + 2 * np.abs(np.sin(t[0] / 2)),
                     0,
                     1 + 2 * np.abs(np.sin(t[0] / 2)),
+                )
+            ),
+            "cp": (
+                lambda t: (
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
+                    0,
+                    1 + 2 * np.abs(np.sin(t[1] / 2)),
                 )
             ),
             "cry": (
@@ -345,7 +349,6 @@ def insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args):
     """Insert LO wire cuts into the input circuit for the specified
     gate and all cut arguments.
     """
-
     gate_ID = gate_spec[0]
     for input_ID, wire_ID, new_wire_ID in cut_args:
         circuit_interface.insertWireCut(
