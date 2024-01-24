@@ -30,6 +30,17 @@ class CircuitElement(NamedTuple):
     gamma: float | int
 
 
+
+
+class CircuitElement(NamedTuple):
+    """Named tuple for specifying a circuit element."""
+
+    name: str
+    params: list
+    qubits: tuple
+    gamma: float | int
+
+
 class CircuitInterface(ABC):
 
     """Base class for accessing and manipulating external circuit
@@ -44,8 +55,6 @@ class CircuitInterface(ABC):
     def getNumQubits(self):
         """Derived classes must override this function and return the number
         of qubits in the input circuit."""
-
-        assert False, "Derived classes must override getNumQubits()"
 
     @abstractmethod
     def getMultiQubitGates(self):
@@ -88,8 +97,6 @@ class CircuitInterface(ABC):
         the allowed cut types are 'None', 'GateCut', 'WireCut', and 'AbsorbGate'.
         """
 
-        assert False, "Derived classes must override getMultiQubitGates()"
-
     @abstractmethod
     def insertGateCut(self, gate_ID, cut_type):
         """Derived classes must override this function and mark the specified
@@ -123,7 +130,6 @@ class CircuitInterface(ABC):
         list of wire IDs.
         """
 
-        assert False, "Derived classes must override defineSubcircuits()"
 
 
 class SimpleGateList(CircuitInterface):
@@ -218,6 +224,8 @@ class SimpleGateList(CircuitInterface):
             (len(self.scc_subcircuits), len(self.scc_subcircuits)), dtype=bool
         )
 
+
+
     def getNumQubits(self):
         """Return the number of qubits in the input circuit."""
 
@@ -250,8 +258,8 @@ class SimpleGateList(CircuitInterface):
         return subcircuit
 
     def insertGateCut(self, gate_ID, cut_type):
-        """Mark the specified gate as being cut.  The cut type can
-        be "LO", "LOCCWithAncillas", or "LOCCNoAncillas".
+        """Mark the specified gate as being cut.  The cut type in this release
+        can only be "LO".
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
@@ -264,12 +272,12 @@ class SimpleGateList(CircuitInterface):
         wire/qubit ID of the source wire to be cut is also provided as
         input to allow the wire choice to be verified.  The ID of the
         (new) destination wire/qubit must also be provided.  The cut
-        type as of now can only be "LO", with the options "LOCCWithAncillas"
-        and "LOCCNoAncillas" being added in the future.
+        type in this release can only be "LO".
         """
 
         gate_pos = self.new_gate_ID_map[gate_ID]
         new_gate_spec = self.new_circuit[gate_pos]
+        print (new_gate_spec, input_ID)
 
         # Gate inputs are numbered starting from 1, so we must decrement the index to qubits
         assert src_wire_ID == new_gate_spec.qubits[input_ID-1], (
@@ -346,7 +354,6 @@ class SimpleGateList(CircuitInterface):
         out = dict()
         for in_wire, out_wire in enumerate(self.output_wires):
             out[self.qubit_names.getName(in_wire)] = wire_map[out_wire]
-
         return out
 
     def exportSubcircuitsAsString(self, name_mapping="default"):
@@ -360,7 +367,6 @@ class SimpleGateList(CircuitInterface):
 
         out = list(range(self.getNumWires()))
         alphabet = string.ascii_uppercase + string.ascii_lowercase
-        print('getNumWires:', out)
         for k, subcircuit in enumerate(self.subcircuits):
             for wire in subcircuit:
                 out[wire_map[wire]] = alphabet[k]
