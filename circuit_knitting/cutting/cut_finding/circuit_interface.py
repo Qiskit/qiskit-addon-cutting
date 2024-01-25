@@ -30,17 +30,6 @@ class CircuitElement(NamedTuple):
     gamma: float | int
 
 
-
-
-class CircuitElement(NamedTuple):
-    """Named tuple for specifying a circuit element."""
-
-    name: str
-    params: list
-    qubits: tuple
-    gamma: float | int
-
-
 class CircuitInterface(ABC):
 
     """Base class for accessing and manipulating external circuit
