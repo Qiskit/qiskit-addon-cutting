@@ -126,77 +126,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         lowerBoundGamma is computed from gamma_LB using the DisjointSubcircuitsState.lowerBoundGamma() method.
         """
 
-        self.gate_dict = {
-            "cx": (1, 1, 3),
-            "cy": (1, 1, 3),
-            "cz": (1, 1, 3),
-            "ch": (1, 1, 3),
-            "cp": (1, 1, 3),
-            "cs": (1, 2, 7),
-            "csdg": (1, 3, 15),
-            "csx": (1, 2, 7),
-            "swap": (1, 2, 7),
-            "iswap": (1, 2, 7),
-            "dcx": (1, 2, 7),
-            "ecr": (1, 1, 3),
-            "crx": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                )
-            ),
-            "cp": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                )
-            ),
-            "cp": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                )
-            ),
-            "cry": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                )
-            ),
-            "crz": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1] / 2)),
-                )
-            ),
-            "rxx": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1])),
-                )
-            ),
-            "ryy": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1])),
-                )
-            ),
-            "rzz": (
-                lambda t: (
-                    1 + 2 * np.abs(np.sin(t[1])),
-                    0,
-                    1 + 2 * np.abs(np.sin(t[1])),
-                )
-            ),
-        }
-
     def getName(self):
         """Return the look-up name of ActionCutTwoQubitGate."""
 
@@ -247,8 +176,19 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
         return [new_state]
 
-    def getCostParams(self, gate_spec):
-        return lookupCostParams(self.gate_dict, gate_spec, (None, None, None))
+    @staticmethod
+    def getCostParams(gate_spec):
+        """
+        Get the cost parameters.
+
+        This method returns a tuple of the form:
+            (gamma_lower_bound, num_bell_pairs, gamma_upper_bound)
+
+        Since CKT only supports single-cut LO, these tuples will be of
+        the form (gamma, 0, gamma).
+        """
+        gamma = gate_spec[1].gamma
+        return (gamma, 0, gamma)
 
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, args):
