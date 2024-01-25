@@ -114,17 +114,7 @@ disjoint_subcircuit_actions.defineAction(ActionApplyGate())
 
 
 class ActionCutTwoQubitGate(DisjointSearchAction):
-
-    """Action class that implements the action of
-        cutting a two-qubit gate.
-
-        TODO: The list of supported gates needs to be expanded.
-    """
-
-    def __init__(self):
-        """The values in gate_dict are tuples in (gamma_LB, num_bell_pairs, gamma_UB) format.
-        lowerBoundGamma is computed from gamma_LB using the DisjointSubcircuitsState.lowerBoundGamma() method.
-        """
+    """Action of cutting a two-qubit gate."""
 
     def getName(self):
         """Return the look-up name of ActionCutTwoQubitGate."""
@@ -201,19 +191,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
 ### Adds ActionCutTwoQubitGate to the object disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutTwoQubitGate())
-
-
-def lookupCostParams(gate_dict, gate_spec, default_value):
-    gate_name = gate_spec[1].name
-    params = gate_spec[1].params
-    if len(params) == 0:
-        return gate_dict[gate_name]
-
-    else:
-        if gate_name in gate_dict:
-            return gate_dict[gate_name]((gate_name, *params))
-
-    return default_value
 
 
 class ActionCutLeftWire(DisjointSearchAction):
