@@ -16,9 +16,7 @@ from dataclasses import dataclass
 
 from typing import Callable
 
-from .cutting_actions import DisjointSearchAction
 
-@dataclass
 class ActionNames:
 
     """Class that maps action names to individual action objects
@@ -32,14 +30,15 @@ class ActionNames:
     group_dict (dict) maps group names to lists of action objects.
     """
 
-    # def __init__(self):
-    #     self.action_dict = dict()
-    #     self.group_dict = dict()
+    action_dict: dict
+    group_dict: dict 
 
-    action_dict: dict[str, DisjointSearchAction]
-    group_dict: dict[str, DisjointSearchAction]
+    def __init__(self):
+        self.action_dict = dict()
+        self.group_dict = dict()
 
-    def copy(self, list_of_groups=None):
+
+    def copy(self, list_of_groups: list[str] = None) -> ActionNames:
         """Return a copy of self that contains only those actions
         whose group affiliations intersect with list_of_groups.
         The default is to return a copy containing all actions.
@@ -53,7 +52,7 @@ class ActionNames:
 
         return new_container
 
-    def defineAction(self, action_object):
+    def defineAction(self, action_object) -> None:
         """Insert the specified action object into the look-up
         dictionaries using the name of the action and its group
         names.
@@ -77,7 +76,7 @@ class ActionNames:
                 self.group_dict[group_name] = list()
             self.group_dict[group_name].append(action_object)
 
-    def getAction(self, action_name):
+    def getAction(self, action_name: str):
         """Return the action object associated with the specified name.
         None is returned if there is no associated action object.
         """
@@ -86,7 +85,7 @@ class ActionNames:
             return self.action_dict[action_name]
         return None
 
-    def getGroup(self, group_name):
+    def getGroup(self, group_name: str) -> (list | None):
         """Return the list of action objects associated with the group_name.
         None is returned if there are no associated action objects.
         """
@@ -95,7 +94,7 @@ class ActionNames:
             return self.group_dict[group_name]
         return None
 
-def getActionSubset(action_list, action_groups):
+def getActionSubset(action_list: list, action_groups: list) -> list :
     """Return the subset of actions in action_list whose group affiliations
     intersect with action_groups.
     """
@@ -180,29 +179,11 @@ class SearchFunctions:
     is None is likewise equivalent to an infinite min-cost bound.
     """
 
-    # def __init__(
-    #     self,
-    #     cost_func=None,
-    #     stratum_func=None,
-    #     greedy_bound_func=None,
-    #     next_state_func=None,
-    #     goal_state_func=None,
-    #     upperbound_cost_func=None,
-    #     mincost_bound_func=None,
-    # ):
-    #     self.cost_func = cost_func
-    #     self.stratum_func = stratum_func
-    #     self.greedy_bound_func = greedy_bound_func
-    #     self.next_state_func = next_state_func
-    #     self.goal_state_func = goal_state_func
-    #     self.upperbound_cost_func = upperbound_cost_func
-    #     self.mincost_bound_func = mincost_bound_func
-
     cost_func:  Callable  = None,
     stratum_func: Callable  = None,
     greedy_bound_func: Callable = None,
     next_state_func: Callable = None,
-    oal_state_func: Callable  = None,
+    goal_state_func: Callable  = None,
     upperbound_cost_func: Callable = None,
     mincost_bound_func: Callable = None
 
@@ -222,11 +203,6 @@ class SearchSpaceGenerator:
     The actions are expected to be passed as arguments to the search
     functions by a search engine.
     """
-
-
-    # def __init__(self, functions=None, actions=None):
-    #     self.functions = functions
-    #     self.actions = actions
 
     functions: SearchFunctions = None
     actions: ActionNames = None

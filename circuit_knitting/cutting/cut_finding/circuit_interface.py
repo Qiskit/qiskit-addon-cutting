@@ -15,21 +15,11 @@ from __future__ import annotations
 
 import copy
 import string
-from typing import NamedTuple
+from array import array
 from abc import ABC, abstractmethod
+from typing import NamedTuple, Hashable
 
 import numpy as np
-
-
-class CircuitElement(NamedTuple):
-    """Named tuple for specifying a circuit element."""
-
-    name: str
-    params: list
-    qubits: list
-    gamma: float | int
-
-
 
 
 class CircuitElement(NamedTuple):
@@ -105,8 +95,6 @@ class CircuitInterface(ABC):
         will be added.
         """
 
-        assert False, "Derived classes must override insertGateCut()"
-
     @abstractmethod
     def insertWireCut(self, gate_ID, input_ID, src_wire_ID, dest_wire_ID, cut_type):
         """Derived classes must override this function and insert a wire cut
@@ -119,8 +107,6 @@ class CircuitInterface(ABC):
         The cut type can only be "LO" in this release. In the future, support
         for "LOCCWithAncillas" and "LOCCNoAncillas" will be added.
         """
-
-        assert False, "Derived classes must override insertWireCut()"
 
 
     @abstractmethod
@@ -187,8 +173,16 @@ class SimpleGateList(CircuitInterface):
     subcircuits (list) is a list of list of wire IDs, where each list of
     wire IDs defines a subcircuit.
     """
+    circuit: list[CircuitElement | None]
+    new_circuit: list[CircuitElement]
+    cut_type: None
+    qubit_names: NameToIDMap
+    num_qubits: int
+    new_gate_ID_map: array[int]
+    output_wires: array[int]
 
-    def __init__(self, input_circuit, init_qubit_names=[]):
+
+    def __init__(self, input_circuit: list, init_qubit_names: list =[]):
         self.qubit_names = NameToIDMap(init_qubit_names)
 
         self.circuit = list()
@@ -216,27 +210,19 @@ class SimpleGateList(CircuitInterface):
         # Initialize the list of subcircuits assuming no cutting
         self.subcircuits = list(list(range(self.num_qubits)))
 
-        # Initialize the graph of strongly connected subcircuits
-        # assuming LO decompositions (i.e., no communication between
-        # subcircuits)
-        self.scc_subcircuits = [(s,) for s in range(len(self.subcircuits))]
-        self.scc_order = np.zeros(
-            (len(self.scc_subcircuits), len(self.scc_subcircuits)), dtype=bool
-        )
 
 
-
-    def getNumQubits(self):
+    def getNumQubits(self) -> int:
         """Return the number of qubits in the input circuit."""
 
         return self.num_qubits
 
-    def getNumWires(self):
+    def getNumWires(self) -> int:
         """Return the number of wires/qubits in the cut circuit."""
 
         return self.qubit_names.getNumItems()
 
-    def getMultiQubitGates(self):
+    def getMultiQubitGates(self) -> list[int|CircuitElement]:
         """Extract the multiqubit gates from the circuit and prepends the
         index of the gate in the circuits to the gate specification.
 
@@ -257,7 +243,7 @@ class SimpleGateList(CircuitInterface):
 
         return subcircuit
 
-    def insertGateCut(self, gate_ID, cut_type):
+    def insertGateCut(self, gate_ID: int, cut_type: str) -> None:
         """Mark the specified gate as being cut.  The cut type in this release
         can only be "LO".
         """
@@ -265,7 +251,7 @@ class SimpleGateList(CircuitInterface):
         gate_pos = self.new_gate_ID_map[gate_ID]
         self.cut_type[gate_pos] = cut_type
 
-    def insertWireCut(self, gate_ID, input_ID, src_wire_ID, dest_wire_ID, cut_type):
+    def insertWireCut(self, gate_ID: int, input_ID: int, src_wire_ID: int, dest_wire_ID: int, cut_type: str) -> None:
         """Insert a wire cut into the output circuit just prior to the
         specified gate on the wire connected to the specified input of
         that gate.  Gate inputs are numbered starting from 1.  The
@@ -307,14 +293,14 @@ class SimpleGateList(CircuitInterface):
         self.output_wires[qubit] = dest_wire_ID
 
 
-    def defineSubcircuits(self, list_of_list_of_wires):
+    def defineSubcircuits(self, list_of_list_of_wires: list[list[int]]) -> None:
         """Assign subcircuits where each subcircuit is
         specified as a list of wire IDs.
         """
 
         self.subcircuits = list_of_list_of_wires
 
-    def getWireNames(self):
+    def getWireNames(self) -> list[str | tuple[str, str]] :
         """Return a list of the internal wire names used in the circuit,
         which consists of the original qubit names together with additional
         names of form ("cut", <name>) introduced to represent cut wires.
@@ -322,7 +308,7 @@ class SimpleGateList(CircuitInterface):
 
         return list(self.qubit_names.getItems())
 
-    def exportCutCircuit(self, name_mapping="default"):
+    def exportCutCircuit(self, name_mapping: str ="default") -> list[CircuitElement]:
         """Return a list of gates representing the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
@@ -339,7 +325,7 @@ class SimpleGateList(CircuitInterface):
 
         return out
 
-    def exportOutputWires(self, name_mapping="default"):
+    def exportOutputWires(self, name_mapping: str ="default") -> dict:
         """Return a dictionary that maps output qubits in the input circuit
         to the corresponding output wires/qubits in the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
@@ -356,7 +342,7 @@ class SimpleGateList(CircuitInterface):
             out[self.qubit_names.getName(in_wire)] = wire_map[out_wire]
         return out
 
-    def exportSubcircuitsAsString(self, name_mapping="default"):
+    def exportSubcircuitsAsString(self, name_mapping: str ="default") -> str:
         """Return a string that maps qubits/wires in the output circuit
         to subcircuits per the Circuit Knitting Toolbox convention.  This
         method only works with mappings to numeric qubit/wire names, such
@@ -372,7 +358,7 @@ class SimpleGateList(CircuitInterface):
                 out[wire_map[wire]] = alphabet[k]
         return "".join(out)
 
-    def makeWireMapping(self, name_mapping):
+    def makeWireMapping(self, name_mapping: None | str) -> list:
         """Return a wire-mapping array given an input specification of a
         name mapping.  If None is provided as the input name_mapping, then
         the original qubit names are mapped to themselves.  If "default"
@@ -396,7 +382,7 @@ class SimpleGateList(CircuitInterface):
 
         return wire_mapping
 
-    def defaultWireNameMapping(self):
+    def defaultWireNameMapping(self) -> dict[list[str|tuple[str, str]],int]:
         """Return a dictionary that maps wire names in self.qubit_names to
         default numeric output qubit names when exporting a cut circuit.  Cut
         wires are assigned numeric names that are adjacent to the numeric
@@ -414,7 +400,7 @@ class SimpleGateList(CircuitInterface):
 
         return name_map
 
-    def sortOrder(self, name):
+    def sortOrder(self, name: Hashable) -> int|float:
         if isinstance(name, tuple):
             if name[0] == "cut":
                 x = self.sortOrder(name[1])
@@ -424,7 +410,7 @@ class SimpleGateList(CircuitInterface):
 
         return self.qubit_names.getID(name)
 
-    def replaceWireIDs(self, gate_list, wire_map):
+    def replaceWireIDs(self, gate_list: list, wire_map: list):
         """Iterate through a list of gates and replaces wire IDs with the
         values defined by the wire_map.
         """
@@ -438,7 +424,11 @@ class NameToIDMap:
     """Class used to map hashable items (e.g., qubit names) to natural numbers
     (e.g., qubit IDs)"""
 
-    def __init__(self, init_names=[]):
+    next_ID: int
+    item_dict: dict
+    ID_dict: dict
+
+    def __init__(self, init_names: list =[]):
         """Allow the name dictionary to be initialized with the names
         in init_names in the order the names appear in order to force a
         preferred ordering in the assigment of item IDs to those names.
@@ -451,7 +441,7 @@ class NameToIDMap:
         for name in init_names:
             self.getID(name)
 
-    def getID(self, item_name):
+    def getID(self, item_name: Hashable) -> int:
         """Return the numeric ID associated with the specified hashable item.
         If the hashable item does not yet appear in the item dictionary, a new
         item ID is assigned.
@@ -466,7 +456,7 @@ class NameToIDMap:
 
         return self.item_dict[item_name]
 
-    def defineID(self, item_ID, item_name):
+    def defineID(self, item_ID: int, item_name: Hashable):
         """Assign a specific ID number to an item name."""
 
         assert item_ID not in self.ID_dict, f"item ID {item_ID} already assigned"
@@ -477,7 +467,7 @@ class NameToIDMap:
         self.item_dict[item_name] = item_ID
         self.ID_dict[item_ID] = item_name
 
-    def getName(self, item_ID):
+    def getName(self, item_ID: int) -> Hashable|None:
         """Return the name associated with the specified item ID.
         None is returned if item_ID does not (yet) exist.
         """
@@ -487,12 +477,12 @@ class NameToIDMap:
 
         return self.ID_dict[item_ID]
 
-    def getNumItems(self):
+    def getNumItems(self) -> int:
         """Return the number of hashable items loaded thus far."""
 
         return len(self.item_dict)
 
-    def getArraySizeNeeded(self):
+    def getArraySizeNeeded(self) -> int:
         """Return one plus the maximum item ID assigned thus far,
         or zero if no items have been assigned.  The value returned
         is thus the minimum size needed to construct a Python/Numpy
@@ -504,12 +494,12 @@ class NameToIDMap:
 
         return 1 + max(self.ID_dict.keys())
 
-    def getItems(self):
+    def getItems(self)-> Hashable:
         """Return an iterator over the hashable items loaded thus far."""
 
         return self.item_dict.keys()
 
-    def getIDs(self):
+    def getIDs(self) -> Hashable:
         """Return an iterator over the hashable items loaded thus far."""
 
         return self.ID_dict.keys()

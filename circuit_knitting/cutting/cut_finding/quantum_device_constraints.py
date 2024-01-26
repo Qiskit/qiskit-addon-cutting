@@ -44,7 +44,7 @@ class DeviceConstraints:
                 "qubits_per_QPU and num_QPUs must be positive definite integers."
             )
 
-    def getQPUWidth(self):
+    def getQPUWidth(self) -> int:
         """Return the number of qubits supported on each individual QPU."""
         return self.qubits_per_QPU
 

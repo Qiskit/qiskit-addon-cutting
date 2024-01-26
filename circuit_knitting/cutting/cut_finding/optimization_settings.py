@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
+
 @dataclass
 class OptimizationSettings:
     """Class for specifying parameters that control the optimization.
@@ -98,34 +99,34 @@ class OptimizationSettings:
         if self.engine_selections is None:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
-    def getMaxGamma(self):
+    def getMaxGamma(self) -> int:
         """Return the max gamma."""
         return self.max_gamma
 
-    def getMaxBackJumps(self):
+    def getMaxBackJumps(self) -> int:
         """Return the maximum number of allowed search backjumps."""
         return self.max_backjumps
 
-    def getRandSeed(self):
+    def getRandSeed(self) -> int:
         """Return the random seed."""
         return self.rand_seed
 
-    def getEngineSelection(self, stage_of_optimization):
+    def getEngineSelection(self, stage_of_optimization: str) -> str:
         """Return the name of the search engine to employ."""
         return self.engine_selections[stage_of_optimization]
 
-    def setEngineSelection(self, stage_of_optimization, engine_name):
+    def setEngineSelection(self, stage_of_optimization: str, engine_name: str) -> None:
         """Return the name of the search engine to employ."""
         self.engine_selections[stage_of_optimization] = engine_name
 
-    def setGateCutTypes(self):
+    def setGateCutTypes(self) -> None:
         """Select which gate-cut types to include in the optimization.
         The default is to include LO gate cuts.
         """
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
 
-    def setWireCutTypes(self):
+    def setWireCutTypes(self) -> None:
         """Select which wire-cut types to include in the optimization.
         The default is to include LO wire cuts.
         """
@@ -134,7 +135,7 @@ class OptimizationSettings:
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
-    def getCutSearchGroups(self):
+    def getCutSearchGroups(self) -> list[str]:
         """Return a list of search-action groups to include in the
         optimization for cutting circuits into disjoint subcircuits.
         """
@@ -157,5 +158,5 @@ class OptimizationSettings:
         return out
 
     @classmethod
-    def from_dict(cls, options: dict[str, int]):
+    def from_dict(cls, options: dict[str, int]) -> OptimizationSettings:
         return cls(**options)
