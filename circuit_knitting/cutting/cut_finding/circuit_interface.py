@@ -27,7 +27,7 @@ class CircuitElement(NamedTuple):
 
     name: str
     params: list
-    qubits: tuple
+    qubits: list
     gamma: float | int
 
 
