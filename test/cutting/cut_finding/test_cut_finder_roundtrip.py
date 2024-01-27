@@ -55,11 +55,9 @@ def test_no_cuts(gate_cut_test_setup):
 
     output = optimization_pass.optimize(interface, settings, constraint_obj)
 
-    # assert optimization_pass.best_result == None #no cutting.
-
     print(optimization_pass.best_result)
 
-    assert PrintActionListWithNames(output.actions) == []
+    assert PrintActionListWithNames(output.actions) == [] #no cutting.
 
     assert interface.exportSubcircuitsAsString(name_mapping="default") == "AAAA"
 
@@ -76,6 +74,12 @@ def test_GateCuts(gate_cut_test_setup):
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
     output = optimization_pass.optimize()
+
+    cut_actions_list = output.CutActionsList()
+
+    assert cut_actions_list == [
+        {"Cut action": "CutTwoQubitGate", "Cut Gate": [9, ["cx", 1, 2]]}
+    ]
 
     best_result = optimization_pass.getResults()
 
@@ -103,6 +107,16 @@ def test_WireCuts(wire_cut_test_setup):
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
     output = optimization_pass.optimize()
+
+    cut_actions_list = output.CutActionsList()
+
+    assert cut_actions_list == [
+        {
+            "Cut action": "CutLeftWire",
+            "Cut location:": {"Gate": [10, ["cx", 3, 4]]},
+            "Input wire": 1,
+        }
+    ]
 
     best_result = optimization_pass.getResults()
 

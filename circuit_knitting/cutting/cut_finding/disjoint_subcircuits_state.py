@@ -117,6 +117,7 @@ class DisjointSubcircuitsState:
             self.no_merge = None
             self.actions = None
             self.level = None
+            self.cut_actions_list = None
 
         else:
             max_wires = num_qubits + max_wire_cuts
@@ -133,6 +134,7 @@ class DisjointSubcircuitsState:
 
             self.no_merge = list()
             self.actions = list()
+            self.cut_actions_list = list()
             self.level = 0
 
     def __copy__(self):
@@ -150,6 +152,7 @@ class DisjointSubcircuitsState:
 
         new_state.no_merge = self.no_merge.copy()
         new_state.actions = self.actions.copy()
+        new_state.cut_actions_list = self.cut_actions_list.copy()
         new_state.level = None
 
         return new_state
@@ -158,42 +161,46 @@ class DisjointSubcircuitsState:
         """Make shallow copy."""
 
         return copy.copy(self)
-
-    def print(self, simple=False):
-        """Print the various properties of a DisjointSubcircuitState."""
+    
+    def CutActionsList(self):
+        """Create a formatted list containing the actions carried out on a DisjointSubcircuitState
+        along with the locations of these actions which are specified in terms of
+        gate and wire references."""
 
         cut_actions = PrintActionListWithNames(self.actions)
-        cut_actions_sublist = []
 
         # Output formatting for LO gate and wire cuts.
         for i in range(len(cut_actions)):
             if (cut_actions[i][0] == "CutLeftWire") or (
-                cut_actions[i][0] == ("CutRightWire")
+                cut_actions[i][0] == "CutRightWire"
             ):
-                cut_actions_sublist.append(
+                self.cut_actions_list.append(
                     {
                         "Cut action": cut_actions[i][0],
-                        "Cut location": {
+                        "Cut location:": {
                             "Gate": [cut_actions[i][1][0], cut_actions[i][1][1]]
                         },
                         "Input wire": cut_actions[i][2][0][0],
                     }
                 )
             elif cut_actions[i][0] == "CutTwoQubitGate":
-                cut_actions_sublist.append(
+                self.cut_actions_list.append(
                     {
                         "Cut action": cut_actions[i][0],
                         "Cut Gate": [cut_actions[i][1][0], cut_actions[i][1][1]],
                     }
                 )
-        if not cut_actions_sublist:
-            cut_actions_sublist = cut_actions
+            if not self.cut_actions_list:
+                self.cut_actions_list = cut_actions
 
-        if simple:  # print only a subset of properties.
-            #    print(self.lowerBoundGamma(), self.gamma_UB, self.getMaxWidth())
-            #    print('Actions:', PrintActionListWithNames(self.actions))
-            #    print(self.no_merge)
-            print(cut_actions_sublist)
+            return self.cut_actions_list
+
+    def print(self, simple=False):  # pragma: no cover
+        """Print the various properties of a DisjointSubcircuitState."""
+
+        cut_actions_list = self.CutActionsList()
+        if simple:
+            print(cut_actions_list)
         else:
             print("wiremap", self.wiremap)
             print("num_wires", self.num_wires)
@@ -329,28 +336,13 @@ class DisjointSubcircuitsState:
         )
 
         for clause in self.no_merge:
-            if isinstance(clause[0], tuple) or isinstance(clause[0], list):
-                constraint = False
-                for pair in clause:
-                    r1 = self.findWireRoot(pair[0])
-                    r2 = self.findWireRoot(pair[1])
-                    if r1 != r2 and not (
-                        (r1 == root_1 and r2 == root_2)
-                        or (r1 == root_2 and r2 == root_1)
-                    ):
-                        constraint = True
-                        break
-                if not constraint:
-                    return True
+            r1 = self.findWireRoot(clause[0])
+            r2 = self.findWireRoot(clause[1])
 
-            else:
-                r1 = self.findWireRoot(clause[0])
-                r2 = self.findWireRoot(clause[1])
+            assert r1 != r2, "Do-Not-Merge clauses must not be identical"
 
-                assert r1 != r2, "Do-Not-Merge clauses must not be identical"
-
-                if (r1 == root_1 and r2 == root_2) or (r1 == root_2 and r2 == root_1):
-                    return True
+            if (r1 == root_1 and r2 == root_2) or (r1 == root_2 and r2 == root_1):
+                return True
 
         return False
 
@@ -358,22 +350,10 @@ class DisjointSubcircuitsState:
         """Return True if all merge constraints are satisfied."""
 
         for clause in self.no_merge:
-            if isinstance(clause[0], tuple) or isinstance(clause[0], list):
-                constraint = False
-                for pair in clause:
-                    r1 = self.findWireRoot(pair[0])
-                    r2 = self.findWireRoot(pair[1])
-                    if r1 != r2:
-                        constraint = True
-                        break
-                if not constraint:
-                    return False
-
-            else:
-                r1 = self.findWireRoot(clause[0])
-                r2 = self.findWireRoot(clause[1])
-                if r1 == r2:
-                    return False
+            r1 = self.findWireRoot(clause[0])
+            r2 = self.findWireRoot(clause[1])
+            if r1 == r2:
+                return False
 
         return True
 
@@ -387,13 +367,6 @@ class DisjointSubcircuitsState:
         ), f"{wire_1} cannot be the same subcircuit as {wire_2}"
 
         self.no_merge.append((wire_1, wire_2))
-
-    def assertDoNotMergeRootPairs(self, pair_list):
-        """Add a constraint that at least one of the pairs of
-        subcircuits defined in pair_list should not be merged.
-        """
-
-        self.no_merge.append(pair_list)
 
     def mergeRoots(self, root_1, root_2):
         """Merge the subcircuits associated with root wire IDs root_1
