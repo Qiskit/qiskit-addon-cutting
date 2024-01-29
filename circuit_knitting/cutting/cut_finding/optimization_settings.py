@@ -25,30 +25,18 @@ class OptimizationSettings:
 
     max_gamma (int) is a constraint on the maximum value of gamma that a
     solution to the optimization is allowed to have to be considered feasible.
-    All other potential solutions are discarded.
 
     engine_selections (dict) is a dictionary that defines the selections
     of search engines for the various stages of optimization. In this release
-    only "BestFirst" or Dijkstra's best-first search is supported. In future
-    relesases the choices "Greedy" and "BeamSearch", which correspond respectively
-    to bounded-greedy and best-first search and beam search will be added.
+    only "BestFirst" or Dijkstra's best-first search is supported.
 
     max_backjumps (int) is a constraint on the maximum number of backjump
-    operations that can be performed by the search algorithm.  This constraint
-    does not apply to beam search.
-
-    beam_width (int) is the beam width used in the optimization.  Only the B
-    best partial solutions are maintained at each level in the search, where B
-    is the beam width.  This constraint only applies to beam search algorithms.
-
-    greedy_multiplier (float) is a multiplier used to compute cost bounds
-    for bounded-greedy best-first search.
+    operations that can be performed by the search algorithm. 
 
     rand_seed (int) is a seed used to provide a repeatable initialization
-    of the pesudorandom number generators used by the optimization, which
-    is useful for debugging purposes.  If None is used as the random seed,
-    then a seed is obtained using an operating-system call to achieve an
-    unrepeatable randomized initialization, which is useful in practice.
+    of the pesudorandom number generators used by the optimization.
+    If None is used as the random seed, then a seed is obtained using an
+    operating-system call to achieve an unrepeatable randomized initialization.
 
     gate_cut_LO (bool) is a flag that indicates that LO gate cuts should be
     included in the optimization.
@@ -72,7 +60,6 @@ class OptimizationSettings:
 
     ValueError: max_gamma must be a positive definite integer.
     ValueError: max_backjumps must be a positive semi-definite integer.
-    ValueError: beam_width must be a positive definite integer.
     """
 
     max_gamma: int = 1024
@@ -116,19 +103,19 @@ class OptimizationSettings:
         return self.engine_selections[stage_of_optimization]
 
     def setEngineSelection(self, stage_of_optimization: str, engine_name: str) -> None:
-        """Return the name of the search engine to employ."""
+        """Set the name of the search engine to employ."""
         self.engine_selections[stage_of_optimization] = engine_name
 
     def setGateCutTypes(self) -> None:
         """Select which gate-cut types to include in the optimization.
-        The default is to include LO gate cuts.
+        The default is to only include LO gate cuts.
         """
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
 
     def setWireCutTypes(self) -> None:
         """Select which wire-cut types to include in the optimization.
-        The default is to include LO wire cuts.
+        The default is to only include LO wire cuts.
         """
 
         self.wire_cut_LO = self.LO

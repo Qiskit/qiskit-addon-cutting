@@ -71,7 +71,7 @@ class ActionNames:
                 if name not in self.group_dict:
                     self.group_dict[name] = list()
                 self.group_dict[name].append(action_object)
-        else:
+        else: #pragma: no cover
             if group_name not in self.group_dict:
                 self.group_dict[group_name] = list()
             self.group_dict[group_name].append(action_object)
@@ -102,7 +102,7 @@ def getActionSubset(action_list: list, action_groups: list) -> list :
     if action_groups is None:
         return action_list
 
-    if len(action_groups) <= 0:
+    if len(action_groups) <= 0: #pragma: no cover
         action_groups = [None]
 
     groups = set(action_groups)

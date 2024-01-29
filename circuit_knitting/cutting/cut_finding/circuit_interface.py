@@ -182,7 +182,7 @@ class SimpleGateList(CircuitInterface):
     output_wires: array[int]
 
 
-    def __init__(self, input_circuit: list, init_qubit_names: list =[]):
+    def __init__(self, input_circuit: list[NamedTuple], init_qubit_names: list =[]):
         self.qubit_names = NameToIDMap(init_qubit_names)
 
         self.circuit = list()

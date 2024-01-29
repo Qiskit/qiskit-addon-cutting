@@ -37,7 +37,7 @@ def test_ActionApplyGate(testCircuit):
     _, state, two_qubit_gate = testCircuit
     apply_gate = ActionApplyGate()
     assert apply_gate.getName() == None
-    assert apply_gate.getGroupNames() == [None, "TwoQubitGates", "MultiqubitGates"]
+    assert apply_gate.getGroupNames() == [None, "TwoQubitGates"]
 
     updated_state = apply_gate.nextStatePrimitive(state, two_qubit_gate, 2)
     actions_list = []

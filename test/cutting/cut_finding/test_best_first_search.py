@@ -55,6 +55,7 @@ def test_BestFirstSearch(testCircuit):
 
     out, _ = op.optimizationPass()
 
+    assert op.search_engine.getStats(penultimate = True) is not None
     assert op.search_engine.getStats() is not None
     assert op.getUpperBoundCost() == (27, inf)
     assert op.minimumReached() == False
@@ -68,6 +69,7 @@ def test_BestFirstSearch(testCircuit):
 
     out, _ = op.optimizationPass()
 
+    assert.getStats(penultimate = True) is not None
     assert op.search_engine.getStats() is not None
     assert op.getUpperBoundCost() == (27, inf)
     assert op.minimumReached() == True

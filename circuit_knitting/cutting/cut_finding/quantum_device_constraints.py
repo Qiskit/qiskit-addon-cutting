@@ -49,5 +49,5 @@ class DeviceConstraints:
         return self.qubits_per_QPU
 
     @classmethod
-    def from_dict(cls, options: dict[str, int]):
+    def from_dict(cls, options: dict[str, int]) -> DeviceConstraints:
         return cls(**options)

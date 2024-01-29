@@ -69,7 +69,7 @@ class ActionApplyGate(DisjointSearchAction):
     def getGroupNames(self):
         """Return the group name of ActionApplyGate."""
 
-        return [None, "TwoQubitGates", "MultiqubitGates"]
+        return [None, "TwoQubitGates"]
 
     def nextStatePrimitive(self, state, gate_spec, max_width):
         """Return the new state that results from applying
@@ -77,10 +77,10 @@ class ActionApplyGate(DisjointSearchAction):
         specification: gate_spec.
         """
         gate = gate_spec[1]  # extract the gate from gate specification.
-        if len(gate.qubits) > 2:
-            # The function multiqubitNextState handles
-            # gates that act on 3 or more qubits.
-            return self.multiqubitNextState(state, gate_spec, max_width)
+        # if len(gate.qubits) > 2:
+        #     # The function multiqubitNextState handles
+        #     # gates that act on 3 or more qubits.
+        #     return self.multiqubitNextState(state, gate_spec, max_width)
 
         r1 = state.findQubitRoot(
             gate.qubits[0]
