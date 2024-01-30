@@ -23,34 +23,34 @@ class OptimizationSettings:
 
     Member Variables:
 
-    max_gamma (int) is a constraint on the maximum value of gamma that a
+    max_gamma: a constraint on the maximum value of gamma that a
     solution to the optimization is allowed to have to be considered feasible.
 
-    engine_selections (dict) is a dictionary that defines the selections
+    engine_selections: a dictionary that defines the selections
     of search engines for the various stages of optimization. In this release
     only "BestFirst" or Dijkstra's best-first search is supported.
 
-    max_backjumps (int) is a constraint on the maximum number of backjump
+    max_backjumps: a constraint on the maximum number of backjump
     operations that can be performed by the search algorithm. 
 
-    rand_seed (int) is a seed used to provide a repeatable initialization
+    rand_seed: a seed used to provide a repeatable initialization
     of the pesudorandom number generators used by the optimization.
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.
 
-    gate_cut_LO (bool) is a flag that indicates that LO gate cuts should be
+    gate_cut_LO: a flag that indicates that LO gate cuts should be
     included in the optimization.
 
-    gate_cut_LOCC_with_ancillas (bool) is a flag that indicates that
+    gate_cut_LOCC_with_ancillas: a flag that indicates that
     LOCC gate cuts with ancillas should be included in the optimization.
 
-    wire_cut_LO (bool) is a flag that indicates that LO wire cuts should be
+    wire_cut_LO: a flag that indicates that LO wire cuts should be
     included in the optimization.
 
-    wire_cut_LOCC_with_ancillas (bool) is a flag that indicates that
+    wire_cut_LOCC_with_ancillas: a flag that indicates that
     LOCC wire cuts with ancillas should be included in the optimization.
 
-    wire_cut_LOCC_no_ancillas (bool) is a flag that indicates that
+    wire_cut_LOCC_no_ancillas: a flag that indicates that
     LOCC wire cuts with no ancillas should be included in the optimization.
 
     NOTE: The current release only supports LO gate and wire cuts. LOCC

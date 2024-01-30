@@ -11,7 +11,6 @@
 
 """Classes needed to implement the actions involved in circuit cutting."""
 
-import numpy as np
 from abc import ABC, abstractmethod
 from .search_space_generator import ActionNames
 

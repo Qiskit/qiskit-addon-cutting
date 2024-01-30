@@ -24,10 +24,10 @@ class DeviceConstraints:
 
     Member Variables:
 
-    qubits_per_QPU (int) : The number of qubits that are available on the
+    qubits_per_QPU: The number of qubits that are available on the
     individual QPUs that make up the quantum processor.
 
-    num_QPUs (int) : The number of QPUs in the target quantum processor.
+    num_QPUs: The number of QPUs in the target quantum processor.
 
     Raises:
 

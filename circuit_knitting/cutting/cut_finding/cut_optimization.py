@@ -35,7 +35,6 @@ class CutOptimizationFuncArgs:
         self.search_actions = None
         self.max_gamma = None
         self.qpu_width = None
-        self.greedy_multiplier = None
 
 
 def CutOptimizationCostFunc(state, func_args):
@@ -75,7 +74,7 @@ def CutOptimizationNextStateFunc(state, func_args):
     if len(gate_spec[1].qubits) == 2:
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
-        action_list = func_args.search_actions.getGroup("MultiqubitGates")
+       raise ValueError("At present, only the cutting of two qubit gates is supported.")
 
     action_list = getActionSubset(action_list, gate_spec[2])
     # Apply the search actions to generate a list of next states

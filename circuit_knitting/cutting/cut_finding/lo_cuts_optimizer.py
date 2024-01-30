@@ -97,7 +97,7 @@ class LOCutsOptimizer:
         Input Arguments:
 
         circuit_interface (CircuitInterface) defines the circuit to be
-        cut.  This object is then updated with the optimized cuts that
+        cut. This object is then updated with the optimized cuts that
         were identified.
 
         optimization_settings (OptimizationSettings) defines the settings
