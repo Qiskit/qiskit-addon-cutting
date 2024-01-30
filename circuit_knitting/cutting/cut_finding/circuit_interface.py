@@ -26,8 +26,8 @@ class CircuitElement(NamedTuple):
     """Named tuple for specifying a circuit element."""
 
     name: str
-    params: list
-    qubits: list
+    params: list[float | int]
+    qubits: list[int | str]
     gamma: float | int
 
 
@@ -251,7 +251,8 @@ class SimpleGateList(CircuitInterface):
         gate_pos = self.new_gate_ID_map[gate_ID]
         self.cut_type[gate_pos] = cut_type
 
-    def insertWireCut(self, gate_ID: int, input_ID: int, src_wire_ID: int, dest_wire_ID: int, cut_type: str) -> None:
+    def insertWireCut(self, gate_ID: int, input_ID: int,
+                       src_wire_ID: int, dest_wire_ID: int, cut_type: str) -> None:
         """Insert a wire cut into the output circuit just prior to the
         specified gate on the wire connected to the specified input of
         that gate.  Gate inputs are numbered starting from 1.  The
@@ -409,13 +410,14 @@ class SimpleGateList(CircuitInterface):
 
         return self.qubit_names.getID(name)
 
-    def replaceWireIDs(self, gate_list: list, wire_map: list):
-        """Iterate through a list of gates and replaces wire IDs with the
+    def replaceWireIDs(self, gate_list: list[CircuitElement], wire_map: list):
+        """Iterate through a list of gates and replace wire IDs with the
         values defined by the wire_map.
         """
-        for gate in gate_list:
-            for k in range(len(gate.qubits)):
-                gate.qubits[k] = wire_map[gate.qubits[k]]
+        for inst in gate_list:
+            if type(inst) == CircuitElement:
+                for k in range(len(inst.qubits)):
+                    inst.qubits[k] = wire_map[inst.qubits[k]]
 
 
 class NameToIDMap:
