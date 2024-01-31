@@ -39,7 +39,7 @@ class ActionNames:
     """
 
     action_dict: dict[str, DisjointSearchAction]
-    group_dict: dict[str,list[DisjointSearchAction]] 
+    group_dict: dict[str, list[DisjointSearchAction]] 
 
     def __init__(self):
         self.action_dict = dict()
@@ -174,8 +174,8 @@ class SearchSpaceGenerator:
 
     Member Variables:
 
-    functions: a container class that holds
-    the functions needed to generate and explore a search space.
+    functions: a data class that holds the functions needed to generate
+    and explore a search space.
 
     actions: a container class that holds the search
     action objects needed to generate and explore a search space.

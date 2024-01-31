@@ -7,11 +7,11 @@ class TestCircuitInterface:
         used by the circuit-cutting optimizer.
         """
 
-        #Assign a fixed gamma=1 to single qubit gates.
+        #Assign gamma=None to single qubit gates.
         trial_circuit = [
-            CircuitElement(name="h", params=[], qubits=["q1"], gamma=1),
-            CircuitElement(name="barrier",params=[], qubits= ["q1"], gamma=1),
-            CircuitElement(name="s", params=[], qubits = ["q0"], gamma = 1),
+            CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
+            CircuitElement(name="barrier",params=[], qubits= ["q1"], gamma=None),
+            CircuitElement(name="s", params=[], qubits = ["q0"], gamma = None),
             ("barrier"),
             CircuitElement(name="cx", params=[], qubits = ["q1", "q0"], gamma = 3),
         ]
@@ -23,9 +23,9 @@ class TestCircuitInterface:
         assert circuit_converted.getMultiQubitGates() == [[4, CircuitElement(name="cx", params=[],
                                                             qubits = [0, 1], gamma = 3) , None]]
         assert circuit_converted.circuit == [
-            [CircuitElement(name="h", params=[], qubits=[0], gamma=1), None],
-            [CircuitElement(name="barrier",params=[], qubits= [0], gamma=1), None],
-            [CircuitElement(name="s", params=[], qubits = [1], gamma = 1), None],
+            [CircuitElement(name="h", params=[], qubits=[0], gamma=None), None],
+            [CircuitElement(name="barrier",params=[], qubits= [0], gamma=None), None],
+            [CircuitElement(name="s", params=[], qubits = [1], gamma = None), None],
             ["barrier", None],
             [CircuitElement(name="cx", params=[], qubits = [0, 1], gamma = 3), None]
         ]
@@ -56,7 +56,7 @@ class TestCircuitInterface:
             trial_circuit[2],
             trial_circuit[3],
             trial_circuit[4],
-        ]
+        ] 
 
         # the following two methods are the same in the absence of wire cuts.
         assert (

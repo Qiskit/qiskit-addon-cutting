@@ -22,19 +22,14 @@ from ..qpd import QPDBasis
 
 
 def QCtoCCOCircuit(circuit: QuantumCircuit):
-    """Convert a qiskit quantum circuit object into a circuit list that is compatible with the SimpleGateList.
+    """Convert a qiskit quantum circuit object into a circuit list that is compatible with the :class: `SimpleGateList`.
 
     Args:
     circuit: QuantumCircuit object.
 
     Returns:
-    circuit_list_rep: list of circuit gates along with qubit numbers associated to each gate, represented in a
-    form that is compatible with SimpleGateList and is of the form:
-
-    ['barrier',
-    ('barrier', <qubit_name>),
-    ((<gate_name> [, <parameters>]), <qubit_name_1> ... <qubit_name_n>)].
-
+    circuit_list_rep: list of circuit instructions represented in a form that is compatible with
+    :class: `SimpleGateList` and can therefore be ingested by the cut finder.
 
     TODO: Extend this function to allow for circuits with (mid-circuit or other) measurements, as needed.
     """
