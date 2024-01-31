@@ -74,7 +74,9 @@ def CutOptimizationNextStateFunc(state, func_args):
     if len(gate_spec[1].qubits) == 2:
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
-       raise ValueError("At present, only the cutting of two qubit gates is supported.")
+        raise ValueError(
+            "At present, only the cutting of two qubit gates is supported."
+        )
 
     action_list = getActionSubset(action_list, gate_spec[2])
     # Apply the search actions to generate a list of next states

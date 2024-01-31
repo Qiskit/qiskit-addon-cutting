@@ -39,13 +39,16 @@ def QCtoCCOCircuit(circuit: QuantumCircuit):
             circuit_list_rep.append(inst.operation.name)
         else:
             gamma = None
-            if inst.operation.name == "barrier" and len(inst.qubits) != circuit.num_qubits:
+            if (
+                inst.operation.name == "barrier"
+                and len(inst.qubits) != circuit.num_qubits
+            ):
                 circuit_element = CircuitElement(
-                name=inst.operation.name,
-                params=[],
-                qubits=list(circuit.find_bit(q).index for q in inst.qubits),
-                gamma=gamma,
-            )
+                    name=inst.operation.name,
+                    params=[],
+                    qubits=list(circuit.find_bit(q).index for q in inst.qubits),
+                    gamma=gamma,
+                )
             if isinstance(inst.operation, Gate) and len(inst.qubits) == 2:
                 gamma = QPDBasis.from_instruction(inst.operation).kappa
             circuit_element = CircuitElement(
@@ -68,37 +71,20 @@ def CCOtoQCCircuit(interface):
     Returns:
     qc_cut: The SimpleGateList converted into a :class:`qiskit.QuantumCircuit` instance.
 
-    TODO: This function only works for instances of LO gate cutting. Expand to cover the wire cutting case.
+    TODO: This function only works for instances of LO gate cutting. Expand to cover the wire cutting case when needed.
     """
     cut_circuit_list = interface.exportCutCircuit(name_mapping=None)
     num_qubits = interface.getNumWires()
     cut_types = interface.cut_type
     qc_cut = QuantumCircuit(num_qubits)
     for k, op in enumerate([cut_circuit for cut_circuit in cut_circuit_list]):
-        if cut_types[k] is None: #only append gates that are not cut.
+        if cut_types[k] is None:  # only append gates that are not cut.
             op_name = op.name
             op_qubits = op.qubits
             op_params = op.params
             inst = Instruction(op_name, len(op_qubits), 0, op_params)
             qc_cut.append(inst, op_qubits)
     return qc_cut
-        
-
-    # for i in range(cut_circuit_list_len):
-    #     op = cut_circuit_list[
-    #         i
-    #     ]  # the operation, including gate names and qubits acted on.
-    #     gate_qubits = len(op) - 1  # number of qubits involved in the operation.
-    #     if cut_types[i] is None:  # only append gates that are not cut to qc_cut.
-    #         if type(op[0]) is tuple:
-    #             params = [i for i in op[0][1:]]
-    #             gate_name = op[0][0]
-    #         else:
-    #             params = []
-    #             gate_name = op[0]
-    #         inst = Instruction(gate_name, gate_qubits, 0, params)
-    #         qc_cut.append(inst, op[1 : len(op)])
-    # return qc_cut
 
 
 def selectSearchEngine(

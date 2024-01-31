@@ -1,5 +1,7 @@
 import pytest
-from circuit_knitting.cutting.cut_finding.optimization_settings import OptimizationSettings
+from circuit_knitting.cutting.cut_finding.optimization_settings import (
+    OptimizationSettings,
+)
 
 
 @pytest.mark.parametrize(
@@ -17,8 +19,8 @@ def test_GateCutTypes(LO=True, LOCC_ancillas=False, LOCC_no_ancillas=False):
     """Test default gate cut types."""
     op = OptimizationSettings()
     op.setGateCutTypes()
-    assert op.gate_cut_LO == True
-    assert op.gate_cut_LOCC_with_ancillas == False
+    assert op.gate_cut_LO is True
+    assert op.gate_cut_LOCC_with_ancillas is False
 
 
 def test_WireCutTypes(LO=True, LOCC_ancillas=False, LOCC_no_ancillas=False):
@@ -26,8 +28,8 @@ def test_WireCutTypes(LO=True, LOCC_ancillas=False, LOCC_no_ancillas=False):
     op = OptimizationSettings()
     op.setWireCutTypes()
     assert op.wire_cut_LO
-    assert op.wire_cut_LOCC_with_ancillas == False
-    assert op.wire_cut_LOCC_no_ancillas == False
+    assert op.wire_cut_LOCC_with_ancillas is False
+    assert op.wire_cut_LOCC_no_ancillas is False
 
 
 def test_AllCutSearchGroups():

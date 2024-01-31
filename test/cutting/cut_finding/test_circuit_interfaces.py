@@ -1,4 +1,7 @@
-from circuit_knitting.cutting.cut_finding.circuit_interface import CircuitElement, SimpleGateList
+from circuit_knitting.cutting.cut_finding.circuit_interface import (
+    CircuitElement,
+    SimpleGateList,
+)
 
 
 class TestCircuitInterface:
@@ -7,38 +10,39 @@ class TestCircuitInterface:
         used by the circuit-cutting optimizer.
         """
 
-        #Assign gamma=None to single qubit gates.
+        # Assign gamma=None to single qubit gates.
         trial_circuit = [
             CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
-            CircuitElement(name="barrier",params=[], qubits= ["q1"], gamma=None),
-            CircuitElement(name="s", params=[], qubits = ["q0"], gamma = None),
+            CircuitElement(name="barrier", params=[], qubits=["q1"], gamma=None),
+            CircuitElement(name="s", params=[], qubits=["q0"], gamma=None),
             "barrier",
-            CircuitElement(name="cx", params=[], qubits = ["q1", "q0"], gamma = 3),
+            CircuitElement(name="cx", params=[], qubits=["q1", "q0"], gamma=3),
         ]
         circuit_converted = SimpleGateList(trial_circuit)
 
         assert circuit_converted.getNumQubits() == 2
         assert circuit_converted.getNumWires() == 2
         assert circuit_converted.qubit_names.item_dict == {"q1": 0, "q0": 1}
-        assert circuit_converted.getMultiQubitGates() == [[4, CircuitElement(name="cx", params=[],
-                                                            qubits = [0, 1], gamma = 3) , None]]
+        assert circuit_converted.getMultiQubitGates() == [
+            [4, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None]
+        ]
         assert circuit_converted.circuit == [
             [CircuitElement(name="h", params=[], qubits=[0], gamma=None), None],
-            [CircuitElement(name="barrier",params=[], qubits= [0], gamma=None), None],
-            [CircuitElement(name="s", params=[], qubits = [1], gamma = None), None],
+            [CircuitElement(name="barrier", params=[], qubits=[0], gamma=None), None],
+            [CircuitElement(name="s", params=[], qubits=[1], gamma=None), None],
             ["barrier", None],
-            [CircuitElement(name="cx", params=[], qubits = [0, 1], gamma = 3), None]
+            [CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
         ]
 
     def test_GateCutInterface(self):
         """Test the internal representation of LO gate cuts."""
 
-        trial_circuit=[
-            CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[1,2], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
+        trial_circuit = [
+            CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
         ]
         circuit_converted = SimpleGateList(trial_circuit)
         circuit_converted.insertGateCut(2, "LO")
@@ -56,7 +60,7 @@ class TestCircuitInterface:
             trial_circuit[2],
             trial_circuit[3],
             trial_circuit[4],
-        ] 
+        ]
 
         # the following two methods are the same in the absence of wire cuts.
         assert (
@@ -68,12 +72,12 @@ class TestCircuitInterface:
     def test_WireCutInterface(self):
         """Test the internal representation of LO wire cuts."""
 
-        trial_circuit=[
-            CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[1,2], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
+        trial_circuit = [
+            CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
         ]
         circuit_converted = SimpleGateList(trial_circuit)
         circuit_converted.insertWireCut(
@@ -89,9 +93,9 @@ class TestCircuitInterface:
         assert circuit_converted.exportCutCircuit(name_mapping=None) == [
             trial_circuit[0],
             trial_circuit[1],
-            ['move', 1, 4],
-            CircuitElement(name='cx', params=[], qubits=[("cut", 1), 2], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[0, ("cut", 1)], gamma=3),
+            ["move", 1, 4],
+            CircuitElement(name="cx", params=[], qubits=[("cut", 1), 2], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[0, ("cut", 1)], gamma=3),
             trial_circuit[4],
         ]
 
@@ -112,12 +116,10 @@ class TestCircuitInterface:
         }
 
         assert circuit_converted.exportCutCircuit(name_mapping="default") == [
-            CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[3,4], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
             ["move", 1, 4],
-            CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[0,2], gamma=3),
-            CircuitElement(name='cx', params=[], qubits=[3,4], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[0, 2], gamma=3),
+            CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
         ]
-
-        

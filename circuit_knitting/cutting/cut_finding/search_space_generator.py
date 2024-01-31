@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from cut_optimization import CutOptimizationFuncArgs
     from .cutting_actions import DisjointSearchAction
@@ -22,7 +23,6 @@ if TYPE_CHECKING:
 from typing import Callable, Iterable
 
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
-
 
 
 class ActionNames:
@@ -39,12 +39,11 @@ class ActionNames:
     """
 
     action_dict: dict[str, DisjointSearchAction]
-    group_dict: dict[str, list[DisjointSearchAction]] 
+    group_dict: dict[str, list[DisjointSearchAction]]
 
     def __init__(self):
         self.action_dict = dict()
         self.group_dict = dict()
-
 
     def copy(self, list_of_groups: list[str] = None) -> ActionNames:
         """Return a copy of self that contains only those actions
@@ -79,12 +78,12 @@ class ActionNames:
                 if name not in self.group_dict:
                     self.group_dict[name] = list()
                 self.group_dict[name].append(action_object)
-        else: #pragma: no cover
+        else:  # pragma: no cover
             if group_name not in self.group_dict:
                 self.group_dict[group_name] = list()
             self.group_dict[group_name].append(action_object)
 
-    def getAction(self, action_name: str) -> (DisjointSearchAction | None):
+    def getAction(self, action_name: str) -> DisjointSearchAction | None:
         """Return the action object associated with the specified name.
         None is returned if there is no associated action object.
         """
@@ -93,7 +92,7 @@ class ActionNames:
             return self.action_dict[action_name]
         return None
 
-    def getGroup(self, group_name: str) -> (list | None):
+    def getGroup(self, group_name: str) -> list | None:
         """Return the list of action objects associated with the group_name.
         None is returned if there are no associated action objects.
         """
@@ -102,7 +101,8 @@ class ActionNames:
             return self.group_dict[group_name]
         return None
 
-def getActionSubset(action_list: list, action_groups: Iterable) -> list :
+
+def getActionSubset(action_list: list, action_groups: Iterable) -> list:
     """Return the subset of actions in action_list whose group affiliations
     intersect with action_groups.
     """
@@ -110,7 +110,7 @@ def getActionSubset(action_list: list, action_groups: Iterable) -> list :
     if action_groups is None:
         return action_list
 
-    if len(action_groups) == 0: #pragma: no cover
+    if len(action_groups) == 0:  # pragma: no cover
         action_groups = [None]
 
     groups = set(action_groups)
@@ -119,13 +119,14 @@ def getActionSubset(action_list: list, action_groups: Iterable) -> list :
         a for a in action_list if len(groups.intersection(set(a.getGroupNames()))) > 0
     ]
 
+
 @dataclass
 class SearchFunctions:
 
     """Data class for holding functions needed to generate and explore
     a search space.  In addition to the required input arguments, the function
     signatures are assumed to also allow additional input arguments that are
-    needed to perform the corresponding computations. 
+    needed to perform the corresponding computations.
 
     Member Variables:
 
@@ -133,7 +134,7 @@ class SearchFunctions:
     The cost returned can be numeric or tuples of numerics.  In the latter case,
     lexicographical comparisons are performed per Python semantics.
 
-    next_state_func: a function that returns a list of next states generated from the input state. 
+    next_state_func: a function that returns a list of next states generated from the input state.
 
     goal_state_func: a function that returns True if the input state is a solution state of the search.
 
@@ -154,17 +155,27 @@ class SearchFunctions:
     min-cost checking is effectively not performed).
     """
 
-    cost_func: Callable[[DisjointSubcircuitsState, SearchFunctions],float|tuple[float, int]]  = None,
+    cost_func: Callable[
+        [DisjointSubcircuitsState, SearchFunctions], float | tuple[float, int]
+    ] = (None,)
 
-    next_state_func: Callable[[DisjointSubcircuitsState, CutOptimizationFuncArgs],
-                              list[DisjointSubcircuitsState]]= None,
-    
-    goal_state_func: Callable[[DisjointSubcircuitsState, CutOptimizationFuncArgs], bool]  = None,
+    next_state_func: Callable[
+        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
+        list[DisjointSubcircuitsState],
+    ] = (None,)
 
-    upperbound_cost_func: None | Callable[[DisjointSubcircuitsState, CutOptimizationFuncArgs],
-                                        tuple[float, float]] = None,
-    
-    mincost_bound_func: None | Callable[[CutOptimizationFuncArgs], None | tuple[float, float]] = None
+    goal_state_func: Callable[
+        [DisjointSubcircuitsState, CutOptimizationFuncArgs], bool
+    ] = (None,)
+
+    upperbound_cost_func: None | Callable[
+        [DisjointSubcircuitsState, CutOptimizationFuncArgs], tuple[float, float]
+    ] = (None,)
+
+    mincost_bound_func: None | Callable[
+        [CutOptimizationFuncArgs], None | tuple[float, float]
+    ] = None
+
 
 @dataclass
 class SearchSpaceGenerator:

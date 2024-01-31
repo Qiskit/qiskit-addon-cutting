@@ -36,7 +36,7 @@ def test_ActionApplyGate(testCircuit):
 
     _, state, two_qubit_gate = testCircuit
     apply_gate = ActionApplyGate()
-    assert apply_gate.getName() == None
+    assert apply_gate.getName() is None
     assert apply_gate.getGroupNames() == [None, "TwoQubitGates"]
 
     updated_state = apply_gate.nextStatePrimitive(state, two_qubit_gate, 2)
@@ -110,6 +110,6 @@ def test_DefinedActions():
     # Check that unsupported cutting actions return None
     # when the action or corresponding group is requested.
 
-    assert ActionNames().getAction("LOCCGateCut") == None
+    assert ActionNames().getAction("LOCCGateCut") is None
 
-    assert ActionNames().getGroup("LOCCCUTS") == None
+    assert ActionNames().getGroup("LOCCCUTS") is None

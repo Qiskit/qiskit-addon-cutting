@@ -5,8 +5,12 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from circuit_knitting.cutting.cut_finding.utils import QCtoCCOCircuit
 from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
-from circuit_knitting.cutting.cut_finding.optimization_settings import OptimizationSettings
-from circuit_knitting.cutting.cut_finding.quantum_device_constraints import DeviceConstraints
+from circuit_knitting.cutting.cut_finding.optimization_settings import (
+    OptimizationSettings,
+)
+from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
+    DeviceConstraints,
+)
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     PrintActionListWithNames,
 )
@@ -57,7 +61,7 @@ def test_no_cuts(gate_cut_test_setup):
 
     print(optimization_pass.best_result)
 
-    assert PrintActionListWithNames(output.actions) == [] #no cutting.
+    assert PrintActionListWithNames(output.actions) == []  # no cutting.
 
     assert interface.exportSubcircuitsAsString(name_mapping="default") == "AAAA"
 
@@ -85,7 +89,7 @@ def test_GateCuts(gate_cut_test_setup):
 
     assert output.upperBoundGamma() == best_result.gamma_UB == 9  # 2 LO cnot cuts.
 
-    assert optimization_pass.minimumReached() == True  # matches optimal solution.
+    assert optimization_pass.minimumReached() is True  # matches optimal solution.
 
     assert (
         interface.exportSubcircuitsAsString(name_mapping="default") == "AABB"
@@ -122,7 +126,7 @@ def test_WireCuts(wire_cut_test_setup):
 
     assert output.upperBoundGamma() == best_result.gamma_UB == 4  # One LO wire cut.
 
-    assert optimization_pass.minimumReached() == True  # matches optimal solution
+    assert optimization_pass.minimumReached() is True  # matches optimal solution
 
 
 def test_selectSearchEngine(gate_cut_test_setup):

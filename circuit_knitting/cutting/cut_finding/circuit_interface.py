@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Quantum circuit representation compatible with cut-finding optimizers."""
+"""Quantum circuit representation compatible with cut-finding optimizer."""
 
 from __future__ import annotations
 
@@ -104,14 +104,12 @@ class CircuitInterface(ABC):
         The cut type can only be "LO" in this release.
         """
 
-
     @abstractmethod
     def defineSubcircuits(self, list_of_list_of_wires):
         """Derived classes must override this function.  The input is a
         list of subcircuits where each subcircuit is specified as a
         list of wire IDs.
         """
-
 
 
 class SimpleGateList(CircuitInterface):
@@ -121,8 +119,8 @@ class SimpleGateList(CircuitInterface):
 
     Elements of the list must be of the form of CircuitElement.
     The only exception to this is a barrier when one is placed across
-    all the qubits in a circuit. That is specified as ("barrier").
-        
+    all the qubits in a circuit. That is specified by a string "barrier".
+
     Qubit names can be any hashable objects. Gate names can also be any
     hashable objects, but they must be consistent with the names used by the
     optimizer to look up cutting rules for the specified gates.
@@ -155,8 +153,7 @@ class SimpleGateList(CircuitInterface):
     wires/qubits.
 
     cut_type: a list that assigns cut-type annotations to gates
-    in new_circuit to indicate which quasiprobability decomposition to
-    use for the corresponding gate/wire cut.
+    in new_circuit.
 
     new_gate_ID_map: a list that maps the positions of gates
     in circuit to their new positions in new_circuit.
@@ -168,6 +165,7 @@ class SimpleGateList(CircuitInterface):
     subcircuits: a list of list of wire IDs, where each list of
     wire IDs defines a subcircuit.
     """
+
     circuit: list[CircuitElement | None]
     new_circuit: list[CircuitElement]
     cut_type: str | None
@@ -176,8 +174,9 @@ class SimpleGateList(CircuitInterface):
     new_gate_ID_map: array[int]
     output_wires: array[int]
 
-
-    def __init__(self, input_circuit: list[CircuitElement], init_qubit_names: list[Hashable]= []):
+    def __init__(
+        self, input_circuit: list[CircuitElement], init_qubit_names: list[Hashable] = []
+    ):
         self.qubit_names = NameToIDMap(init_qubit_names)
 
         self.circuit = list()
@@ -204,8 +203,6 @@ class SimpleGateList(CircuitInterface):
 
         # Initialize the list of subcircuits assuming no cutting
         self.subcircuits = list(list(range(self.num_qubits)))
-
-
 
     def getNumQubits(self) -> int:
         """Return the number of qubits in the input circuit."""
@@ -246,8 +243,14 @@ class SimpleGateList(CircuitInterface):
         gate_pos = self.new_gate_ID_map[gate_ID]
         self.cut_type[gate_pos] = cut_type
 
-    def insertWireCut(self, gate_ID: int, input_ID: int,
-                       src_wire_ID: int, dest_wire_ID: int, cut_type: str) -> None:
+    def insertWireCut(
+        self,
+        gate_ID: int,
+        input_ID: int,
+        src_wire_ID: int,
+        dest_wire_ID: int,
+        cut_type: str,
+    ) -> None:
         """Insert a wire cut into the output circuit just prior to the
         specified gate on the wire connected to the specified input of
         that gate.  Gate inputs are numbered starting from 1.  The
@@ -261,7 +264,7 @@ class SimpleGateList(CircuitInterface):
         new_gate_spec = self.new_circuit[gate_pos]
 
         # Gate inputs are numbered starting from 1, so we must decrement the index to match qubit numbering.
-        assert src_wire_ID == new_gate_spec.qubits[input_ID-1], (
+        assert src_wire_ID == new_gate_spec.qubits[input_ID - 1], (
             f"Input wire ID {src_wire_ID} does not match "
             + f"new_circuit wire ID {new_gate_spec.qubits[input_ID-1]}"
         )
@@ -284,9 +287,8 @@ class SimpleGateList(CircuitInterface):
         self.new_gate_ID_map[gate_ID:] += 1
 
         # Update the output wires
-        qubit = self.circuit[gate_ID][0].qubits[input_ID-1]
+        qubit = self.circuit[gate_ID][0].qubits[input_ID - 1]
         self.output_wires[qubit] = dest_wire_ID
-
 
     def defineSubcircuits(self, list_of_list_of_wires: list[list[int]]) -> None:
         """Assign subcircuits where each subcircuit is
@@ -295,7 +297,7 @@ class SimpleGateList(CircuitInterface):
 
         self.subcircuits = list_of_list_of_wires
 
-    def getWireNames(self) -> list[str | tuple[str, str]] :
+    def getWireNames(self) -> list[str | tuple[str, str]]:
         """Return a list of the internal wire names used in the circuit,
         which consists of the original qubit names together with additional
         names of form ("cut", <name>) introduced to represent cut wires.
@@ -303,7 +305,7 @@ class SimpleGateList(CircuitInterface):
 
         return list(self.qubit_names.getItems())
 
-    def exportCutCircuit(self, name_mapping: str ="default") -> list[CircuitElement]:
+    def exportCutCircuit(self, name_mapping: str = "default") -> list[CircuitElement]:
         """Return a list of gates representing the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
@@ -320,7 +322,7 @@ class SimpleGateList(CircuitInterface):
 
         return out
 
-    def exportOutputWires(self, name_mapping: str ="default") -> dict:
+    def exportOutputWires(self, name_mapping: str = "default") -> dict:
         """Return a dictionary that maps output qubits in the input circuit
         to the corresponding output wires/qubits in the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
@@ -337,7 +339,7 @@ class SimpleGateList(CircuitInterface):
             out[self.qubit_names.getName(in_wire)] = wire_map[out_wire]
         return out
 
-    def exportSubcircuitsAsString(self, name_mapping: str ="default") -> str:
+    def exportSubcircuitsAsString(self, name_mapping: str = "default") -> str:
         """Return a string that maps qubits/wires in the output circuit
         to subcircuits per the Circuit Knitting Toolbox convention.  This
         method only works with mappings to numeric qubit/wire names, such
@@ -377,7 +379,7 @@ class SimpleGateList(CircuitInterface):
 
         return wire_mapping
 
-    def defaultWireNameMapping(self) -> dict[list[str|tuple[str, str]], int]:
+    def defaultWireNameMapping(self) -> dict[list[str | tuple[str, str]], int]:
         """Return a dictionary that maps wire names in self.qubit_names to
         default numeric output qubit names when exporting a cut circuit.  Cut
         wires are assigned numeric IDs that are adjacent to the numeric
@@ -397,7 +399,7 @@ class SimpleGateList(CircuitInterface):
         return name_map
 
     def sortOrder(self, name: Hashable) -> int | float:
-        """Order numeric IDs of wires to enable defaultWireNameMapping. """
+        """Order numeric IDs of wires to enable defaultWireNameMapping."""
 
         if isinstance(name, tuple):
             if name[0] == "cut":
@@ -408,7 +410,9 @@ class SimpleGateList(CircuitInterface):
 
         return self.qubit_names.getID(name)
 
-    def replaceWireIDs(self, gate_list: list[CircuitElement], wire_map: list[tuple | int | str]):
+    def replaceWireIDs(
+        self, gate_list: list[CircuitElement], wire_map: list[tuple | int | str]
+    ) -> None:
         """Iterate through a list of gates and replace wire IDs with the
         values defined by the wire_map.
         """

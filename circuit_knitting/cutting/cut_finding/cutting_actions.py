@@ -53,7 +53,6 @@ class DisjointSearchAction(ABC):
 
         return next_list
 
-    
 
 class ActionApplyGate(DisjointSearchAction):
 
@@ -76,10 +75,6 @@ class ActionApplyGate(DisjointSearchAction):
         specification: gate_spec.
         """
         gate = gate_spec[1]  # extract the gate from gate specification.
-        # if len(gate.qubits) > 2:
-        #     # The function multiqubitNextState handles
-        #     # gates that act on 3 or more qubits.
-        #     return self.multiqubitNextState(state, gate_spec, max_width)
 
         r1 = state.findQubitRoot(
             gate.qubits[0]
@@ -173,12 +168,11 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         This method returns a tuple of the form:
             (gamma_lower_bound, num_bell_pairs, gamma_upper_bound)
 
-        Since CKT only supports single-cut LO, these tuples will be of
+        Since CKT does not support LOCC at the moment, these tuples will be of
         the form (gamma, 0, gamma).
         """
         gamma = gate_spec[1].gamma
         return (gamma, 0, gamma)
-
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, args):
         """Insert an LO gate cut into the input circuit for the specified gate
@@ -224,7 +218,6 @@ class ActionCutLeftWire(DisjointSearchAction):
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
         w1 = state.getWire(q1)
-        w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
         r2 = state.findQubitRoot(q2)
 
@@ -247,7 +240,6 @@ class ActionCutLeftWire(DisjointSearchAction):
 
         return [new_state]
 
-
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified
         gate and cut arguments.
@@ -258,7 +250,6 @@ class ActionCutLeftWire(DisjointSearchAction):
 
 ### Adds ActionCutLeftWire to the object disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutLeftWire())
-
 
 
 def insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args):
@@ -303,7 +294,6 @@ class ActionCutRightWire(DisjointSearchAction):
         gate = gate_spec[1]
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
-        w1 = state.getWire(q1)
         w2 = state.getWire(q2)
         r1 = state.findQubitRoot(q1)
         r2 = state.findQubitRoot(q2)
@@ -326,7 +316,6 @@ class ActionCutRightWire(DisjointSearchAction):
         new_state.addAction(self, gate_spec, (2, w2, rnew))
 
         return [new_state]
-
 
     def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
         """Insert an LO wire cut into the input circuit for the specified

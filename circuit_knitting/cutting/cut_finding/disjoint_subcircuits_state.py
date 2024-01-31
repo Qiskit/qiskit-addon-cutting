@@ -161,7 +161,7 @@ class DisjointSubcircuitsState:
         """Make shallow copy."""
 
         return copy.copy(self)
-    
+
     def CutActionsList(self):
         """Create a formatted list containing the actions carried out on a DisjointSubcircuitState
         along with the locations of these actions which are specified in terms of
@@ -428,9 +428,6 @@ class DisjointSubcircuitsState:
         ]
 
         circuit_interface.defineSubcircuits(subcircuits)
-
-        scc_subcircuits = [(s,) for s in range(len(subcircuits))]
-        scc_order = np.zeros((len(scc_subcircuits), len(scc_subcircuits)), dtype=bool)
 
 
 def calcRootBellPairsGamma(root_bell_pairs):

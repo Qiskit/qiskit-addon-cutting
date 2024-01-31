@@ -4,7 +4,10 @@ from qiskit.circuit.library import EfficientSU2
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit, Instruction, CircuitInstruction
 from circuit_knitting.cutting.cut_finding.utils import QCtoCCOCircuit, CCOtoQCCircuit
-from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList, CircuitElement
+from circuit_knitting.cutting.cut_finding.circuit_interface import (
+    SimpleGateList,
+    CircuitElement,
+)
 
 # test circuit 1.
 tc_1 = QuantumCircuit(2)
@@ -23,13 +26,13 @@ tc_2.assign_parameters([0.4] * len(tc_2.parameters), inplace=True)
 @fixture
 def InternalTestCircuit():
     circuit = [
-        CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-        CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
-        CircuitElement(name='cx', params=[], qubits=[1,2], gamma=3),
-        CircuitElement(name='cx', params=[], qubits=[0,1], gamma=3),
-        CircuitElement(name='cx', params=[], qubits=[2,3], gamma=3),
-        CircuitElement(name='h', params=[], qubits=[0], gamma=None),
-        CircuitElement(name='rx', params=[0.4], qubits=[0], gamma=None),
+        CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+        CircuitElement(name="h", params=[], qubits=[0], gamma=None),
+        CircuitElement(name="rx", params=[0.4], qubits=[0], gamma=None),
     ]
     interface = SimpleGateList(circuit)
     interface.insertGateCut(2, "LO")
@@ -40,8 +43,16 @@ def InternalTestCircuit():
 @pytest.mark.parametrize(
     "test_circuit, known_output",
     [
-        (tc_1, [CircuitElement("h", [], [1], None), CircuitElement("barrier",[], [1], None),
-                 CircuitElement("s",[], [0], None), "barrier", CircuitElement("cx", [], [1, 0], 3)]),
+        (
+            tc_1,
+            [
+                CircuitElement("h", [], [1], None),
+                CircuitElement("barrier", [], [1], None),
+                CircuitElement("s", [], [0], None),
+                "barrier",
+                CircuitElement("cx", [], [1, 0], 3),
+            ],
+        ),
         (
             tc_2,
             [
@@ -54,7 +65,7 @@ def InternalTestCircuit():
                 CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("ry", [0.4], [1], None),
                 CircuitElement("rz", [0.4], [1], None),
-                CircuitElement("cx", [],[0, 1], 3),
+                CircuitElement("cx", [], [0, 1], 3),
                 CircuitElement("ry", [0.4], [0], None),
                 CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("ry", [0.4], [1], None),
@@ -66,6 +77,7 @@ def InternalTestCircuit():
 def test_QCtoCCOCircuit(test_circuit, known_output):
     test_circuit_internal = QCtoCCOCircuit(test_circuit)
     assert test_circuit_internal == known_output
+
 
 def test_CCOtoQCCircuit(InternalTestCircuit):
     qc_cut = CCOtoQCCircuit(InternalTestCircuit)

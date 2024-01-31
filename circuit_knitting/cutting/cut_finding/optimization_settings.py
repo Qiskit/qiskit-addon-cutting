@@ -16,7 +16,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
-
 @dataclass
 class OptimizationSettings:
     """Class for specifying parameters that control the optimization.
@@ -31,7 +30,7 @@ class OptimizationSettings:
     only "BestFirst" or Dijkstra's best-first search is supported.
 
     max_backjumps: a constraint on the maximum number of backjump
-    operations that can be performed by the search algorithm. 
+    operations that can be performed by the search algorithm.
 
     rand_seed: a seed used to provide a repeatable initialization
     of the pesudorandom number generators used by the optimization.
@@ -129,10 +128,7 @@ class OptimizationSettings:
 
         out = [None]
 
-        if (
-            self.gate_cut_LO
-            or self.gate_cut_LOCC_with_ancillas
-        ):
+        if self.gate_cut_LO or self.gate_cut_LOCC_with_ancillas:
             out.append("GateCut")
 
         if (

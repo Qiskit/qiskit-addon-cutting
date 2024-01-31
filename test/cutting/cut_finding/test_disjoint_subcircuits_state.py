@@ -8,8 +8,6 @@ from circuit_knitting.cutting.cut_finding.cut_optimization import (
 )
 
 
-
-
 @mark.parametrize("num_qubits, max_wire_cuts", [(2.1, 1.2), (None, -1), (-1, None)])
 def test_StateInitialization(num_qubits, max_wire_cuts):
     """Test device constraints for being valid data types."""
@@ -93,7 +91,7 @@ def test_CutGate(testCircuit):
 
     assert list(next_state.wiremap) == [0, 1]
 
-    assert next_state.checkDoNotMergeRoots(0, 1) == True
+    assert next_state.checkDoNotMergeRoots(0, 1) is True
 
     assert next_state.num_wires == 2
 
@@ -132,15 +130,15 @@ def test_CutLeftWire(testCircuit):
 
     assert state.getNumQubits() == 2
 
-    assert next_state.canExpandSubcircuit(1, 1, 2) == False
+    assert next_state.canExpandSubcircuit(1, 1, 2) is False
 
-    assert next_state.canExpandSubcircuit(1, 1, 3) == True
+    assert next_state.canExpandSubcircuit(1, 1, 3) is True
 
-    assert next_state.canAddWires(2) == False
+    assert next_state.canAddWires(2) is False
 
     assert next_state.getWireRootMapping() == [0, 1, 1]
 
-    assert next_state.checkDoNotMergeRoots(0, 1) == True
+    assert next_state.checkDoNotMergeRoots(0, 1) is True
 
     assert list(next_state.uptree) == [0, 1, 1, 3]
 
@@ -175,11 +173,11 @@ def test_CutRightWire(testCircuit):
 
     assert state.getNumQubits() == 2
 
-    assert next_state.canAddWires(1) == True
+    assert next_state.canAddWires(1) is True
 
     assert next_state.getWireRootMapping() == [0, 1, 0]
 
-    assert next_state.checkDoNotMergeRoots(0, 1) == True
+    assert next_state.checkDoNotMergeRoots(0, 1) is True
 
     assert list(next_state.uptree) == [0, 1, 0, 3]
 
@@ -201,7 +199,7 @@ def test_CutBothWires(testCircuit):
 
     assert list(next_state.wiremap) == [2, 3]
 
-    assert next_state.canAddWires(1) == False
+    assert next_state.canAddWires(1) is False
 
     assert next_state.num_wires == 4
 
@@ -212,7 +210,7 @@ def test_CutBothWires(testCircuit):
     assert (
         next_state.checkDoNotMergeRoots(0, 2)
         == next_state.checkDoNotMergeRoots(1, 2)
-        == True
+        is True
     )
 
     assert list(next_state.uptree) == [0, 1, 2, 2]
@@ -233,4 +231,4 @@ def test_CutBothWires(testCircuit):
 
     assert next_state.upperBoundGamma() == 16  # 4^n scaling.
 
-    assert next_state.verifyMergeConstraints() == True
+    assert next_state.verifyMergeConstraints() is True
