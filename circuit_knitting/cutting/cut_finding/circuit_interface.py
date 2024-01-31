@@ -59,7 +59,7 @@ class CircuitInterface(ABC):
         member functions implemented by the derived class to replace the gate
         with the decomposition determined by the optimizer.
 
-        The <gate_specification> must of the form of CircuitElement.
+        The <gate_specification> must be of the form of CircuitElement.
 
         The <gate_name> must be a hashable identifier that can be used to
         look up cutting rules for the specified gate. Gate names are typically

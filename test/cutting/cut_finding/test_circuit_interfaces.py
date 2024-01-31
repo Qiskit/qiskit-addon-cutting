@@ -12,7 +12,7 @@ class TestCircuitInterface:
             CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
             CircuitElement(name="barrier",params=[], qubits= ["q1"], gamma=None),
             CircuitElement(name="s", params=[], qubits = ["q0"], gamma = None),
-            ("barrier"),
+            "barrier",
             CircuitElement(name="cx", params=[], qubits = ["q1", "q0"], gamma = 3),
         ]
         circuit_converted = SimpleGateList(trial_circuit)
