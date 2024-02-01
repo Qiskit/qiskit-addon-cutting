@@ -86,7 +86,7 @@ class DisjointSubcircuitsState:
     """
 
     def __init__(self, num_qubits=None, max_wire_cuts=None):
-        """A DisjointSubcircuitsState object must be initialized with
+        """An instance of :class:`DisjointSubcircuitsState` must be initialized with
         a specification of the number of qubits in the circuit and the
         maximum number of wire cuts that can be performed."""
 
@@ -266,14 +266,14 @@ class DisjointSubcircuitsState:
 
         return self.gamma_UB
 
-    def canAddWires(self, num_wires):
+    def canAddWires(self, num_wires: int) -> bool:
         """Return True if an additional num_wires can be cut
         without exceeding the maximum allowed number of wire cuts.
         """
 
         return self.num_wires + num_wires <= self.uptree.shape[0]
 
-    def canExpandSubcircuit(self, root, num_wires, max_width):
+    def canExpandSubcircuit(self, root: int, num_wires: int, max_width: int) -> bool:
         """Return True if num_wires can be added to subcircuit root
         without exceeding the maximum allowed number of qubits.
         """

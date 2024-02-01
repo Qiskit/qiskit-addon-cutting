@@ -1,10 +1,13 @@
 from pytest import mark, raises, fixture
-from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
 )
 from circuit_knitting.cutting.cut_finding.cut_optimization import (
     disjoint_subcircuit_actions,
+)
+from circuit_knitting.cutting.cut_finding.circuit_interface import (
+    SimpleGateList,
+    CircuitElement,
 )
 
 
@@ -19,11 +22,11 @@ def test_StateInitialization(num_qubits, max_wire_cuts):
 @fixture
 def testCircuit():
     circuit = [
-        ("h", "q1"),
-        ("barrier", "q1"),
-        ("s", "q0"),
+        CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
+        CircuitElement(name="barrier", params=[], qubits=["q1"], gamma=None),
+        CircuitElement(name="s", params=[], qubits=["q0"], gamma=None),
         "barrier",
-        ("cx", "q1", "q0"),
+        CircuitElement(name="cx", params=[], qubits=["q1", "q0"], gamma=3),
     ]
 
     interface = SimpleGateList(circuit)
@@ -52,10 +55,6 @@ def test_StateUncut(testCircuit):
     assert list(state.no_merge) == []
 
     assert state.getSearchLevel() == 0
-
-    # print_output = test_prints(state.print(simple=True))
-
-    # assert print_output == []
 
 
 def test_ApplyGate(testCircuit):
@@ -130,9 +129,9 @@ def test_CutLeftWire(testCircuit):
 
     assert state.getNumQubits() == 2
 
-    assert next_state.canExpandSubcircuit(1, 1, 2) is False
+    assert not next_state.canExpandSubcircuit(1, 1, 2)  # False
 
-    assert next_state.canExpandSubcircuit(1, 1, 3) is True
+    assert next_state.canExpandSubcircuit(1, 1, 3)  # True
 
     assert next_state.canAddWires(2) is False
 
@@ -227,8 +226,10 @@ def test_CutBothWires(testCircuit):
 
     assert next_state.getSearchLevel() == 1
 
-    assert next_state.lowerBoundGamma() == 9  # 3^n scaling.
+    assert (
+        next_state.lowerBoundGamma() == 9
+    )  # The 3^n scaling which is possible with LOCC.
 
-    assert next_state.upperBoundGamma() == 16  # 4^n scaling.
+    assert next_state.upperBoundGamma() == 16  # The 4^n scaling that comes with LO.
 
     assert next_state.verifyMergeConstraints() is True

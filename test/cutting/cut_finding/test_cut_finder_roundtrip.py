@@ -4,7 +4,10 @@ from pytest import fixture, raises
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from circuit_knitting.cutting.cut_finding.utils import QCtoCCOCircuit
-from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
+from circuit_knitting.cutting.cut_finding.circuit_interface import (
+    SimpleGateList,
+    CircuitElement,
+)
 from circuit_knitting.cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
@@ -82,7 +85,13 @@ def test_GateCuts(gate_cut_test_setup):
     cut_actions_list = output.CutActionsList()
 
     assert cut_actions_list == [
-        {"Cut action": "CutTwoQubitGate", "Cut Gate": [9, ["cx", 1, 2]]}
+        {
+            "Cut action": "CutTwoQubitGate",
+            "Cut Gate": [
+                9,
+                CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
+            ],
+        }
     ]
 
     best_result = optimization_pass.getResults()
@@ -117,7 +126,12 @@ def test_WireCuts(wire_cut_test_setup):
     assert cut_actions_list == [
         {
             "Cut action": "CutLeftWire",
-            "Cut location:": {"Gate": [10, ["cx", 3, 4]]},
+            "Cut location:": {
+                "Gate": [
+                    10,
+                    CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
+                ]
+            },
             "Input wire": 1,
         }
     ]

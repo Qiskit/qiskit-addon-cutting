@@ -166,7 +166,7 @@ class SimpleGateList(CircuitInterface):
     wire IDs defines a subcircuit.
     """
 
-    circuit: list[CircuitElement | None]
+    circuit: list[CircuitElement | str | None]
     new_circuit: list[CircuitElement]
     cut_type: str | None
     qubit_names: NameToIDMap
@@ -214,7 +214,7 @@ class SimpleGateList(CircuitInterface):
 
         return self.qubit_names.getNumItems()
 
-    def getMultiQubitGates(self) -> list[int | CircuitElement]:
+    def getMultiQubitGates(self) -> list[int | CircuitElement | str | None]:
         """Extract the multiqubit gates from the circuit and prepends the
         index of the gate in the circuits to the gate specification.
 
@@ -297,7 +297,7 @@ class SimpleGateList(CircuitInterface):
 
         self.subcircuits = list_of_list_of_wires
 
-    def getWireNames(self) -> list[str | tuple[str, str]]:
+    def getWireNames(self) -> list[Hashable]:
         """Return a list of the internal wire names used in the circuit,
         which consists of the original qubit names together with additional
         names of form ("cut", <name>) introduced to represent cut wires.
@@ -355,7 +355,7 @@ class SimpleGateList(CircuitInterface):
                 out[wire_map[wire]] = alphabet[k]
         return "".join(out)
 
-    def makeWireMapping(self, name_mapping: None | str) -> list:
+    def makeWireMapping(self, name_mapping: None | str) -> list[Hashable | int]:
         """Return a wire-mapping list given an input specification of a
         name mapping.  If None is provided as the input name_mapping, then
         the original qubit names are mapped to themselves.  If "default"
@@ -429,8 +429,8 @@ class NameToIDMap:
     """
 
     next_ID: int
-    item_dict: dict[Hashable, int]
-    ID_dict: dict[int, Hashable]
+    item_dict: dict[Hashable]
+    ID_dict: dict[Hashable]
 
     def __init__(self, init_names: list[Hashable]):
         """Allow the name dictionary to be initialized with the names
@@ -460,7 +460,7 @@ class NameToIDMap:
 
         return self.item_dict[item_name]
 
-    def defineID(self, item_ID: int, item_name: Hashable):
+    def defineID(self, item_ID: int, item_name: Hashable) -> None:
         """Assign a specific ID number to an item name."""
 
         assert item_ID not in self.ID_dict, f"item ID {item_ID} already assigned"

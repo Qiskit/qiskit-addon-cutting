@@ -103,7 +103,7 @@ def selectSearchEngine(
         )
 
     else:
-        assert False, f"Invalid stage_of_optimization {stage_of_optimization}"
+        raise ValueError(f"Search engine {engine} is not supported.")
 
 
 def greedyBestFirstSearch(state, search_space_funcs, *args):

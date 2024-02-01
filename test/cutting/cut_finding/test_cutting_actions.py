@@ -1,5 +1,8 @@
 from pytest import fixture
-from circuit_knitting.cutting.cut_finding.circuit_interface import SimpleGateList
+from circuit_knitting.cutting.cut_finding.circuit_interface import (
+    CircuitElement,
+    SimpleGateList,
+)
 from circuit_knitting.cutting.cut_finding.cutting_actions import (
     ActionApplyGate,
     ActionCutTwoQubitGate,
@@ -16,9 +19,9 @@ from circuit_knitting.cutting.cut_finding.search_space_generator import ActionNa
 @fixture
 def testCircuit():
     circuit = [
-        ("h", "q1"),
-        ("s", "q0"),
-        ("cx", "q1", "q0"),
+        CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
+        CircuitElement(name="s", params=[], qubits=["q0"], gamma=None),
+        CircuitElement(name="cx", params=[], qubits=["q1", "q0"], gamma=3),
     ]
 
     interface = SimpleGateList(circuit)
@@ -59,14 +62,18 @@ def test_CutTwoQubitGate(testCircuit):
     for state in updated_state:
         actions_list.extend(PrintActionListWithNames(state.actions))
     assert actions_list == [
-        ["CutTwoQubitGate", [2, ["cx", 0, 1], None], ((1, 0), (2, 1))]
+        [
+            "CutTwoQubitGate",
+            [2, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
+            ((1, 0), (2, 1)),
+        ]
     ]
 
     assert cut_gate.getCostParams(two_qubit_gate) == (
-        1,
-        1,
         3,
-    )  # check if reproduces the parameters for a CNOT.
+        0,
+        3,
+    )  # reproduces the parameters for a CNOT when only LO is enabled.
 
     cut_gate.exportCuts(
         interface, None, two_qubit_gate, None
@@ -86,7 +93,9 @@ def test_CutLeftWire(testCircuit):
     for state in updated_state:
         actions_list.extend(PrintActionListWithNames(state.actions))
     assert actions_list[0][0] == "CutLeftWire"
-    assert actions_list[0][1][1] == ["cx", 0, 1]
+    assert actions_list[0][1][1] == CircuitElement(
+        name="cx", params=[], qubits=[0, 1], gamma=3
+    )
     assert actions_list[0][2][0][0] == 1  # the first input ('left') wire is cut.
 
 
@@ -102,7 +111,9 @@ def test_CutRightWire(testCircuit):
     for state in updated_state:
         actions_list.extend(PrintActionListWithNames(state.actions))
     assert actions_list[0][0] == "CutRightWire"
-    assert actions_list[0][1][1] == ["cx", 0, 1]
+    assert actions_list[0][1][1] == CircuitElement(
+        name="cx", params=[], qubits=[0, 1], gamma=3
+    )
     assert actions_list[0][2][0][0] == 2  # the second input ('right') wire is cut
 
 
