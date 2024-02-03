@@ -141,12 +141,12 @@ class MIPModel(object):
         for subcircuit in range(self.num_subcircuit):
             self.subcircuit_counter[subcircuit] = {}
 
-            self.subcircuit_counter[subcircuit][
-                "original_input"
-            ] = self.model.integer_var(
-                lb=0,
-                ub=self.max_subcircuit_width,
-                name="original_input_%d" % subcircuit,
+            self.subcircuit_counter[subcircuit]["original_input"] = (
+                self.model.integer_var(
+                    lb=0,
+                    ub=self.max_subcircuit_width,
+                    name="original_input_%d" % subcircuit,
+                )
             )
             self.subcircuit_counter[subcircuit]["rho"] = self.model.integer_var(
                 lb=0, ub=self.max_subcircuit_width, name="rho_%d" % subcircuit
@@ -162,10 +162,12 @@ class MIPModel(object):
                     lb=0.1, ub=self.max_subcircuit_size, name="size_%d" % subcircuit
                 )
             if self.max_subcircuit_cuts is not None:
-                self.subcircuit_counter[subcircuit][
-                    "num_cuts"
-                ] = self.model.integer_var(
-                    lb=0.1, ub=self.max_subcircuit_cuts, name="num_cuts_%d" % subcircuit
+                self.subcircuit_counter[subcircuit]["num_cuts"] = (
+                    self.model.integer_var(
+                        lb=0.1,
+                        ub=self.max_subcircuit_cuts,
+                        name="num_cuts_%d" % subcircuit,
+                    )
                 )
 
             self.subcircuit_counter[subcircuit]["rho_qubit_product"] = []
@@ -189,10 +191,10 @@ class MIPModel(object):
             if subcircuit > 0:
                 lb = 0
                 ub = self.num_qubits + 2 * self.max_cuts + 1
-                self.subcircuit_counter[subcircuit][
-                    "build_cost_exponent"
-                ] = self.model.integer_var(
-                    lb=lb, ub=ub, name="build_cost_exponent_%d" % subcircuit
+                self.subcircuit_counter[subcircuit]["build_cost_exponent"] = (
+                    self.model.integer_var(
+                        lb=lb, ub=ub, name="build_cost_exponent_%d" % subcircuit
+                    )
                 )
 
     def _add_constraints(self) -> None:

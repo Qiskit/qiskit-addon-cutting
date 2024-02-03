@@ -263,9 +263,7 @@ def reconstruct_dd_full_distribution(
     return reconstructed_prob
 
 
-def _generate_metadata(
-    cuts: dict[str, Any]
-) -> tuple[
+def _generate_metadata(cuts: dict[str, Any]) -> tuple[
     list[dict[int, int]],
     dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]],
     dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
