@@ -12,7 +12,7 @@
 """Classes required to search for optimal cut locations."""
 
 import numpy as np
-from .utils import selectSearchEngine, greedyBestFirstSearch
+from .cco_utils import selectSearchEngine, greedyBestFirstSearch
 from .cutting_actions import disjoint_subcircuit_actions
 from .search_space_generator import (
     getActionSubset,
@@ -54,7 +54,7 @@ def CutOptimizationUpperBoundCostFunc(goal_state, func_args):
 def CutOptimizationMinCostBoundFunc(func_args):
     """Return an a priori min-cost bound defined in the optimization settings."""
 
-    if func_args.max_gamma is None:
+    if func_args.max_gamma is None:  # pragma: no cover
         return None
 
     return (func_args.max_gamma, np.inf)
@@ -221,7 +221,7 @@ class CutOptimization:
             mwc = maxWireCutsGamma(self.greedy_goal_state.upperBoundGamma())
             max_wire_cuts = min(max_wire_cuts, mwc)
 
-        elif self.func_args.max_gamma is not None:
+        elif self.func_args.max_gamma is not None:  # pragma: no cover
             mwc = maxWireCutsGamma(self.func_args.max_gamma)
             max_wire_cuts = min(max_wire_cuts, mwc)
 
@@ -249,7 +249,7 @@ class CutOptimization:
         """Produce, at each call, a goal state representing a distinct
         set of cutting decisions. None is returned once no additional choices
         of cuts can be made without exceeding the minimum upper bound across
-        all cutting decisions previously returned and the optimization settings.
+        all cutting decisions previously returned, given the optimization settings.
         """
         state, cost = self.search_engine.optimizationPass(self.func_args)
         if state is None and not self.goal_state_returned:

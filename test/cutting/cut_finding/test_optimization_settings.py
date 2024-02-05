@@ -6,7 +6,7 @@ from circuit_knitting.cutting.cut_finding.optimization_settings import (
 
 @pytest.mark.parametrize(
     "max_gamma, max_backjumps ",
-    [(0, 1), (-1, 0)],
+    [(0, 1), (-1, 0), (1,-1)],
 )
 def test_OptimizationParameters(max_gamma, max_backjumps):
     """Test optimization parameters for being valid data types."""

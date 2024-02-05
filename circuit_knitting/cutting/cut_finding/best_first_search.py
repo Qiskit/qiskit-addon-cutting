@@ -83,7 +83,7 @@ class BestFirstPriorityQueue:
         None, None, None is returned if the priority queue is empty.
         """
 
-        if self.qsize() == 0:
+        if self.qsize() == 0:  # pragma: no cover
             return None, None, None
 
         best = heapq.heappop(self.pqueue)
@@ -313,7 +313,7 @@ class BestFirstSearch:
 
         return self.upperbound_cost
 
-    def updateUpperBoundCost(self, cost_bound):
+    def updateUpperBoundCost(self, cost_bound: tuple) -> None:
         """Update the cost upper bound based on an
         input cost bound.
         """
@@ -330,7 +330,7 @@ class BestFirstSearch:
 
         if self.upperbound_cost_func is not None:
             bound = self.upperbound_cost_func(goal_state, *args)
-        else:
+        else:  # pragma: no cover
             bound = self.cost_func(goal_state, *args)
 
         if self.upperbound_cost is None or bound < self.upperbound_cost:

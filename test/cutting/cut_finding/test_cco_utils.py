@@ -3,7 +3,10 @@ from pytest import fixture
 from qiskit.circuit.library import EfficientSU2
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit, Instruction, CircuitInstruction
-from circuit_knitting.cutting.cut_finding.utils import QCtoCCOCircuit, CCOtoQCCircuit
+from circuit_knitting.cutting.cut_finding.cco_utils import (
+    QCtoCCOCircuit,
+    CCOtoQCCircuit,
+)
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,

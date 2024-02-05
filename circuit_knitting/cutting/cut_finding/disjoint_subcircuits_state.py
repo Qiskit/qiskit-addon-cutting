@@ -170,6 +170,7 @@ class DisjointSubcircuitsState:
         cut_actions = PrintActionListWithNames(self.actions)
 
         # Output formatting for LO gate and wire cuts.
+        # TODO: Change to NamedTuples.
         for i in range(len(cut_actions)):
             if (cut_actions[i][0] == "CutLeftWire") or (
                 cut_actions[i][0] == "CutRightWire"
@@ -453,5 +454,4 @@ def PrintActionListWithNames(action_list):
     in DisjointSubcircuitsState objects with the corresponding
     action names for readability, and print.
     """
-
     return [[x[0].getName()] + x[1:] for x in action_list]

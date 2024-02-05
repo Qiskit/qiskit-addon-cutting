@@ -16,13 +16,13 @@ from dataclasses import dataclass
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from cut_optimization import CutOptimizationFuncArgs
-    from .cutting_actions import DisjointSearchAction
-
 from typing import Callable, Iterable
 
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
+
+if TYPE_CHECKING: #pragma: no cover
+    from cut_optimization import CutOptimizationFuncArgs
+    from .cutting_actions import DisjointSearchAction
 
 
 class ActionNames:

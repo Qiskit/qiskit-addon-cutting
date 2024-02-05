@@ -493,7 +493,7 @@ class NameToIDMap:
         array that maps item IDs to other values.
         """
 
-        if self.getNumItems() <= 0:
+        if self.getNumItems() == 0:  # pragma: no cover
             return 0
 
         return 1 + max(self.ID_dict.keys())

@@ -3,7 +3,7 @@ from numpy import array
 from pytest import fixture, raises
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
-from circuit_knitting.cutting.cut_finding.utils import QCtoCCOCircuit
+from circuit_knitting.cutting.cut_finding.cco_utils import QCtoCCOCircuit
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,
@@ -16,8 +16,19 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
 )
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     PrintActionListWithNames,
+    DisjointSubcircuitsState,
 )
-from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import LOCutsOptimizer
+from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
+    LOCutsOptimizer,
+    cut_optimization_search_funcs,
+)
+from circuit_knitting.cutting.cut_finding.cut_optimization import (
+    CutOptimizationFuncArgs,
+)
+from circuit_knitting.cutting.cut_finding.cutting_actions import (
+    disjoint_subcircuit_actions,
+)
+from circuit_knitting.cutting.cut_finding.best_first_search import BestFirstSearch
 
 
 @fixture
@@ -49,6 +60,17 @@ def wire_cut_test_setup():
     return interface, settings
 
 
+@fixture
+def multiqubit_test_setup():
+    qc = QuantumCircuit(3)
+    qc.ccx(0, 1, 2)
+    circuit_internal = QCtoCCOCircuit(qc)
+    interface = SimpleGateList(circuit_internal)
+    settings = OptimizationSettings(rand_seed=12345)
+    settings.setEngineSelection("CutOptimization", "BestFirst")
+    return interface, settings
+
+
 def test_no_cuts(gate_cut_test_setup):
     # QPU with 4 qubits requires no cutting.
     qubits_per_QPU = 4
@@ -61,8 +83,6 @@ def test_no_cuts(gate_cut_test_setup):
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
     output = optimization_pass.optimize(interface, settings, constraint_obj)
-
-    print(optimization_pass.best_result)
 
     assert PrintActionListWithNames(output.actions) == []  # no cutting.
 
@@ -143,18 +163,70 @@ def test_WireCuts(wire_cut_test_setup):
     assert optimization_pass.minimumReached() is True  # matches optimal solution
 
 
-def test_selectSearchEngine(gate_cut_test_setup):
+# check if unsupported search engine is flagged.
+def test_SelectSearchEngine(gate_cut_test_setup):
     qubits_per_QPU = 4
     num_QPUs = 2
 
     interface, settings = gate_cut_test_setup
 
-    # check if unsupported search engine is flagged.
     settings.setEngineSelection("CutOptimization", "BeamSearch")
+
+    search_engine = settings.getEngineSelection("CutOptimization")
 
     constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    with raises(ValueError):
+    with raises(ValueError) as e_info:
         _ = optimization_pass.optimize()
+    assert e_info.value.args[0] == f"Search engine {search_engine} is not supported."
+
+
+# The cutting of multiqubit gates is not supported at present.
+def test_MultiqubitCuts(multiqubit_test_setup):
+    # QPU with 2 qubits requires cutting.
+    qubits_per_QPU = 2
+    num_QPUs = 2
+
+    interface, settings = multiqubit_test_setup
+
+    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+
+    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+    with raises(ValueError) as e_info:
+        _ = optimization_pass.optimize()
+    assert (
+        e_info.value.args[0]
+        == "At present, only the cutting of two qubit gates is supported."
+    )
+
+
+def test_UpdatedCostBounds(gate_cut_test_setup):
+    qubits_per_QPU = 3
+    num_QPUs = 2
+
+    interface, settings = gate_cut_test_setup
+
+    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+
+    func_args = CutOptimizationFuncArgs()
+    func_args.entangling_gates = interface.getMultiQubitGates()
+    func_args.search_actions = disjoint_subcircuit_actions
+    func_args.max_gamma = settings.getMaxGamma()
+    func_args.qpu_width = constraint_obj.getQPUWidth()
+    state = DisjointSubcircuitsState(interface.getNumQubits(), 2)
+    bfs = BestFirstSearch(settings, cut_optimization_search_funcs)
+    bfs.initialize([state], func_args)
+
+    # Perform cut finding with the default cost upper bound.
+    state, _ = bfs.optimizationPass(func_args)
+    assert state is not None
+
+    # Update and lower cost upper bound.
+    bfs.updateUpperBoundCost((2, 4))
+    state, _ = bfs.optimizationPass(func_args)
+    assert (
+        state is None
+    )  # Since any cut has a cost of at least 3, the returned state must be None.

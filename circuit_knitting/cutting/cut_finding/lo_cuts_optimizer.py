@@ -131,7 +131,6 @@ class LOCutsOptimizer:
 
         assert self.device_constraints is not None, "device_constraints cannot be None"
 
-        # Perform cut optimization assuming no qubit reuse
         self.cut_optimization = CutOptimization(
             self.circuit_interface,
             self.optimization_settings,
@@ -177,7 +176,7 @@ class LOCutsOptimizer:
         return self.cut_optimization.minimumReached()
 
 
-def printStateList(state_list):
+def printStateList(state_list): #pragma: no cover
     for x in state_list:
         print()
         x.print(simple=True)

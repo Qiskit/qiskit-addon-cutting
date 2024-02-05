@@ -20,7 +20,7 @@ from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 from .circuit_interface import SimpleGateList
 from .lo_cuts_optimizer import LOCutsOptimizer
-from .utils import QCtoCCOCircuit
+from .cco_utils import QCtoCCOCircuit
 from ..instructions import CutWire
 from ..cutting_decomposition import cut_gates
 

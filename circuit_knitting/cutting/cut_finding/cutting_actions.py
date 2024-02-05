@@ -125,9 +125,11 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         ActionCutTwoQubitGate to state given the gate_spec.
         """
 
-        # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1].qubits) != 2:
-            return list()
+        # Cutting of multi-qubit gates is not supported in this version.
+        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+            raise ValueError(
+                "At present, only the cutting of two qubit gates is supported."
+            )
 
         gamma_LB, num_bell_pairs, gamma_UB = self.getCostParams(gate_spec)
 
@@ -206,9 +208,11 @@ class ActionCutLeftWire(DisjointSearchAction):
         ActionCutLeftWire to state given the gate_spec.
         """
 
-        # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1].qubits) != 2:
-            return list()
+        # Cutting of multi-qubit gates is not supported in this version.
+        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+            raise ValueError(
+                "At present, only the cutting of two qubit gates is supported."
+            )
 
         # If the wire-cut limit would be exceeded, return the empty list
         if not state.canAddWires(1):
@@ -283,9 +287,11 @@ class ActionCutRightWire(DisjointSearchAction):
         ActionCutRightWire to state given the gate_spec.
         """
 
-        # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1].qubits) != 2:
-            return list()
+        # Cutting of multi-qubit gates is not supported in this version.
+        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+            raise ValueError(
+                "At present, only the cutting of two qubit gates is supported."
+            )
 
         # If the wire-cut limit would be exceeded, return the empty list
         if not state.canAddWires(1):
@@ -349,9 +355,11 @@ class ActionCutBothWires(DisjointSearchAction):
         ActionCutBothWires to state given the gate_spec.
         """
 
-        # If the gate is not a two-qubit gate, then return the empty list
-        if len(gate_spec[1].qubits) != 2:
-            return list()
+        # Cutting of multi-qubit gates is not supported in this version.
+        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+            raise ValueError(
+                "At present, only the cutting of two qubit gates is supported."
+            )
 
         # If the wire-cut limit would be exceeded, return the empty list
         if not state.canAddWires(2):

@@ -18,7 +18,11 @@ class TestCircuitInterface:
             "barrier",
             CircuitElement(name="cx", params=[], qubits=["q1", "q0"], gamma=3),
         ]
-        circuit_converted = SimpleGateList(trial_circuit)
+        circuit_converted = SimpleGateList(
+            trial_circuit
+        )  # When init_qubit_names is initialized to [], the first qubit that
+        # appears in the first gate in the list that specifies the circuit
+        # is assigned ID 0.
 
         assert circuit_converted.getNumQubits() == 2
         assert circuit_converted.getNumWires() == 2
@@ -32,6 +36,17 @@ class TestCircuitInterface:
             [CircuitElement(name="s", params=[], qubits=[1], gamma=None), None],
             ["barrier", None],
             [CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
+        ]
+
+        # Assign by hand a different qubit mapping by specifiying init_qubit_names.
+        circuit_converted = SimpleGateList(trial_circuit, ["q0", "q1"])
+        assert circuit_converted.qubit_names.item_dict == {"q0": 0, "q1": 1}
+        assert circuit_converted.circuit == [
+            [CircuitElement(name="h", params=[], qubits=[1], gamma=None), None],
+            [CircuitElement(name="barrier", params=[], qubits=[1], gamma=None), None],
+            [CircuitElement(name="s", params=[], qubits=[0], gamma=None), None],
+            ["barrier", None],
+            [CircuitElement(name="cx", params=[], qubits=[1, 0], gamma=3), None],
         ]
 
     def test_GateCutInterface(self):
