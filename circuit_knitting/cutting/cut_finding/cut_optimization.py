@@ -221,7 +221,7 @@ class CutOptimization:
             mwc = maxWireCutsGamma(self.greedy_goal_state.upperBoundGamma())
             max_wire_cuts = min(max_wire_cuts, mwc)
 
-        elif self.func_args.max_gamma is not None:  # pragma: no cover
+        elif self.func_args.max_gamma is not None: 
             mwc = maxWireCutsGamma(self.func_args.max_gamma)
             max_wire_cuts = min(max_wire_cuts, mwc)
 
