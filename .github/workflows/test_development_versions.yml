@@ -35,7 +35,7 @@ jobs:
               "qiskit-terra @ git+https://github.com/Qiskit/qiskit.git@stable/0.46" \
               --inplace
           python tools/extremal-python-dependencies.py pin-dependencies \
-              "qiskit @ git+https://github.com/Qiskit/qiskit.git@stable/0.46#subdirectory=qiskit_pkg" \
+              "qiskit @ git+https://github.com/Qiskit/qiskit.git" \
               "qiskit-nature @ git+https://github.com/qiskit-community/qiskit-nature.git" \
               "qiskit-ibm-runtime @ git+https://github.com/Qiskit/qiskit-ibm-runtime.git" \
               "qiskit-algorithms @ git+https://github.com/qiskit-community/qiskit-algorithms.git" \
