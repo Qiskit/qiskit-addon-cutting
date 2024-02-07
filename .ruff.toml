@@ -1,5 +1,7 @@
 target-version = "py38"
-lint.ignore = [
+
+[lint]
+ignore = [
     "E501",  # line too long
 ]
 
