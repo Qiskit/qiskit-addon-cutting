@@ -1,0 +1,8 @@
+---
+upgrade:
+  - |
+    The minimum supported version of ``qiskit`` is now 0.45.0, and the
+    minimum supported version of ``qiskit-ibm-runtime`` is now 0.12.2.
+    CKT also now explicitly requires a version of ``qiskit`` less than
+    1.0, as there is no guarantee that the current version of CKT will
+    work with Qiskit 1.0.
