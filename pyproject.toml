@@ -63,7 +63,7 @@ nbtest = [
 ]
 style = [
     "autoflake==2.2.1",
-    "black[jupyter]~=23.1",
+    "black[jupyter]~=24.1",
     "ruff>=0.0.246",
     "nbqa>=1.6.0",
 ]

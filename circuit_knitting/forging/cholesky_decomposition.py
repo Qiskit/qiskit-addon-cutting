@@ -246,7 +246,7 @@ def _get_fermionic_ops_with_cholesky(
     occupied_orbitals_to_reduce: np.ndarray | None = None,
     virtual_orbitals_to_reduce: np.ndarray | None = None,
     epsilon_cholesky: float = 1e-10,
-) -> tuple[SparsePauliOp, list[SparsePauliOp], float, np.ndarray, np.ndarray,]:
+) -> tuple[SparsePauliOp, list[SparsePauliOp], float, np.ndarray, np.ndarray]:
     r"""
     Decompose the Hamiltonian operators into a form appropriate for entanglement forging.
 
