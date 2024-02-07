@@ -185,9 +185,9 @@ def generate_cutting_experiments(
         subexperiments_dict[label] = pass_manager.run(subexperiments)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
-    subexperiments_out: list[QuantumCircuit] | dict[
-        Hashable, list[QuantumCircuit]
-    ] = dict(subexperiments_dict)
+    subexperiments_out: list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]] = (
+        dict(subexperiments_dict)
+    )
     assert isinstance(subexperiments_out, dict)
     if isinstance(circuits, QuantumCircuit):
         assert len(subexperiments_out.keys()) == 1
