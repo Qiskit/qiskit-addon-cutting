@@ -14,6 +14,7 @@
 import pytest
 from copy import deepcopy
 
+import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
@@ -23,10 +24,13 @@ from qiskit_aer.primitives import Sampler
 
 from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
 from circuit_knitting.cutting.qpd import QPDBasis
+from circuit_knitting.cutting.instructions import CutWire, Move
 from circuit_knitting.cutting import (
     partition_problem,
     generate_cutting_experiments,
     reconstruct_expectation_values,
+    cut_wires,
+    expand_observables,
 )
 
 
@@ -109,3 +113,69 @@ def test_workflow_with_unused_qubits():
         subobservables,
         num_samples=10,
     )
+
+
+def test_wire_cut_workflow_without_reused_qubits():
+    """Test no resets in subexperiments when wire cut workflow has no re-used qubits."""
+    qc = QuantumCircuit(2)
+    qc.h(range(2))
+    qc.cx(0, 1)
+    qc.append(CutWire(), [0])
+    qc.cx(1, 0)
+
+    observables = PauliList(["IZ", "ZI", "ZZ", "XX"])
+
+    qc_1 = cut_wires(qc)
+    assert qc_1.num_qubits == 3
+
+    observables_1 = expand_observables(observables, qc, qc_1)
+
+    partitioned_problem = partition_problem(circuit=qc_1, observables=observables_1)
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=np.inf,
+    )
+
+    for subsystem_subexpts in subexperiments.values():
+        for subexpt in subsystem_subexpts:
+            assert "reset" not in subexpt.count_ops()
+
+
+def test_wire_cut_workflow_with_reused_qubits():
+    """Test at most a single reset in subexperiments when wire cut workflow has a single re-used qubit."""
+    qc = QuantumCircuit(8)
+    for i in [*range(4), *range(5, 8)]:
+        qc.rx(np.pi / 4, i)
+    qc.cx(0, 3)
+    qc.cx(1, 3)
+    qc.cx(2, 3)
+    qc.append(Move(), [3, 4])
+    qc.cx(4, 5)
+    qc.cx(4, 6)
+    qc.cx(4, 7)
+    qc.append(Move(), [4, 3])
+    qc.cx(0, 3)
+    qc.cx(1, 3)
+    qc.cx(2, 3)
+
+    observables = PauliList(["ZIIIIIII", "IIIIZIII", "IIIIIIIZ"])
+
+    partitioned_problem = partition_problem(
+        circuit=qc, partition_labels="AAAABBBB", observables=observables
+    )
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=np.inf,
+    )
+
+    # The initial circuit had a single instance of qubit re-use with a Move
+    # instruction.  Each A subexperiment should have a single reset, and each B
+    # subexperiment should be free of resets.
+    for subexpt in subexperiments["A"]:
+        assert subexpt.count_ops()["reset"] == 1
+    for subexpt in subexperiments["B"]:
+        assert "reset" not in subexpt.count_ops()
