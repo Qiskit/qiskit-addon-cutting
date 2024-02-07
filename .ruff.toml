@@ -1,9 +1,11 @@
 target-version = "py38"
+
+[lint]
 ignore = [
     "E501",  # line too long
 ]
 
-[per-file-ignores]
+[lint.per-file-ignores]
 "test/**.py" = [
     "F405",  # star import
     "F403",  # unable to detect undefined names due to star import
