@@ -47,7 +47,6 @@ from .entanglement_forging_ground_state_solver import (
     EntanglementForgingResult,
 )
 from .cholesky_decomposition import cholesky_decomposition, convert_cholesky_operator
-from qiskit_nature import settings
 
 # From now forward, the entanglement forging module requires that SparsePauliOp
 # be used rather than PauliSumOp, as the latter is deprecated in Qiskit Terra 0.24.
@@ -56,7 +55,6 @@ from qiskit_nature import settings
 # Unfortunately, this means that any code that calls Qiskit Nature in the same
 # process as entanglement forging will need to be updated to use SparsePauliOp as well.
 
-settings.use_pauli_sum_op = False
 
 __all__ = [
     "EntanglementForgingAnsatz",
