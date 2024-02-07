@@ -67,7 +67,7 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
-from qiskit.synthesis import TwoQubitWeylDecomposition
+from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomposition
 from qiskit.utils import deprecate_func
 
 from .qpd_basis import QPDBasis
