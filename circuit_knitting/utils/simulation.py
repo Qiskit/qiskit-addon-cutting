@@ -170,5 +170,5 @@ class ExactSampler(BaseSampler):
         **run_options,
     ):
         job = PrimitiveJob(self._call, circuits, parameter_values, **run_options)
-        job.submit()
+        job._submit()
         return job

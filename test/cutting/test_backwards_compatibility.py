@@ -89,7 +89,7 @@ def test_v0_3_cutting_depth_workflow():
     from qiskit import transpile
     from qiskit.circuit.library import EfficientSU2
     from qiskit_aer.primitives import Sampler
-    from qiskit.providers.fake_provider import FakeHanoiV2 as FakeHanoi
+    from qiskit.providers.fake_provider import GenericBackendV2
     from qiskit.quantum_info import PauliList
 
     from circuit_knitting.cutting import (
@@ -101,7 +101,7 @@ def test_v0_3_cutting_depth_workflow():
     circuit = EfficientSU2(num_qubits=4, entanglement="circular").decompose()
     circuit.assign_parameters([0.4] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII", "IZZI", "IIZZ", "XIXI", "ZIZZ", "IXIX"])
-    backend = FakeHanoi()
+    backend = GenericBackendV2(num_qubits=127)
     transpiled_qc = transpile(circuit, backend=backend, initial_layout=[0, 1, 2, 3])
     transpiled_qc.depth()
 

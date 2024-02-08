@@ -165,25 +165,6 @@ def generate_cutting_experiments(
                 _append_measurement_circuit(new_qc, cog, inplace=True)
                 subexperiments_dict[label].append(new_qc)
 
-    # Remove initial and final resets from the subexperiments.  This will
-    # enable the `Move` operation to work on backends that don't support
-    # `Reset`, as long as qubits are not re-used.  See
-    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.
-    # While we are at it, we also consolidate each run of multiple resets
-    # (which can arise when re-using qubits) into a single reset.
-    pass_manager = PassManager()
-    pass_manager.append(
-        [
-            RemoveResetInZeroState(),
-            RemoveFinalReset(),
-            ConsolidateResets(),
-            DAGFixedPoint(),
-        ],
-        do_while=lambda property_set: not property_set["dag_fixed_point"],
-    )
-    for label, subexperiments in subexperiments_dict.items():
-        subexperiments_dict[label] = pass_manager.run(subexperiments)
-
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]] = (
         dict(subexperiments_dict)
