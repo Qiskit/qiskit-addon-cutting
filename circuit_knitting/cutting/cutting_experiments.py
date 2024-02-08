@@ -19,11 +19,8 @@ from collections.abc import Sequence, Hashable
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.transpiler import PassManager
-from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
 
 from ..utils.iteration import strict_zip
-from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
 from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
