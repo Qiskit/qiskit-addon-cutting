@@ -178,7 +178,8 @@ def generate_cutting_experiments(
                 RemoveFinalReset(),
                 ConsolidateResets(),
                 DAGFixedPoint(),
-            ]
+            ],
+            do_while=lambda property_set: not property_set["dag_fixed_point"],
         )
     for label, subexperiments in subexperiments_dict.items():
         subexperiments_dict[label] = pass_manager.run(subexperiments)
