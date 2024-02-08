@@ -337,7 +337,7 @@ def _get_fermionic_ops_with_cholesky(
     h2 = np.einsum("prg,qsg->prqs", l_op, l_op)
 
     if halve_transformed_h2:
-        h2 /= 2  # type: ignore
+        h2 = h2 / 2
 
     converter = JordanWignerMapper()
     pt = PolynomialTensor({"+-": h1, "++--": to_physicist_ordering(h2)})
