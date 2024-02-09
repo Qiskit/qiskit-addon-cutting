@@ -6,14 +6,11 @@ Circuit Knitting Toolbox
    :alt: GitHub repository star counter badge
    :target: https://github.com/Qiskit-Extensions/circuit-knitting-toolbox
 
-Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome. Circuit knitting includes techniques such as entanglement forging, circuit cutting, and classical embedding. The Circuit Knitting Toolbox (CKT) is a collection of such tools.
-
-Each tool in the CKT partitions a user's problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It is designed to work seamlessly with the `Quantum Serverless <https://qiskit-extensions.github.io/quantum-serverless/>`_ framework, which enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
+Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
 
 The toolbox currently contains the following tools:
 
 - Circuit Cutting
-- Entanglement Forging
 
 .. note::
 
@@ -53,14 +50,6 @@ Contents
   Cutting Explanatory Material <circuit_cutting/explanation/index>
   Cutting How-To Guides <circuit_cutting/how-tos/index>
   CutQC (legacy circuit cutting implementation) <circuit_cutting/cutqc/index>
-
-.. toctree::
-  :maxdepth: 2
-  :caption: Entanglement Forging
-
-  Forging Tutorials <entanglement_forging/tutorials/index>
-  Forging Explanatory Material <entanglement_forging/explanation/index>
-  Forging How-To Guides <entanglement_forging/how-tos/index>
 
 .. toctree::
   :maxdepth: 2
