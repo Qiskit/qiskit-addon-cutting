@@ -32,7 +32,6 @@ dependencies = [
     "qiskit-aer>=0.12.0",
     "qiskit>=0.45.0, <1.0",
     "qiskit-algorithms>=0.2.1",
-    "qiskit-nature>=0.6.0, <0.7",
     "qiskit-ibm-runtime>=0.12.2",
 ]
 
@@ -43,9 +42,6 @@ cplex = [
     "docplex>=2.23.222; platform_machine != 'arm64'",
     "cplex>=22.1.0.0; platform_machine != 'arm64'",
 ]
-pyscf = [
-    "pyscf>=2.0.1; sys_platform != 'win32'",
-]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
 ]
@@ -54,7 +50,7 @@ basetest = [
     "pytest-randomly>=1.2.0",
 ]
 test = [
-    "circuit-knitting-toolbox[basetest,pyscf]",
+    "circuit-knitting-toolbox[basetest]",
     "ddt>=1.4.4",
 ]
 nbtest = [
@@ -90,7 +86,7 @@ docs = [
     "qiskit-sphinx-theme>=1.14.0, <2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex,pyscf]",
+    "circuit-knitting-toolbox[cplex]",
     "quantum-serverless>=0.0.7",
     "matplotlib",
     "ipywidgets",
