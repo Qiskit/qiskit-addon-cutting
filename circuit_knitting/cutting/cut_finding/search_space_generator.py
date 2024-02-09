@@ -14,14 +14,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from typing import TYPE_CHECKING
-
-from typing import Callable, Iterable
+from typing import Callable, Iterable, TYPE_CHECKING
 
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 
-if TYPE_CHECKING: #pragma: no cover
-    from cut_optimization import CutOptimizationFuncArgs
+if TYPE_CHECKING:  # pragma: no cover
+    from .cut_optimization import CutOptimizationFuncArgs
     from .cutting_actions import DisjointSearchAction
 
 
@@ -46,7 +44,7 @@ class ActionNames:
         self.group_dict = dict()
 
     def copy(self, list_of_groups: list[str] = None) -> ActionNames:
-        """Return a copy of self that contains only those actions
+        """Return a copy of :class:`ActionNames` that contains only those actions
         whose group affiliations intersect with list_of_groups.
         The default is to return a copy containing all actions.
         """
@@ -92,7 +90,7 @@ class ActionNames:
             return self.action_dict[action_name]
         return None
 
-    def getGroup(self, group_name: str) -> list | None:
+    def getGroup(self, group_name: str) -> list[DisjointSearchAction] | None:
         """Return the list of action objects associated with the group_name.
         None is returned if there are no associated action objects.
         """
@@ -102,7 +100,9 @@ class ActionNames:
         return None
 
 
-def getActionSubset(action_list: list, action_groups: Iterable) -> list:
+def getActionSubset(
+    action_list: list, action_groups: Iterable[DisjointSearchAction]
+) -> list[DisjointSearchAction]:
     """Return the subset of actions in action_list whose group affiliations
     intersect with action_groups.
     """
@@ -130,33 +130,41 @@ class SearchFunctions:
 
     Member Variables:
 
-    cost_func: a function that computes cost values from search states.
-    The cost returned can be numeric or tuples of numerics.  In the latter case,
-    lexicographical comparisons are performed per Python semantics.
+    cost_func (lambda state, *args) is a function that computes cost values
+    from search states.  The cost returned can be numeric or tuples of
+    numerics.  In the latter case, lexicographical comparisons are performed
+    per Python semantics.
 
-    next_state_func: a function that returns a list of next states generated from the input state.
+    next_state_func (lambda state, *args) is a function that returns a list
+    of next states generated from the input state.  An ActionNames object
+    should be incorporated into the additional input arguments in order to
+    generate next-states.
 
-    goal_state_func: a function that returns True if the input state is a solution state of the search.
+    goal_state_func (lambda state, *args) is a function that returns True if
+    the input state is a solution state of the search.
 
-    upperbound_cost_func: can either be None or a function that returns an upper bound
-    to the optimal cost given a goal_state as input.  The upper bound is used to prune
-    next-states from the search in subsequent calls to the optimizationPass() method of
-    the search algorithm. If upperbound_cost_func is None, the cost of the goal_state
-    as determined by cost_func is used as an upper bound to the optimal cost.  If the
+    upperbound_cost_func (lambda goal_state, *args) can either be None or a
+    function that returns an upper bound to the optimal cost given a goal_state
+    as input.  The upper bound is used to prune next-states from the search in
+    subsequent calls to the optimizationPass() method of the search algorithm.
+    If upperbound_cost_func is None, the cost of the goal_state as determined
+    by cost_func is used as an upper bound to the optimal cost.  If the
     upperbound_cost_func returns None, the effect is equivalent to returning
     an infinite upper bound (i.e., no cost pruning is performed on subsequent
-    calls to the optimizationPass method).
+    optimization calls.
 
-    mincost_bound_func: can either be None or a function that
+    mincost_bound_func (lambda *args) can either be None or a function that
     returns a cost bound that is compared to the minimum cost across all
-    vertices in a search frontier. If the minimum cost exceeds the min-cost
+    vertices in a search frontier.  If the minimum cost exceeds the min-cost
     bound, the search is terminated even if a goal state has not yet been found.
-    None is equivalent to returning an infinite min-cost bound (i.e.,
-    min-cost checking is effectively not performed).
+    Returning None is equivalent to returning an infinite min-cost bound (i.e.,
+    min-cost checking is effectively not performed).  A mincost_bound_func that
+    is None is likewise equivalent to an infinite min-cost bound.
     """
 
     cost_func: Callable[
-        [DisjointSubcircuitsState, SearchFunctions], float | tuple[float, int]
+        [DisjointSubcircuitsState, SearchFunctions],
+        int | float | tuple[int | float, int | float],
     ] = (None,)
 
     next_state_func: Callable[
@@ -169,11 +177,12 @@ class SearchFunctions:
     ] = (None,)
 
     upperbound_cost_func: None | Callable[
-        [DisjointSubcircuitsState, CutOptimizationFuncArgs], tuple[float, float]
+        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
+        tuple[int | float, int | float],
     ] = (None,)
 
     mincost_bound_func: None | Callable[
-        [CutOptimizationFuncArgs], None | tuple[float, float]
+        [CutOptimizationFuncArgs], None | tuple[int | float, int | float]
     ] = None
 
 

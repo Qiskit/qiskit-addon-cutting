@@ -11,7 +11,12 @@
 
 """Classes required to search for optimal cut locations."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
 import numpy as np
+import array
+from .search_space_generator import ActionNames
 from .cco_utils import selectSearchEngine, greedyBestFirstSearch
 from .cutting_actions import disjoint_subcircuit_actions
 from .search_space_generator import (
@@ -22,36 +27,44 @@ from .search_space_generator import (
 from .disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
 )
+from .circuit_interface import SimpleGateList
+from .optimization_settings import OptimizationSettings
+from .quantum_device_constraints import DeviceConstraints
 
-
+@dataclass
 class CutOptimizationFuncArgs:
 
     """Class for passing relevant arguments to the CutOptimization
     search-space generating functions.
     """
-
-    def __init__(self):
-        self.entangling_gates = None
-        self.search_actions = None
-        self.max_gamma = None
-        self.qpu_width = None
+    entangling_gates = None
+    search_actions = None
+    max_gamma = None
+    qpu_width = None
 
 
-def CutOptimizationCostFunc(state, func_args):
-    """Return the cost function. The cost function aims to minimize the
-    gamma bound while giving preference to circuit partionings that balance the
-    sizes of the resulting partitions.
+def CutOptimizationCostFunc(
+    state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
+) -> tuple[int | float, int | float]:
+    """Return the cost function. The particular cost function chosen here
+    aims to minimize the gamma while also (secondarily) giving preference to 
+    circuit partitionings that balance the sizes of the resulting partitions,
+    by minimizing the maximum width across subcircuits.
     """
 
     return (state.lowerBoundGamma(), state.getMaxWidth())
 
 
-def CutOptimizationUpperBoundCostFunc(goal_state, func_args):
+def CutOptimizationUpperBoundCostFunc(
+    goal_state, func_args: CutOptimizationFuncArgs
+) -> tuple[int | float, int | float]:
     """Return the gamma upper bound."""
     return (goal_state.upperBoundGamma(), np.inf)
 
 
-def CutOptimizationMinCostBoundFunc(func_args):
+def CutOptimizationMinCostBoundFunc(
+    func_args: CutOptimizationFuncArgs,
+) -> tuple[int | float, int | float]:
     """Return an a priori min-cost bound defined in the optimization settings."""
 
     if func_args.max_gamma is None:  # pragma: no cover
@@ -60,7 +73,9 @@ def CutOptimizationMinCostBoundFunc(func_args):
     return (func_args.max_gamma, np.inf)
 
 
-def CutOptimizationNextStateFunc(state, func_args):
+def CutOptimizationNextStateFunc(
+    state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
+) -> list[disjoint_subcircuit_actions]:
     """Generate a list of next states from the input state."""
 
     # Get the entangling gate spec that is to be processed next based
@@ -86,7 +101,9 @@ def CutOptimizationNextStateFunc(state, func_args):
     return next_state_list
 
 
-def CutOptimizationGoalStateFunc(state, func_args):
+def CutOptimizationGoalStateFunc(
+    state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
+) -> bool:
     """Return True if the input state is a goal state (i.e., the cutting decisions made satisfy
     the device constraints and the optimization settings).
     """
@@ -105,12 +122,12 @@ cut_optimization_search_funcs = SearchFunctions(
 
 
 def greedyCutOptimization(
-    circuit_interface,
-    optimization_settings,
-    device_constraints,
-    search_space_funcs=cut_optimization_search_funcs,
-    search_actions=disjoint_subcircuit_actions,
-):
+    circuit_interface: SimpleGateList,
+    optimization_settings: OptimizationSettings,
+    device_constraints: DeviceConstraints,
+    search_space_funcs: SearchFunctions = cut_optimization_search_funcs,
+    search_actions: ActionNames = disjoint_subcircuit_actions,
+) -> greedyBestFirstSearch:
     func_args = CutOptimizationFuncArgs()
     func_args.entangling_gates = circuit_interface.getMultiQubitGates()
     func_args.search_actions = search_actions
@@ -139,26 +156,26 @@ class CutOptimization:
 
     Member Variables:
 
-    circuit (CircuitInterface) is the interface object for the circuit
+    circuit (:class:`CircuitInterface`) is the interface object for the circuit
     to be cut.
 
-    settings (OptimizationSettings) is an object that contains the settings
+    settings (:class:`OptimizationSettings`) is an object that contains the settings
     that control the optimization process.
 
-    constraints (DeviceConstraints) is an object that contains the device
+    constraints (:class:`DeviceConstraints`) is an object that contains the device
     constraints that solutions must obey.
 
-    search_funcs (SearchFunctions) is an object that holds the functions
+    search_funcs (:class:`SearchFunctions`) is an object that holds the functions
     needed to generate and explore the cut optimization search space.
 
-    func_args (CutOptimizationFuncArgs) is an object that contains the
+    func_args (:class:`CutOptimizationFuncArgs`) is an object that contains the
     necessary device constraints and optimization settings parameters that
     aree needed by the cut optimization search-space function.
 
-    search_actions (ActionNames) is an object that contains the allowed
+    search_actions (:class:`ActionNames`) is an object that contains the allowed
     actions that are used to generate the search space.
 
-    search_engine (BestFirstSearch) is an object that implements the
+    search_engine (:class`BestFirstSearch`) is an object that implements the
     search algorithm.
     """
 
@@ -221,7 +238,7 @@ class CutOptimization:
             mwc = maxWireCutsGamma(self.greedy_goal_state.upperBoundGamma())
             max_wire_cuts = min(max_wire_cuts, mwc)
 
-        elif self.func_args.max_gamma is not None: 
+        elif self.func_args.max_gamma is not None:
             mwc = maxWireCutsGamma(self.func_args.max_gamma)
             max_wire_cuts = min(max_wire_cuts, mwc)
 
@@ -245,7 +262,7 @@ class CutOptimization:
         self.search_engine = sq
         self.goal_state_returned = False
 
-    def optimizationPass(self):
+    def optimizationPass(self) -> tuple[DisjointSubcircuitsState, int | float]:
         """Produce, at each call, a goal state representing a distinct
         set of cutting decisions. None is returned once no additional choices
         of cuts can be made without exceeding the minimum upper bound across
@@ -260,28 +277,28 @@ class CutOptimization:
 
         return state, cost
 
-    def minimumReached(self):
+    def minimumReached(self) -> bool:
         """Return True if the optimization reached a global minimum."""
 
         return self.search_engine.minimumReached()
 
-    def getStats(self, penultimate=False):
+    def getStats(self, penultimate: bool = False) -> array:
         """Return the search-engine statistics."""
 
         return self.search_engine.getStats(penultimate=penultimate)
 
-    def getUpperBoundCost(self):
+    def getUpperBoundCost(self) -> tuple[int | float, int | float]:
         """Return the current upperbound cost."""
 
         return self.search_engine.getUpperBoundCost()
 
-    def updateUpperBoundCost(self, cost_bound):
+    def updateUpperBoundCost(self, cost_bound: tuple[int | float, int | float]) -> None:
         """Update the cost upper bound based on an input cost bound."""
 
         self.search_engine.updateUpperBoundCost(cost_bound)
 
 
-def maxWireCutsCircuit(circuit_interface):
+def maxWireCutsCircuit(circuit_interface: SimpleGateList) -> int:
     """Calculate an upper bound on the maximum number of wire cuts
     that can be made given the total number of inputs to multiqubit
     gates in the circuit.
@@ -290,7 +307,7 @@ def maxWireCutsCircuit(circuit_interface):
     return sum([len(x[1]) - 1 for x in circuit_interface.getMultiQubitGates()])
 
 
-def maxWireCutsGamma(max_gamma):
+def maxWireCutsGamma(max_gamma: float | int) -> int:
     """Calculate an upper bound on the maximum number of wire cuts
     that can be made given the maximum allowed gamma.
     """

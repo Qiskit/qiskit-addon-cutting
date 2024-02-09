@@ -4,8 +4,8 @@ from qiskit.circuit.library import EfficientSU2
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit, Instruction, CircuitInstruction
 from circuit_knitting.cutting.cut_finding.cco_utils import (
-    QCtoCCOCircuit,
-    CCOtoQCCircuit,
+    qc_to_cco_circuit,
+    cco_to_qc_circuit,
 )
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
@@ -77,13 +77,15 @@ def InternalTestCircuit():
         ),
     ],
 )
-def test_QCtoCCOCircuit(test_circuit, known_output):
-    test_circuit_internal = QCtoCCOCircuit(test_circuit)
+def test_qc_to_cco_circuit(
+    test_circuit: QuantumCircuit, known_output: list[CircuitElement, str]
+):
+    test_circuit_internal = qc_to_cco_circuit(test_circuit)
     assert test_circuit_internal == known_output
 
 
-def test_CCOtoQCCircuit(InternalTestCircuit):
-    qc_cut = CCOtoQCCircuit(InternalTestCircuit)
+def test_cco_to_qc_circuit(InternalTestCircuit: SimpleGateList):
+    qc_cut = cco_to_qc_circuit(InternalTestCircuit)
     assert qc_cut.data == [
         CircuitInstruction(
             operation=Instruction(name="cx", num_qubits=2, num_clbits=0, params=[]),

@@ -11,8 +11,13 @@
 
 """Classes needed to implement the actions involved in circuit cutting."""
 
+
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from .search_space_generator import ActionNames
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
+from .circuit_interface import CircuitElement
 
 # Object that holds action names for constructing disjoint subcircuits
 disjoint_subcircuit_actions = ActionNames()
@@ -59,17 +64,19 @@ class ActionApplyGate(DisjointSearchAction):
     """Action class that implements the action of
     applying a two-qubit gate without decomposition"""
 
-    def getName(self):
+    def getName(self) -> None:
         """Return the look-up name of ActionApplyGate."""
 
         return None
 
-    def getGroupNames(self):
+    def getGroupNames(self) -> None:
         """Return the group name of ActionApplyGate."""
 
         return [None, "TwoQubitGates"]
 
-    def nextStatePrimitive(self, state, gate_spec, max_width):
+    def nextStatePrimitive(
+        self, state: DisjointSubcircuitsState, gate_spec: CircuitElement, max_width: int
+    ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionApplyGate to state given the two-qubit gate
         specification: gate_spec.
@@ -323,7 +330,9 @@ class ActionCutRightWire(DisjointSearchAction):
 
         return [new_state]
 
-    def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
+    def exportCuts(
+        self, circuit_interface, wire_map, gate_spec, cut_args
+    ):  # pragma: no cover
         """Insert an LO wire cut into the input circuit for the specified
         gate and cut arguments.
         """
@@ -393,7 +402,9 @@ class ActionCutBothWires(DisjointSearchAction):
 
         return [new_state]
 
-    def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
+    def exportCuts(
+        self, circuit_interface, wire_map, gate_spec, cut_args
+    ):  # pragma: no cover
         """Insert an LO wire cut into the input circuit for the specified
         gate and cut arguments.
         """

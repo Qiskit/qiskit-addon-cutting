@@ -117,9 +117,9 @@ class SimpleGateList(CircuitInterface):
     """Derived class that converts a simple list of gates into
     the form needed by the circuit-cutting optimizer code.
 
-    Elements of the list must be of the form of CircuitElement.
+    Elements of the list must be instances of :class:`CircuitElement`.
     The only exception to this is a barrier when one is placed across
-    all the qubits in a circuit. That is specified by a string "barrier".
+    all the qubits in a circuit. That is specified by the string: "barrier".
 
     Qubit names can be any hashable objects. Gate names can also be any
     hashable objects, but they must be consistent with the names used by the
@@ -130,17 +130,17 @@ class SimpleGateList(CircuitInterface):
 
     Member Variables:
 
-    qubit_names: an object that maps qubit names to
-    numerical qubit IDs.
+    qubit_names (NametoIDMap): an instance of :class:`NametoIDMap` that maps
+    qubit names to numerical qubit IDs.
 
-    num_qubits: the number of qubits in the input circuit. Qubit IDs
+    num_qubits (int): the number of qubits in the input circuit. Qubit IDs
     whose values are greater than or equal to num_qubits represent qubits
     that were introduced as the result of wire cutting. These qubits are
     assigned generated names of the form ('cut', <qubit_name>) in the
     qubit_names object, where <qubit_name> is the name of the wire/qubit
     that was cut to create the new wire/qubit.
 
-    circuit: the internal representation of the circuit, which is
+    circuit (list): the internal representation of the circuit, which is
     a list of the following form:
 
         [ ... [<gate_specification>, None] ...]
@@ -148,25 +148,25 @@ class SimpleGateList(CircuitInterface):
     where the qubit names have been replaced with qubit IDs in the gate
     specifications.
 
-    new_circuit: a list of gate specifications that define
+    new_circuit (list): a list of gate specifications that define
     the cut circuit. As with circuit, qubit IDs are used to identify
     wires/qubits.
 
-    cut_type: a list that assigns cut-type annotations to gates
+    cut_type (list): a list that assigns cut-type annotations to gates
     in new_circuit.
 
-    new_gate_ID_map: a list that maps the positions of gates
+    new_gate_ID_map (list): a list that maps the positions of gates
     in circuit to their new positions in new_circuit.
 
-    output_wires: a list that maps qubit IDs in circuit to the corresponding
+    output_wires (list): a list that maps qubit IDs in circuit to the corresponding
     output wires of new_circuit so that observables defined for circuit
     can be remapped to new_circuit.
 
-    subcircuits: a list of list of wire IDs, where each list of
+    subcircuits (list): a list of list of wire IDs, where each list of
     wire IDs defines a subcircuit.
     """
 
-    circuit: list[CircuitElement | str | None]
+    circuit: list[CircuitElement | None]
     new_circuit: list[CircuitElement]
     cut_type: str | None
     qubit_names: NameToIDMap
@@ -214,7 +214,7 @@ class SimpleGateList(CircuitInterface):
 
         return self.qubit_names.getNumItems()
 
-    def getMultiQubitGates(self) -> list[int | CircuitElement | str | None]:
+    def getMultiQubitGates(self) -> list[int | CircuitElement | None]:
         """Extract the multiqubit gates from the circuit and prepends the
         index of the gate in the circuits to the gate specification.
 
@@ -297,7 +297,7 @@ class SimpleGateList(CircuitInterface):
 
         self.subcircuits = list_of_list_of_wires
 
-    def getWireNames(self) -> list[Hashable]:
+    def getWireNames(self) -> list[Hashable | tuple[str, Hashable]]:
         """Return a list of the internal wire names used in the circuit,
         which consists of the original qubit names together with additional
         names of form ("cut", <name>) introduced to represent cut wires.
@@ -305,7 +305,9 @@ class SimpleGateList(CircuitInterface):
 
         return list(self.qubit_names.getItems())
 
-    def exportCutCircuit(self, name_mapping: str = "default") -> list[CircuitElement]:
+    def exportCutCircuit(
+        self, name_mapping: None | str | dict[Hashable, Hashable] = "default"
+    ) -> list[CircuitElement | list[str | Hashable | Hashable]]:
         """Return a list of gates representing the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
@@ -322,7 +324,9 @@ class SimpleGateList(CircuitInterface):
 
         return out
 
-    def exportOutputWires(self, name_mapping: str = "default") -> dict:
+    def exportOutputWires(
+        self, name_mapping: None | str |  dict[Hashable, Hashable]  = "default"
+    ) -> dict[Hashable, Hashable | tuple[str, Hashable]]:
         """Return a dictionary that maps output qubits in the input circuit
         to the corresponding output wires/qubits in the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
@@ -339,9 +343,11 @@ class SimpleGateList(CircuitInterface):
             out[self.qubit_names.getName(in_wire)] = wire_map[out_wire]
         return out
 
-    def exportSubcircuitsAsString(self, name_mapping: str = "default") -> str:
+    def exportSubcircuitsAsString(
+        self, name_mapping: None |  str | dict[Hashable, int]  = "default"
+    ) -> str:
         """Return a string that maps qubits/wires in the output circuit
-        to subcircuits per the Circuit Knitting Toolbox convention.  This
+        to subcircuits per the Circuit Knitting Toolbox convention. This
         method only works with mappings to numeric qubit/wire names, such
         as provided by "default" or a custom name_mapping.
         """
@@ -355,7 +361,9 @@ class SimpleGateList(CircuitInterface):
                 out[wire_map[wire]] = alphabet[k]
         return "".join(out)
 
-    def makeWireMapping(self, name_mapping: None | str) -> list[Hashable | int]:
+    def makeWireMapping(
+        self, name_mapping: None | str | dict[Hashable, Hashable] 
+    ) -> list[Hashable]:
         """Return a wire-mapping list given an input specification of a
         name mapping.  If None is provided as the input name_mapping, then
         the original qubit names are mapped to themselves.  If "default"
@@ -379,12 +387,12 @@ class SimpleGateList(CircuitInterface):
 
         return wire_mapping
 
-    def defaultWireNameMapping(self) -> dict[list[str | tuple[str, str]], int]:
-        """Return a dictionary that maps wire names in self.qubit_names to
+    def defaultWireNameMapping(self) -> dict[list[Hashable], int]:
+        """Return a dictionary that maps wire names in :func:`self.getWireNames()` to
         default numeric output qubit names when exporting a cut circuit.  Cut
         wires are assigned numeric IDs that are adjacent to the numeric
         ID of the wire prior to cutting so that Move operators are then
-        applied against adjacent qubits. This is ensured by the sortOrder
+        applied against adjacent qubits. This is ensured by the :func:`self.sortOrder()`
         method.
         """
 
@@ -489,8 +497,8 @@ class NameToIDMap:
     def getArraySizeNeeded(self) -> int:
         """Return one plus the maximum item ID assigned thus far,
         or zero if no items have been assigned.  The value returned
-        is thus the minimum size needed to construct a Python/Numpy
-        array that maps item IDs to other values.
+        is thus the minimum size needed for a Python/Numpy
+        array that maps item IDs to other hashables.
         """
 
         if self.getNumItems() == 0:  # pragma: no cover
@@ -499,11 +507,11 @@ class NameToIDMap:
         return 1 + max(self.ID_dict.keys())
 
     def getItems(self) -> Iterable[Hashable]:
-        """Return an iterator over the hashable items loaded thus far."""
+        """Return the keys of the dictionary of hashable items loaded thus far."""
 
         return self.item_dict.keys()
 
     def getIDs(self) -> Iterable[Hashable]:
-        """Return an iterator over the hashable items loaded thus far."""
+        """Return the keys of the dictionary of ID's assigned to hashable items loaded thus far."""
 
         return self.ID_dict.keys()

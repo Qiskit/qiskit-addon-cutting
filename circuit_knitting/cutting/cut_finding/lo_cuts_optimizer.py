@@ -10,6 +10,7 @@
 # that they have been altered from the originals.
 
 """File containing the wrapper class for optimizing LO gate and wire cuts."""
+from __future__ import annotations
 
 from .cut_optimization import CutOptimization
 from .cut_optimization import disjoint_subcircuit_actions
@@ -18,6 +19,12 @@ from .cut_optimization import CutOptimizationGoalStateFunc
 from .cut_optimization import CutOptimizationMinCostBoundFunc
 from .cut_optimization import CutOptimizationUpperBoundCostFunc
 from .search_space_generator import SearchFunctions, SearchSpaceGenerator
+
+from numpy import array
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
+from .quantum_device_constraints import DeviceConstraints
+from .optimization_settings import OptimizationSettings
+from .circuit_interface import SimpleGateList
 
 
 ### Functions for generating the cut optimization search space
@@ -88,27 +95,27 @@ class LOCutsOptimizer:
 
     def optimize(
         self,
-        circuit_interface=None,
-        optimization_settings=None,
-        device_constraints=None,
-    ):
+        circuit_interface: SimpleGateList = None,
+        optimization_settings: OptimizationSettings = None,
+        device_constraints: DeviceConstraints = None,
+    ) -> DisjointSubcircuitsState | None:
         """Method to optimize the cutting of a circuit.
 
         Input Arguments:
 
-        circuit_interface (CircuitInterface) defines the circuit to be
+        circuit_interface: defines the circuit to be
         cut. This object is then updated with the optimized cuts that
         were identified.
 
-        optimization_settings (OptimizationSettings) defines the settings
+        optimization_settings: defines the settings
         to be used for the optimization.
 
-        device_constraints (DeviceConstraints) defines the capabilties of
+        device_constraints:  the capabilties of
         the target quantum hardware.
 
         Returns:
 
-        The lowest-cost DisjointSubcircuitsState object identified in
+        The lowest-cost instance of :class:`DisjointSubcircuitsState` identified in
         the search, or None if no solution could be found.  In the
         case of the former, the circuit_interface object is also
         updated as a side effect to incorporate the cuts found.
@@ -156,19 +163,19 @@ class LOCutsOptimizer:
 
         return self.best_result
 
-    def getResults(self):
+    def getResults(self) -> DisjointSubcircuitsState | None:
         """Return the optimization results."""
 
         return self.best_result
 
-    def getStats(self, penultimate=False):
+    def getStats(self, penultimate=False) -> array[int | float]:
         """Return the optimization results."""
 
         return {
             "CutOptimization": self.cut_optimization.getStats(penultimate=penultimate)
         }
 
-    def minimumReached(self):
+    def minimumReached(self) -> bool:
         """Return a Boolean flag indicating whether the global
         minimum was reached.
         """
@@ -176,7 +183,9 @@ class LOCutsOptimizer:
         return self.cut_optimization.minimumReached()
 
 
-def printStateList(state_list): #pragma: no cover
+def printStateList(
+    state_list: list[DisjointSubcircuitsState],
+) -> None:  # pragma: no cover
     for x in state_list:
         print()
         x.print(simple=True)

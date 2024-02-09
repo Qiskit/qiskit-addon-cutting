@@ -12,7 +12,7 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
     DeviceConstraints,
 )
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
-    PrintActionListWithNames,
+    print_actions_list,
 )
 
 
@@ -51,7 +51,7 @@ def testCircuit():
     return interface
 
 
-def test_BestFirstSearch(testCircuit):
+def test_BestFirstSearch(testCircuit: SimpleGateList):
     settings = OptimizationSettings(rand_seed=12345)
 
     settings.setEngineSelection("CutOptimization", "BestFirst")
@@ -72,7 +72,7 @@ def test_BestFirstSearch(testCircuit):
         27,
         4,
     )  # lower and upper bounds are the same in the absence of LOCC.
-    assert PrintActionListWithNames(out.actions) == [
+    assert print_actions_list(out.actions) == [
         [
             "CutTwoQubitGate",
             [12, CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3), None],

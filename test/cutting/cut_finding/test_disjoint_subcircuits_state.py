@@ -1,4 +1,5 @@
 from pytest import mark, raises, fixture
+from typing import Callable
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
 )
@@ -39,7 +40,7 @@ def testCircuit():
     return state, two_qubit_gate
 
 
-def test_StateUncut(testCircuit):
+def test_StateUncut(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, _ = testCircuit
 
     assert list(state.wiremap) == [0, 1]
@@ -57,7 +58,7 @@ def test_StateUncut(testCircuit):
     assert state.getSearchLevel() == 0
 
 
-def test_ApplyGate(testCircuit):
+def test_ApplyGate(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, two_qubit_gate = testCircuit
 
     next_state = disjoint_subcircuit_actions.getAction(None).nextState(
@@ -81,7 +82,7 @@ def test_ApplyGate(testCircuit):
     assert next_state.getSearchLevel() == 1
 
 
-def test_CutGate(testCircuit):
+def test_CutGate(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, two_qubit_gate = testCircuit
 
     next_state = disjoint_subcircuit_actions.getAction("CutTwoQubitGate").nextState(
@@ -113,7 +114,7 @@ def test_CutGate(testCircuit):
     )  # equal to lowerBoundGamma for single gate cuts.
 
 
-def test_CutLeftWire(testCircuit):
+def test_CutLeftWire(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, two_qubit_gate = testCircuit
 
     next_state = disjoint_subcircuit_actions.getAction("CutLeftWire").nextState(
@@ -156,7 +157,7 @@ def test_CutLeftWire(testCircuit):
     assert next_state.upperBoundGamma() == 4
 
 
-def test_CutRightWire(testCircuit):
+def test_CutRightWire(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, two_qubit_gate = testCircuit
 
     next_state = disjoint_subcircuit_actions.getAction("CutRightWire").nextState(
@@ -189,7 +190,7 @@ def test_CutRightWire(testCircuit):
     assert next_state.getSearchLevel() == 1
 
 
-def test_CutBothWires(testCircuit):
+def test_CutBothWires(testCircuit: Callable[[], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]]):
     state, two_qubit_gate = testCircuit
 
     next_state = disjoint_subcircuit_actions.getAction("CutBothWires").nextState(

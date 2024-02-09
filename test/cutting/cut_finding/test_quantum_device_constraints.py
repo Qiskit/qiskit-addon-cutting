@@ -5,7 +5,7 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
 
 
 @pytest.mark.parametrize("qubits_per_QPU, num_QPUs", [(1, -1), (-1, 1), (1, 0)])
-def test_DeviceConstraints(qubits_per_QPU, num_QPUs):
+def test_DeviceConstraints(qubits_per_QPU: int, num_QPUs: int):
     """Test device constraints for being valid data types."""
 
     with pytest.raises(ValueError):
@@ -13,7 +13,7 @@ def test_DeviceConstraints(qubits_per_QPU, num_QPUs):
 
 
 @pytest.mark.parametrize("qubits_per_QPU, num_QPUs", [(2, 4), (1, 3)])
-def test_getQPUWidth(qubits_per_QPU, num_QPUs):
+def test_getQPUWidth(qubits_per_QPU: int, num_QPUs: int):
     """Test that getQPUWidth returns number of qubits per qpu."""
 
     assert DeviceConstraints(qubits_per_QPU, num_QPUs).getQPUWidth() == qubits_per_QPU

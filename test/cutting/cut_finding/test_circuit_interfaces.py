@@ -79,9 +79,9 @@ class TestCircuitInterface:
 
         # the following two methods are the same in the absence of wire cuts.
         assert (
-            list(circuit_converted.exportOutputWires(name_mapping="default"))
-            == list(circuit_converted.exportOutputWires(name_mapping=None))
-            == [0, 1, 2, 3]
+            circuit_converted.exportOutputWires(name_mapping="default")
+            == circuit_converted.exportOutputWires(name_mapping=None)
+            == {0: 0, 1: 1, 2: 2, 3: 3}
         )
 
     def test_WireCutInterface(self):
@@ -95,9 +95,9 @@ class TestCircuitInterface:
             CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
         ]
         circuit_converted = SimpleGateList(trial_circuit)
-        circuit_converted.insertWireCut(
-            2, 1, 1, 4, "LO"
-        )  # cut first input wire of trial_circuit[2] and map it to wire id 4.
+
+        # cut first input wire of trial_circuit[2] and map it to wire id 4.
+        circuit_converted.insertWireCut(2, 1, 1, 4, "LO")
         assert list(circuit_converted.output_wires) == [0, 4, 2, 3]
 
         assert circuit_converted.cut_type[2] == "LO"

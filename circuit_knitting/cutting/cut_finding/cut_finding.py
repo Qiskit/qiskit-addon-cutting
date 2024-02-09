@@ -20,7 +20,7 @@ from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 from .circuit_interface import SimpleGateList
 from .lo_cuts_optimizer import LOCutsOptimizer
-from .cco_utils import QCtoCCOCircuit
+from .cco_utils import qc_to_cco_circuit
 from ..instructions import CutWire
 from ..cutting_decomposition import cut_gates
 
@@ -46,7 +46,7 @@ def find_cuts(
         resulting from cutting these gates will be runnable on the devices
         specified in ``constraints``.
     """
-    circuit_cco = QCtoCCOCircuit(circuit)
+    circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
 
     if isinstance(optimization, dict):

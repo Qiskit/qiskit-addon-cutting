@@ -11,9 +11,20 @@
 
 """Classes required to implement Dijkstra's (best-first) search algorithm."""
 
+from __future__ import annotations
+
 import heapq
 import numpy as np
+from typing import TYPE_CHECKING
+from numpy import array
 from itertools import count
+
+from .optimization_settings import OptimizationSettings
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
+from .search_space_generator import SearchFunctions
+
+if TYPE_CHECKING:  # pragma: no cover
+    from .cut_optimization import CutOptimizationFuncArgs
 
 
 class BestFirstPriorityQueue:
@@ -55,7 +66,7 @@ class BestFirstPriorityQueue:
     queue.PriorityQueue if parallelization is ultimately required).
     """
 
-    def __init__(self, rand_seed):
+    def __init__(self, rand_seed: int):
         """A BestFirstPriorityQueue object must be initialized with a
         specification of a random seed (int) for the pseudo-random number
         generator.  If None is used as the random seed, then a seed is
@@ -65,9 +76,14 @@ class BestFirstPriorityQueue:
 
         self.rand_gen = np.random.default_rng(rand_seed)
         self.unique = count()
-        self.pqueue = list()  # queue.PriorityQueue()
+        self.pqueue = list()
 
-    def put(self, state, depth, cost):
+    def put(
+        self,
+        state: DisjointSubcircuitsState,
+        depth: int,
+        cost: int | float | tuple[int | float, int | float],
+    ) -> None:
         """Push state onto the priority queue.  The search depth and cost
         of the state must also be provided as input.
         """
@@ -77,7 +93,14 @@ class BestFirstPriorityQueue:
             (cost, (-depth), self.rand_gen.random(), next(self.unique), state),
         )
 
-    def get(self):
+    def get(
+        self,
+    ) -> (
+        tuple[None, None, None]
+        | tuple[
+            DisjointSubcircuitsState, int, int | float | tuple[int | float, int | float]
+        ]
+    ):
         """Pop and return the lowest cost state currently on the
         queue, along with the search depth of that state and its cost.
         None, None, None is returned if the priority queue is empty.
@@ -90,12 +113,12 @@ class BestFirstPriorityQueue:
 
         return best[-1], (-best[1]), best[0]
 
-    def qsize(self):
+    def qsize(self) -> int:
         """Return the size of the priority queue."""
 
         return len(self.pqueue)
 
-    def clear(self):
+    def clear(self) -> None:
         """Clear all entries in the priority queue."""
 
         self.pqueue.clear()
@@ -107,7 +130,7 @@ class BestFirstSearch:
     choosing the deepest, lowest-cost state in the search frontier and
     generating next states.  Successive calls to the optimizationPass()
     method will resume the search at the next deepest, lowest-cost state
-    in the search frontier.  The costs of goal states that are returned
+    in the search frontier. The costs of goal states that are returned
     are used to constrain subsequent searches.  None is returned if no
     (additional) feasible solutions can be found, or when no (additional)
     solutions can be found without exceeding the lowest upper-bound cost
@@ -144,9 +167,7 @@ class BestFirstSearch:
     returns a cost bound that is compared to the minimum cost across all
     vertices in a search frontier.  If the minimum cost exceeds the min-cost
     bound, the search is terminated even if a goal state has not yet been found.
-    Returning None is equivalent to returning an infinite min-cost bound.  A
-    mincost_bound_func that is None is likewise equivalent to an infinite
-    min-cost bound.
+    A mincost_bound_func that is None is equivalent to an infinite min-cost bound.
 
     stop_at_first_min (Boolean) is a flag that indicates whether or not to
     stop the search after the first minimum-cost goal state has been reached.
@@ -155,12 +176,12 @@ class BestFirstSearch:
     can be performed before the search is forced to terminate.  None indicates
     that no restriction is placed in the number of backjump operations.
 
-    pqueue (BestFirstPriorityQueue) is a best-first priority-queue object.
+    pqueue (:class:`BestFirstPriorityQueue`) is an instance of :class:`BestFirstPriorityQueue`.
 
-    upperbound_cost (numeric or tuple) is the cost bound obtained by applying
+    upperbound_cost (float or tuple) is the cost bound obtained by applying
     the upperbound_cost_func to the goal states that are encountered.
 
-    mincost_bound (numeric or tuple) is the cost bound imposed on the minimum
+    mincost_bound (float or tuple) is the cost bound imposed on the minimum
     cost across all vertices in the search frontier.  The search is forced to
     terminate when the minimum cost exceeds this cost bound.
 
@@ -183,7 +204,10 @@ class BestFirstSearch:
     """
 
     def __init__(
-        self, optimization_settings, search_functions, stop_at_first_min=False
+        self,
+        optimization_settings: OptimizationSettings,
+        search_functions: SearchFunctions,
+        stop_at_first_min: bool = False,
     ):
         """A BestFirstSearch object must be initialized with a list of
         initial states, a random seed for the numpy pseudo-random number
@@ -194,7 +218,7 @@ class BestFirstSearch:
         after the first minimum-cost goal state has been reached (True),
         or whether subsequent calls to the optimizationPass() method should
         return any additional minimum-cost goal states that might exist
-        (False).  The default is not to stop at the first minimum.  A limit
+        (False). The default is not to stop at the first minimum. A limit
         on the maximum number of backjumps can also be optionally provided
         to terminate the search if the number of backjumps exceeds the
         specified limit without finding the (next) optimal goal state.
@@ -221,7 +245,12 @@ class BestFirstSearch:
         self.num_backjumps = 0
         self.penultimate_stats = None
 
-    def initialize(self, initial_state_list, *args):
+    def initialize(
+        self,
+        initial_state_list: list[DisjointSubcircuitsState],
+        *args: CutOptimizationFuncArgs,
+    ) -> None:
+        """Clear the priority queue and push an initial list of states into it."""
         self.pqueue.clear()
 
         self.upperbound_cost = None
@@ -235,11 +264,19 @@ class BestFirstSearch:
 
         self.put(initial_state_list, 0, args)
 
-    def optimizationPass(self, *args):
+    def optimizationPass(
+        self, *args: CutOptimizationFuncArgs
+    ) -> (
+        tuple[None, None]
+        | tuple[
+            DisjointSubcircuitsState | None,
+            int | float | tuple[int | float, int | float],
+        ]
+    ):
         """Perform best-first search until either a goal state is found and
         returned, or cost-bounds are reached or no further goal states can be
-        found, in which case None is returned.  The cost of the returned state
-        is also returned.  Any input arguments to optimizationPass() are passed
+        found, in which case None is returned. The cost of the returned state
+        is also returned. Any input arguments to optimizationPass() are passed
         along to the search-space functions employed.
         """
 
@@ -257,7 +294,7 @@ class BestFirstSearch:
 
             self.updateMinimumReached(cost)
 
-            if cost is None or self.costBoundsExceeded(cost, args):
+            if cost is None or self.costBoundsExceeded(cost):
                 return None, None
 
             self.num_states_visited += 1
@@ -282,17 +319,16 @@ class BestFirstSearch:
 
         return None, None
 
-    def minimumReached(self):
+    def minimumReached(self) -> bool:
         """Return True if the optimization reached a global minimum."""
 
         return self.minimum_reached
 
-    def getStats(self, penultimate=False):
+    def getStats(self, penultimate: bool = False) -> array[int, int, int, int]:
         """Return a Numpy array containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number
-        of backjumps performed.  Numpy arrays are employed to facilitate
-        the aggregation of search statisitcs.
+        of backjumps performed.
         """
 
         if penultimate:
@@ -308,12 +344,14 @@ class BestFirstSearch:
             dtype=int,
         )
 
-    def getUpperBoundCost(self):
+    def getUpperBoundCost(self) -> int | float | tuple[int | float, int | float]:
         """Return the current upperbound cost"""
 
         return self.upperbound_cost
 
-    def updateUpperBoundCost(self, cost_bound: tuple) -> None:
+    def updateUpperBoundCost(
+        self, cost_bound: int | float | tuple[int | float, int | float]
+    ) -> None:
         """Update the cost upper bound based on an
         input cost bound.
         """
@@ -323,7 +361,9 @@ class BestFirstSearch:
         ):
             self.upperbound_cost = cost_bound
 
-    def updateUpperBoundGoalState(self, goal_state, *args):
+    def updateUpperBoundGoalState(
+        self, goal_state: DisjointSubcircuitsState, *args: CutOptimizationFuncArgs
+    ) -> None:
         """Update the cost upper bound based on a
         goal state reached in the search.
         """
@@ -336,7 +376,12 @@ class BestFirstSearch:
         if self.upperbound_cost is None or bound < self.upperbound_cost:
             self.upperbound_cost = bound
 
-    def put(self, state_list, depth, args):
+    def put(
+        self,
+        state_list: list[DisjointSubcircuitsState],
+        depth: int,
+        args: CutOptimizationFuncArgs,
+    ) -> None:
         """Push a list of (next) states onto the
         best-first priority queue.
         """
@@ -350,7 +395,9 @@ class BestFirstSearch:
                 self.pqueue.put(state, depth, cost)
                 self.num_enqueues += 1
 
-    def updateMinimumReached(self, min_cost):
+    def updateMinimumReached(
+        self, min_cost: None | int | float | tuple[int | float, int | float]
+    ) -> bool:
         """Update the minimum_reached flag indicating
         that a global optimum has been reached.
         """
@@ -362,7 +409,9 @@ class BestFirstSearch:
 
         return self.minimum_reached
 
-    def costBoundsExceeded(self, cost, args):
+    def costBoundsExceeded(
+        self, cost: None | int | float | tuple[int | float, int | float]
+    ) -> bool:
         """Return True if any cost bounds
         have been exceeded.
         """

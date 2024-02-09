@@ -15,54 +15,57 @@ from __future__ import annotations
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction, Gate
-
+from .optimization_settings import OptimizationSettings
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .cut_optimization import CutOptimizationFuncArgs
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
+from .search_space_generator import SearchFunctions
 from .best_first_search import BestFirstSearch
-from .circuit_interface import CircuitElement
+from .circuit_interface import CircuitElement, SimpleGateList
 from ..qpd import QPDBasis
 
 
-def QCtoCCOCircuit(circuit: QuantumCircuit):
-    """Convert a qiskit quantum circuit object into a circuit list that is compatible with the :class:`SimpleGateList`.
+def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
+    """Convert a qiskit quantum circuit object into a circuit list that is
+    compatible with the :class:`SimpleGateList`. To conform with the uniformity
+    of the design, single and multiqubit (that is, gates acting on more than two
+    qubits) are assigned :math:`gamma=None`. In the converted list, a barrier
+    across the entire circuit is represented by the string "barrier."
+    Everything else is represented by an instance of :class:`CircuitElement`.
 
     Args:
-    circuit: QuantumCircuit object.
+    circuit: an instance of :class:`qiskit.QuantumCircuit` .
 
     Returns:
     circuit_list_rep: list of circuit instructions represented in a form that is compatible with
     :class:`SimpleGateList` and can therefore be ingested by the cut finder.
 
-    TODO: Extend this function to allow for circuits with (mid-circuit or other) measurements, as needed.
+    TODO: Extend this function to allow for circuits with (mid-circuit or other)
+    measurements, as needed.
     """
     circuit_list_rep = []
     for inst in circuit.data:
         if inst.operation.name == "barrier" and len(inst.qubits) == circuit.num_qubits:
-            circuit_list_rep.append(inst.operation.name)
+            circuit_element = "barrier"
         else:
             gamma = None
-            if (
-                inst.operation.name == "barrier"
-                and len(inst.qubits) != circuit.num_qubits
-            ):
-                circuit_element = CircuitElement(
-                    name=inst.operation.name,
-                    params=[],
-                    qubits=list(circuit.find_bit(q).index for q in inst.qubits),
-                    gamma=gamma,
-                )
             if isinstance(inst.operation, Gate) and len(inst.qubits) == 2:
                 gamma = QPDBasis.from_instruction(inst.operation).kappa
+            name = inst.operation.name
+            params = inst.operation.params
             circuit_element = CircuitElement(
-                inst.operation.name,
-                params=inst.operation.params,
+                name=name,
+                params=params,
                 qubits=list(circuit.find_bit(q).index for q in inst.qubits),
                 gamma=gamma,
             )
-            circuit_list_rep.append(circuit_element)
+        circuit_list_rep.append(circuit_element)
 
     return circuit_list_rep
 
 
-def CCOtoQCCircuit(interface):
+def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     """Convert the cut circuit outputted by the cut finder into a :class:`qiskit.QuantumCircuit` instance.
 
     Args:
@@ -71,7 +74,8 @@ def CCOtoQCCircuit(interface):
     Returns:
     qc_cut: The SimpleGateList converted into a :class:`qiskit.QuantumCircuit` instance.
 
-    TODO: This function only works for instances of LO gate cutting. Expand to cover the wire cutting case when needed.
+    TODO: This function only works for instances of LO gate cutting.
+    Expand to cover the wire cutting case when needed.
     """
     cut_circuit_list = interface.exportCutCircuit(name_mapping=None)
     num_qubits = interface.getNumWires()
@@ -88,11 +92,14 @@ def CCOtoQCCircuit(interface):
 
 
 def selectSearchEngine(
-    stage_of_optimization,
-    optimization_settings,
-    search_space_funcs,
-    stop_at_first_min=False,
-):
+    stage_of_optimization: str,
+    optimization_settings: OptimizationSettings,
+    search_space_funcs: SearchFunctions,
+    stop_at_first_min: bool = False,
+) -> BestFirstSearch:
+    """Select the search algorithm to use. At present, only Dijkstra's algorithm
+    for best first search is supported.
+    """
     engine = optimization_settings.getEngineSelection(stage_of_optimization)
 
     if engine == "BestFirst":
@@ -106,11 +113,15 @@ def selectSearchEngine(
         raise ValueError(f"Search engine {engine} is not supported.")
 
 
-def greedyBestFirstSearch(state, search_space_funcs, *args):
+def greedyBestFirstSearch(
+    state: DisjointSubcircuitsState,
+    search_space_funcs: SearchFunctions,
+    *args: CutOptimizationFuncArgs,
+) -> None | DisjointSubcircuitsState:
     """Perform greedy best-first search using the input starting state and
-    the input search-space functions.  The resulting goal state is returned,
+    the input search-space functions. The resulting goal state is returned,
     or None if a deadend is reached (no backtracking is performed).  Any
-    additional input arguments are pass as additional arguments to the
+    additional input arguments are passed as additional arguments to the
     search-space functions.
     """
 
