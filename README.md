@@ -36,8 +36,7 @@ Each tool in the CKT partitions a user's problem into quantum and classical comp
 The toolbox enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
 
 The toolbox currently contains the following tools:
-- Entanglement Forging [[1]](#references)
-- Circuit Cutting [[2-7]](#references)
+- Circuit Cutting [[1-6]](#references)
   
 ----------------------------------------------------------------------------------------------------
   
