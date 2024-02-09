@@ -87,7 +87,6 @@ docs = [
 ]
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex]",
-    "quantum-serverless>=0.0.7",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
