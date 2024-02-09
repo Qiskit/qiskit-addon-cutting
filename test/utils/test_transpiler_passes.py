@@ -16,7 +16,7 @@ import unittest
 from qiskit import QuantumRegister, QuantumCircuit
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import DAGFixedPoint
-from qiskit.transpiler.passmanager.flow_controllers import DoWhileController
+from qiskit.passmanager.flow_controllers import DoWhileController
 from qiskit.converters import circuit_to_dag
 
 from circuit_knitting.utils.transpiler_passes import RemoveFinalReset, ConsolidateResets

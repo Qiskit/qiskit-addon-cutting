@@ -21,7 +21,7 @@ from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
-from qiskit.transpiler.passmanager.flow_controllers import DoWhileController
+from qiskit.passmanager.flow_controllers import DoWhileController
 
 from ..utils.iteration import strict_zip
 from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
