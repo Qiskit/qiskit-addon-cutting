@@ -36,7 +36,6 @@ jobs:
               --inplace
           python tools/extremal-python-dependencies.py pin-dependencies \
               "qiskit @ git+https://github.com/Qiskit/qiskit.git@stable/1.0" \
-              "qiskit-nature @ git+https://github.com/qiskit-community/qiskit-nature.git" \
               "qiskit-ibm-runtime @ git+https://github.com/Qiskit/qiskit-ibm-runtime.git" \
               "qiskit-algorithms @ git+https://github.com/qiskit-community/qiskit-algorithms.git" \
               --inplace
