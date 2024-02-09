@@ -9,9 +9,8 @@ packages. There are three primary ways to do this:
 - :ref:`Option 2`
 - :ref:`Option 3`
 
-CutQC and entanglement forging users should consult the
-:ref:`Platform Support` section to determine which installation option
-is appropriate for them. Users who wish to run within a
+CutQC users should consult the :ref:`Platform Support` section to determine
+which installation option is appropriate for them. Users who wish to run within a
 containerized environment may skip the pre-installation and move straight
 to :ref:`Option 3`.
 
@@ -62,15 +61,13 @@ Upgrade pip and install the CKT package.
     pip install --upgrade pip
     pip install circuit-knitting-toolbox
 
-Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency.
-
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
 Adjust the options below to suit your needs.
 
 .. code:: sh
     
-    pip install 'circuit-knitting-toolbox[pyscf,cplex]'
+    pip install 'circuit-knitting-toolbox[cplex]'
 
 
 .. _Option 2:
@@ -97,15 +94,13 @@ The next step is to install CKT to the virtual environment. If you plan on runni
 notebook dependencies in order to run all the visualizations in the notebooks.
 If you plan on developing in the repository, you may want to install the ``dev`` dependencies.
 
-Users intending to use the entanglement forging tool should install the ``pyscf`` optional dependency.
-
 Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
 
 Adjust the options below to suit your needs.
 
 .. code:: sh
     
-    pip install tox notebook -e '.[notebook-dependencies,dev,pyscf,cplex]'
+    pip install tox notebook -e '.[notebook-dependencies,dev,cplex]'
 
 If you installed the notebook dependencies, you can get started with CKT by running the notebooks in the docs.
 
@@ -183,7 +178,6 @@ intend to use.
   
   - The automatic wire cut search in the ``cutqc`` package depends
     on CPLEX, which is only available on Intel chips.
-  - The entanglement forging tool requires PySCF, which does not support Windows.
 
 In each case, one method that is guaranteed to work is to :ref:`use
 the toolbox within Docker <Option 3>`.  Other methods include:

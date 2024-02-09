@@ -42,12 +42,6 @@ Observable grouping (:mod:`circuit_knitting.utils.observable_grouping`)
 
 .. automodule:: circuit_knitting.utils.observable_grouping
 
-===========================================================================
-Orbital reduction (:mod:`circuit_knitting.utils.orbital_reduction`)
-===========================================================================
-
-.. automodule:: circuit_knitting.utils.orbital_reduction
-
 =============================================================
 Simulation (:mod:`circuit_knitting.utils.simulation`)
 =============================================================
@@ -66,9 +60,3 @@ Transpiler passes (:mod:`circuit_knitting.utils.transpiler_passes`)
 
 .. automodule:: circuit_knitting.utils.transpiler_passes
 """
-
-from .orbital_reduction import reduce_bitstrings
-
-__all__ = [
-    "reduce_bitstrings",
-]
