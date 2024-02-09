@@ -16,6 +16,7 @@ import unittest
 from qiskit import QuantumRegister, QuantumCircuit
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import DAGFixedPoint
+from qiskit.transpiler.passmanager.flow_controllers import DoWhileController
 from qiskit.converters import circuit_to_dag
 
 from circuit_knitting.utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
@@ -101,9 +102,12 @@ class TestRemoveFinalResetFixedPoint(unittest.TestCase):
         expected.h(qr[0])
 
         pass_manager = PassManager()
+        passes = [RemoveFinalReset(), DAGFixedPoint()]
         pass_manager.append(
-            [RemoveFinalReset(), DAGFixedPoint()],
-            do_while=lambda property_set: not property_set["dag_fixed_point"],
+            DoWhileController(
+                passes,
+                do_while=lambda property_set: not property_set["dag_fixed_point"],
+            )
         )
         after = pass_manager.run(circuit)
 
