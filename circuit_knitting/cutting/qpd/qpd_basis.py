@@ -16,7 +16,6 @@ from collections.abc import Sequence
 
 import numpy as np
 from qiskit.circuit import Instruction
-from qiskit.utils import deprecate_func
 
 
 class QPDBasis:
@@ -113,33 +112,6 @@ class QPDBasis:
         The sampling overhead is the square of the sum of the magnitude of the coefficients.
         """
         return self._kappa**2
-
-    @staticmethod
-    @deprecate_func(
-        since="0.3.0",
-        package_name="circuit-knitting-toolbox",
-        removal_timeline="no earlier than v0.4.0",
-        additional_msg=(
-            "This method has been renamed to ``QPDBasis.from_instruction()``."
-        ),
-    )
-    def from_gate(gate: Instruction) -> QPDBasis:  # pragma: no cover
-        """
-        Generate a :class:`.QPDBasis` object, given a supported operation.
-
-        This static method is provided for convenience; it simply
-        calls :func:`~qpd.qpd.qpdbasis_from_instruction` under the hood.
-
-        Args:
-            gate: The instruction from which to instantiate a decomposition
-
-        Returns:
-            The newly-instantiated :class:`QPDBasis` object
-        """
-        # pylint: disable=cyclic-import
-        from .qpd import qpdbasis_from_instruction
-
-        return qpdbasis_from_instruction(gate)
 
     @staticmethod
     def from_instruction(gate: Instruction, /) -> QPDBasis:
