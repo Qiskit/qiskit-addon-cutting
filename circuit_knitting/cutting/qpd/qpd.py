@@ -267,27 +267,6 @@ def _generate_exact_weights_and_conditional_probabilities(
         yield orig_coeff_indices, probability
 
 
-@deprecate_func(
-    since="0.3.0",
-    package_name="circuit-knitting-toolbox",
-    removal_timeline="no earlier than v0.4.0",
-    additional_msg=(
-        "This function has been renamed to "
-        "``circuit_knitting.cutting.qpd.generate_qpd_weights()``."
-    ),
-)
-def generate_qpd_samples(
-    qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
-) -> dict[tuple[int, ...], tuple[float, WeightType]]:  # pragma: no cover
-    """
-    Generate random quasiprobability decompositions.
-
-    Deprecated since CKT 0.3.0.  This function has been renamed to
-    :func:`.generate_qpd_weights`.
-    """
-    return generate_qpd_weights(qpd_bases, num_samples)
-
-
 def generate_qpd_weights(
     qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
