@@ -16,7 +16,6 @@ from .qpd import (
     generate_qpd_weights,
     decompose_qpd_instructions,
     WeightType,
-    qpdbasis_from_gate,
     qpdbasis_from_instruction,
 )
 from .instructions import (
@@ -27,7 +26,6 @@ from .instructions import (
 )
 
 __all__ = [
-    "qpdbasis_from_gate",
     "qpdbasis_from_instruction",
     "generate_qpd_weights",
     "decompose_qpd_instructions",
