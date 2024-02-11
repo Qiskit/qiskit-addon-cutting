@@ -189,7 +189,3 @@ the toolbox within Docker <Option 3>`.  Other methods include:
     create a virtual environment that uses Python compiled for the x86
     instruction set.  No matter the installation method, there is a
     performance cost due to emulation.
-  - Advanced Windows users may wish to attempt to install PySCF using
-    the `Windows Subsystem for Linux
-    <https://learn.microsoft.com/en-us/windows/wsl/install>`__.  If
-    you have success using this method, please let us know.
