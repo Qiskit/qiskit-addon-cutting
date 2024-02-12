@@ -112,7 +112,10 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "qiskit": ("https://docs.quantum.ibm.com/api/qiskit/", None),
-    "qiskit-ibm-runtime": ("https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/", None),
+    "qiskit-ibm-runtime": (
+        "https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/",
+        None,
+    ),
     "qiskit-aer": ("https://qiskit.github.io/qiskit-aer/", None),
     "rustworkx": ("https://www.rustworkx.org/", None),
 }
