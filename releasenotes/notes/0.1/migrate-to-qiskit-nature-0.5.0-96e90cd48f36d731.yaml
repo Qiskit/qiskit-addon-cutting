@@ -10,7 +10,7 @@ upgrade:
     as input to the ``EntanglementForgingGroundStateSolver``, rather than the deprecated ``qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
 
     For more information on migrating to Qiskit Nature 0.5, check out the
-    `Qiskit Nature migration guide <https://qiskit.org/ecosystem/nature/migration/0.5_a_intro.html>`_.
+    `Qiskit Nature migration guide <https://qiskit-community.github.io/qiskit-nature/migration/0.5_a_intro.html>`_.
 
     For more information on adapting your entanglement forging workflows, check
     out the ``tutorials <Forging tutorials>`` and ``how-to guides <Forging how-tos>``.
