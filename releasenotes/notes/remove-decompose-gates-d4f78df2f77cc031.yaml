@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting.cutting.decompose_gates`` function, which has been deprecated since the 0.3 release. :func:`~.cut_gates` should be used instead.
