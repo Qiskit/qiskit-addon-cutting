@@ -21,6 +21,7 @@ from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler import PassManager
 from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
+from qiskit.passmanager.flow_controllers import DoWhileController
 
 from ..utils.iteration import strict_zip
 from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
@@ -172,14 +173,16 @@ def generate_cutting_experiments(
     # While we are at it, we also consolidate each run of multiple resets
     # (which can arise when re-using qubits) into a single reset.
     pass_manager = PassManager()
+    passes = [
+        RemoveResetInZeroState(),
+        RemoveFinalReset(),
+        ConsolidateResets(),
+        DAGFixedPoint(),
+    ]
     pass_manager.append(
-        [
-            RemoveResetInZeroState(),
-            RemoveFinalReset(),
-            ConsolidateResets(),
-            DAGFixedPoint(),
-        ],
-        do_while=lambda property_set: not property_set["dag_fixed_point"],
+        DoWhileController(
+            passes, do_while=lambda property_set: not property_set["dag_fixed_point"]
+        )
     )
     for label, subexperiments in subexperiments_dict.items():
         subexperiments_dict[label] = pass_manager.run(subexperiments)
