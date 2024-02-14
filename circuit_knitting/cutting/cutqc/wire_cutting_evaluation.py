@@ -389,9 +389,9 @@ def _run_subcircuit_batch(
                 mutated_subcircuit_instance_idx = subcircuit_instance[
                     (init_meas[0], meas)
                 ]
-                subcircuit_instance_probs[
-                    mutated_subcircuit_instance_idx
-                ] = measured_prob
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = (
+                    measured_prob
+                )
                 unique_subcircuit_check[mutated_subcircuit_instance_idx] = True
 
     return subcircuit_instance_probs

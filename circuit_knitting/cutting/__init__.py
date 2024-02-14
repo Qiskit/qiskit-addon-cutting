@@ -26,9 +26,7 @@ Circuit Cutting
     partition_circuit_qubits
     partition_problem
     cut_gates
-    decompose_gates
     generate_cutting_experiments
-    execute_experiments
     reconstruct_expectation_values
 
 .. autosummary::
@@ -37,7 +35,6 @@ Circuit Cutting
     :template: autosummary/class_no_inherited_members.rst
 
     PartitionedCuttingProblem
-    CuttingExperimentResults
     instructions.CutWire
     instructions.Move
 
@@ -60,7 +57,6 @@ Quasi-Probability Decomposition (QPD)
     :nosignatures:
 
     qpd.generate_qpd_weights
-    qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
     qpd.qpdbasis_from_instruction
 
@@ -84,10 +80,8 @@ from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
-    decompose_gates,
     PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
@@ -96,12 +90,9 @@ __all__ = [
     "partition_circuit_qubits",
     "partition_problem",
     "cut_gates",
-    "decompose_gates",
     "generate_cutting_experiments",
-    "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
-    "CuttingExperimentResults",
     "cut_wires",
     "expand_observables",
 ]

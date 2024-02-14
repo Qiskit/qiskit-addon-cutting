@@ -19,7 +19,7 @@ from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit.providers.fake_provider import FakeLagosV2
+from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit_aer.primitives import Sampler
 
 from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
@@ -36,7 +36,8 @@ from circuit_knitting.cutting import (
 
 def test_transpile_before_realizing_basis_id():
     """Test a workflow where a :class:`.SingleQubitQPDGate` is passed through the transpiler."""
-    circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+    num_qubits = 4
+    circuit = EfficientSU2(num_qubits, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
     subcircuits, bases, subobservables = partition_problem(
@@ -45,7 +46,7 @@ def test_transpile_before_realizing_basis_id():
 
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.
-    backend = FakeLagosV2()
+    backend = GenericBackendV2(num_qubits=num_qubits)
     target = deepcopy(backend.target)
     sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_instruction(CXGate()), 1)
     target.add_instruction(

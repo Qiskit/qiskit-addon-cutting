@@ -1,0 +1,4 @@
+---
+other:
+  - |
+    Removed the entanglement forging tool, as the Qiskit application modules are no longer supported, and packages in ``Qiskit-Extensions`` may not have dependency on those modules.  With this change, CKT no longer depends on ``qiskit-algorithms`` or Qiskit Nature.

@@ -32,6 +32,7 @@ from qiskit.circuit import (
     Measure,
     Reset,
 )
+from qiskit.circuit.library import UnitaryGate
 from qiskit.circuit.library.standard_gates import (
     XGate,
     YGate,
@@ -66,9 +67,7 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
-from qiskit.extensions import UnitaryGate
-from qiskit.quantum_info.synthesis.two_qubit_decompose import TwoQubitWeylDecomposition
-from qiskit.utils import deprecate_func
+from qiskit.synthesis.two_qubit.two_qubit_decompose import TwoQubitWeylDecomposition
 
 from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
@@ -265,27 +264,6 @@ def _generate_exact_weights_and_conditional_probabilities(
             # probabilities, so apply the inverse permutation.
             probability = probability[ipermutations[len(coeff_indices)]]
         yield orig_coeff_indices, probability
-
-
-@deprecate_func(
-    since="0.3.0",
-    package_name="circuit-knitting-toolbox",
-    removal_timeline="no earlier than v0.4.0",
-    additional_msg=(
-        "This function has been renamed to "
-        "``circuit_knitting.cutting.qpd.generate_qpd_weights()``."
-    ),
-)
-def generate_qpd_samples(
-    qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
-) -> dict[tuple[int, ...], tuple[float, WeightType]]:  # pragma: no cover
-    """
-    Generate random quasiprobability decompositions.
-
-    Deprecated since CKT 0.3.0.  This function has been renamed to
-    :func:`.generate_qpd_weights`.
-    """
-    return generate_qpd_weights(qpd_bases, num_samples)
 
 
 def generate_qpd_weights(
@@ -562,38 +540,6 @@ def _register_qpdbasis_from_instruction(*args):
         return f
 
     return g
-
-
-@deprecate_func(
-    since="0.3.0",
-    package_name="circuit-knitting-toolbox",
-    removal_timeline="no earlier than v0.4.0",
-    additional_msg=(
-        "This function has been renamed to "
-        "``circuit_knitting.cutting.qpd.qpdbasis_from_instruction()``."
-    ),
-)
-def qpdbasis_from_gate(gate: Instruction) -> QPDBasis:  # pragma: no cover
-    """
-    Generate a :class:`.QPDBasis` object, given a supported operation.
-
-    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
-    supported.  This should include the vast majority of gates with no unbound
-    parameters, but there are some special cases (see, e.g., `qiskit issue #10396
-    <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
-
-    The :class:`.Move` operation, which can be used to specify a wire cut,
-    is also supported.
-
-    Returns:
-        The newly-instantiated :class:`QPDBasis` object
-
-    Raises:
-        ValueError: Instruction not supported.
-        ValueError: Cannot decompose instruction with unbound parameters.
-        ValueError: ``to_matrix`` conversion of two-qubit gate failed.
-    """
-    return qpdbasis_from_instruction(gate)
 
 
 def qpdbasis_from_instruction(gate: Instruction, /) -> QPDBasis:
