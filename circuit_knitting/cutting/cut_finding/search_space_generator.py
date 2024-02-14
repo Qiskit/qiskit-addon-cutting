@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from typing import Callable, Iterable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING
 
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 
@@ -43,13 +43,15 @@ class ActionNames:
         self.action_dict = dict()
         self.group_dict = dict()
 
-    def copy(self, list_of_groups: list[str] = None) -> ActionNames:
+    def copy(
+        self, list_of_groups: list[DisjointSearchAction | None] | None = None
+    ) -> ActionNames:
         """Return a copy of :class:`ActionNames` that contains only those actions
         whose group affiliations intersect with list_of_groups.
         The default is to return a copy containing all actions.
         """
 
-        action_list = getActionSubset(self.action_dict.values(), list_of_groups)
+        action_list = getActionSubset(list(self.action_dict.values()), list_of_groups)
 
         new_container = ActionNames()
         for action in action_list:
@@ -101,7 +103,7 @@ class ActionNames:
 
 
 def getActionSubset(
-    action_list: list, action_groups: Iterable[DisjointSearchAction]
+    action_list: list, action_groups: list[DisjointSearchAction | None] | None
 ) -> list[DisjointSearchAction]:
     """Return the subset of actions in action_list whose group affiliations
     intersect with action_groups.
@@ -163,27 +165,27 @@ class SearchFunctions:
     """
 
     cost_func: Callable[
-        [DisjointSubcircuitsState, SearchFunctions],
+        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
         int | float | tuple[int | float, int | float],
-    ] = (None,)
+    ] | None = None
 
     next_state_func: Callable[
         [DisjointSubcircuitsState, CutOptimizationFuncArgs],
         list[DisjointSubcircuitsState],
-    ] = (None,)
+    ] | None = None
 
     goal_state_func: Callable[
         [DisjointSubcircuitsState, CutOptimizationFuncArgs], bool
-    ] = (None,)
+    ] | None = None
 
-    upperbound_cost_func: None | Callable[
+    upperbound_cost_func: Callable[
         [DisjointSubcircuitsState, CutOptimizationFuncArgs],
         tuple[int | float, int | float],
-    ] = (None,)
+    ] | None = None
 
-    mincost_bound_func: None | Callable[
+    mincost_bound_func: Callable[
         [CutOptimizationFuncArgs], None | tuple[int | float, int | float]
-    ] = None
+    ] | None = None
 
 
 @dataclass
@@ -203,5 +205,5 @@ class SearchSpaceGenerator:
     functions by a search engine.
     """
 
-    functions: SearchFunctions = None
-    actions: ActionNames = None
+    functions: SearchFunctions | None = None
+    actions: ActionNames | None = None

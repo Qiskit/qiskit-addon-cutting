@@ -15,7 +15,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Hashable
 from .search_space_generator import ActionNames
+from .circuit_interface import SimpleGateList
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import CircuitElement
 
@@ -44,7 +46,12 @@ class DisjointSearchAction(ABC):
         subcircuit cannot exceed max_width.
         """
 
-    def nextState(self, state, gate_spec, max_width):
+    def nextState(
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: CircuitElement,
+        max_width: int | float,
+    ) -> list[DisjointSubcircuitsState]:
         """Return a list of search states that result from applying the
         action to gate_spec in the specified DisjointSubcircuitsState
         state, subject to the constraint that the number of resulting
@@ -69,13 +76,16 @@ class ActionApplyGate(DisjointSearchAction):
 
         return None
 
-    def getGroupNames(self) -> None:
+    def getGroupNames(self) -> list[None | str]:
         """Return the group name of ActionApplyGate."""
 
         return [None, "TwoQubitGates"]
 
     def nextStatePrimitive(
-        self, state: DisjointSubcircuitsState, gate_spec: CircuitElement, max_width: int
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: list[int | CircuitElement | None],
+        max_width: int | float,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionApplyGate to state given the two-qubit gate
@@ -110,24 +120,29 @@ class ActionApplyGate(DisjointSearchAction):
         return [new_state]
 
 
-### Adds ActionApplyGate to the object disjoint_subcircuit_actions
+### Adds ActionApplyGate to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionApplyGate())
 
 
 class ActionCutTwoQubitGate(DisjointSearchAction):
     """Action of cutting a two-qubit gate."""
 
-    def getName(self):
+    def getName(self) -> str:
         """Return the look-up name of ActionCutTwoQubitGate."""
 
         return "CutTwoQubitGate"
 
-    def getGroupNames(self):
+    def getGroupNames(self) -> list[str]:
         """Return the group name of ActionCutTwoQubitGate."""
 
         return ["GateCut", "TwoQubitGates"]
 
-    def nextStatePrimitive(self, state, gate_spec, max_width):
+    def nextStatePrimitive(
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: list[int | CircuitElement | None],
+        max_width: int | float,
+    ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutTwoQubitGate to state given the gate_spec.
         """
@@ -170,7 +185,9 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         return [new_state]
 
     @staticmethod
-    def getCostParams(gate_spec):
+    def getCostParams(
+        gate_spec: CircuitElement,
+    ) -> tuple[int | float, int, int | float]:
         """
         Get the cost parameters.
 
@@ -183,7 +200,13 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         gamma = gate_spec[1].gamma
         return (gamma, 0, gamma)
 
-    def exportCuts(self, circuit_interface, wire_map, gate_spec, args):
+    def exportCuts(
+        self,
+        circuit_interface: SimpleGateList,
+        wire_map: list[Hashable],
+        gate_spec: list[int | CircuitElement | None],
+        args,
+    ) -> None:
         """Insert an LO gate cut into the input circuit for the specified gate
         and cut arguments.
         """
@@ -191,7 +214,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         circuit_interface.insertGateCut(gate_spec[0], "LO")
 
 
-### Adds ActionCutTwoQubitGate to the object disjoint_subcircuit_actions
+### Adds ActionCutTwoQubitGate to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutTwoQubitGate())
 
 
@@ -200,17 +223,22 @@ class ActionCutLeftWire(DisjointSearchAction):
     """Action class that implements the action of
     cutting the left (first) wire of a two-qubit gate"""
 
-    def getName(self):
+    def getName(self) -> str:
         """Return the look-up name of ActionCutLeftWire."""
 
         return "CutLeftWire"
 
-    def getGroupNames(self):
+    def getGroupNames(self) -> list[str]:
         """Return the group name of ActionCutLeftWire."""
 
         return ["WireCut", "TwoQubitGates"]
 
-    def nextStatePrimitive(self, state, gate_spec, max_width):
+    def nextStatePrimitive(
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: list[int, CircuitElement, None],
+        max_width: int,
+    ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutLeftWire to state given the gate_spec.
         """
@@ -251,7 +279,13 @@ class ActionCutLeftWire(DisjointSearchAction):
 
         return [new_state]
 
-    def exportCuts(self, circuit_interface, wire_map, gate_spec, cut_args):
+    def exportCuts(
+        self,
+        circuit_interface: SimpleGateList,
+        wire_map: list[Hashable],
+        gate_spec: CircuitElement,
+        cut_args,
+    ) -> None:
         """Insert an LO wire cut into the input circuit for the specified
         gate and cut arguments.
         """
@@ -259,11 +293,16 @@ class ActionCutLeftWire(DisjointSearchAction):
         insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutLeftWire to the object disjoint_subcircuit_actions
+### Adds ActionCutLeftWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutLeftWire())
 
 
-def insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args):
+def insertAllLOWireCuts(
+    circuit_interface: SimpleGateList,
+    wire_map: list[Hashable],
+    gate_spec: CircuitElement,
+    cut_args,
+) -> None:
     """Insert LO wire cuts into the input circuit for the specified
     gate and all cut arguments.
     """
@@ -279,17 +318,22 @@ class ActionCutRightWire(DisjointSearchAction):
     """Action class that implements the action of
     cutting the right (second) wire of a two-qubit gate"""
 
-    def getName(self):
+    def getName(self) -> str:
         """Return the look-up name of ActionCutRightWire."""
 
         return "CutRightWire"
 
-    def getGroupNames(self):
+    def getGroupNames(self) -> list[str, str]:
         """Return the group name of ActionCutRightWire."""
 
         return ["WireCut", "TwoQubitGates"]
 
-    def nextStatePrimitive(self, state, gate_spec, max_width):
+    def nextStatePrimitive(
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: CircuitElement,
+        max_width: int | float,
+    ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutRightWire to state given the gate_spec.
         """
@@ -331,8 +375,12 @@ class ActionCutRightWire(DisjointSearchAction):
         return [new_state]
 
     def exportCuts(
-        self, circuit_interface, wire_map, gate_spec, cut_args
-    ):  # pragma: no cover
+        self,
+        circuit_interface: SimpleGateList,
+        wire_map: list[Hashable],
+        gate_spec: CircuitElement,
+        cut_args,
+    ) -> None:  # pragma: no cover
         """Insert an LO wire cut into the input circuit for the specified
         gate and cut arguments.
         """
@@ -340,7 +388,7 @@ class ActionCutRightWire(DisjointSearchAction):
         insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutRightWire to the object disjoint_subcircuit_actions
+### Adds ActionCutRightWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutRightWire())
 
 
@@ -349,17 +397,22 @@ class ActionCutBothWires(DisjointSearchAction):
     """Action class that implements the action of
     cutting both wires of a two-qubit gate"""
 
-    def getName(self):
+    def getName(self) -> str:
         """Return the look-up name of ActionCutBothWires."""
 
         return "CutBothWires"
 
-    def getGroupNames(self):
+    def getGroupNames(self) -> list[str]:
         """Return the group name of ActionCutBothWires."""
 
         return ["WireCut", "TwoQubitGates"]
 
-    def nextStatePrimitive(self, state, gate_spec, max_width):
+    def nextStatePrimitive(
+        self,
+        state: DisjointSubcircuitsState,
+        gate_spec: list[int | CircuitElement | None],
+        max_width: int | float,
+    ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutBothWires to state given the gate_spec.
         """
@@ -403,14 +456,18 @@ class ActionCutBothWires(DisjointSearchAction):
         return [new_state]
 
     def exportCuts(
-        self, circuit_interface, wire_map, gate_spec, cut_args
-    ):  # pragma: no cover
-        """Insert an LO wire cut into the input circuit for the specified
+        self,
+        circuit_interface: SimpleGateList,
+        wire_map: list[Hashable],
+        gate_spec: CircuitElement,
+        cut_args,
+    ) -> None:  # pragma: no cover
+        """Insert LO wire cuts into the input circuit for the specified
         gate and cut arguments.
         """
 
         insertAllLOWireCuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutBothWires to the object disjoint_subcircuit_actions
+### Adds ActionCutBothWires to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.defineAction(ActionCutBothWires())

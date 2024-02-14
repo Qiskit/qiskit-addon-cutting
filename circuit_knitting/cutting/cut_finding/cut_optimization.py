@@ -13,9 +13,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import numpy as np
-import array
+from dataclasses import dataclass
+from numpy.typing import NDArray
 from .search_space_generator import ActionNames
 from .cco_utils import selectSearchEngine, greedyBestFirstSearch
 from .cutting_actions import disjoint_subcircuit_actions
@@ -27,9 +27,10 @@ from .search_space_generator import (
 from .disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
 )
-from .circuit_interface import SimpleGateList
+from .circuit_interface import SimpleGateList, CircuitElement
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
+
 
 @dataclass
 class CutOptimizationFuncArgs:
@@ -37,17 +38,18 @@ class CutOptimizationFuncArgs:
     """Class for passing relevant arguments to the CutOptimization
     search-space generating functions.
     """
-    entangling_gates = None
-    search_actions = None
-    max_gamma = None
-    qpu_width = None
+
+    entangling_gates: list[int | CircuitElement | None] | None = None
+    search_actions: ActionNames | None = None
+    max_gamma: float | int | None = None
+    qpu_width: float | int | None = None
 
 
 def CutOptimizationCostFunc(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
 ) -> tuple[int | float, int | float]:
     """Return the cost function. The particular cost function chosen here
-    aims to minimize the gamma while also (secondarily) giving preference to 
+    aims to minimize the gamma while also (secondarily) giving preference to
     circuit partitionings that balance the sizes of the resulting partitions,
     by minimizing the maximum width across subcircuits.
     """
@@ -64,7 +66,7 @@ def CutOptimizationUpperBoundCostFunc(
 
 def CutOptimizationMinCostBoundFunc(
     func_args: CutOptimizationFuncArgs,
-) -> tuple[int | float, int | float]:
+) -> tuple[int | float, int | float] | None:
     """Return an a priori min-cost bound defined in the optimization settings."""
 
     if func_args.max_gamma is None:  # pragma: no cover
@@ -75,7 +77,7 @@ def CutOptimizationMinCostBoundFunc(
 
 def CutOptimizationNextStateFunc(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
-) -> list[disjoint_subcircuit_actions]:
+) -> list[DisjointSubcircuitsState]:
     """Generate a list of next states from the input state."""
 
     # Get the entangling gate spec that is to be processed next based
@@ -127,7 +129,7 @@ def greedyCutOptimization(
     device_constraints: DeviceConstraints,
     search_space_funcs: SearchFunctions = cut_optimization_search_funcs,
     search_actions: ActionNames = disjoint_subcircuit_actions,
-) -> greedyBestFirstSearch:
+) -> DisjointSubcircuitsState | None:
     func_args = CutOptimizationFuncArgs()
     func_args.entangling_gates = circuit_interface.getMultiQubitGates()
     func_args.search_actions = search_actions
@@ -282,7 +284,7 @@ class CutOptimization:
 
         return self.search_engine.minimumReached()
 
-    def getStats(self, penultimate: bool = False) -> array:
+    def getStats(self, penultimate: bool = False) -> NDArray[np.int_]:
         """Return the search-engine statistics."""
 
         return self.search_engine.getStats(penultimate=penultimate)
@@ -304,7 +306,7 @@ def maxWireCutsCircuit(circuit_interface: SimpleGateList) -> int:
     gates in the circuit.
     """
 
-    return sum([len(x[1]) - 1 for x in circuit_interface.getMultiQubitGates()])
+    return sum([len(x[1].qubits) for x in circuit_interface.getMultiQubitGates()])
 
 
 def maxWireCutsGamma(max_gamma: float | int) -> int:

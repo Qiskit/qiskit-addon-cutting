@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from pytest import fixture
 from qiskit.circuit.library import EfficientSU2

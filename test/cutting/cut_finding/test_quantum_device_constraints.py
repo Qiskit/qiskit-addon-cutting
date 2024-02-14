@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
     DeviceConstraints,

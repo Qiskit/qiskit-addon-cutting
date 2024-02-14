@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pytest import fixture
 from typing import Callable
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
@@ -114,6 +116,7 @@ def test_CutLeftWire(
     actions_list = []
     for state in updated_state:
         actions_list.extend(print_actions_list(state.actions))
+    # TO-DO: Consider replacing actions_list to a NamedTuple.
     assert actions_list[0][0] == "CutLeftWire"
     assert actions_list[0][1][1] == CircuitElement(
         name="cx", params=[], qubits=[0, 1], gamma=3

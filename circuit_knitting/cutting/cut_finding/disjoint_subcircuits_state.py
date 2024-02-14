@@ -15,8 +15,9 @@ from __future__ import annotations
 
 import copy
 import numpy as np
-from typing import Hashable, Iterable
+from numpy.typing import NDArray
 from collections import Counter
+from typing import Hashable, Iterable
 from .circuit_interface import CircuitElement, SimpleGateList
 
 
@@ -87,7 +88,7 @@ class DisjointSubcircuitsState:
     state resides, with 0 being the root of the search tree.
     """
 
-    def __init__(self, num_qubits: int = None, max_wire_cuts: int = None):
+    def __init__(self, num_qubits: int | None = None, max_wire_cuts: int | None = None):
         """An instance of :class:`DisjointSubcircuitsState` must be initialized with
         a specification of the number of qubits in the circuit and the
         maximum number of wire cuts that can be performed."""
@@ -106,20 +107,20 @@ class DisjointSubcircuitsState:
             )
 
         if num_qubits is None or max_wire_cuts is None:
-            self.wiremap = None
-            self.num_wires = None
+            self.wiremap: NDArray[np.int_] | None = None
+            self.num_wires: int | None = None
 
-            self.uptree = None
-            self.width = None
+            self.uptree: NDArray[np.int_] | None = None
+            self.width: NDArray[np.int_] | None = None
 
-            self.bell_pairs = None
-            self.gamma_LB = None
-            self.gamma_UB = None
+            self.bell_pairs: list[tuple] | None = None
+            self.gamma_LB: float | None = None
+            self.gamma_UB: float | None = None
 
-            self.no_merge = None
-            self.actions = None
-            self.level = None
-            self.cut_actions_list = None
+            self.no_merge: list | None = None
+            self.actions: list | None = None
+            self.cut_actions_list: list | None = None
+            self.level: int | None = None
 
         else:
             max_wires = num_qubits + max_wire_cuts
@@ -253,7 +254,7 @@ class DisjointSubcircuitsState:
         r1 = self.findWireRoot(bell_pair[1])
         return (r0, r1) if (r0 < r1) else (r1, r0)
 
-    def lowerBoundGamma(self) -> float:
+    def lowerBoundGamma(self) -> int | float:
         """Calculate a lower bound for gamma using the current
         counts for the different types of circuit cuts.
         """
@@ -262,7 +263,7 @@ class DisjointSubcircuitsState:
 
         return self.gamma_LB * calcRootBellPairsGamma(root_bell_pairs)
 
-    def upperBoundGamma(self) -> float:
+    def upperBoundGamma(self) -> int | float:
         """Calculate an upper bound for gamma using the current
         counts for the different types of circuit cuts.
         """
@@ -360,7 +361,7 @@ class DisjointSubcircuitsState:
 
         return True
 
-    def assertDoNotMergeRoots(self, wire_1: int, wire_2: int) -> bool:
+    def assertDoNotMergeRoots(self, wire_1: int, wire_2: int) -> None:
         """Add a constraint that the subcircuits associated
         with wires IDs wire_1 and wire_2 should not be merged.
         """
@@ -369,6 +370,7 @@ class DisjointSubcircuitsState:
             wire_2
         ), f"{wire_1} cannot be the same subcircuit as {wire_2}"
 
+        assert isinstance(self.no_merge, list)
         self.no_merge.append((wire_1, wire_2))
 
     def mergeRoots(self, root_1: int, root_2: int) -> None:
@@ -403,7 +405,7 @@ class DisjointSubcircuitsState:
 
         return self.level
 
-    def setNextLevel(self, state: DisjointSubcircuitsState) -> int:
+    def setNextLevel(self, state: DisjointSubcircuitsState) -> None:
         """Set the search level of self to one plus the search
         level of the input state.
         """
@@ -451,7 +453,7 @@ def calcRootBellPairsGamma(root_bell_pairs: Iterable[Hashable]) -> float:
 
 
 def print_actions_list(
-    action_list: list[DisjointSubcircuitsState.actions],
+    action_list: list[DisjointSubcircuitsState],
 ) -> list[list[str | list | tuple]]:
     """Return a list specifying action objects that represent cutting actions assoicated with an
     instance of :class:`DisjointSubcircuitsState`.

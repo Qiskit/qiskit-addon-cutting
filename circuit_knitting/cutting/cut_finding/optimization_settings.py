@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Dict
 
 
 @dataclass
@@ -93,16 +94,18 @@ class OptimizationSettings:
         """Return the maximum number of allowed search backjumps."""
         return self.max_backjumps
 
-    def getRandSeed(self) -> int:
+    def getRandSeed(self) -> int | None:
         """Return the random seed."""
         return self.rand_seed
 
     def getEngineSelection(self, stage_of_optimization: str) -> str:
         """Return the name of the search engine to employ."""
+        assert self.engine_selections is not None
         return self.engine_selections[stage_of_optimization]
 
     def setEngineSelection(self, stage_of_optimization: str, engine_name: str) -> None:
         """Set the name of the search engine to employ."""
+        assert self.engine_selections is not None
         self.engine_selections[stage_of_optimization] = engine_name
 
     def setGateCutTypes(self) -> None:
@@ -121,11 +124,11 @@ class OptimizationSettings:
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
-    def getCutSearchGroups(self) -> list[str]:
+    def getCutSearchGroups(self) -> list[None | str]:
         """Return a list of search-action groups to include in the
         optimization for cutting circuits into disjoint subcircuits.
         """
-
+        out: list
         out = [None]
 
         if self.gate_cut_LO or self.gate_cut_LOCC_with_ancillas:
@@ -141,5 +144,7 @@ class OptimizationSettings:
         return out
 
     @classmethod
-    def from_dict(cls, options: dict[str, int]) -> OptimizationSettings:
+    def from_dict(
+        cls, options: dict  # dict[str, None | int | bool | dict[str, str]]
+    ) -> OptimizationSettings:
         return cls(**options)

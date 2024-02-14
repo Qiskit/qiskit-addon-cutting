@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pytest import fixture
 from numpy import inf
 from circuit_knitting.cutting.cut_finding.circuit_interface import (

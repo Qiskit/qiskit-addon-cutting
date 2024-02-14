@@ -17,6 +17,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction, Gate
 from .optimization_settings import OptimizationSettings
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .cut_optimization import CutOptimizationFuncArgs
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
@@ -47,9 +48,9 @@ def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
     circuit_list_rep = []
     for inst in circuit.data:
         if inst.operation.name == "barrier" and len(inst.qubits) == circuit.num_qubits:
-            circuit_element = "barrier"
+            circuit_element: CircuitElement | str = "barrier"
         else:
-            gamma = None
+            gamma: int | float | None = None
             if isinstance(inst.operation, Gate) and len(inst.qubits) == 2:
                 gamma = QPDBasis.from_instruction(inst.operation).kappa
             name = inst.operation.name
@@ -83,6 +84,7 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     qc_cut = QuantumCircuit(num_qubits)
     for k, op in enumerate([cut_circuit for cut_circuit in cut_circuit_list]):
         if cut_types[k] is None:  # only append gates that are not cut.
+            assert isinstance(op, CircuitElement)
             op_name = op.name
             op_qubits = op.qubits
             op_params = op.params
@@ -124,6 +126,10 @@ def greedyBestFirstSearch(
     additional input arguments are passed as additional arguments to the
     search-space functions.
     """
+
+    assert search_space_funcs.goal_state_func is not None
+    assert search_space_funcs.cost_func is not None
+    assert search_space_funcs.next_state_func is not None
 
     if search_space_funcs.goal_state_func(state, *args):
         return state

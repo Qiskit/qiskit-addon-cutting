@@ -20,7 +20,8 @@ from .cut_optimization import CutOptimizationMinCostBoundFunc
 from .cut_optimization import CutOptimizationUpperBoundCostFunc
 from .search_space_generator import SearchFunctions, SearchSpaceGenerator
 
-from numpy import array
+import numpy as np
+from numpy.typing import NDArray
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .quantum_device_constraints import DeviceConstraints
 from .optimization_settings import OptimizationSettings
@@ -54,22 +55,22 @@ class LOCutsOptimizer:
 
     Member Variables:
 
-    circuit_interface (CircuitInterface) defines the circuit to be cut.
+    circuit_interface (:class:`CircuitInterface`) defines the circuit to be cut.
 
-    optimization_settings (OptimizationSettings) defines the settings
+    optimization_settings (:class:`OptimizationSettings`) defines the settings
     to be used for the optimization.
 
-    device_constraints (DeviceConstraints) defines the capabilties of
+    device_constraints (:class:`DeviceConstraints`) defines the capabilties of
     the target quantum hardware.
 
     search_engine_config (dict) maps names of stages of optimization to
     the corresponding SearchSpaceGenerator functions and actions that
     are used to perform the search for each stage.
 
-    cut_optimization (CutOptimization) is the object created to
+    cut_optimization (:class:`CutOptimization`) is the object created to
     perform the circuit cutting optimization.
 
-    best_result (DisjointSubcircuitsState) is the lowest-cost
+    best_result (:class:`DisjointSubcircuitsState`) is the lowest-cost
     DisjointSubcircuitsState object identified in the search.
     """
 
@@ -95,9 +96,9 @@ class LOCutsOptimizer:
 
     def optimize(
         self,
-        circuit_interface: SimpleGateList = None,
-        optimization_settings: OptimizationSettings = None,
-        device_constraints: DeviceConstraints = None,
+        circuit_interface: SimpleGateList | None = None,
+        optimization_settings: OptimizationSettings | None = None,
+        device_constraints: DeviceConstraints | None = None,
     ) -> DisjointSubcircuitsState | None:
         """Method to optimize the cutting of a circuit.
 
@@ -168,8 +169,8 @@ class LOCutsOptimizer:
 
         return self.best_result
 
-    def getStats(self, penultimate=False) -> array[int | float]:
-        """Return the optimization results."""
+    def getStats(self, penultimate=False) -> dict[str, NDArray[np.int_]]:
+        """Return a dictionary containing optimization results."""
 
         return {
             "CutOptimization": self.cut_optimization.getStats(penultimate=penultimate)

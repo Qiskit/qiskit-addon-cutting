@@ -15,8 +15,8 @@ from __future__ import annotations
 
 import heapq
 import numpy as np
+from numpy.typing import NDArray
 from typing import TYPE_CHECKING
-from numpy import array
 from itertools import count
 
 from .optimization_settings import OptimizationSettings
@@ -76,7 +76,7 @@ class BestFirstPriorityQueue:
 
         self.rand_gen = np.random.default_rng(rand_seed)
         self.unique = count()
-        self.pqueue = list()
+        self.pqueue: list[int | DisjointSubcircuitsState | tuple] = list()
 
     def put(
         self,
@@ -248,7 +248,7 @@ class BestFirstSearch:
     def initialize(
         self,
         initial_state_list: list[DisjointSubcircuitsState],
-        *args: CutOptimizationFuncArgs,
+        *args,
     ) -> None:
         """Clear the priority queue and push an initial list of states into it."""
         self.pqueue.clear()
@@ -265,7 +265,8 @@ class BestFirstSearch:
         self.put(initial_state_list, 0, args)
 
     def optimizationPass(
-        self, *args: CutOptimizationFuncArgs
+        self,
+        *args,
     ) -> (
         tuple[None, None]
         | tuple[
@@ -324,7 +325,7 @@ class BestFirstSearch:
 
         return self.minimum_reached
 
-    def getStats(self, penultimate: bool = False) -> array[int, int, int, int]:
+    def getStats(self, penultimate: bool = False) -> NDArray[np.int_]:
         """Return a Numpy array containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number

@@ -70,6 +70,7 @@ def find_cuts(
 
     wire_cut_actions = []
     gate_ids = []
+
     for action in opt_out.actions:
         if action[0].getName() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])

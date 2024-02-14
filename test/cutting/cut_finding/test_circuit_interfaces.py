@@ -1,6 +1,13 @@
+from __future__ import annotations
+
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     CircuitElement,
     SimpleGateList,
+)
+
+from circuit_knitting.cutting.cut_finding.cut_optimization import (
+    maxWireCutsCircuit,
+    maxWireCutsGamma,
 )
 
 
@@ -30,6 +37,7 @@ class TestCircuitInterface:
         assert circuit_converted.getMultiQubitGates() == [
             [4, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None]
         ]
+
         assert circuit_converted.circuit == [
             [CircuitElement(name="h", params=[], qubits=[0], gamma=None), None],
             [CircuitElement(name="barrier", params=[], qubits=[0], gamma=None), None],
@@ -37,6 +45,9 @@ class TestCircuitInterface:
             ["barrier", None],
             [CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
         ]
+
+        assert maxWireCutsCircuit(circuit_converted) == 2
+        assert maxWireCutsGamma(7) == 2
 
         # Assign by hand a different qubit mapping by specifiying init_qubit_names.
         circuit_converted = SimpleGateList(trial_circuit, ["q0", "q1"])
