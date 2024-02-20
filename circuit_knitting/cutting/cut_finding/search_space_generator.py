@@ -54,6 +54,7 @@ class ActionNames:
         action_list = getActionSubset(list(self.action_dict.values()), list_of_groups)
 
         new_container = ActionNames()
+        assert action_list is not None
         for action in action_list:
             new_container.defineAction(action)
 
@@ -92,7 +93,7 @@ class ActionNames:
             return self.action_dict[action_name]
         return None
 
-    def getGroup(self, group_name: str) -> list[DisjointSearchAction] | None:
+    def getGroup(self, group_name: str) -> list | None:
         """Return the list of action objects associated with the group_name.
         None is returned if there are no associated action objects.
         """
@@ -103,8 +104,9 @@ class ActionNames:
 
 
 def getActionSubset(
-    action_list: list, action_groups: list[DisjointSearchAction | None] | None
-) -> list[DisjointSearchAction]:
+    action_list: list[DisjointSearchAction] | None,
+    action_groups: list[DisjointSearchAction | None] | None,
+) -> list[DisjointSearchAction] | None:
     """Return the subset of actions in action_list whose group affiliations
     intersect with action_groups.
     """
@@ -117,6 +119,7 @@ def getActionSubset(
 
     groups = set(action_groups)
 
+    assert action_list is not None
     return [
         a for a in action_list if len(groups.intersection(set(a.getGroupNames()))) > 0
     ]

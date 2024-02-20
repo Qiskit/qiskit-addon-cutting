@@ -16,7 +16,8 @@ from __future__ import annotations
 import heapq
 import numpy as np
 from numpy.typing import NDArray
-from typing import TYPE_CHECKING
+from numpy.random._generator import Generator
+from typing import TYPE_CHECKING, Callable, cast
 from itertools import count
 
 from .optimization_settings import OptimizationSettings
@@ -66,17 +67,17 @@ class BestFirstPriorityQueue:
     queue.PriorityQueue if parallelization is ultimately required).
     """
 
-    def __init__(self, rand_seed: int):
+    def __init__(self, rand_seed: int | None):
         """A BestFirstPriorityQueue object must be initialized with a
         specification of a random seed (int) for the pseudo-random number
-        generator.  If None is used as the random seed, then a seed is
+        generator. If None is used as the random seed, then a seed is
         obtained using an operating-system call to achieve a randomized
         initialization.
         """
 
-        self.rand_gen = np.random.default_rng(rand_seed)
-        self.unique = count()
-        self.pqueue: list[int | DisjointSubcircuitsState | tuple] = list()
+        self.rand_gen: Generator = np.random.default_rng(rand_seed)
+        self.unique: count[int] = count()
+        self.pqueue: list[tuple] = list()
 
     def put(
         self,
@@ -95,12 +96,7 @@ class BestFirstPriorityQueue:
 
     def get(
         self,
-    ) -> (
-        tuple[None, None, None]
-        | tuple[
-            DisjointSubcircuitsState, int, int | float | tuple[int | float, int | float]
-        ]
-    ):
+    ) -> tuple:
         """Pop and return the lowest cost state currently on the
         queue, along with the search depth of that state and its cost.
         None, None, None is returned if the priority queue is empty.
@@ -109,7 +105,7 @@ class BestFirstPriorityQueue:
         if self.qsize() == 0:  # pragma: no cover
             return None, None, None
 
-        best = heapq.heappop(self.pqueue)
+        best: tuple = heapq.heappop(self.pqueue)
 
         return best[-1], (-best[1]), best[0]
 
@@ -243,12 +239,12 @@ class BestFirstSearch:
         self.num_next_states = 0
         self.num_enqueues = 0
         self.num_backjumps = 0
-        self.penultimate_stats = None
+        self.penultimate_stats: NDArray | None = None
 
     def initialize(
         self,
         initial_state_list: list[DisjointSubcircuitsState],
-        *args,
+        *args: CutOptimizationFuncArgs,
     ) -> None:
         """Clear the priority queue and push an initial list of states into it."""
         self.pqueue.clear()
@@ -266,7 +262,7 @@ class BestFirstSearch:
 
     def optimizationPass(
         self,
-        *args,
+        *args: CutOptimizationFuncArgs,
     ) -> (
         tuple[None, None]
         | tuple[
@@ -282,7 +278,7 @@ class BestFirstSearch:
         """
 
         if self.mincost_bound_func is not None:
-            self.mincost_bound = self.mincost_bound_func(*args)
+            self.mincost_bound = self.mincost_bound_func(*args)  # type: ignore
 
         prev_depth = None
 
@@ -304,6 +300,8 @@ class BestFirstSearch:
                 self.num_backjumps += 1
 
             prev_depth = depth
+            state = cast(DisjointSubcircuitsState, state)
+            self.goal_state_func = cast(Callable, self.goal_state_func)
             if self.goal_state_func(state, *args):
                 self.penultimate_stats = self.getStats()
                 self.updateUpperBoundGoalState(state, *args)
@@ -311,7 +309,9 @@ class BestFirstSearch:
 
                 return state, cost
 
+            self.next_state_func = cast(Callable, self.next_state_func)
             next_state_list = self.next_state_func(state, *args)
+            depth = cast(int, depth)
             self.put(next_state_list, depth + 1, args)
 
         # If all states have been explored, then the minimum has been reached
@@ -325,11 +325,13 @@ class BestFirstSearch:
 
         return self.minimum_reached
 
-    def getStats(self, penultimate: bool = False) -> NDArray[np.int_]:
+    def getStats(self, penultimate: bool = False) -> NDArray[np.int_] | None:
         """Return a Numpy array containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number
-        of backjumps performed.
+        of backjumps performed. Return None if no search is performed.
+        If the bool penultimate is set to True, return the stats that
+        correspond to the penultimate step in the search.
         """
 
         if penultimate:
@@ -345,7 +347,7 @@ class BestFirstSearch:
             dtype=int,
         )
 
-    def getUpperBoundCost(self) -> int | float | tuple[int | float, int | float]:
+    def getUpperBoundCost(self) -> int | float | tuple[int | float, int | float] | None:
         """Return the current upperbound cost"""
 
         return self.upperbound_cost
@@ -360,7 +362,7 @@ class BestFirstSearch:
         if cost_bound is not None and (
             self.upperbound_cost is None or cost_bound < self.upperbound_cost
         ):
-            self.upperbound_cost = cost_bound
+            self.upperbound_cost = cost_bound  # type: ignore
 
     def updateUpperBoundGoalState(
         self, goal_state: DisjointSubcircuitsState, *args: CutOptimizationFuncArgs
@@ -372,16 +374,17 @@ class BestFirstSearch:
         if self.upperbound_cost_func is not None:
             bound = self.upperbound_cost_func(goal_state, *args)
         else:  # pragma: no cover
-            bound = self.cost_func(goal_state, *args)
+            assert self.cost_func is not None
+            bound = self.cost_func(goal_state, *args)  # type: ignore
 
         if self.upperbound_cost is None or bound < self.upperbound_cost:
-            self.upperbound_cost = bound
+            self.upperbound_cost = bound  # type: ignore
 
     def put(
         self,
         state_list: list[DisjointSubcircuitsState],
         depth: int,
-        args: CutOptimizationFuncArgs,
+        args: tuple[CutOptimizationFuncArgs, ...],
     ) -> None:
         """Push a list of (next) states onto the
         best-first priority queue.
@@ -390,6 +393,7 @@ class BestFirstSearch:
         self.num_next_states += len(state_list)
 
         for state in state_list:
+            assert self.cost_func is not None
             cost = self.cost_func(state, *args)
 
             if self.upperbound_cost is None or cost <= self.upperbound_cost:

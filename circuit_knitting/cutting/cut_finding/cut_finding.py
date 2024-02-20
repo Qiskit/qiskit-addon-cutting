@@ -15,9 +15,11 @@ from __future__ import annotations
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction
+from typing import cast
 
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import SimpleGateList
 from .lo_cuts_optimizer import LOCutsOptimizer
 from .cco_utils import qc_to_cco_circuit
@@ -71,6 +73,8 @@ def find_cuts(
     wire_cut_actions = []
     gate_ids = []
 
+    opt_out = cast(DisjointSubcircuitsState, opt_out)
+    opt_out.actions = cast(list, opt_out.actions)
     for action in opt_out.actions:
         if action[0].getName() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])

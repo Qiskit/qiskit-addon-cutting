@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
+from typing import cast
 from numpy.typing import NDArray
 from .search_space_generator import ActionNames
 from .cco_utils import selectSearchEngine, greedyBestFirstSearch
@@ -24,10 +25,8 @@ from .search_space_generator import (
     SearchFunctions,
     SearchSpaceGenerator,
 )
-from .disjoint_subcircuits_state import (
-    DisjointSubcircuitsState,
-)
-from .circuit_interface import SimpleGateList, CircuitElement
+from .disjoint_subcircuits_state import DisjointSubcircuitsState
+from .circuit_interface import SimpleGateList, CircuitElement, Sequence
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 
@@ -39,15 +38,17 @@ class CutOptimizationFuncArgs:
     search-space generating functions.
     """
 
-    entangling_gates: list[int | CircuitElement | None] | None = None
+    entangling_gates: Sequence[
+        Sequence[int | CircuitElement | None | list]
+    ] | None = None
     search_actions: ActionNames | None = None
     max_gamma: float | int | None = None
-    qpu_width: float | int | None = None
+    qpu_width: int | None = None
 
 
 def CutOptimizationCostFunc(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
-) -> tuple[int | float, int | float]:
+) -> tuple[int | float, int]:
     """Return the cost function. The particular cost function chosen here
     aims to minimize the gamma while also (secondarily) giving preference to
     circuit partitionings that balance the sizes of the resulting partitions,
@@ -82,23 +83,32 @@ def CutOptimizationNextStateFunc(
 
     # Get the entangling gate spec that is to be processed next based
     # on the search level of the input state
+    assert func_args.entangling_gates is not None
+    assert func_args.search_actions is not None
+
     gate_spec = func_args.entangling_gates[state.getSearchLevel()]
 
     # Determine which search actions can be performed, taking into
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled
     # in the search
-    if len(gate_spec[1].qubits) == 2:
+    gate = gate_spec[1]
+    gate = cast(CircuitElement, gate)
+    if len(gate.qubits) == 2:
         action_list = func_args.search_actions.getGroup("TwoQubitGates")
     else:
         raise ValueError(
-            "At present, only the cutting of two qubit gates is supported."
+            "In the current version, only the cutting of two qubit gates is supported."
         )
 
-    action_list = getActionSubset(action_list, gate_spec[2])
+    gate_actions = gate_spec[2]
+    gate_actions = cast(list, gate_actions)
+    action_list = getActionSubset(action_list, gate_actions)
     # Apply the search actions to generate a list of next states
     next_state_list = []
+    assert action_list is not None
     for action in action_list:
+        func_args.qpu_width = cast(int, func_args.qpu_width)
         next_state_list.extend(action.nextState(state, gate_spec, func_args.qpu_width))
     return next_state_list
 
@@ -109,6 +119,7 @@ def CutOptimizationGoalStateFunc(
     """Return True if the input state is a goal state (i.e., the cutting decisions made satisfy
     the device constraints and the optimization settings).
     """
+    func_args.entangling_gates = cast(list[list], func_args.entangling_gates)
     return state.getSearchLevel() >= len(func_args.entangling_gates)
 
 
@@ -304,9 +315,15 @@ def maxWireCutsCircuit(circuit_interface: SimpleGateList) -> int:
     """Calculate an upper bound on the maximum number of wire cuts
     that can be made given the total number of inputs to multiqubit
     gates in the circuit.
+
+    NOTE: There is no advantage gained by cutting wires that
+    only have single qubit gates acting on them, so without
+    loss of generality we can assume that wire cutting is
+    performed only on the inputs to multiqubit gates.
     """
 
-    return sum([len(x[1].qubits) for x in circuit_interface.getMultiQubitGates()])
+    multiqubit_wires = [len(x[1].qubits) for x in circuit_interface.getMultiQubitGates()]  # type: ignore
+    return sum(multiqubit_wires)
 
 
 def maxWireCutsGamma(max_gamma: float | int) -> int:

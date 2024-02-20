@@ -110,7 +110,14 @@ def test_GateCuts(
                 9,
                 CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
             ],
-        }
+        },
+        {
+            "Cut action": "CutTwoQubitGate",
+            "Cut Gate": [
+                20,
+                CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3.0),
+            ],
+        },
     ]
 
     best_result = optimization_pass.getResults()
@@ -204,7 +211,7 @@ def test_MultiqubitCuts(
         _ = optimization_pass.optimize()
     assert (
         e_info.value.args[0]
-        == "At present, only the cutting of two qubit gates is supported."
+        == "In the current version, only the cutting of two qubit gates is supported."
     )
 
 

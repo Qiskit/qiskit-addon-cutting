@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Hashable
+from typing import Hashable, cast, Sequence
 from .search_space_generator import ActionNames
 from .circuit_interface import SimpleGateList
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
@@ -49,8 +49,8 @@ class DisjointSearchAction(ABC):
     def nextState(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: CircuitElement,
-        max_width: int | float,
+        gate_spec: Sequence[int | CircuitElement | None | list],
+        max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return a list of search states that result from applying the
         action to gate_spec in the specified DisjointSubcircuitsState
@@ -84,7 +84,7 @@ class ActionApplyGate(DisjointSearchAction):
     def nextStatePrimitive(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: list[int | CircuitElement | None],
+        gate_spec: list[int | CircuitElement | None | list],
         max_width: int | float,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
@@ -92,6 +92,7 @@ class ActionApplyGate(DisjointSearchAction):
         specification: gate_spec.
         """
         gate = gate_spec[1]  # extract the gate from gate specification.
+        gate = cast(CircuitElement, gate)
 
         r1 = state.findQubitRoot(
             gate.qubits[0]
@@ -103,6 +104,7 @@ class ActionApplyGate(DisjointSearchAction):
         # acted on by the given 2-qubit gate.
         # If applying the gate would cause the number of qubits to exceed
         # the qubit limit, then do not apply the gate
+        assert state.width is not None
         if r1 != r2 and state.width[r1] + state.width[r2] > max_width:
             return list()
 
@@ -140,15 +142,18 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
     def nextStatePrimitive(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: list[int | CircuitElement | None],
-        max_width: int | float,
+        gate_spec: list[int | CircuitElement | None | list],
+        max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutTwoQubitGate to state given the gate_spec.
         """
 
+        gate = gate_spec[1]
+        gate = cast(CircuitElement, gate)
+
         # Cutting of multi-qubit gates is not supported in this version.
-        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+        if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
                 "At present, only the cutting of two qubit gates is supported."
             )
@@ -158,7 +163,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         if gamma_LB is None:
             return list()
 
-        gate = gate_spec[1]
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
         w1 = state.getWire(q1)
@@ -173,11 +177,16 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
         new_state.assertDoNotMergeRoots(r1, r2)
 
+        gamma_LB = cast(int, gamma_LB)
+        new_state.gamma_LB = cast(int, new_state.gamma_LB)
         new_state.gamma_LB *= gamma_LB
 
         for k in range(num_bell_pairs):
+            new_state.bell_pairs = cast(list, new_state.bell_pairs)
             new_state.bell_pairs.append((r1, r2))
 
+        gamma_UB = cast(int, gamma_UB)
+        new_state.gamma_UB = cast(int, new_state.gamma_UB)
         new_state.gamma_UB *= gamma_UB
 
         new_state.addAction(self, gate_spec, (1, w1), (2, w2))
@@ -186,8 +195,8 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
     @staticmethod
     def getCostParams(
-        gate_spec: CircuitElement,
-    ) -> tuple[int | float, int, int | float]:
+        gate_spec: list[int | CircuitElement | None | list],
+    ) -> tuple[int | float | None, int, int | float | None]:
         """
         Get the cost parameters.
 
@@ -197,20 +206,23 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         Since CKT does not support LOCC at the moment, these tuples will be of
         the form (gamma, 0, gamma).
         """
-        gamma = gate_spec[1].gamma
+        gate = gate_spec[1]
+        gate = cast(CircuitElement, gate)
+        gamma = gate.gamma
         return (gamma, 0, gamma)
 
     def exportCuts(
         self,
         circuit_interface: SimpleGateList,
         wire_map: list[Hashable],
-        gate_spec: list[int | CircuitElement | None],
+        gate_spec: list[int | CircuitElement | None | list],
         args,
     ) -> None:
         """Insert an LO gate cut into the input circuit for the specified gate
         and cut arguments.
         """
 
+        assert isinstance(gate_spec[0], int)
         circuit_interface.insertGateCut(gate_spec[0], "LO")
 
 
@@ -236,15 +248,16 @@ class ActionCutLeftWire(DisjointSearchAction):
     def nextStatePrimitive(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: list[int, CircuitElement, None],
+        gate_spec: list[int | CircuitElement | None | list],
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutLeftWire to state given the gate_spec.
         """
-
+        gate = gate_spec[1]
+        gate = cast(CircuitElement, gate)
         # Cutting of multi-qubit gates is not supported in this version.
-        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+        if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
                 "At present, only the cutting of two qubit gates is supported."
             )
@@ -253,7 +266,6 @@ class ActionCutLeftWire(DisjointSearchAction):
         if not state.canAddWires(1):
             return list()
 
-        gate = gate_spec[1]
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
         w1 = state.getWire(q1)
@@ -272,7 +284,9 @@ class ActionCutLeftWire(DisjointSearchAction):
         new_state.mergeRoots(rnew, r2)
         new_state.assertDoNotMergeRoots(r1, r2)  # Because r2 < rnew
 
+        new_state.bell_pairs = cast(list[tuple[int, int]], new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
+        new_state.gamma_UB = cast(int, new_state.gamma_UB)
         new_state.gamma_UB *= 4
 
         new_state.addAction(self, gate_spec, (1, w1, rnew))
@@ -283,7 +297,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         self,
         circuit_interface: SimpleGateList,
         wire_map: list[Hashable],
-        gate_spec: CircuitElement,
+        gate_spec: list[int | CircuitElement | None | list],
         cut_args,
     ) -> None:
         """Insert an LO wire cut into the input circuit for the specified
@@ -300,13 +314,14 @@ disjoint_subcircuit_actions.defineAction(ActionCutLeftWire())
 def insertAllLOWireCuts(
     circuit_interface: SimpleGateList,
     wire_map: list[Hashable],
-    gate_spec: CircuitElement,
+    gate_spec: list[int | CircuitElement | None | list],
     cut_args,
 ) -> None:
     """Insert LO wire cuts into the input circuit for the specified
     gate and all cut arguments.
     """
     gate_ID = gate_spec[0]
+    gate_ID = cast(int, gate_ID)
     for input_ID, wire_ID, new_wire_ID in cut_args:
         circuit_interface.insertWireCut(
             gate_ID, input_ID, wire_map[wire_ID], wire_map[new_wire_ID], "LO"
@@ -323,7 +338,7 @@ class ActionCutRightWire(DisjointSearchAction):
 
         return "CutRightWire"
 
-    def getGroupNames(self) -> list[str, str]:
+    def getGroupNames(self) -> list[str]:
         """Return the group name of ActionCutRightWire."""
 
         return ["WireCut", "TwoQubitGates"]
@@ -331,15 +346,17 @@ class ActionCutRightWire(DisjointSearchAction):
     def nextStatePrimitive(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: CircuitElement,
-        max_width: int | float,
+        gate_spec: list[int | CircuitElement | None | list],
+        max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutRightWire to state given the gate_spec.
         """
 
+        gate = gate_spec[1]
+        gate = cast(CircuitElement, gate)
         # Cutting of multi-qubit gates is not supported in this version.
-        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+        if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
                 "At present, only the cutting of two qubit gates is supported."
             )
@@ -348,7 +365,6 @@ class ActionCutRightWire(DisjointSearchAction):
         if not state.canAddWires(1):
             return list()
 
-        gate = gate_spec[1]
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
         w2 = state.getWire(q2)
@@ -367,6 +383,8 @@ class ActionCutRightWire(DisjointSearchAction):
         new_state.mergeRoots(r1, rnew)
         new_state.assertDoNotMergeRoots(r1, r2)  # Because r1 < rnew
 
+        new_state.gamma_UB = cast(float, new_state.gamma_UB)
+        new_state.bell_pairs = cast(list[tuple[int, int]], new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
         new_state.gamma_UB *= 4
 
@@ -378,7 +396,7 @@ class ActionCutRightWire(DisjointSearchAction):
         self,
         circuit_interface: SimpleGateList,
         wire_map: list[Hashable],
-        gate_spec: CircuitElement,
+        gate_spec: list[int | CircuitElement | None | list],
         cut_args,
     ) -> None:  # pragma: no cover
         """Insert an LO wire cut into the input circuit for the specified
@@ -410,15 +428,16 @@ class ActionCutBothWires(DisjointSearchAction):
     def nextStatePrimitive(
         self,
         state: DisjointSubcircuitsState,
-        gate_spec: list[int | CircuitElement | None],
-        max_width: int | float,
+        gate_spec: list[int | CircuitElement | None | list],
+        max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying
         ActionCutBothWires to state given the gate_spec.
         """
-
+        gate = gate_spec[1]
+        gate = cast(CircuitElement, gate)
         # Cutting of multi-qubit gates is not supported in this version.
-        if len(gate_spec[1].qubits) != 2:  # pragma: no cover
+        if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
                 "At present, only the cutting of two qubit gates is supported."
             )
@@ -431,7 +450,6 @@ class ActionCutBothWires(DisjointSearchAction):
         if max_width < 2:
             return list()
 
-        gate = gate_spec[1]
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
         w1 = state.getWire(q1)
@@ -447,6 +465,8 @@ class ActionCutBothWires(DisjointSearchAction):
         new_state.assertDoNotMergeRoots(r1, rnew_1)  # Because r1 < rnew_1
         new_state.assertDoNotMergeRoots(r2, rnew_2)  # Because r2 < rnew_2
 
+        new_state.bell_pairs = cast(list[tuple[int, int]], new_state.bell_pairs)
+        new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.bell_pairs.append((r1, rnew_1))
         new_state.bell_pairs.append((r2, rnew_2))
         new_state.gamma_UB *= 16
@@ -459,7 +479,7 @@ class ActionCutBothWires(DisjointSearchAction):
         self,
         circuit_interface: SimpleGateList,
         wire_map: list[Hashable],
-        gate_spec: CircuitElement,
+        gate_spec: list[int | CircuitElement | None | list],
         cut_args,
     ) -> None:  # pragma: no cover
         """Insert LO wire cuts into the input circuit for the specified

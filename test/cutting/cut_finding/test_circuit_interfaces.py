@@ -119,7 +119,7 @@ class TestCircuitInterface:
         assert circuit_converted.exportCutCircuit(name_mapping=None) == [
             trial_circuit[0],
             trial_circuit[1],
-            ["move", 1, 4],
+            ["move", 1, ("cut", 1)],
             CircuitElement(name="cx", params=[], qubits=[("cut", 1), 2], gamma=3),
             CircuitElement(name="cx", params=[], qubits=[0, ("cut", 1)], gamma=3),
             trial_circuit[4],
@@ -144,7 +144,7 @@ class TestCircuitInterface:
         assert circuit_converted.exportCutCircuit(name_mapping="default") == [
             CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
             CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
-            ["move", 1, 4],
+            ["move", 1, 2],
             CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
             CircuitElement(name="cx", params=[], qubits=[0, 2], gamma=3),
             CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),

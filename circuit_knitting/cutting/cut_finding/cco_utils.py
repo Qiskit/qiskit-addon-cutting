@@ -16,7 +16,7 @@ from __future__ import annotations
 from qiskit import QuantumCircuit
 from qiskit.circuit import Instruction, Gate
 from .optimization_settings import OptimizationSettings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast, Callable
 
 if TYPE_CHECKING:
     from .cut_optimization import CutOptimizationFuncArgs
@@ -84,7 +84,7 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     qc_cut = QuantumCircuit(num_qubits)
     for k, op in enumerate([cut_circuit for cut_circuit in cut_circuit_list]):
         if cut_types[k] is None:  # only append gates that are not cut.
-            assert isinstance(op, CircuitElement)
+            op = cast(CircuitElement, op)
             op_name = op.name
             op_qubits = op.qubits
             op_params = op.params
@@ -127,9 +127,13 @@ def greedyBestFirstSearch(
     search-space functions.
     """
 
-    assert search_space_funcs.goal_state_func is not None
-    assert search_space_funcs.cost_func is not None
-    assert search_space_funcs.next_state_func is not None
+    search_space_funcs.goal_state_func = cast(
+        Callable, search_space_funcs.goal_state_func
+    )
+    search_space_funcs.cost_func = cast(Callable, search_space_funcs.cost_func)
+    search_space_funcs.next_state_func = cast(
+        Callable, search_space_funcs.next_state_func
+    )
 
     if search_space_funcs.goal_state_func(state, *args):
         return state
