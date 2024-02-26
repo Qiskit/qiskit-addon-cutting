@@ -96,14 +96,10 @@ class ActionApplyGate(DisjointSearchAction):
 
         # extract the root wire for the first qubit
         # acted on by the given 2-qubit gate.
-        r1 = state.findQubitRoot(
-            gate.qubits[0]
-        )  
+        r1 = state.findQubitRoot(gate.qubits[0])
         # extract the root wire for the second qubit
         # acted on by the given 2-qubit gate.
-        r2 = state.findQubitRoot(
-            gate.qubits[1]
-        )  
+        r2 = state.findQubitRoot(gate.qubits[1])
         # If applying the gate would cause the number of qubits to exceed
         # the qubit limit, then do not apply the gate
         assert state.width is not None

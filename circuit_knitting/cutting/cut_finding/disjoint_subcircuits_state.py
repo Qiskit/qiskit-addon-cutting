@@ -174,7 +174,7 @@ class DisjointSubcircuitsState:
         of :class:`DisjointSubcircuitState` along with the locations of these actions
         which are specified in terms of the associated gates and wires."""
 
-        self.actions = cast(list[list], self.actions)
+        self.actions = cast(list, self.actions)
         cut_actions = print_actions_list(self.actions)
 
         # Output formatting for LO gate and wire cuts.

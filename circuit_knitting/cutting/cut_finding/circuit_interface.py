@@ -165,7 +165,7 @@ class SimpleGateList(CircuitInterface):
     """
 
     circuit: list[list[str | None] | list[CircuitElement | None]]
-    #new_circuit: Sequence[CircuitElement | str | list[str | int]]
+    # new_circuit: Sequence[CircuitElement | str | list[str | int]]
     new_circuit: Sequence[CircuitElement | str | Sequence]
     cut_type: list[str | None]
     qubit_names: NameToIDMap
@@ -267,7 +267,8 @@ class SimpleGateList(CircuitInterface):
         gate_pos = self.new_gate_ID_map[gate_ID]
         new_gate_spec = self.new_circuit[gate_pos]
 
-        # Gate inputs are numbered starting from 1, so we must decrement the index to match qubit numbering.
+        # Gate inputs are numbered starting from 1, so we must
+        # decrement the index to match qubit numbering.
         assert src_wire_ID == new_gate_spec.qubits[input_ID - 1], (
             f"Input wire ID {src_wire_ID} does not match "
             + f"new_circuit wire ID {new_gate_spec.qubits[input_ID-1]}"
@@ -283,9 +284,7 @@ class SimpleGateList(CircuitInterface):
         wire_map = list(range(self.qubit_names.getArraySizeNeeded()))
         wire_map[src_wire_ID] = dest_wire_ID
 
-        self.new_circuit = cast(
-            Sequence[Union[CircuitElement, list]], self.new_circuit
-        )
+        self.new_circuit = cast(Sequence[Union[CircuitElement, list]], self.new_circuit)
         self.replaceWireIDs(self.new_circuit[gate_pos:], wire_map)
 
         # Insert a move operator
@@ -317,7 +316,7 @@ class SimpleGateList(CircuitInterface):
     def exportCutCircuit(
         self,
         name_mapping: None | str = "default",
-    ) -> Sequence[CircuitElement | Sequence]: #Sequence[CircuitElement | list[str | int]]:
+    ) -> Sequence[CircuitElement | Sequence]:
         """Return a list of gates representing the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
@@ -328,10 +327,7 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
         out = copy.deepcopy(self.new_circuit)
 
-        #out = cast(Sequence[Union[CircuitElement, Sequence]], out)
-        #out = cast(Sequence[Union[CircuitElement, list[Union[str, int]]]], out)
         wire_map = cast(list, wire_map)
-        #wire_map = cast(list[int], wire_map)
         self.replaceWireIDs(out, wire_map)
 
         return out
@@ -364,16 +360,14 @@ class SimpleGateList(CircuitInterface):
         """
 
         wire_map = self.makeWireMapping(name_mapping)
-        #wire_map = cast(list[int], wire_map)
-        assert type(wire_map) == list[int]
 
         out: Sequence[int | str] = list(range(self.getNumWires()))
         out = cast(list, out)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
         for k, subcircuit in enumerate(self.subcircuits):
-            subcircuit = cast(list[int], subcircuit)
+            subcircuit = cast(list, subcircuit)
             for wire in subcircuit:
-                out[wire_map[wire]] = alphabet[k]
+                out[wire_map[wire]] = alphabet[k]  # type: ignore
         return "".join(out)
 
     def makeWireMapping(
@@ -435,7 +429,7 @@ class SimpleGateList(CircuitInterface):
 
     def replaceWireIDs(
         self,
-        gate_list: Sequence[CircuitElement | Sequence[str | int]], 
+        gate_list: Sequence[CircuitElement | Sequence[str | int]],
         wire_map: list[int],
     ) -> None:
         """Iterate through a list of gates and replace wire IDs with the
@@ -444,10 +438,10 @@ class SimpleGateList(CircuitInterface):
         for inst in gate_list:
             if isinstance(inst, CircuitElement):
                 for k in range(len(inst.qubits)):
-                    inst.qubits[k] = wire_map[inst.qubits[k]]  #type: ignore
+                    inst.qubits[k] = wire_map[inst.qubits[k]]  # type: ignore
             elif isinstance(inst, list):
                 for k in range(1, len(inst)):
-                    inst[k] = wire_map[inst[k]] #type: ignore
+                    inst[k] = wire_map[inst[k]]  # type: ignore
 
 
 class NameToIDMap:
