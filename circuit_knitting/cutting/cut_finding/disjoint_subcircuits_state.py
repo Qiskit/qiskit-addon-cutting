@@ -357,7 +357,7 @@ class DisjointSubcircuitsState:
             + f"or {root_2} != {self.uptree[root_2]}"
         )
 
-        self.no_merge = cast(list[tuple], self.no_merge)
+        self.no_merge = cast(list, self.no_merge)
         for clause in self.no_merge:
             r1 = self.findWireRoot(clause[0])
             r2 = self.findWireRoot(clause[1])
@@ -425,7 +425,7 @@ class DisjointSubcircuitsState:
         """
 
         if action_obj.getName() is not None:
-            self.actions = cast(list[list], self.actions)
+            self.actions = cast(list, self.actions)
             self.actions.append([action_obj, gate_spec, args])
 
     def getSearchLevel(self) -> int:

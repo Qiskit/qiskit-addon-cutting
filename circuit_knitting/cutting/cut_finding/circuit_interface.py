@@ -283,7 +283,7 @@ class SimpleGateList(CircuitInterface):
         wire_map[src_wire_ID] = dest_wire_ID
 
         self.new_circuit = cast(
-            Sequence[Union[CircuitElement, list[Union[str, int]]]], self.new_circuit
+            Sequence[Union[CircuitElement, list]], self.new_circuit
         )
         self.replaceWireIDs(self.new_circuit[gate_pos:], wire_map)
 
@@ -363,14 +363,13 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
         wire_map = cast(list[int], wire_map)
 
-        out: list[int] | list[str] = list(range(self.getNumWires()))
+        out: Sequence[int | str] = list(range(self.getNumWires()))
+        out = cast(list, out)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
         for k, subcircuit in enumerate(self.subcircuits):
             subcircuit = cast(list[int], subcircuit)
             for wire in subcircuit:
-                out = cast(list[str], out)
                 out[wire_map[wire]] = alphabet[k]
-        out = cast(list[str], out)
         return "".join(out)
 
     def makeWireMapping(

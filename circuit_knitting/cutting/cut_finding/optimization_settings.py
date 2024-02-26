@@ -100,12 +100,12 @@ class OptimizationSettings:
 
     def getEngineSelection(self, stage_of_optimization: str) -> str:
         """Return the name of the search engine to employ."""
-        self.engine_selections = cast(dict[str, str], self.engine_selections)
+        self.engine_selections = cast(dict, self.engine_selections)
         return self.engine_selections[stage_of_optimization]
 
     def setEngineSelection(self, stage_of_optimization: str, engine_name: str) -> None:
         """Set the name of the search engine to employ."""
-        self.engine_selections = cast(dict[str, str], self.engine_selections)
+        self.engine_selections = cast(dict, self.engine_selections)
         self.engine_selections[stage_of_optimization] = engine_name
 
     def setGateCutTypes(self) -> None:
