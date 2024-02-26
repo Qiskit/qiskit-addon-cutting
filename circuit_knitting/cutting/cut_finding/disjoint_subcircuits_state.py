@@ -201,7 +201,6 @@ class DisjointSubcircuitsState:
                     }
                 )
             if not self.cut_actions_list:
-                self.cut_actions_list = cast(list[list], self.cut_actions_list)
                 self.cut_actions_list = cut_actions
 
         return self.cut_actions_list
@@ -210,7 +209,7 @@ class DisjointSubcircuitsState:
         """Print the various properties of a DisjointSubcircuitState."""
 
         cut_actions_list = self.cut_actions_sublist()
-        self.actions = cast(list[list], self.actions)
+        self.actions = cast(list, self.actions)
         if simple:
             print(cut_actions_list)
         else:

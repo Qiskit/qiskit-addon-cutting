@@ -17,7 +17,7 @@ import numpy as np
 import string
 from numpy.typing import NDArray
 from abc import ABC, abstractmethod
-from typing import NamedTuple, Hashable, Iterable, cast, Sequence, Union
+from typing import NamedTuple, Hashable, Iterable, cast, Sequence
 
 
 class CircuitElement(NamedTuple):
@@ -284,7 +284,6 @@ class SimpleGateList(CircuitInterface):
         wire_map = list(range(self.qubit_names.getArraySizeNeeded()))
         wire_map[src_wire_ID] = dest_wire_ID
 
-        self.new_circuit = cast(Sequence[Union[CircuitElement, list]], self.new_circuit)
         self.replaceWireIDs(self.new_circuit[gate_pos:], wire_map)
 
         # Insert a move operator
