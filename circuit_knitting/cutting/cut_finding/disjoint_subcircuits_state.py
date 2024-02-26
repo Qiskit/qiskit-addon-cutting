@@ -372,7 +372,7 @@ class DisjointSubcircuitsState:
     def verifyMergeConstraints(self) -> bool:
         """Return True if all merge constraints are satisfied."""
 
-        self.no_merge = cast(list[tuple], self.no_merge)
+        self.no_merge = cast(list, self.no_merge)
         for clause in self.no_merge:
             r1 = self.findWireRoot(clause[0])
             r2 = self.findWireRoot(clause[1])

@@ -119,7 +119,7 @@ def CutOptimizationGoalStateFunc(
     """Return True if the input state is a goal state (i.e., the cutting decisions made satisfy
     the device constraints and the optimization settings).
     """
-    func_args.entangling_gates = cast(list[list], func_args.entangling_gates)
+    func_args.entangling_gates = cast(list, func_args.entangling_gates)
     return state.getSearchLevel() >= len(func_args.entangling_gates)
 
 

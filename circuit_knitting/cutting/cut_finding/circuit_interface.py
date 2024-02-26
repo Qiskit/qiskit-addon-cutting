@@ -165,7 +165,8 @@ class SimpleGateList(CircuitInterface):
     """
 
     circuit: list[list[str | None] | list[CircuitElement | None]]
-    new_circuit: Sequence[CircuitElement | str | list[str | int]]
+    #new_circuit: Sequence[CircuitElement | str | list[str | int]]
+    new_circuit: Sequence[CircuitElement | str | Sequence]
     cut_type: list[str | None]
     qubit_names: NameToIDMap
     num_qubits: int
@@ -316,7 +317,7 @@ class SimpleGateList(CircuitInterface):
     def exportCutCircuit(
         self,
         name_mapping: None | str = "default",
-    ) -> Sequence[CircuitElement | list[str | int]]:
+    ) -> Sequence[CircuitElement | Sequence]: #Sequence[CircuitElement | list[str | int]]:
         """Return a list of gates representing the cut circuit.  If None
         is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
@@ -327,8 +328,10 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.makeWireMapping(name_mapping)
         out = copy.deepcopy(self.new_circuit)
 
-        out = cast(Sequence[Union[CircuitElement, list[Union[str, int]]]], out)
-        wire_map = cast(list[int], wire_map)
+        #out = cast(Sequence[Union[CircuitElement, Sequence]], out)
+        #out = cast(Sequence[Union[CircuitElement, list[Union[str, int]]]], out)
+        wire_map = cast(list, wire_map)
+        #wire_map = cast(list[int], wire_map)
         self.replaceWireIDs(out, wire_map)
 
         return out
@@ -361,7 +364,8 @@ class SimpleGateList(CircuitInterface):
         """
 
         wire_map = self.makeWireMapping(name_mapping)
-        wire_map = cast(list[int], wire_map)
+        #wire_map = cast(list[int], wire_map)
+        assert type(wire_map) == list[int]
 
         out: Sequence[int | str] = list(range(self.getNumWires()))
         out = cast(list, out)
@@ -431,7 +435,7 @@ class SimpleGateList(CircuitInterface):
 
     def replaceWireIDs(
         self,
-        gate_list: Sequence[CircuitElement | list[str | int]],
+        gate_list: Sequence[CircuitElement | Sequence[str | int]], 
         wire_map: list[int],
     ) -> None:
         """Iterate through a list of gates and replace wire IDs with the
