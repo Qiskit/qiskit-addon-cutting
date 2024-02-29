@@ -1144,12 +1144,12 @@ def _decompose_qpd_instructions(
         for data in inst.operation.definition.data:
             # Can ignore clbits here, as QPDGates don't use clbits directly
             assert data.clbits == ()
-            try:
-                equiv = EagleEquivalenceLibrary.get_entry(data.operation)[0]
-            except IndexError:
+            equiv = EagleEquivalenceLibrary.get_entry(data.operation)[0]
+            if equiv == []:
                 tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
             else:
-                for d in equiv.data:
+                # CKT equivalence libraries only define one mapping per input
+                for d in equiv[0].data:
                     tmp_data.append(CircuitInstruction(d.operation, qubits=[qubits[0]]))
         # Replace QPDGate with local operations
         if tmp_data:
