@@ -73,6 +73,7 @@ from .qpd_basis import QPDBasis
 from .instructions import BaseQPDGate, TwoQubitQPDGate, QPDMeasure
 from ..instructions import Move
 from ...utils.iteration import unique_by_id, strict_zip
+from ...utils.equivalence import EagleEquivalenceLibrary
 
 
 logger = logging.getLogger(__name__)
@@ -1143,7 +1144,12 @@ def _decompose_qpd_instructions(
         for data in inst.operation.definition.data:
             # Can ignore clbits here, as QPDGates don't use clbits directly
             assert data.clbits == ()
-            tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
+            try:
+                equiv = EagleEquivalenceLibrary.get_entry(data.operation)[0]
+                for d in equiv.data:
+                    tmp_data.append(CircuitInstruction(d.operation, qubits=[qubits[0]]))
+            except IndexError:
+                tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
         # Replace QPDGate with local operations
         if tmp_data:
             # Overwrite the QPDGate with first instruction
