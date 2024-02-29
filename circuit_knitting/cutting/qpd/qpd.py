@@ -1146,10 +1146,11 @@ def _decompose_qpd_instructions(
             assert data.clbits == ()
             try:
                 equiv = EagleEquivalenceLibrary.get_entry(data.operation)[0]
-                for d in equiv.data:
-                    tmp_data.append(CircuitInstruction(d.operation, qubits=[qubits[0]]))
             except IndexError:
                 tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
+            else:
+                for d in equiv.data:
+                    tmp_data.append(CircuitInstruction(d.operation, qubits=[qubits[0]]))
         # Replace QPDGate with local operations
         if tmp_data:
             # Overwrite the QPDGate with first instruction
