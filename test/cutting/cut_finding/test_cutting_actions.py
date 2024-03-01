@@ -20,7 +20,7 @@ from circuit_knitting.cutting.cut_finding.search_space_generator import ActionNa
 
 
 @fixture
-def testCircuit():
+def test_circuit():
     circuit = [
         CircuitElement(name="h", params=[], qubits=["q1"], gamma=None),
         CircuitElement(name="s", params=[], qubits=["q0"], gamma=None),
@@ -30,15 +30,15 @@ def testCircuit():
     interface = SimpleGateList(circuit)
 
     # initialize DisjointSubcircuitsState object.
-    state = DisjointSubcircuitsState(interface.getNumQubits(), 2)
+    state = DisjointSubcircuitsState(interface.get_num_qubits(), 2)
 
-    two_qubit_gate = interface.getMultiQubitGates()[0]
+    two_qubit_gate = interface.get_multiqubit_gates()[0]
 
     return interface, state, two_qubit_gate
 
 
-def test_ActionApplyGate(
-    testCircuit: Callable[
+def test_action_apply_gate(
+    test_circuit: Callable[
         [],
         tuple[
             SimpleGateList, DisjointSubcircuitsState, list[int | CircuitElement | None]
@@ -47,20 +47,20 @@ def test_ActionApplyGate(
 ):
     """Test the application of a gate without any cutting actions."""
 
-    _, state, two_qubit_gate = testCircuit
+    _, state, two_qubit_gate = test_circuit
     apply_gate = ActionApplyGate()
-    assert apply_gate.getName() is None
-    assert apply_gate.getGroupNames() == [None, "TwoQubitGates"]
+    assert apply_gate.get_name() is None
+    assert apply_gate.get_group_names() == [None, "TwoQubitGates"]
 
-    updated_state = apply_gate.nextStatePrimitive(state, two_qubit_gate, 2)
+    updated_state = apply_gate.next_state_primitive(state, two_qubit_gate, 2)
     actions_list = []
     for state in updated_state:
         actions_list.extend(state.actions)
     assert actions_list == []  # no actions when the gate is simply applied.
 
 
-def test_CutTwoQubitGate(
-    testCircuit: Callable[
+def test_cut_two_qubit_gate(
+    test_circuit: Callable[
         [],
         tuple[
             SimpleGateList, DisjointSubcircuitsState, list[int | CircuitElement | None]
@@ -69,12 +69,12 @@ def test_CutTwoQubitGate(
 ):
     """Test the action of cutting a two qubit gate."""
 
-    interface, state, two_qubit_gate = testCircuit
+    interface, state, two_qubit_gate = test_circuit
     cut_gate = ActionCutTwoQubitGate()
-    assert cut_gate.getName() == "CutTwoQubitGate"
-    assert cut_gate.getGroupNames() == ["GateCut", "TwoQubitGates"]
+    assert cut_gate.get_name() == "CutTwoQubitGate"
+    assert cut_gate.get_group_names() == ["GateCut", "TwoQubitGates"]
 
-    updated_state = cut_gate.nextStatePrimitive(state, two_qubit_gate, 2)
+    updated_state = cut_gate.next_state_primitive(state, two_qubit_gate, 2)
     actions_list = []
     for state in updated_state:
         actions_list.extend(print_actions_list(state.actions))
@@ -86,20 +86,20 @@ def test_CutTwoQubitGate(
         ]
     ]
 
-    assert cut_gate.getCostParams(two_qubit_gate) == (
+    assert cut_gate.get_cost_params(two_qubit_gate) == (
         3,
         0,
         3,
     )  # reproduces the parameters for a CNOT when only LO is enabled.
 
-    cut_gate.exportCuts(
+    cut_gate.export_cuts(
         interface, None, two_qubit_gate, None
     )  # insert cut in circuit interface.
     assert interface.cut_type[2] == "LO"
 
 
-def test_CutLeftWire(
-    testCircuit: Callable[
+def test_cut_left_wire(
+    test_circuit: Callable[
         [],
         tuple[
             SimpleGateList, DisjointSubcircuitsState, list[int | CircuitElement | None]
@@ -107,16 +107,16 @@ def test_CutLeftWire(
     ]
 ):
     """Test the action of cutting the first (left) input wire to a two qubit gate."""
-    _, state, two_qubit_gate = testCircuit
+    _, state, two_qubit_gate = test_circuit
     cut_left_wire = ActionCutLeftWire()
-    assert cut_left_wire.getName() == "CutLeftWire"
-    assert cut_left_wire.getGroupNames() == ["WireCut", "TwoQubitGates"]
+    assert cut_left_wire.get_name() == "CutLeftWire"
+    assert cut_left_wire.get_group_names() == ["WireCut", "TwoQubitGates"]
 
-    updated_state = cut_left_wire.nextStatePrimitive(state, two_qubit_gate, 3)
+    updated_state = cut_left_wire.next_state_primitive(state, two_qubit_gate, 3)
     actions_list = []
     for state in updated_state:
         actions_list.extend(print_actions_list(state.actions))
-    # TO-DO: Consider replacing actions_list to a NamedTuple.
+    # TO-DO: Consider replacing actions_list with a NamedTuple.
     assert actions_list[0][0] == "CutLeftWire"
     assert actions_list[0][1][1] == CircuitElement(
         name="cx", params=[], qubits=[0, 1], gamma=3
@@ -124,8 +124,8 @@ def test_CutLeftWire(
     assert actions_list[0][2][0][0] == 1  # the first input ('left') wire is cut.
 
 
-def test_CutRightWire(
-    testCircuit: Callable[
+def test_cut_right_wire(
+    test_circuit: Callable[
         [],
         tuple[
             SimpleGateList, DisjointSubcircuitsState, list[int | CircuitElement | None]
@@ -133,12 +133,12 @@ def test_CutRightWire(
     ]
 ):
     """Test the action of cutting the second (right) input wire to a two qubit gate."""
-    _, state, two_qubit_gate = testCircuit
+    _, state, two_qubit_gate = test_circuit
     cut_right_wire = ActionCutRightWire()
-    assert cut_right_wire.getName() == "CutRightWire"
-    assert cut_right_wire.getGroupNames() == ["WireCut", "TwoQubitGates"]
+    assert cut_right_wire.get_name() == "CutRightWire"
+    assert cut_right_wire.get_group_names() == ["WireCut", "TwoQubitGates"]
 
-    updated_state = cut_right_wire.nextStatePrimitive(state, two_qubit_gate, 3)
+    updated_state = cut_right_wire.next_state_primitive(state, two_qubit_gate, 3)
     actions_list = []
     for state in updated_state:
         actions_list.extend(print_actions_list(state.actions))
@@ -149,10 +149,10 @@ def test_CutRightWire(
     assert actions_list[0][2][0][0] == 2  # the second input ('right') wire is cut
 
 
-def test_DefinedActions():
+def test_defined_actions():
     # Check that unsupported cutting actions return None
     # when the action or corresponding group is requested.
 
-    assert ActionNames().getAction("LOCCGateCut") is None
+    assert ActionNames().get_action("LOCCGateCut") is None
 
-    assert ActionNames().getGroup("LOCCCUTS") is None
+    assert ActionNames().get_group("LOCCCUTS") is None

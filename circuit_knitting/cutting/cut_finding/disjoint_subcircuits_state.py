@@ -25,11 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class DisjointSubcircuitsState:
-
-    """Class for representing search-space states when cutting
-    circuits to construct disjoint subcircuits.  Only minimally
-    sufficient information is stored in order to minimize the
-    memory footprint.
+    """Represent search-space states when cutting circuits to construct disjoint subcircuits.
 
     Each wire cut introduces a new wire. A mapping from qubit IDs
     in QASM-like statements to wire IDs is therefore created
@@ -40,7 +36,6 @@ class DisjointSubcircuitsState:
     target quantum devices.
 
     Member Variables:
-
     wiremap: an int Numpy array that provides the mapping from qubit IDs
     to wire IDs.
 
@@ -92,10 +87,7 @@ class DisjointSubcircuitsState:
     """
 
     def __init__(self, num_qubits: int | None = None, max_wire_cuts: int | None = None):
-        """An instance of :class:`DisjointSubcircuitsState` must be initialized with
-        a specification of the number of qubits in the circuit and the
-        maximum number of wire cuts that can be performed."""
-
+        """Initialize an instance of :class:`DisjointSubcircuitsState` with the specified configuration variables."""
         if not (
             num_qubits is None or (isinstance(num_qubits, int) and num_qubits >= 0)
         ):
@@ -145,6 +137,7 @@ class DisjointSubcircuitsState:
 
     @no_type_check
     def __copy__(self) -> DisjointSubcircuitsState:
+        """Make shallow copy."""
         new_state = DisjointSubcircuitsState()
 
         new_state.wiremap = self.wiremap.copy()
@@ -166,14 +159,13 @@ class DisjointSubcircuitsState:
 
     def copy(self) -> DisjointSubcircuitsState:
         """Make shallow copy."""
-
         return copy.copy(self)
 
     def cut_actions_sublist(self) -> list[list | dict]:
-        """Create a formatted list containing the actions carried out on an instance
-        of :class:`DisjointSubcircuitState` along with the locations of these actions
-        which are specified in terms of the associated gates and wires."""
+        """Create a formatted list containing the actions carried out on an instance of :class:`DisjointSubcircuitState`.
 
+        Also include the locations of these actions which are specified in terms of the associated gates and wires.
+        """
         self.actions = cast(list, self.actions)
         cut_actions = print_actions_list(self.actions)
 
@@ -206,8 +198,7 @@ class DisjointSubcircuitsState:
         return self.cut_actions_list
 
     def print(self, simple: bool = False) -> None:  # pragma: no cover
-        """Print the various properties of a DisjointSubcircuitState."""
-
+        """Print the various properties of a :class:`DisjointSubcircuitState`."""
         cut_actions_list = self.cut_actions_sublist()
         self.actions = cast(list, self.actions)
         if simple:
@@ -219,85 +210,65 @@ class DisjointSubcircuitsState:
             print("width", self.width)
             print("bell_pairs", self.bell_pairs)
             print("gamma_LB", self.gamma_LB)
-            print("lowerBound", self.lowerBoundGamma())
+            print("lowerBound", self.lower_bound_gamma())
             print("gamma_UB", self.gamma_UB)
             print("no_merge", self.no_merge)
             print("actions", print_actions_list(self.actions))
             print("level", self.level)
 
-    def getNumQubits(self) -> int:
+    def get_num_qubits(self) -> int:
         """Return the number of qubits in the circuit."""
         self.wiremap = cast(NDArray[np.int_], self.wiremap)
         return self.wiremap.shape[0]
 
-    def getMaxWidth(self) -> int:
+    def get_max_width(self) -> int:
         """Return the maximum width across subcircuits."""
         self.width = cast(NDArray[np.int_], self.width)
         return int(np.amax(self.width))
 
-    def getSubCircuitIndices(self) -> list[int]:
-        """Return a list of root indices for the subcircuits in
-        the current cut circuit.
-        """
+    def get_sub_circuit_indices(self) -> list[int]:
+        """Return a list of root indices for the subcircuits in the current cut circuit."""
         self.uptree = cast(NDArray[np.int_], self.uptree)
         self.num_wires = cast(int, self.num_wires)
         return [i for i, j in enumerate(self.uptree[: self.num_wires]) if i == j]
 
-    def getWireRootMapping(self) -> list[int]:
-        """Return a list of root wires for each wire in
-        the current cut circuit.
-        """
+    def get_wire_root_mapping(self) -> list[int]:
+        """Return a list of root wires for each wire in the current cut circuit."""
         self.num_wires = cast(int, self.num_wires)
-        return [self.findWireRoot(i) for i in range(self.num_wires)]
+        return [self.find_wire_root(i) for i in range(self.num_wires)]
 
-    def findRootBellPair(self, bell_pair: tuple[int, int]) -> tuple[int, int]:
-        """Find the root wires for a Bell pair (represented as a pair
-        of wires) and return a sorted tuple representing the Bell pair.
-        """
-
-        r0 = self.findWireRoot(bell_pair[0])
-        r1 = self.findWireRoot(bell_pair[1])
+    def find_root_bell_pair(self, bell_pair: tuple[int, int]) -> tuple[int, int]:
+        """Find the root wires for a Bell pair (represented as a pair of wires) and return a sorted tuple representing the Bell pair."""
+        r0 = self.find_wire_root(bell_pair[0])
+        r1 = self.find_wire_root(bell_pair[1])
         return (r0, r1) if (r0 < r1) else (r1, r0)
 
-    def lowerBoundGamma(self) -> float:
-        """Calculate a lower bound for gamma using the current
-        counts for the different types of circuit cuts.
-        """
-
+    def lower_bound_gamma(self) -> float:
+        """Calculate a lower bound for gamma using the current counts for the different types of circuit cuts."""
         self.bell_pairs = cast(list, self.bell_pairs)
-        root_bell_pairs = map(lambda x: self.findRootBellPair(x), self.bell_pairs)
+        root_bell_pairs = map(lambda x: self.find_root_bell_pair(x), self.bell_pairs)
 
         self.gamma_LB = cast(float, self.gamma_LB)
-        return self.gamma_LB * calcRootBellPairsGamma(root_bell_pairs)
+        return self.gamma_LB * calc_root_bell_pairs_gamma(root_bell_pairs)
 
-    def upperBoundGamma(self) -> float:
-        """Calculate an upper bound for gamma using the current
-        counts for the different types of circuit cuts.
-        """
-
+    def upper_bound_gamma(self) -> float:
+        """Calculate an upper bound for gamma using the current counts for the different types of circuit cuts."""
         self.gamma_UB = cast(float, self.gamma_UB)
         return self.gamma_UB
 
-    def canAddWires(self, num_wires: int) -> bool:
-        """Return True if an additional num_wires can be cut
-        without exceeding the maximum allowed number of wire cuts.
-        """
-
+    def can_add_wires(self, num_wires: int) -> bool:
+        """Return True if an additional num_wires can be cut without exceeding the maximum allowed number of wire cuts."""
         self.num_wires = cast(int, self.num_wires)
         self.uptree = cast(NDArray[np.int_], self.uptree)
         return self.num_wires + num_wires <= self.uptree.shape[0]
 
-    def canExpandSubcircuit(self, root: int, num_wires: int, max_width: int) -> bool:
-        """Return True if num_wires can be added to subcircuit root
-        without exceeding the maximum allowed number of qubits.
-        """
+    def can_expand_subcircuit(self, root: int, num_wires: int, max_width: int) -> bool:
+        """Return True if num_wires can be added to subcircuit root without exceeding the maximum allowed number of qubits."""
         self.width = cast(NDArray[np.int_], self.width)
         return self.width[root] + num_wires <= max_width
 
-    def newWire(self, qubit: Hashable) -> int:
-        """Cut the wire associated with qubit and return
-        the ID of the new wire now associated with qubit.
-        """
+    def new_wire(self, qubit: Hashable) -> int:
+        """Cut the wire associated with qubit and return the ID of the new wire now associated with qubit."""
         self.num_wires = cast(int, self.num_wires)
         self.uptree = cast(NDArray[np.int_], self.uptree)
         assert self.num_wires < self.uptree.shape[0], (
@@ -311,18 +282,14 @@ class DisjointSubcircuitsState:
         qubit = cast(int, qubit)
         return self.wiremap[qubit]
 
-    def getWire(self, qubit: Hashable) -> int:
+    def get_wire(self, qubit: Hashable) -> int:
         """Return the ID of the wire currently associated with qubit."""
-
         self.wiremap = cast(NDArray[np.int_], self.wiremap)
         qubit = cast(int, qubit)
         return self.wiremap[qubit]
 
-    def findWireRoot(self, wire: int) -> int:
-        """Return the ID of the root wire in the subcircuit
-        that contains wire and collapse the path to the root.
-        """
-
+    def find_wire_root(self, wire: int) -> int:
+        """Return the ID of the root wire in the subcircuit that contains wire and collapse the path to the root."""
         # Find the root wire in the subcircuit
         root = wire
         self.uptree = cast(NDArray[np.int_], self.uptree)
@@ -337,18 +304,14 @@ class DisjointSubcircuitsState:
 
         return root
 
-    def findQubitRoot(self, qubit: Hashable) -> int:
-        """Return the ID of the root wire in the subcircuit currently
-        associated with qubit and collapse the path to the root.
-        """
+    def find_qubit_root(self, qubit: Hashable) -> int:
+        """Return the ID of the root wire in the subcircuit currently associated with qubit and collapse the path to the root."""
         self.wiremap = cast(NDArray[np.int_], self.wiremap)
         qubit = cast(int, qubit)
-        return self.findWireRoot(self.wiremap[qubit])
+        return self.find_wire_root(self.wiremap[qubit])
 
-    def checkDoNotMergeRoots(self, root_1: int, root_2: int) -> bool:
-        """Return True if the subcircuits represented by
-        root wire IDs root_1 and root_2 should not be merged.
-        """
+    def check_donot_merge_roots(self, root_1: int, root_2: int) -> bool:
+        """Return True if the subcircuits represented by root wire IDs root_1 and root_2 should not be merged."""
         self.uptree = cast(NDArray[np.int_], self.uptree)
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
             "Arguments must be roots: "
@@ -358,8 +321,8 @@ class DisjointSubcircuitsState:
 
         self.no_merge = cast(list, self.no_merge)
         for clause in self.no_merge:
-            r1 = self.findWireRoot(clause[0])
-            r2 = self.findWireRoot(clause[1])
+            r1 = self.find_wire_root(clause[0])
+            r2 = self.find_wire_root(clause[1])
 
             assert r1 != r2, "Do-Not-Merge clauses must not be identical"
 
@@ -368,36 +331,28 @@ class DisjointSubcircuitsState:
 
         return False
 
-    def verifyMergeConstraints(self) -> bool:
+    def verify_merge_constraints(self) -> bool:
         """Return True if all merge constraints are satisfied."""
-
         self.no_merge = cast(list, self.no_merge)
         for clause in self.no_merge:
-            r1 = self.findWireRoot(clause[0])
-            r2 = self.findWireRoot(clause[1])
+            r1 = self.find_wire_root(clause[0])
+            r2 = self.find_wire_root(clause[1])
             if r1 == r2:
                 return False
 
         return True
 
-    def assertDoNotMergeRoots(self, wire_1: int, wire_2: int) -> None:
-        """Add a constraint that the subcircuits associated
-        with wires IDs wire_1 and wire_2 should not be merged.
-        """
-
-        assert self.findWireRoot(wire_1) != self.findWireRoot(
+    def assert_donot_merge_roots(self, wire_1: int, wire_2: int) -> None:
+        """Add a constraint that the subcircuits associated with wires IDs wire_1 and wire_2 should not be merged."""
+        assert self.find_wire_root(wire_1) != self.find_wire_root(
             wire_2
         ), f"{wire_1} cannot be the same subcircuit as {wire_2}"
 
         assert isinstance(self.no_merge, list)
         self.no_merge.append((wire_1, wire_2))
 
-    def mergeRoots(self, root_1: int, root_2: int) -> None:
-        """Merge the subcircuits associated with root wire IDs root_1
-        and root_2, and update the statistics (i.e., width)
-        associated with the newly merged subcircuit.
-        """
-
+    def merge_roots(self, root_1: int, root_2: int) -> None:
+        """Merge the subcircuits associated with root wire IDs root_1 and root_2 update the statistics (i.e., width) associated with the newly merged subcircuit."""
         self.uptree = cast(NDArray[np.int_], self.uptree)
         self.width = cast(NDArray[np.int_], self.width)
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
@@ -413,39 +368,30 @@ class DisjointSubcircuitsState:
         self.uptree[other_root] = merged_root
         self.width[merged_root] += self.width[other_root]
 
-    def addAction(
+    def add_action(
         self,
         action_obj: DisjointSearchAction,
         gate_spec: list[int | CircuitElement | None | list],
         *args,
     ) -> None:
-        """Append the specified action to the list of search-space
-        actions that have been performed.
-        """
-
-        if action_obj.getName() is not None:
+        """Append the specified action to the list of search-space actions that have been performed."""
+        if action_obj.get_name() is not None:
             self.actions = cast(list, self.actions)
             self.actions.append([action_obj, gate_spec, args])
 
-    def getSearchLevel(self) -> int:
+    def get_search_level(self) -> int:
         """Return the search level."""
         self.level = cast(int, self.level)
         return self.level
 
-    def setNextLevel(self, state: DisjointSubcircuitsState) -> None:
-        """Set the search level of self to one plus the search
-        level of the input state.
-        """
-
+    def set_next_level(self, state: DisjointSubcircuitsState) -> None:
+        """Set the search level of self to one plus the search level of the input state."""
         self.level = cast(int, self.level)
         state.level = cast(int, state.level)
         self.level = state.level + 1
 
-    def exportCuts(self, circuit_interface: SimpleGateList):
-        """Export LO cuts into the input circuit_interface for each of
-        the cutting decisions made.
-        """
-
+    def export_cuts(self, circuit_interface: SimpleGateList):
+        """Export LO cuts into the input circuit_interface for each of the cutting decisions made."""
         # This wire map assumes no reuse of measured qubits that
         # result from wire cuts
         assert self.num_wires is not None
@@ -453,29 +399,28 @@ class DisjointSubcircuitsState:
 
         assert self.actions is not None
         for action, gate_spec, cut_args in self.actions:
-            action.exportCuts(circuit_interface, wire_map, gate_spec, cut_args)
+            action.export_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
-        root_list = self.getSubCircuitIndices()
-        wires_to_roots = self.getWireRootMapping()
+        root_list = self.get_sub_circuit_indices()
+        wires_to_roots = self.get_wire_root_mapping()
 
         subcircuits = [
             list({wire_map[w] for w, r in enumerate(wires_to_roots) if r == root})
             for root in root_list
         ]
 
-        circuit_interface.defineSubcircuits(subcircuits)
+        circuit_interface.define_subcircuits(subcircuits)
 
 
-def calcRootBellPairsGamma(root_bell_pairs: Iterable[Hashable]) -> float:
-    """Calculate the minimum-achievable LOCC gamma for circuit
-    cuts that utilize virtual Bell pairs. The input can be an iterable
-    over hashable identifiers that represent Bell pairs across disconnected
-    subcircuits in a cut circuit. There must be a one-to-one mapping between
+def calc_root_bell_pairs_gamma(root_bell_pairs: Iterable[Hashable]) -> float:
+    """Calculate the minimum-achievable LOCC gamma for circuit cuts that utilize virtual Bell pairs.
+
+    The input can be an iterable over hashable identifiers that represent Bell pairs across
+    disconnected subcircuits in a cut circuit. There must be a one-to-one mapping between
     identifiers and pairs of subcircuits. Repeated identifiers are interpreted
     as mutiple Bell pairs across the same pair of subcircuits, and the counts
     of such repeats are used to calculate gamma.
     """
-
     gamma = 1.0
     for n in Counter(root_bell_pairs).values():
         gamma *= 2 ** (n + 1) - 1
@@ -486,7 +431,5 @@ def calcRootBellPairsGamma(root_bell_pairs: Iterable[Hashable]) -> float:
 def print_actions_list(
     action_list: list[list],
 ) -> list[list[str | list | tuple]]:
-    """Return a list specifying objects that represent cutting actions assoicated with an
-    instance of :class:`DisjointSubcircuitsState`.
-    """
-    return [[x[0].getName()] + x[1:] for x in action_list]
+    """Return a list specifying objects that represent cutting actions assoicated with an instance of :class:`DisjointSubcircuitsState`."""
+    return [[x[0].get_name()] + x[1:] for x in action_list]

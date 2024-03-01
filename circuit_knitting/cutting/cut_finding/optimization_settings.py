@@ -19,10 +19,9 @@ from typing import cast
 
 @dataclass
 class OptimizationSettings:
-    """Class for specifying parameters that control the optimization.
+    """Specify the parameters that control the optimization.
 
     Member Variables:
-
     max_gamma: a constraint on the maximum value of gamma that a
     solution to the optimization is allowed to have to be considered feasible.
 
@@ -57,7 +56,6 @@ class OptimizationSettings:
     flags have been incorporated with an eye towards future releases.
 
     Raises:
-
     ValueError: max_gamma must be a positive definite integer.
     ValueError: max_backjumps must be a positive semi-definite integer.
     """
@@ -71,6 +69,7 @@ class OptimizationSettings:
     engine_selections: dict[str, str] | None = None
 
     def __post_init__(self):
+        """Post-init method for the data class."""
         if self.max_gamma < 1:
             raise ValueError("max_gamma must be a positive definite integer.")
         if self.max_backjumps < 0:
@@ -86,48 +85,51 @@ class OptimizationSettings:
         if self.engine_selections is None:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
-    def getMaxGamma(self) -> int:
+    def get_max_gamma(self) -> int:
         """Return the max gamma."""
         return self.max_gamma
 
-    def getMaxBackJumps(self) -> int:
+    def get_max_backjumps(self) -> int:
         """Return the maximum number of allowed search backjumps."""
         return self.max_backjumps
 
-    def getRandSeed(self) -> int | None:
-        """Return the random seed."""
+    def get_rand_seed(self) -> int | None:
+        """Return the seed used to generate the pseudorandom numbers used in the optimizaton."""
         return self.rand_seed
 
-    def getEngineSelection(self, stage_of_optimization: str) -> str:
+    def get_engine_selection(self, stage_of_optimization: str) -> str:
         """Return the name of the search engine to employ."""
         self.engine_selections = cast(dict, self.engine_selections)
         return self.engine_selections[stage_of_optimization]
 
-    def setEngineSelection(self, stage_of_optimization: str, engine_name: str) -> None:
+    def set_engine_selection(
+        self, stage_of_optimization: str, engine_name: str
+    ) -> None:
         """Set the name of the search engine to employ."""
         self.engine_selections = cast(dict, self.engine_selections)
         self.engine_selections[stage_of_optimization] = engine_name
 
-    def setGateCutTypes(self) -> None:
+    def set_gate_cut_types(self) -> None:
         """Select which gate-cut types to include in the optimization.
-        The default is to only include LO gate cuts.
+
+        The default is to only include LO gate cuts, which are the
+        only cut types supported in this release.
         """
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
 
-    def setWireCutTypes(self) -> None:
+    def set_wire_cut_types(self) -> None:
         """Select which wire-cut types to include in the optimization.
-        The default is to only include LO wire cuts.
-        """
 
+        The default is to only include LO wire cuts, which are the
+        only cut types supported in this release.
+        """
         self.wire_cut_LO = self.LO
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
-    def getCutSearchGroups(self) -> list[None | str]:
-        """Return a list of search-action groups to include in the
-        optimization for cutting circuits into disjoint subcircuits.
-        """
+    def get_cut_search_groups(self) -> list[None | str]:
+        """Return a list of search-action groups to include in the optimization."""
         out: list
         out = [None]
 
@@ -147,4 +149,5 @@ class OptimizationSettings:
     def from_dict(
         cls, options: dict  # dict[str, None | int | bool | dict[str, str]]
     ) -> OptimizationSettings:
+        """Return an instance of :class:`OptimizationSettings` initialized with the parameters passed in options."""
         return cls(**options)

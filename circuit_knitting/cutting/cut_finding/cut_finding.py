@@ -57,7 +57,7 @@ def find_cuts(
         opt_settings = optimization
 
     # Hard-code the optimization type to best-first
-    opt_settings.setEngineSelection("CutOptimization", "BestFirst")
+    opt_settings.set_engine_selection("CutOptimization", "BestFirst")
 
     if isinstance(constraints, dict):
         constraint_settings = DeviceConstraints.from_dict(constraints)
@@ -76,7 +76,7 @@ def find_cuts(
     opt_out = cast(DisjointSubcircuitsState, opt_out)
     opt_out.actions = cast(list, opt_out.actions)
     for action in opt_out.actions:
-        if action[0].getName() == "CutTwoQubitGate":
+        if action[0].get_name() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])
         else:
             wire_cut_actions.append(action)
@@ -89,7 +89,7 @@ def find_cuts(
     # Insert all the wire cuts
     counter = 0
     for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
-        if action[0].getName() == "CutTwoQubitGate":
+        if action[0].get_name() == "CutTwoQubitGate":
             continue
         inst_id = action[1][0]
         qubit_id = action[2][0][0] - 1

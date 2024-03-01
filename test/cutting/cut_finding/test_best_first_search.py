@@ -19,7 +19,7 @@ from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
 
 
 @fixture
-def testCircuit():
+def test_circuit():
     circuit = [
         CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
         CircuitElement(name="cx", params=[], qubits=[0, 2], gamma=3),
@@ -53,23 +53,23 @@ def testCircuit():
     return interface
 
 
-def test_BestFirstSearch(testCircuit: SimpleGateList):
+def test_best_first_search(test_circuit: SimpleGateList):
     settings = OptimizationSettings(rand_seed=12345)
 
-    settings.setEngineSelection("CutOptimization", "BestFirst")
+    settings.set_engine_selection("CutOptimization", "BestFirst")
 
     constraint_obj = DeviceConstraints(qubits_per_QPU=4, num_QPUs=2)
 
-    op = CutOptimization(testCircuit, settings, constraint_obj)
+    op = CutOptimization(test_circuit, settings, constraint_obj)
 
-    out, _ = op.optimizationPass()
+    out, _ = op.optimization_pass()
 
-    assert op.search_engine.getStats(penultimate=True) is not None
-    assert op.search_engine.getStats() is not None
-    assert op.getUpperBoundCost() == (27, inf)
-    assert op.minimumReached() is False
+    assert op.search_engine.get_stats(penultimate=True) is not None
+    assert op.search_engine.get_stats() is not None
+    assert op.get_upperbound_cost() == (27, inf)
+    assert op.minimum_reached() is False
     assert out is not None
-    assert (out.lowerBoundGamma(), out.gamma_UB, out.getMaxWidth()) == (
+    assert (out.lower_bound_gamma(), out.gamma_UB, out.get_max_width()) == (
         27,
         27,
         4,
@@ -92,10 +92,10 @@ def test_BestFirstSearch(testCircuit: SimpleGateList):
         ],
     ]
 
-    out, _ = op.optimizationPass()
+    out, _ = op.optimization_pass()
 
-    assert op.search_engine.getStats(penultimate=True) is not None
-    assert op.search_engine.getStats() is not None
-    assert op.getUpperBoundCost() == (27, inf)
-    assert op.minimumReached() is True
+    assert op.search_engine.get_stats(penultimate=True) is not None
+    assert op.search_engine.get_stats() is not None
+    assert op.get_upperbound_cost() == (27, inf)
+    assert op.minimum_reached() is True
     assert out is None

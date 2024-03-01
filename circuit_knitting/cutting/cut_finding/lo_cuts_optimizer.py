@@ -14,10 +14,10 @@ from __future__ import annotations
 
 from .cut_optimization import CutOptimization
 from .cut_optimization import disjoint_subcircuit_actions
-from .cut_optimization import CutOptimizationNextStateFunc
-from .cut_optimization import CutOptimizationGoalStateFunc
-from .cut_optimization import CutOptimizationMinCostBoundFunc
-from .cut_optimization import CutOptimizationUpperBoundCostFunc
+from .cut_optimization import cut_optimization_next_state_func
+from .cut_optimization import cut_optimization_goal_state_func
+from .cut_optimization import cut_optimization_min_cost_bound_func
+from .cut_optimization import cut_optimization_upper_bound_cost_func
 from .search_space_generator import SearchFunctions, SearchSpaceGenerator
 
 import numpy as np
@@ -30,26 +30,24 @@ from .circuit_interface import SimpleGateList
 
 ### Functions for generating the cut optimization search space
 cut_optimization_search_funcs = SearchFunctions(
-    cost_func=CutOptimizationUpperBoundCostFunc,  # Valid choice only for LO cuts.
-    upperbound_cost_func=CutOptimizationUpperBoundCostFunc,
-    next_state_func=CutOptimizationNextStateFunc,
-    goal_state_func=CutOptimizationGoalStateFunc,
-    mincost_bound_func=CutOptimizationMinCostBoundFunc,
+    cost_func=cut_optimization_upper_bound_cost_func,  # Valid choice only for LO cuts.
+    upperbound_cost_func=cut_optimization_upper_bound_cost_func,
+    next_state_func=cut_optimization_next_state_func,
+    goal_state_func=cut_optimization_goal_state_func,
+    mincost_bound_func=cut_optimization_min_cost_bound_func,
 )
 
 
 class LOCutsOptimizer:
-
-    """Wrapper class for optimizing circuit cuts for the case in which
-    only LO quasiprobability decompositions are employed.
+    """Optimize circuit cuts for the case in which only LO quasiprobability decompositions are employed.
 
     The search_engine_config dictionary that configures the optimization
     algorithms must be specified in the constructor.  For flexibility, the
     circuit_interface, optimization_settings, and device_constraints can
-    be specified either in the constructor or in the optimize() method. In
+    be specified either in the constructor or in the :func:`optimize` method. In
     the latter case, the values provided overwrite the previous values.
 
-    The circuit_interface object that is passed to the optimize()
+    The circuit_interface object that is passed to the :func:`optimize`
     method is updated to reflect the optimized circuit cuts that were
     identified.
 
@@ -86,11 +84,11 @@ class LOCutsOptimizer:
             )
         },
     ):
+        """Initialize :class:`LOCutsOptimizer with the specified configuration variables."""
         self.circuit_interface = circuit_interface
         self.optimization_settings = optimization_settings
         self.device_constraints = device_constraints
         self.search_engine_config = search_engine_config
-
         self.cut_optimization = None
         self.best_result = None
 
@@ -100,10 +98,9 @@ class LOCutsOptimizer:
         optimization_settings: OptimizationSettings | None = None,
         device_constraints: DeviceConstraints | None = None,
     ) -> DisjointSubcircuitsState | None:
-        """Method to optimize the cutting of a circuit.
+        """Optimize the cutting of a circuit.
 
         Input Arguments:
-
         circuit_interface: defines the circuit to be
         cut. This object is then updated with the optimized cuts that
         were identified.
@@ -115,13 +112,11 @@ class LOCutsOptimizer:
         the target quantum hardware.
 
         Returns:
-
         The lowest-cost instance of :class:`DisjointSubcircuitsState` identified in
         the search, or None if no solution could be found.  In the
         case of the former, the circuit_interface object is also
         updated as a side effect to incorporate the cuts found.
         """
-
         if circuit_interface is not None:
             self.circuit_interface = circuit_interface
 
@@ -149,7 +144,7 @@ class LOCutsOptimizer:
         out_1 = list()
 
         while True:
-            state, cost = self.cut_optimization.optimizationPass()
+            state, cost = self.cut_optimization.optimization_pass()
             if state is None:
                 break
             out_1.append((cost, state))
@@ -158,35 +153,31 @@ class LOCutsOptimizer:
 
         if min_cost is not None:
             self.best_result = min_cost[-1]
-            self.best_result.exportCuts(self.circuit_interface)
+            self.best_result.export_cuts(self.circuit_interface)
         else:
             self.best_result = None
 
         return self.best_result
 
-    def getResults(self) -> DisjointSubcircuitsState | None:
+    def get_results(self) -> DisjointSubcircuitsState | None:
         """Return the optimization results."""
-
         return self.best_result
 
-    def getStats(self, penultimate=False) -> dict[str, NDArray[np.int_]]:
+    def get_stats(self, penultimate=False) -> dict[str, NDArray[np.int_]]:
         """Return a dictionary containing optimization results."""
-
         return {
-            "CutOptimization": self.cut_optimization.getStats(penultimate=penultimate)
+            "CutOptimization": self.cut_optimization.get_stats(penultimate=penultimate)
         }
 
-    def minimumReached(self) -> bool:
-        """Return a Boolean flag indicating whether the global
-        minimum was reached.
-        """
-
-        return self.cut_optimization.minimumReached()
+    def minimum_reached(self) -> bool:
+        """Return a Boolean flag indicating whether the global  minimum was reached."""
+        return self.cut_optimization.minimum_reached()
 
 
-def printStateList(
+def print_state_list(
     state_list: list[DisjointSubcircuitsState],
 ) -> None:  # pragma: no cover
+    """Call the :func:`print` method defined for a :class:`DisjointSubcircuitsState` instance."""
     for x in state_list:
         print()
         x.print(simple=True)

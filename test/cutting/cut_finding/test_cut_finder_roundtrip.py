@@ -33,7 +33,7 @@ def gate_cut_test_setup():
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
     settings = OptimizationSettings(rand_seed=12345)
-    settings.setEngineSelection("CutOptimization", "BestFirst")
+    settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
 
@@ -51,7 +51,7 @@ def wire_cut_test_setup():
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
     settings = OptimizationSettings(rand_seed=12345)
-    settings.setEngineSelection("CutOptimization", "BestFirst")
+    settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
 
@@ -62,7 +62,7 @@ def multiqubit_test_setup():
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
     settings = OptimizationSettings(rand_seed=12345)
-    settings.setEngineSelection("CutOptimization", "BestFirst")
+    settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
 
@@ -83,10 +83,10 @@ def test_no_cuts(
 
     assert print_actions_list(output.actions) == []  # no cutting.
 
-    assert interface.exportSubcircuitsAsString(name_mapping="default") == "AAAA"
+    assert interface.export_subcircuits_as_string(name_mapping="default") == "AAAA"
 
 
-def test_GateCuts(
+def test_gate_cuts(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     # QPU with 2 qubits requires cutting.
@@ -120,22 +120,22 @@ def test_GateCuts(
         },
     ]
 
-    best_result = optimization_pass.getResults()
+    best_result = optimization_pass.get_results()
 
-    assert output.upperBoundGamma() == best_result.gamma_UB == 9  # 2 LO cnot cuts.
+    assert output.upper_bound_gamma() == best_result.gamma_UB == 9  # 2 LO cnot cuts.
 
-    assert optimization_pass.minimumReached() is True  # matches optimal solution.
+    assert optimization_pass.minimum_reached() is True  # matches optimal solution.
 
     assert (
-        interface.exportSubcircuitsAsString(name_mapping="default") == "AABB"
+        interface.export_subcircuits_as_string(name_mapping="default") == "AABB"
     )  # circuit separated into 2 subcircuits.
 
     assert (
-        optimization_pass.getStats()["CutOptimization"] == array([15, 46, 15, 6])
+        optimization_pass.get_stats()["CutOptimization"] == array([15, 46, 15, 6])
     ).all()  # matches known stats.
 
 
-def test_WireCuts(
+def test_wire_cuts(
     wire_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     qubits_per_QPU = 4
@@ -164,15 +164,15 @@ def test_WireCuts(
         }
     ]
 
-    best_result = optimization_pass.getResults()
+    best_result = optimization_pass.get_results()
 
-    assert output.upperBoundGamma() == best_result.gamma_UB == 4  # One LO wire cut.
+    assert output.upper_bound_gamma() == best_result.gamma_UB == 4  # One LO wire cut.
 
-    assert optimization_pass.minimumReached() is True  # matches optimal solution
+    assert optimization_pass.minimum_reached() is True  # matches optimal solution
 
 
 # check if unsupported search engine is flagged.
-def test_SelectSearchEngine(
+def test_select_search_engine(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     qubits_per_QPU = 4
@@ -180,9 +180,9 @@ def test_SelectSearchEngine(
 
     interface, settings = gate_cut_test_setup
 
-    settings.setEngineSelection("CutOptimization", "BeamSearch")
+    settings.set_engine_selection("CutOptimization", "BeamSearch")
 
-    search_engine = settings.getEngineSelection("CutOptimization")
+    search_engine = settings.get_engine_selection("CutOptimization")
 
     constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
 
@@ -194,7 +194,7 @@ def test_SelectSearchEngine(
 
 
 # The cutting of multiqubit gates is not supported at present.
-def test_MultiqubitCuts(
+def test_multiqubit_cuts(
     multiqubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     # QPU with 2 qubits requires cutting.
@@ -215,7 +215,7 @@ def test_MultiqubitCuts(
     )
 
 
-def test_UpdatedCostBounds(
+def test_updated_cost_bounds(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     qubits_per_QPU = 3
@@ -227,12 +227,12 @@ def test_UpdatedCostBounds(
 
     # Perform cut finding with the default cost upper bound.
     cut_opt = CutOptimization(interface, settings, constraint_obj)
-    state, _ = cut_opt.optimizationPass()
+    state, _ = cut_opt.optimization_pass()
     assert state is not None
 
     # Update and lower cost upper bound.
-    cut_opt.updateUpperBoundCost((2, 4))
-    state, _ = cut_opt.optimizationPass()
+    cut_opt.update_upperbound_cost((2, 4))
+    state, _ = cut_opt.optimization_pass()
 
     # Since any cut has a cost of at least 3, the returned state must be None.
     assert state is None

@@ -28,12 +28,11 @@ from ..qpd import QPDBasis
 
 
 def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
-    """Convert a qiskit quantum circuit object into a circuit list that is
-    compatible with the :class:`SimpleGateList`. To conform with the uniformity
-    of the design, single and multiqubit (that is, gates acting on more than two
-    qubits) are assigned :math:`gamma=None`. In the converted list, a barrier
-    across the entire circuit is represented by the string "barrier."
-    Everything else is represented by an instance of :class:`CircuitElement`.
+    """Convert a qiskit quantum circuit object into a circuit list that is compatible with the :class:`SimpleGateList`.
+
+    To conform with the uniformity of the design, single and multiqubit (that is, gates acting on more than two
+    qubits) are assigned :math:`gamma=None`. In the converted list, a barrier across the entire circuit is
+    represented by the string "barrier." Everything else is represented by an instance of :class:`CircuitElement`.
 
     Args:
     circuit: an instance of :class:`qiskit.QuantumCircuit` .
@@ -75,11 +74,11 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     Returns:
     qc_cut: The SimpleGateList converted into a :class:`qiskit.QuantumCircuit` instance.
 
-    TODO: This function only works for instances of LO gate cutting.
-    Expand to cover the wire cutting case when needed.
+    TODO: This is a function that is not used for now and it only works for instances of LO gate cutting.
+    Expand to cover the wire cutting case if or when needed.
     """
-    cut_circuit_list = interface.exportCutCircuit(name_mapping=None)
-    num_qubits = interface.getNumWires()
+    cut_circuit_list = interface.export_cut_circuit(name_mapping=None)
+    num_qubits = interface.get_num_wires()
     cut_types = interface.cut_type
     qc_cut = QuantumCircuit(num_qubits)
     for k, op in enumerate([cut_circuit for cut_circuit in cut_circuit_list]):
@@ -93,16 +92,17 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     return qc_cut
 
 
-def selectSearchEngine(
+def select_search_engine(
     stage_of_optimization: str,
     optimization_settings: OptimizationSettings,
     search_space_funcs: SearchFunctions,
     stop_at_first_min: bool = False,
 ) -> BestFirstSearch:
-    """Select the search algorithm to use. At present, only Dijkstra's algorithm
-    for best first search is supported.
+    """Select the search algorithm to use.
+
+    In this release, only Dijkstra's algorithm for best first search is supported.
     """
-    engine = optimization_settings.getEngineSelection(stage_of_optimization)
+    engine = optimization_settings.get_engine_selection(stage_of_optimization)
 
     if engine == "BestFirst":
         return BestFirstSearch(
@@ -115,18 +115,16 @@ def selectSearchEngine(
         raise ValueError(f"Search engine {engine} is not supported.")
 
 
-def greedyBestFirstSearch(
+def greedy_best_first_search(
     state: DisjointSubcircuitsState,
     search_space_funcs: SearchFunctions,
     *args: CutOptimizationFuncArgs,
 ) -> None | DisjointSubcircuitsState:
-    """Perform greedy best-first search using the input starting state and
-    the input search-space functions. The resulting goal state is returned,
-    or None if a deadend is reached (no backtracking is performed).  Any
-    additional input arguments are passed as additional arguments to the
-    search-space functions.
-    """
+    """Perform greedy best-first search using the input starting state and the input search-space functions.
 
+    The resulting goal state is returned, or None if a deadend is reached (no backtracking is performed). Any
+    additional input arguments are passed as additional arguments to the search-space functions.
+    """
     search_space_funcs.goal_state_func = cast(
         Callable, search_space_funcs.goal_state_func
     )
@@ -149,7 +147,7 @@ def greedyBestFirstSearch(
     )
 
     if best[-1] is not None:
-        return greedyBestFirstSearch(best[-1], search_space_funcs, *args)
+        return greedy_best_first_search(best[-1], search_space_funcs, *args)
 
     else:
         return None

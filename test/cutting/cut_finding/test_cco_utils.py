@@ -29,7 +29,7 @@ tc_2.assign_parameters([0.4] * len(tc_2.parameters), inplace=True)
 
 # test circuit 3
 @fixture
-def InternalTestCircuit():
+def internal_test_circuit():
     circuit = [
         CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
         CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
@@ -40,8 +40,8 @@ def InternalTestCircuit():
         CircuitElement(name="rx", params=[0.4], qubits=[0], gamma=None),
     ]
     interface = SimpleGateList(circuit)
-    interface.insertGateCut(2, "LO")
-    interface.defineSubcircuits([[0, 1], [2, 3]])
+    interface.insert_gate_cut(2, "LO")
+    interface.define_subcircuits([[0, 1], [2, 3]])
     return interface
 
 
@@ -86,8 +86,8 @@ def test_qc_to_cco_circuit(
     assert test_circuit_internal == known_output
 
 
-def test_cco_to_qc_circuit(InternalTestCircuit: SimpleGateList):
-    qc_cut = cco_to_qc_circuit(InternalTestCircuit)
+def test_cco_to_qc_circuit(internal_test_circuit: SimpleGateList):
+    qc_cut = cco_to_qc_circuit(internal_test_circuit)
     assert qc_cut.data == [
         CircuitInstruction(
             operation=Instruction(name="cx", num_qubits=2, num_clbits=0, params=[]),
