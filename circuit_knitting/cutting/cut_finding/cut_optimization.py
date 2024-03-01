@@ -33,7 +33,7 @@ from .quantum_device_constraints import DeviceConstraints
 
 @dataclass
 class CutOptimizationFuncArgs:
-    """Collect arguments for passing to the :class:`CutOptimization` search-space generating methods."""
+    """Collect arguments for passing to the search-space generating methods in :class:`CutOptimization`."""
 
     entangling_gates: Sequence[
         Sequence[int | CircuitElement | None | list]
@@ -53,6 +53,7 @@ def cut_optimization_cost_func(
     that balance the sizes of the resulting partitions, by minimizing the
     maximum width across subcircuits.
     """
+    # pylint: disable=unused-argument
     return (state.lower_bound_gamma(), state.get_max_width())
 
 
@@ -60,6 +61,7 @@ def cut_optimization_upper_bound_cost_func(
     goal_state, func_args: CutOptimizationFuncArgs
 ) -> tuple[int | float, int | float]:
     """Return the gamma upper bound."""
+    # pylint: disable=unused-argument
     return (goal_state.upper_bound_gamma(), np.inf)
 
 

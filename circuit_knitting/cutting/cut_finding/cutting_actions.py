@@ -197,6 +197,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         args,
     ) -> None:
         """Insert an LO gate cut into the input circuit for the specified gate and cut arguments."""
+        # pylint: disable=unused-argument
         assert isinstance(gate_spec[0], int)
         circuit_interface.insert_gate_cut(gate_spec[0], "LO")
 

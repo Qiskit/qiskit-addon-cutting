@@ -17,11 +17,9 @@ def test_optimization_parameters(max_gamma: int, max_backjumps: int):
         _ = OptimizationSettings(max_gamma=max_gamma, max_backjumps=max_backjumps)
 
 
-def test_gate_cut_types(
-    LO: bool = True, LOCC_ancillas: bool = False, LOCC_no_ancillas: bool = False
-):
+def test_gate_cut_types(LO: bool = True, LOCC_ancillas: bool = False):
     """Test default gate cut types."""
-    op = OptimizationSettings()
+    op = OptimizationSettings(LO, LOCC_ancillas)
     op.set_gate_cut_types()
     assert op.gate_cut_LO is True
     assert op.gate_cut_LOCC_with_ancillas is False
@@ -31,7 +29,7 @@ def test_wire_cut_types(
     LO: bool = True, LOCC_ancillas: bool = False, LOCC_no_ancillas: bool = False
 ):
     """Test default wire cut types."""
-    op = OptimizationSettings()
+    op = OptimizationSettings(LO, LOCC_ancillas, LOCC_no_ancillas)
     op.set_wire_cut_types()
     assert op.wire_cut_LO
     assert op.wire_cut_LOCC_with_ancillas is False
