@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.5.0"
+version = "0.6.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -28,11 +28,9 @@ requires-python = ">=3.8"
 dependencies = [
     "numpy>=1.23.0",
     "scipy>=1.5.2",
-    "rustworkx>=0.13.0",
+    "rustworkx>=0.14.0",
     "qiskit-aer>=0.12.0",
-    "qiskit>=0.44.1, <1.0",
-    "qiskit-algorithms>=0.2.1",
-    "qiskit-nature>=0.6.0, <0.7",
+    "qiskit>=0.46.0, <2.0",
     "qiskit-ibm-runtime>=0.12.2",
 ]
 
@@ -43,9 +41,6 @@ cplex = [
     "docplex>=2.23.222; platform_machine != 'arm64'",
     "cplex>=22.1.0.0; platform_machine != 'arm64'",
 ]
-pyscf = [
-    "pyscf>=2.0.1; sys_platform != 'win32'",
-]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
 ]
@@ -54,7 +49,7 @@ basetest = [
     "pytest-randomly>=1.2.0",
 ]
 test = [
-    "circuit-knitting-toolbox[basetest,pyscf]",
+    "circuit-knitting-toolbox[basetest]",
     "ddt>=1.4.4",
 ]
 nbtest = [
@@ -63,7 +58,7 @@ nbtest = [
 ]
 style = [
     "autoflake==2.2.1",
-    "black[jupyter]~=23.1",
+    "black[jupyter]~=24.1",
     "ruff>=0.0.246",
     "nbqa>=1.6.0",
 ]
@@ -90,8 +85,7 @@ docs = [
     "qiskit-sphinx-theme>=1.14.0, <2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex,pyscf]",
-    "quantum-serverless>=0.0.7",
+    "circuit-knitting-toolbox[cplex]",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",

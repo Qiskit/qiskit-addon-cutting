@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting.cutting.qpd.QPDBasis.from_gate`` method, which has been deprecated since the 0.3 release. :meth:`.QPDBasis.from_instruction` should be used instead.

@@ -6,16 +6,16 @@ upgrade:
   - |
     Support for Qiskit Nature < 0.5 has been removed upon this release.
 
-    Users are now be required to use the :class:`~qiskit_nature.second_q.problems.ElectronicStructureProblem`,
-    as input to the :class:`EntanglementForgingGroundStateSolver`, rather than the deprecated :class:`~qiskit_nature.problems.second_quantization.ElectronicStructureProblem`.
+    Users are now be required to use the ``qiskit_nature.second_q.problems.ElectronicStructureProblem``,
+    as input to the ``EntanglementForgingGroundStateSolver``, rather than the deprecated ``qiskit_nature.problems.second_quantization.ElectronicStructureProblem``.
 
     For more information on migrating to Qiskit Nature 0.5, check out the
-    `Qiskit Nature migration guide <https://qiskit.org/ecosystem/nature/migration/0.5_a_intro.html>`_.
+    `Qiskit Nature migration guide <https://qiskit-community.github.io/qiskit-nature/migration/0.5_a_intro.html>`_.
 
     For more information on adapting your entanglement forging workflows, check
-    out the :ref:`tutorials <Forging tutorials>` and :ref:`how-to guides <Forging how-tos>`.
+    out the ``tutorials <Forging tutorials>`` and ``how-to guides <Forging how-tos>``.
 
   - |
-    The :class:`~circuit_knitting_toolbox.utils.IntegralDriver` class has been removed. The new Qiskit Nature
-    API allows for a more flexible build-up of the :class:`~qiskit_nature.second_q.problems.ElectronicStructureProblem`,
+    The ``~circuit_knitting_toolbox.utils.IntegralDriver`` class has been removed. The new Qiskit Nature
+    API allows for a more flexible build-up of the ``qiskit_nature.second_q.problems.ElectronicStructureProblem``,
     and this driver is no longer needed.

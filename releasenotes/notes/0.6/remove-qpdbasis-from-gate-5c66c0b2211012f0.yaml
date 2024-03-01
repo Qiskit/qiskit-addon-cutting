@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting.cutting.qpd.qpdbasis_from_gate`` function, which has been deprecated since the 0.3 release. :func:`~.qpdbasis_from_instruction` should be used instead.

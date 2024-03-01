@@ -10,5 +10,4 @@ Circuit Knitting Toolbox API References
    :maxdepth: 1
 
    circuit_cutting
-   entanglement_forging
    utils

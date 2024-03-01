@@ -20,4 +20,4 @@ jobs:
         run: docker compose build
       - name: Test notebooks
         shell: bash
-        run: docker compose run notebook "bash" "-c" "pip install pytest nbmake && pytest --nbmake docs --ignore=docs/circuit-knitting-toolbox/entanglement_forging/tutorials/tutorial_2_forging_with_quantum_serverless.ipynb"
+        run: docker compose run notebook "bash" "-c" "pip install pytest nbmake && pytest --nbmake docs"

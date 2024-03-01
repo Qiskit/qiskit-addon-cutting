@@ -170,5 +170,6 @@ class ExactSampler(BaseSampler):
         **run_options,
     ):
         job = PrimitiveJob(self._call, circuits, parameter_values, **run_options)
-        job.submit()
+        # The public submit method was removed in Qiskit 1.0
+        (job.submit if hasattr(job, "submit") else job._submit)()
         return job

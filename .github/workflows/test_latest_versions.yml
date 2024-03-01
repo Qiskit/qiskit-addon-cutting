@@ -47,8 +47,4 @@ jobs:
           pver=${{ matrix.python-version }}
           tox -epy${pver/./} -- --run-slow
           notebook_flags=""
-          if [ "$RUNNER_OS" = "Windows" ]; then
-            echo Skipping tutorials \& how-tos that require pyscf
-            notebook_flags="${notebook_flags} --ignore=docs/entanglement_forging --ignore=docs/_build/jupyter_execute/entanglement_forging/how-tos"
-          fi
           tox -epy${pver/./}-notebook -- ${notebook_flags}
