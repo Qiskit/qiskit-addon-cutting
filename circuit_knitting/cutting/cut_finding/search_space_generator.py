@@ -185,7 +185,6 @@ class SearchSpaceGenerator:
     """Contain both the functions and the associated actions needed to generate and explore a search space.
 
     Member Variables:
-
     functions: a data class that holds the functions needed to generate
     and explore a search space.
 
