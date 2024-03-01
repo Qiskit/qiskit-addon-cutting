@@ -156,28 +156,38 @@ class SearchFunctions:
     is None is likewise equivalent to an infinite min-cost bound.
     """
 
-    cost_func: Callable[
-        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
-        int | float | tuple[int | float, int | float],
-    ] | None = None
+    cost_func: (
+        Callable[
+            [DisjointSubcircuitsState, CutOptimizationFuncArgs],
+            int | float | tuple[int | float, int | float],
+        ]
+        | None
+    ) = None
 
-    next_state_func: Callable[
-        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
-        list[DisjointSubcircuitsState],
-    ] | None = None
+    next_state_func: (
+        Callable[
+            [DisjointSubcircuitsState, CutOptimizationFuncArgs],
+            list[DisjointSubcircuitsState],
+        ]
+        | None
+    ) = None
 
-    goal_state_func: Callable[
-        [DisjointSubcircuitsState, CutOptimizationFuncArgs], bool
-    ] | None = None
+    goal_state_func: (
+        Callable[[DisjointSubcircuitsState, CutOptimizationFuncArgs], bool] | None
+    ) = None
 
-    upperbound_cost_func: Callable[
-        [DisjointSubcircuitsState, CutOptimizationFuncArgs],
-        tuple[int | float, int | float],
-    ] | None = None
+    upperbound_cost_func: (
+        Callable[
+            [DisjointSubcircuitsState, CutOptimizationFuncArgs],
+            tuple[int | float, int | float],
+        ]
+        | None
+    ) = None
 
-    mincost_bound_func: Callable[
-        [CutOptimizationFuncArgs], None | tuple[int | float, int | float]
-    ] | None = None
+    mincost_bound_func: (
+        Callable[[CutOptimizationFuncArgs], None | tuple[int | float, int | float]]
+        | None
+    ) = None
 
 
 @dataclass

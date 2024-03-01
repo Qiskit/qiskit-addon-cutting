@@ -35,9 +35,9 @@ from .quantum_device_constraints import DeviceConstraints
 class CutOptimizationFuncArgs:
     """Collect arguments for passing to the search-space generating methods in :class:`CutOptimization`."""
 
-    entangling_gates: Sequence[
-        Sequence[int | CircuitElement | None | list]
-    ] | None = None
+    entangling_gates: Sequence[Sequence[int | CircuitElement | None | list]] | None = (
+        None
+    )
     search_actions: ActionNames | None = None
     max_gamma: float | int | None = None
     qpu_width: int | None = None
