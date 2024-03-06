@@ -349,6 +349,7 @@ def find_cuts(
         counter += 1
         if action[0].get_name() == "CutBothWires":
             # qubit_id is 0 or 1. Flip it.
+            assert qubit_id in {0, 1}
             qubit_id = 1 - qubit_id
             circ_out.data.insert(
                 inst_id + counter,
