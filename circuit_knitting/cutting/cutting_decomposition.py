@@ -340,7 +340,6 @@ def find_cuts(
         inst_id = action[1][0]
         # action[2][0][0] will be either 1 (control) or 2 (target)
         qubit_id = action[2][0][0] - 1
-        # TODO: We need to include two wire cuts if we come across a CutBothWires action
         circ_out.data.insert(
             inst_id + counter,
             CircuitInstruction(
