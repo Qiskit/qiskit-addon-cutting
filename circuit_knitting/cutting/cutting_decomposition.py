@@ -293,6 +293,8 @@ def find_cuts(
                 The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
                 cut ID is the index of the cut gate or wire in the output circuit's
                 ``data`` field.
+            sampling_overhead: The sampling overhead incurred from cutting the specified
+                gates and wires.
     """
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
