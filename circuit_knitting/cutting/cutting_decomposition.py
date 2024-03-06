@@ -322,7 +322,11 @@ def find_cuts(
             gate_ids.append(action[1][0])
         else:
             # We only support three types of optimizer cuts
-            assert action[0].get_name() in ("CutLeftWire", "CutRightWire")
+            assert action[0].get_name() in (
+                "CutLeftWire",
+                "CutRightWire",
+                "CutBothWires",
+            )
             wire_cut_actions.append(action)
 
     # First, replace all gates to cut with BaseQPDGate instances.
@@ -344,6 +348,16 @@ def find_cuts(
             ),
         )
         counter += 1
+        if action[0].get_name() == "CutBothWires":
+            # qubit_id is 0 or 1. Flip it.
+            qubit_id = 1 - qubit_id
+            circ_out.data.insert(
+                inst_id + counter,
+                CircuitInstruction(
+                    CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id]], []
+                ),
+            )
+            counter += 1
 
     # Return metadata describing the cut scheme
     metadata: dict[str, Any] = {"cuts": []}
