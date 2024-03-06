@@ -364,7 +364,7 @@ def find_cuts(
     for i, inst in enumerate(circ_out.data):
         if inst.operation.name == "qpd_2q":
             metadata["cuts"].append(("Gate Cut", i))
-        if inst.operation.name == "cut_wire":
+        elif inst.operation.name == "cut_wire":
             metadata["cuts"].append(("Wire Cut", i))
     metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
 
