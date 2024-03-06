@@ -334,23 +334,22 @@ def find_cuts(
     counter = 0
     for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
         inst_id = action[1][0]
+        # action[2][0][0] will be either 1 (control) or 2 (target)
         qubit_id = action[2][0][0] - 1
+        # TODO: We need to include two wire cuts if we come across a CutBothWires action
         circ_out.data.insert(
             inst_id + counter,
-            CircuitInstruction(CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []),
+            CircuitInstruction(CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id]], []),
         )
         counter += 1
 
     # Return metadata describing the cut scheme
-    sampling_overhead = 1
     metadata: dict[str, Any] = {"cuts": []}
     for i, inst in enumerate(circ_out.data):
         if inst.operation.name == "qpd_2q":
-            sampling_overhead *= inst.operation.basis.overhead
             metadata["cuts"].append(("Gate Cut", i))
         if inst.operation.name == "cut_wire":
-            sampling_overhead *= 16
             metadata["cuts"].append(("Wire Cut", i))
-    metadata["sampling_overhead"] = sampling_overhead
+    metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
 
     return circ_out, metadata
