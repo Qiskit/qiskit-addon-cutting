@@ -339,7 +339,9 @@ def find_cuts(
         # TODO: We need to include two wire cuts if we come across a CutBothWires action
         circ_out.data.insert(
             inst_id + counter,
-            CircuitInstruction(CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id]], []),
+            CircuitInstruction(
+                CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id]], []
+            ),
         )
         counter += 1
 
