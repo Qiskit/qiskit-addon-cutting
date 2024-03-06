@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction
-from typing import cast
+from typing import cast, Any
 
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
@@ -31,7 +31,7 @@ def find_cuts(
     circuit: QuantumCircuit,
     optimization: OptimizationSettings | dict[str, str | int],
     constraints: DeviceConstraints | dict[str, int],
-) -> QuantumCircuit:
+) -> tuple[QuantumCircuit, dict[str, Any]]:
     """
     Find cut locations in a circuit, given optimization settings and QPU constraints.
 
@@ -47,6 +47,12 @@ def find_cuts(
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
         resulting from cutting these gates will be runnable on the devices
         specified in ``constraints``.
+
+        A metadata dictionary:
+            cuts: A list of length-2 tuples describing each cut in the output circuit.
+                The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
+                cut ID is the index of the cut gate or wire in the output circuit's
+                ``data`` field.
     """
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
@@ -79,6 +85,8 @@ def find_cuts(
         if action[0].get_name() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])
         else:
+            # We only support three types of optimizer cuts
+            assert action[0].get_name() in ("CutLeftWire", "CutRightWire")
             wire_cut_actions.append(action)
 
     # First, replace all gates to cut with BaseQPDGate instances.
@@ -89,8 +97,6 @@ def find_cuts(
     # Insert all the wire cuts
     counter = 0
     for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
-        if action[0].get_name() == "CutTwoQubitGate":
-            continue
         inst_id = action[1][0]
         qubit_id = action[2][0][0] - 1
         circ_out.data.insert(
@@ -99,4 +105,12 @@ def find_cuts(
         )
         counter += 1
 
-    return circ_out
+    # Return the location of all the cuts in the output circuit
+    metadata: dict[str, Any] = {"cuts": []}
+    for i, inst in enumerate(circ_out.data):
+        if inst.operation.name == "qpd_2q":
+            metadata["cuts"].append(("Gate Cut", i))
+        if inst.operation.name == "cut_wire":
+            metadata["cuts"].append(("Wire Cut", i))
+
+    return circ_out, metadata
