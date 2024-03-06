@@ -80,16 +80,15 @@ def cut_optimization_next_state_func(
 ) -> list[DisjointSubcircuitsState]:
     """Generate a list of next states from the input state."""
     # Get the entangling gate spec that is to be processed next based
-    # on the search level of the input state
+    # on the search level of the input state.
     assert func_args.entangling_gates is not None
     assert func_args.search_actions is not None
 
     gate_spec = func_args.entangling_gates[state.get_search_level()]
 
-    # Determine which search actions can be performed, taking into
+    # Determine which cutting actions can be performed, taking into
     # account any user-specified constraints that might have been
-    # placed on how the current entangling gate is to be handled
-    # in the search
+    # placed on how the current entangling gate is to be handled.
     gate = gate_spec[1]
     gate = cast(CircuitElement, gate)
     if len(gate.qubits) == 2:
@@ -103,7 +102,7 @@ def cut_optimization_next_state_func(
     gate_actions = cast(list, gate_actions)
     action_list = get_action_subset(action_list, gate_actions)
 
-    # Apply the search actions to generate a list of next states
+    # Apply the search actions to generate a list of next states.
     next_state_list = []
     assert action_list is not None
     for action in action_list:
