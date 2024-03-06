@@ -8,6 +8,3 @@
 # that they have been altered from the originals.
 
 """Main automated cut finding functionality."""
-from .cut_finding import find_cuts
-
-__all__ = ["find_cuts"]
