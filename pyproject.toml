@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Physics",
 ]
 
@@ -38,8 +39,8 @@ dependencies = [
 cplex = [
     # We use the same restrictions in both of the following lines, as there
     # is no reason for us to install docplex without cplex.
-    "docplex>=2.23.222; platform_machine != 'arm64'",
-    "cplex>=22.1.0.0; platform_machine != 'arm64'",
+    "docplex>=2.23.222; python_version < '3.12' and platform_machine != 'arm64'",
+    "cplex>=22.1.0.0; python_version < '3.12' and platform_machine != 'arm64'",
 ]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
