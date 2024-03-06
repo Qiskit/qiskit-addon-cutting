@@ -37,7 +37,6 @@ from .cut_finding.lo_cuts_optimizer import LOCutsOptimizer
 from .cut_finding.cco_utils import qc_to_cco_circuit
 
 
-
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
