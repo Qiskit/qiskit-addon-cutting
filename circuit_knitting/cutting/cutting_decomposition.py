@@ -321,7 +321,7 @@ def find_cuts(
         if action[0].get_name() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])
         else:
-            # We only support three types of optimizer cuts
+            # We only support four types of optimizer cuts
             assert action[0].get_name() in (
                 "CutLeftWire",
                 "CutRightWire",
