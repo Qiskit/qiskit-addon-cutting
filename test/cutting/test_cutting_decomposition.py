@@ -270,7 +270,7 @@ class TestCuttingDecomposition(unittest.TestCase):
 
             assert len(metadata["cuts"]) == 2
             assert {"Wire Cut", "Gate Cut"} == cut_types
-            assert np.isclose(metadata["sampling_overhead"], 127.06026169, atol=1e-8)
+            assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
