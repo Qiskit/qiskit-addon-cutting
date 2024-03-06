@@ -39,37 +39,21 @@ cut_optimization_search_funcs = SearchFunctions(
 
 
 class LOCutsOptimizer:
-    """Optimize circuit cuts for the case in which only LO quasiprobability decompositions are employed.
+    """Optimize circuit cuts for the case in which only LO decompositions are employed.
 
     The search_engine_config dictionary that configures the optimization
     algorithms must be specified in the constructor.  For flexibility, the
     circuit_interface, optimization_settings, and device_constraints can
-    be specified either in the constructor or in the :func:`optimize` method. In
-    the latter case, the values provided overwrite the previous values.
+    be specified either in the constructor or in :meth:LOCutsOptimizer.optimize().
+    In the latter case, the values provided overwrite the previous values.
 
-    The circuit_interface object that is passed to the :func:`optimize`
-    method is updated to reflect the optimized circuit cuts that were
+    circuit_interface, an instance of :class:`CircuitInterface`, defines the circuit to be cut.
+    The circuit_interface object that is passed to the :meth:`LOCutsOptimizer.optimize()`
+    is updated to reflect the optimized circuit cuts that were
     identified.
 
-    Member Variables:
-
-    circuit_interface (:class:`CircuitInterface`) defines the circuit to be cut.
-
-    optimization_settings (:class:`OptimizationSettings`) defines the settings
-    to be used for the optimization.
-
-    device_constraints (:class:`DeviceConstraints`) defines the capabilties of
-    the target quantum hardware.
-
-    search_engine_config (dict) maps names of stages of optimization to
-    the corresponding SearchSpaceGenerator functions and actions that
-    are used to perform the search for each stage.
-
-    cut_optimization (:class:`CutOptimization`) is the object created to
-    perform the circuit cutting optimization.
-
-    best_result (:class:`DisjointSubcircuitsState`) is the lowest-cost
-    DisjointSubcircuitsState object identified in the search.
+    :meth:`LOCutsOptimizer.optimize()` returns :data:`best_result`, an instance of :class:`DisjointSubcircuitsState`, 
+    which is the lowest-cost DisjointSubcircuitsState object identified in the search.
     """
 
     def __init__(
@@ -100,7 +84,7 @@ class LOCutsOptimizer:
     ) -> DisjointSubcircuitsState | None:
         """Optimize the cutting of a circuit.
 
-        Input Arguments:
+        Args:
         circuit_interface: defines the circuit to be
         cut. This object is then updated with the optimized cuts that
         were identified.
@@ -113,7 +97,7 @@ class LOCutsOptimizer:
 
         Returns:
         The lowest-cost instance of :class:`DisjointSubcircuitsState` identified in
-        the search, or None if no solution could be found.  In the
+        the search, or None if no solution could be found. In the
         case of the former, the circuit_interface object is also
         updated as a side effect to incorporate the cuts found.
         """
@@ -170,7 +154,7 @@ class LOCutsOptimizer:
         }
 
     def minimum_reached(self) -> bool:
-        """Return a Boolean flag indicating whether the global  minimum was reached."""
+        """Return a Boolean flag indicating whether the global minimum was reached."""
         return self.cut_optimization.minimum_reached()
 
 

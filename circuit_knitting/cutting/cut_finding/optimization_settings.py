@@ -21,43 +21,23 @@ from typing import cast
 class OptimizationSettings:
     """Specify the parameters that control the optimization.
 
-    Member Variables:
-    max_gamma: a constraint on the maximum value of gamma that a
+    max_gamma specifies a constraint on the maximum value of gamma that a
     solution to the optimization is allowed to have to be considered feasible.
 
-    engine_selections: a dictionary that defines the selections
-    of search engines for the various stages of optimization. In this release
+    engine_selections is a dictionary that defines the selection
+    of search engines for the optimization. In this release
     only "BestFirst" or Dijkstra's best-first search is supported.
 
-    max_backjumps: a constraint on the maximum number of backjump
+    max_backjumps specifies a constraint on the maximum number of backjump
     operations that can be performed by the search algorithm.
 
-    rand_seed: a seed used to provide a repeatable initialization
+    rand_seed is a seed used to provide a repeatable initialization
     of the pesudorandom number generators used by the optimization.
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.
 
-    gate_cut_LO: a flag that indicates that LO gate cuts should be
-    included in the optimization.
-
-    gate_cut_LOCC_with_ancillas: a flag that indicates that
-    LOCC gate cuts with ancillas should be included in the optimization.
-
-    wire_cut_LO: a flag that indicates that LO wire cuts should be
-    included in the optimization.
-
-    wire_cut_LOCC_with_ancillas: a flag that indicates that
-    LOCC wire cuts with ancillas should be included in the optimization.
-
-    wire_cut_LOCC_no_ancillas: a flag that indicates that
-    LOCC wire cuts with no ancillas should be included in the optimization.
-
     NOTE: The current release only supports LO gate and wire cuts. LOCC
     flags have been incorporated with an eye towards future releases.
-
-    Raises:
-    ValueError: max_gamma must be a positive definite integer.
-    ValueError: max_backjumps must be a positive semi-definite integer.
     """
 
     max_gamma: int = 1024
@@ -77,7 +57,6 @@ class OptimizationSettings:
 
         self.gate_cut_LO = self.LO
         self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
-        self.gate_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
         self.wire_cut_LO = self.LO
         self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
@@ -86,7 +65,7 @@ class OptimizationSettings:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
     def get_max_gamma(self) -> int:
-        """Return the max gamma."""
+        """Return the constraint on the maxiumum allowed value of gamma."""
         return self.max_gamma
 
     def get_max_backjumps(self) -> int:
@@ -129,7 +108,7 @@ class OptimizationSettings:
         self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
 
     def get_cut_search_groups(self) -> list[None | str]:
-        """Return a list of search-action groups to include in the optimization."""
+        """Return a list of action groups to include in the optimization."""
         out: list
         out = [None]
 
@@ -147,7 +126,7 @@ class OptimizationSettings:
 
     @classmethod
     def from_dict(
-        cls, options: dict  # dict[str, None | int | bool | dict[str, str]]
+        cls, options: dict 
     ) -> OptimizationSettings:
-        """Return an instance of :class:`OptimizationSettings` initialized with the parameters passed in options."""
+        """Return an instance of :class:`OptimizationSettings` initialized with the parameters passed in."""
         return cls(**options)

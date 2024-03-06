@@ -55,15 +55,6 @@ class BestFirstPriorityQueue:
     Because of the design of the tuple entries that precede it, state objects
     never get evaluated in the heap-managment comparisons that are performed
     internally by the priority-queue implementation.
-
-    Member Variables:
-
-    rand_gen is a Numpy random number generator.
-
-    unique is a Python sequence counter.
-
-    pqueue is a Python priority queue (currently heapq, with plans to move to
-    queue.PriorityQueue if parallelization is ultimately required).
     """
 
     def __init__(self, rand_seed: int | None):
@@ -114,9 +105,9 @@ class BestFirstSearch:
     """Implement Dijkstra's best-first search algorithm.
 
     The search proceeds by choosing the deepest, lowest-cost state in the search
-    frontier and generating next states.  Successive calls to the :func:`optimization_pass`
-    method will resume the search at the next deepest, lowest-cost state
-    in the search frontier. The costs of goal states that are returned
+    frontier and generating next states.  Successive calls to 
+    :meth:`BestFirstSearch.optimization_pass()` will resume the search at the next deepest,
+    lowest-cost state in the search frontier. The costs of goal states that are returned
     are used to constrain subsequent searches. None is returned if no
     (additional) feasible solutions can be found, or when no (additional)
     solutions can be found without exceeding the lowest upper-bound cost
@@ -128,26 +119,26 @@ class BestFirstSearch:
     generators in the bounded best-first priority-queue objects.
 
     cost_func (lambda state, *args) is a function that computes cost values
-    from search states.  Input arguments to the :func:`optimization_pass` method are
+    from search states.  Input arguments to :meth:`BestFirstSearch.optimization_pass()`are
     also passed to the cost_func.  The cost returned can be numeric or tuples
     of numerics.  In the latter case, lexicographical comparisons are
     performed per Python semantics.
 
     next_state_func (lambda state, *args) is a function that returns a list
-    of next states generated from the input state.  Input arguments to the
-    :func:`optimization_pass` method are also passed to the next_state_func.
+    of next states generated from the input state.  Input arguments to
+    :meth:`BestFirstSearch.optimization_pass() are also passed to the next_state_func.
 
     goal_state_func (lambda state, *args) is a function that returns True if
-    the input state is a solution state of the search.  Input arguments to the
-    :func:`optimization_pass` method are also passed to the goal_state_func.
+    the input state is a solution state of the search.  Input arguments to
+    :meth:`BestFirstSearch.optimization_pass() are also passed to the goal_state_func.
 
     upperbound_cost_func (lambda goal_state, *args) can either be None or a
     function that returns an upper bound to the optimal cost given a goal_state
     as input.  The upper bound is used to prune next-states from the search in
-    subsequent calls to the :func:`optimization_pass` method.  If upperbound_cost_func
+    subsequent calls :meth:`BestFirstSearch.optimization_pass().  If upperbound_cost_func
     is None, the cost of the goal_state as determined by cost_func is used as
-    an upper bound to the optimal cost.  Input arguments to the
-    :func:`optimization_pass` method are also passed to the upperbound_cost_func.
+    an upper bound to the optimal cost.  Input arguments to :meth:`BestFirstSearch.optimization_pass()
+    are also passed to the upperbound_cost_func.
 
     mincost_bound_func (lambda *args) can either be None or a function that
     returns a cost bound that is compared to the minimum cost across all
@@ -201,7 +192,7 @@ class BestFirstSearch:
         and the functions used to perform the search, an optional Boolean flag
         can be provided to indicate whether to stop the search
         after the first minimum-cost goal state has been reached (True),
-        or whether subsequent calls to the :func:`optimization_pass` method should
+        or whether subsequent calls to :meth:`BestFirstSearch.optimization_pass() should
         return any additional minimum-cost goal states that might exist
         (False).
         """
@@ -252,7 +243,8 @@ class BestFirstSearch:
     ):
         """Perform best-first search until either a goal state is reached, or cost-bounds are reached or no further goal states can be found.
 
-        If no further goal states can be found, None is returned. The cost of the returned state is also returned. Any input arguments to
+        If no further goal states can be found, None is returned.
+        The cost of the returned state is also returned. Any input arguments to
         :func:`optimization_pass` are passed along to the search-space functions employed.
         """
         if self.mincost_bound_func is not None:
@@ -305,7 +297,7 @@ class BestFirstSearch:
     def get_stats(self, penultimate: bool = False) -> NDArray[np.int_] | None:
         """Return statistics of the search that was performed.
 
-        This is Numpy array containing the number of states visited
+        This is a Numpy array containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number
         of backjumps performed. Return None if no search is performed.

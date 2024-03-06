@@ -48,7 +48,8 @@ class DisjointSearchAction(ABC):
     ) -> list[DisjointSubcircuitsState]:
         """Return a list of search states that result from applying the action to gate_spec in the specified :class:`DisjointSubcircuitsState` state.
 
-        This is subject to the constraint that the number of resulting qubits (wires) in each subcircuit cannot exceed max_width.
+        This is subject to the constraint that the number of resulting qubits (wires)
+        in each subcircuit cannot exceed max_width.
         """
         next_list = self.next_state_primitive(state, gate_spec, max_width)
 
