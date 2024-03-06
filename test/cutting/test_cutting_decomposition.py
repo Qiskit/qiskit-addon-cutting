@@ -19,12 +19,14 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction, Barrier, Clbit
 from qiskit.circuit.library import EfficientSU2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
+from qiskit.circuit.random import random_circuit
 from qiskit.quantum_info import PauliList
 
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
+    find_cuts,
 )
 from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
@@ -256,6 +258,19 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert subcircuit.keys() == {0, 1}
             assert subcircuit[0].num_qubits == 3
             assert subcircuit[1].num_qubits == 1
+
+    def test_find_cuts(self):
+        with self.subTest("simple circuit"):
+            circuit = random_circuit(7, 6, max_operands=2, seed=1242)
+
+            cut_circ, metadata = find_cuts(
+                circuit, {"rand_seed": 111}, {"qubits_per_QPU": 4, "num_QPUs": 2}
+            )
+            cut_types = {cut[0] for cut in metadata["cuts"]}
+
+            assert len(metadata["cuts"]) == 2
+            assert {"Wire Cut", "Gate Cut"} == cut_types
+            assert np.isclose(metadata["sampling_overhead"], 127.06026169, atol=1e-8)
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):

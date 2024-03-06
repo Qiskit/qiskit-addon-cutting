@@ -271,8 +271,8 @@ def decompose_observables(
 
 def find_cuts(
     circuit: QuantumCircuit,
-    optimization: OptimizationSettings | dict[str, str | int],
-    constraints: DeviceConstraints | dict[str, int],
+    optimization: dict[str, str | int],
+    constraints: dict[str, int],
 ) -> tuple[QuantumCircuit, dict[str, Any]]:
     """
     Find cut locations in a circuit, given optimization settings and QPU constraints.
@@ -280,10 +280,8 @@ def find_cuts(
     Args:
         circuit: The circuit to cut
         optimization: Settings for controlling optimizer behavior. Currently,
-            only a best-first optimizer is supported. For a list of supported
-            optimization settings, see :class:`.OptimizationSettings`.
+            only a best-first optimizer is supported.
         constraints: QPU constraints used to generate the cut location search space.
-            For information on how to specify QPU constraints, see :class:`.DeviceConstraints`.
 
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
@@ -299,18 +297,12 @@ def find_cuts(
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
 
-    if isinstance(optimization, dict):
-        opt_settings = OptimizationSettings.from_dict(optimization)
-    else:
-        opt_settings = optimization
+    opt_settings = OptimizationSettings.from_dict(optimization)
 
     # Hard-code the optimization type to best-first
     opt_settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    if isinstance(constraints, dict):
-        constraint_settings = DeviceConstraints.from_dict(constraints)
-    else:
-        constraint_settings = constraints
+    constraint_settings = DeviceConstraints.from_dict(constraints)
 
     # Hard-code the optimizer to an LO-only optimizer
     optimizer = LOCutsOptimizer(interface, opt_settings, constraint_settings)
