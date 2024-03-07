@@ -291,9 +291,9 @@ def find_cuts(
                   seed, then a seed is obtained using an operating system call to achieve
                   an unrepeatable random initialization.
         constraints: Dictionary for specifying the constraints on the quantum device(s).
-            qubits_per_QPU: The maximum number of qubits each subcircuit can contain
-                after cutting.
-            num_QPUs: The maximum number of subcircuits produced after cutting
+            - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
+              after cutting.
+            - num_QPUs: The maximum number of subcircuits produced after cutting
 
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
