@@ -279,9 +279,22 @@ def find_cuts(
 
     Args:
         circuit: The circuit to cut
-        optimization: Settings for controlling optimizer behavior. Currently,
+        optimization: Settings dictionary for controlling optimizer behavior. Currently,
             only a best-first optimizer is supported.
-        constraints: QPU constraints used to generate the cut location search space.
+
+            max_gamma: Specifies a constraint on the maximum value of gamma that a
+                solution to the optimization is allowed to have to be considered
+                feasible. Not that the sampling overhead is ``gamma ** 2``.
+            max_backjumps: Specifies a constraint on the maximum number of backjump
+                operations that can be performed by the search algorithm.
+            rand_seed: Used to provide a repeatable initialization of the pseudorandom
+                number generators used by the optimization. If ``None`` is used as the
+                seed, then a seed is obtained using an operating system call to achieve
+                an unrepeatable random initialization.
+        constraints: Dictionary for specifying the constraints on the quantum device(s).
+            qubits_per_QPU: The maximum number of qubits each subcircuit can contain
+                after cutting.
+            num_QPUs: The maximum number of subcircuits produced after cutting
 
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
@@ -321,7 +334,8 @@ def find_cuts(
         if action[0].get_name() == "CutTwoQubitGate":
             gate_ids.append(action[1][0])
         else:
-            # We only support four types of optimizer cuts
+            # The cut-finding optimizer currently only supports 4 cutting
+            # actions: {CutTwoQubitGate + these 3 wire cut types}
             assert action[0].get_name() in (
                 "CutLeftWire",
                 "CutRightWire",
