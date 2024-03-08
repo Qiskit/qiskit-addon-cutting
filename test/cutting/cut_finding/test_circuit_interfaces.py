@@ -3,6 +3,7 @@ from __future__ import annotations
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     CircuitElement,
     SimpleGateList,
+    GateSpec,
 )
 
 from circuit_knitting.cutting.cut_finding.cut_optimization import (
@@ -35,7 +36,11 @@ class TestCircuitInterface:
         assert circuit_converted.get_num_wires() == 2
         assert circuit_converted.qubit_names.item_dict == {"q1": 0, "q0": 1}
         assert circuit_converted.get_multiqubit_gates() == [
-            [4, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None]
+            GateSpec(
+                instruction_id=4,
+                gate=CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+                cut_constraints=None,
+            )
         ]
 
         assert circuit_converted.circuit == [

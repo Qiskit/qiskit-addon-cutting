@@ -25,8 +25,16 @@ class CircuitElement(NamedTuple):
 
     name: str
     params: list[float | int]
-    qubits: Sequence[int | tuple[str, int]]
+    qubits: list[int | tuple[str, int]]
     gamma: int | float | None
+
+
+class GateSpec(NamedTuple):
+    """Named tuple for gate specification."""
+
+    instruction_id: int
+    gate: CircuitElement
+    cut_constraints: list | None
 
 
 class CircuitInterface(ABC):
@@ -48,7 +56,7 @@ class CircuitInterface(ABC):
         member functions implemented by the derived class to replace the gate
         with the decomposition determined by the optimizer.
 
-        The <gate_specification> must be of the form of CircuitElement.
+        The <gate_specification> must be of the form of :class`CircuitElement`.
 
         The <gate_name> must be a hashable identifier that can be used to
         look up cutting rules for the specified gate. Gate names are typically
@@ -132,7 +140,7 @@ class SimpleGateList(CircuitInterface):
     specifications.
 
     new_circuit (list): a list of gate specifications that define
-    the cut circuit. As with circuit, qubit IDs are used to identify
+    the cut circuit. As with ``circuit``, qubit IDs are used to identify
     wires/qubits.
 
     cut_type (list): a list that assigns cut-type annotations to gates
@@ -149,9 +157,8 @@ class SimpleGateList(CircuitInterface):
     wire IDs defines a subcircuit.
     """
 
-    circuit: list[list[str | None] | list[CircuitElement | None]]
-    # new_circuit: Sequence[CircuitElement | str | list[str | int]]
-    new_circuit: Sequence[CircuitElement | str | Sequence]
+    circuit: list
+    new_circuit: list
     cut_type: list[str | None]
     qubit_names: NameToIDMap
     num_qubits: int
@@ -161,7 +168,7 @@ class SimpleGateList(CircuitInterface):
     def __init__(
         self,
         input_circuit: Sequence[CircuitElement | str],
-        init_qubit_names: list[Hashable] = [],
+        init_qubit_names: list[Hashable] = list(),
     ):
         """Assign member variables."""
         self.qubit_names = NameToIDMap(init_qubit_names)
@@ -201,11 +208,11 @@ class SimpleGateList(CircuitInterface):
 
     def get_multiqubit_gates(
         self,
-    ) -> Sequence[Sequence[int | CircuitElement | None | list]]:
+    ) -> list[GateSpec]:
         """Extract the multiqubit gates from the circuit and prepend the index of the gate in the circuits to the gate specification.
 
         The elements of the resulting list therefore have the form
-            [<index> <gate_specification> <cut_constaints>]
+            [<index> <gate_specification> <cut_constraints>]
 
         The <gate_specification> and <cut_constraints> have the forms
         described above.
@@ -213,12 +220,14 @@ class SimpleGateList(CircuitInterface):
         The <index> is the list index of the corresponding element in
         self.circuit.
         """
-        subcircuit: Sequence[Sequence[int | CircuitElement | None | list]] = list()
-        for k, gate in enumerate(self.circuit):
-            if gate[0] != "barrier":
-                if len(gate[0].qubits) > 1 and gate[0].name != "barrier":  # type: ignore
-                    subcircuit = cast(list, subcircuit)
-                    subcircuit.append([k] + gate)
+        subcircuit: list[GateSpec] = list()
+        for k, circ_element in enumerate(self.circuit):
+            gate = circ_element[0]
+            cut_constraints = circ_element[1]
+            if gate != "barrier":
+                if len(gate.qubits) > 1 and gate.name != "barrier":  # type: ignore
+                    # subcircuit = cast(list, subcircuit)
+                    subcircuit.append(GateSpec(k, gate, cut_constraints))
 
         return subcircuit
 

@@ -5,6 +5,7 @@ from numpy import inf
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,
+    GateSpec,
 )
 from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimization
 from circuit_knitting.cutting.cut_finding.optimization_settings import (
@@ -14,7 +15,7 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
     DeviceConstraints,
 )
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
-    print_actions_list,
+    get_actions_list,
 )
 
 
@@ -74,22 +75,35 @@ def test_best_first_search(test_circuit: SimpleGateList):
         27,
         4,
     )  # lower and upper bounds are the same in the absence of LOCC.
-    assert print_actions_list(out.actions) == [
-        [
-            "CutTwoQubitGate",
-            [12, CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3), None],
-            ((1, 3), (2, 4)),
-        ],
-        [
-            "CutTwoQubitGate",
-            [13, CircuitElement(name="cx", params=[], qubits=[3, 5], gamma=3), None],
-            ((1, 3), (2, 5)),
-        ],
-        [
-            "CutTwoQubitGate",
-            [14, CircuitElement(name="cx", params=[], qubits=[3, 6], gamma=3), None],
-            ((1, 3), (2, 6)),
-        ],
+    actions_sublist = []
+    for i, action in enumerate(get_actions_list(out.actions)):
+        assert action.action.get_name() == "CutTwoQubitGate"
+        actions_sublist.append(get_actions_list(out.actions)[i][1:])
+    assert actions_sublist == [
+        (
+            GateSpec(
+                instruction_id=12,
+                gate=CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
+                cut_constraints=None,
+            ),
+            [((1, 3), (2, 4))],
+        ),
+        (
+            GateSpec(
+                instruction_id=13,
+                gate=CircuitElement(name="cx", params=[], qubits=[3, 5], gamma=3),
+                cut_constraints=None,
+            ),
+            [((1, 3), (2, 5))],
+        ),
+        (
+            GateSpec(
+                instruction_id=14,
+                gate=CircuitElement(name="cx", params=[], qubits=[3, 6], gamma=3),
+                cut_constraints=None,
+            ),
+            [((1, 3), (2, 6))],
+        ),
     ]
 
     out, _ = op.optimization_pass()

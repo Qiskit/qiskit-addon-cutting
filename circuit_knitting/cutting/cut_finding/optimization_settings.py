@@ -125,8 +125,6 @@ class OptimizationSettings:
         return out
 
     @classmethod
-    def from_dict(
-        cls, options: dict 
-    ) -> OptimizationSettings:
+    def from_dict(cls, options: dict) -> OptimizationSettings:
         """Return an instance of :class:`OptimizationSettings` initialized with the parameters passed in."""
         return cls(**options)

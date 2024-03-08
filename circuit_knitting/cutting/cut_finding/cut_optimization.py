@@ -26,7 +26,7 @@ from .search_space_generator import (
     SearchSpaceGenerator,
 )
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
-from .circuit_interface import SimpleGateList, CircuitElement, Sequence
+from .circuit_interface import SimpleGateList, CircuitElement, GateSpec
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 
@@ -35,9 +35,7 @@ from .quantum_device_constraints import DeviceConstraints
 class CutOptimizationFuncArgs:
     """Collect arguments for passing to the search-space generating methods in :class:`CutOptimization`."""
 
-    entangling_gates: Sequence[Sequence[int | CircuitElement | None | list]] | None = (
-        None
-    )
+    entangling_gates: list[GateSpec] | None = None
     search_actions: ActionNames | None = None
     max_gamma: float | int | None = None
     qpu_width: int | None = None
@@ -89,8 +87,9 @@ def cut_optimization_next_state_func(
     # Determine which cutting actions can be performed, taking into
     # account any user-specified constraints that might have been
     # placed on how the current entangling gate is to be handled.
-    gate = gate_spec[1]
-    gate = cast(CircuitElement, gate)
+
+    gate = gate_spec.gate
+    gate = cast(CircuitElement, gate_spec.gate)
     if len(gate.qubits) == 2:
         action_list = func_args.search_actions.get_group("TwoQubitGates")
     else:
@@ -98,7 +97,7 @@ def cut_optimization_next_state_func(
             "In the current version, only the cutting of two qubit gates is supported."
         )
 
-    gate_actions = gate_spec[2]
+    gate_actions = gate_spec.cut_constraints
     gate_actions = cast(list, gate_actions)
     action_list = get_action_subset(action_list, gate_actions)
 
@@ -316,7 +315,7 @@ def max_wire_cuts_circuit(circuit_interface: SimpleGateList) -> int:
     loss of generality we can assume that wire cutting is
     performed only on the inputs to multiqubit gates.
     """
-    multiqubit_wires = [len(x[1].qubits) for x in circuit_interface.get_multiqubit_gates()]  # type: ignore
+    multiqubit_wires = [len(x.gate.qubits) for x in circuit_interface.get_multiqubit_gates()]  # type: ignore
     return sum(multiqubit_wires)
 
 

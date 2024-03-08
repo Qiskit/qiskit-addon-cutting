@@ -14,7 +14,9 @@ from circuit_knitting.cutting.cut_finding.cutting_actions import (
 )
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
-    print_actions_list,
+    get_actions_list,
+    CutIdentifier,
+    GateCutLocation,
 )
 from circuit_knitting.cutting.cut_finding.search_space_generator import ActionNames
 
@@ -29,7 +31,7 @@ def test_circuit():
 
     interface = SimpleGateList(circuit)
 
-    # initialize DisjointSubcircuitsState object.
+    # initialize instance of :class:`DisjointSubcircuitsState`.
     state = DisjointSubcircuitsState(interface.get_num_qubits(), 2)
 
     two_qubit_gate = interface.get_multiqubit_gates()[0]
@@ -77,14 +79,21 @@ def test_cut_two_qubit_gate(
     updated_state = cut_gate.next_state_primitive(state, two_qubit_gate, 2)
     actions_list = []
     for state in updated_state:
-        actions_list.extend(print_actions_list(state.actions))
+        actions_list.extend(state.cut_actions_sublist())
     assert actions_list == [
-        [
-            "CutTwoQubitGate",
-            [2, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
-            ((1, 0), (2, 1)),
-        ]
+        CutIdentifier(
+            cut_action="CutTwoQubitGate",
+            gate_cut_location=GateCutLocation(instruction_id=2, gate_name="cx"),
+        )
     ]
+
+    # assert actions_list == [
+    #     [
+    #         "CutTwoQubitGate",
+    #         [2, CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3), None],
+    #         ((1, 0), (2, 1)),
+    #     ]
+    # ]
 
     assert cut_gate.get_cost_params(two_qubit_gate) == (
         3,
@@ -115,13 +124,13 @@ def test_cut_left_wire(
     updated_state = cut_left_wire.next_state_primitive(state, two_qubit_gate, 3)
     actions_list = []
     for state in updated_state:
-        actions_list.extend(print_actions_list(state.actions))
-    # TO-DO: Consider replacing actions_list with a NamedTuple.
-    assert actions_list[0][0] == "CutLeftWire"
-    assert actions_list[0][1][1] == CircuitElement(
-        name="cx", params=[], qubits=[0, 1], gamma=3
-    )
-    assert actions_list[0][2][0][0] == 1  # the first input ('left') wire is cut.
+        actions_list.extend(get_actions_list(state.actions))
+    for action in actions_list:
+        assert action.action.get_name() == "CutLeftWire"
+        assert action.gate_spec.gate == CircuitElement(
+            name="cx", params=[], qubits=[0, 1], gamma=3
+        )
+        assert action.args[0][0] == 1  # the first input ('left') wire is cut.
 
 
 def test_cut_right_wire(
@@ -141,12 +150,14 @@ def test_cut_right_wire(
     updated_state = cut_right_wire.next_state_primitive(state, two_qubit_gate, 3)
     actions_list = []
     for state in updated_state:
-        actions_list.extend(print_actions_list(state.actions))
-    assert actions_list[0][0] == "CutRightWire"
-    assert actions_list[0][1][1] == CircuitElement(
-        name="cx", params=[], qubits=[0, 1], gamma=3
-    )
-    assert actions_list[0][2][0][0] == 2  # the second input ('right') wire is cut
+        actions_list.extend(get_actions_list(state.actions))
+
+    for action in actions_list:
+        assert action.action.get_name() == "CutRightWire"
+        assert action.gate_spec.gate == CircuitElement(
+            name="cx", params=[], qubits=[0, 1], gamma=3
+        )
+        assert action.args[0][0] == 2  # the second input ('right') wire is cut
 
 
 def test_defined_actions():

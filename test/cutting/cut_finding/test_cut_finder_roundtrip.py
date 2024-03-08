@@ -9,7 +9,6 @@ from qiskit.circuit.library import EfficientSU2
 from circuit_knitting.cutting.cut_finding.cco_utils import qc_to_cco_circuit
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
-    CircuitElement,
 )
 from circuit_knitting.cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
@@ -18,7 +17,11 @@ from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
     DeviceConstraints,
 )
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
-    print_actions_list,
+    get_actions_list,
+    OneWireCutIdentifier,
+    WireCutLocation,
+    CutIdentifier,
+    GateCutLocation,
 )
 from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
     LOCutsOptimizer,
@@ -81,7 +84,7 @@ def test_no_cuts(
 
     output = optimization_pass.optimize(interface, settings, constraint_obj)
 
-    assert print_actions_list(output.actions) == []  # no cutting.
+    assert get_actions_list(output.actions) == []  # no cutting.
 
     assert interface.export_subcircuits_as_string(name_mapping="default") == "AAAA"
 
@@ -104,20 +107,14 @@ def test_gate_cuts(
     cut_actions_list = output.cut_actions_sublist()
 
     assert cut_actions_list == [
-        {
-            "Cut action": "CutTwoQubitGate",
-            "Cut Gate": [
-                9,
-                CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
-            ],
-        },
-        {
-            "Cut action": "CutTwoQubitGate",
-            "Cut Gate": [
-                20,
-                CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3.0),
-            ],
-        },
+        CutIdentifier(
+            cut_action="CutTwoQubitGate",
+            gate_cut_location=GateCutLocation(instruction_id=9, gate_name="cx"),
+        ),
+        CutIdentifier(
+            cut_action="CutTwoQubitGate",
+            gate_cut_location=GateCutLocation(instruction_id=20, gate_name="cx"),
+        ),
     ]
 
     best_result = optimization_pass.get_results()
@@ -152,16 +149,12 @@ def test_wire_cuts(
     cut_actions_list = output.cut_actions_sublist()
 
     assert cut_actions_list == [
-        {
-            "Cut action": "CutLeftWire",
-            "Cut location:": {
-                "Gate": [
-                    10,
-                    CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
-                ]
-            },
-            "Input wire": 1,
-        }
+        OneWireCutIdentifier(
+            cut_action="CutLeftWire",
+            wire_cut_location=WireCutLocation(
+                instruction_id=10, gate_name="cx", input=1
+            ),
+        )
     ]
 
     best_result = optimization_pass.get_results()

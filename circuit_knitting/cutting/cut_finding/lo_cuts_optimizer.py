@@ -52,8 +52,8 @@ class LOCutsOptimizer:
     is updated to reflect the optimized circuit cuts that were
     identified.
 
-    :meth:`LOCutsOptimizer.optimize()` returns :data:`best_result`, an instance of :class:`DisjointSubcircuitsState`, 
-    which is the lowest-cost DisjointSubcircuitsState object identified in the search.
+    :meth:`LOCutsOptimizer.optimize()` returns ``best_result``, an instance of :class:`DisjointSubcircuitsState`,
+    which is the lowest-cost :class:`DisjointSubcircuitsState` instance identified in the search.
     """
 
     def __init__(
@@ -82,7 +82,7 @@ class LOCutsOptimizer:
         optimization_settings: OptimizationSettings | None = None,
         device_constraints: DeviceConstraints | None = None,
     ) -> DisjointSubcircuitsState | None:
-        """Optimize the cutting of a circuit.
+        """Optimize the cutting of a circuit by calling :meth:`CutOptimization.optimization_pass()`.
 
         Args:
         circuit_interface: defines the circuit to be
@@ -161,7 +161,7 @@ class LOCutsOptimizer:
 def print_state_list(
     state_list: list[DisjointSubcircuitsState],
 ) -> None:  # pragma: no cover
-    """Call the :func:`print` method defined for a :class:`DisjointSubcircuitsState` instance."""
+    """Call the :meth:`print()` method defined for a :class:`DisjointSubcircuitsState` instance."""
     for x in state_list:
         print()
         x.print(simple=True)

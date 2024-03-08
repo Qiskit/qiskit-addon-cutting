@@ -17,11 +17,52 @@ import copy
 import numpy as np
 from numpy.typing import NDArray
 from collections import Counter
-from typing import Hashable, Iterable, TYPE_CHECKING, no_type_check, cast
-from .circuit_interface import CircuitElement, SimpleGateList
+from .circuit_interface import SimpleGateList, GateSpec
+from typing import Hashable, Iterable, TYPE_CHECKING, no_type_check, cast, NamedTuple
 
 if TYPE_CHECKING:  # pragma: no cover
     from .cutting_actions import DisjointSearchAction
+
+
+class Action(NamedTuple):
+    """Named tuple for specification of cutting action."""
+
+    action: DisjointSearchAction
+    gate_spec: GateSpec
+    args: list
+
+
+class GateCutLocation(NamedTuple):
+    """Named tuple for specification of gate cut location."""
+
+    instruction_id: int
+    gate_name: str
+
+
+class WireCutLocation(NamedTuple):
+    """Named tuple for specification of wire cut location.
+
+    Wire cuts are identified through the gates whose input wires are cut.
+    """
+
+    instruction_id: int
+    gate_name: str
+    input: int
+
+
+class CutIdentifier(NamedTuple):
+    """Named tuple for specification of location of :class:`CutTwoQubitGate` or :class:`CutBothWires` instances."""
+
+    cut_action: DisjointSearchAction
+    gate_cut_location: GateCutLocation
+
+
+# Used for dentifying CutLeftWire and CutRightWire actions.
+class OneWireCutIdentifier(NamedTuple):
+    """Named tuple for specification of location of :class:`CutLeftWire` or :class:`CutRightWire` instances."""
+
+    cut_action: DisjointSearchAction
+    wire_cut_location: WireCutLocation
 
 
 class DisjointSubcircuitsState:
@@ -56,8 +97,7 @@ class DisjointSubcircuitsState:
     order to implement optimal LOCC wire and gate cuts using ancillas.
 
     gamma_LB: a float that is the cumulative lower-bound gamma for circuit cuts
-    that cannot be constructed using Bell pairs, such as LO gate cuts
-    for small-angled rotations.
+    that cannot be constructed using Bell pairs.
 
     gamma_UB: a float that is the cumulative upper-bound gamma for all circuit
     cuts assuming all cuts are LO.
@@ -70,17 +110,7 @@ class DisjointSubcircuitsState:
     wire IDs, the constraint is that at least one pair of corresponding
     subcircuits cannot be merged.
 
-    actions: a list that contains a list of circuit-cutting actions that have
-    been performed on the circuit.  Elements of the list have the form
-
-        [<action_object>, <gate_specification>, (<arg_1>, ..., <arg_n>)]
-
-    The <action_object> is the object that was used to generate the
-    circuit cut.  The <gate_specification> is the specification of the
-    cut gate using the format defined in the :class:`CircuitInterface` class
-    description.  The trailing entries are the arguments needed by the
-    <action_object> that can be used to explore the space of QPD assignments
-    to the circuit-cutting action.
+    actions: a list of instances of :class:`Action`.
 
     level: an int which specifies the level in the search tree at which this search
     state resides, with 0 being the root of the search tree.
@@ -113,7 +143,7 @@ class DisjointSubcircuitsState:
             self.gamma_UB: float | None = None
 
             self.no_merge: list[tuple] | None = None
-            self.actions: list[list] | None = None
+            self.actions: list[Action] | None = None
             self.cut_actions_list: list | None = None
             self.level: int | None = None
 
@@ -161,36 +191,41 @@ class DisjointSubcircuitsState:
         """Make shallow copy."""
         return copy.copy(self)
 
-    def cut_actions_sublist(self) -> list[list | dict]:
+    def cut_actions_sublist(self) -> list[NamedTuple]:
         """Create a formatted list containing the actions carried out on an instance of :class:`DisjointSubcircuitState`.
 
         Also include the locations of these actions which are specified in terms of the associated gates and wires.
         """
         self.actions = cast(list, self.actions)
-        cut_actions = print_actions_list(self.actions)
+        cut_actions = get_actions_list(self.actions)
 
-        # Output formatting for LO gate and wire cuts.
-        # TODO: Change to NamedTuples.
+        # Output formatting for LO gate and wire cuts
         self.cut_actions_list = cast(list, self.cut_actions_list)
         for i in range(len(cut_actions)):
-            if (cut_actions[i][0] == "CutLeftWire") or (
-                cut_actions[i][0] == "CutRightWire"
-            ):
+            if cut_actions[i].action.get_name() in ("CutLeftWire", "CutRightWire"):
                 self.cut_actions_list.append(
-                    {
-                        "Cut action": cut_actions[i][0],
-                        "Cut location:": {
-                            "Gate": [cut_actions[i][1][0], cut_actions[i][1][1]]
-                        },
-                        "Input wire": cut_actions[i][2][0][0],
-                    }
+                    OneWireCutIdentifier(
+                        cut_actions[i].action.get_name(),
+                        WireCutLocation(
+                            cut_actions[i].gate_spec.instruction_id,
+                            cut_actions[i].gate_spec.gate.name,
+                            cut_actions[i].args[0][0],
+                        ),
+                    )
                 )
-            elif cut_actions[i][0] == "CutTwoQubitGate":
+            elif cut_actions[i].action.get_name() in (
+                "CutTwoQubitGate",
+                "CutBothWires",
+            ):
+                # For CutBothWires both inputs are cut and so the inputs need not be specified.
                 self.cut_actions_list.append(
-                    {
-                        "Cut action": cut_actions[i][0],
-                        "Cut Gate": [cut_actions[i][1][0], cut_actions[i][1][1]],
-                    }
+                    CutIdentifier(
+                        cut_actions[i].action.get_name(),
+                        GateCutLocation(
+                            cut_actions[i].gate_spec.instruction_id,
+                            cut_actions[i].gate_spec.gate.name,
+                        ),
+                    )
                 )
             if not self.cut_actions_list:
                 self.cut_actions_list = cut_actions
@@ -213,7 +248,7 @@ class DisjointSubcircuitsState:
             print("lowerBound", self.lower_bound_gamma())
             print("gamma_UB", self.gamma_UB)
             print("no_merge", self.no_merge)
-            print("actions", print_actions_list(self.actions))
+            print("actions", get_actions_list(self.actions))
             print("level", self.level)
 
     def get_num_qubits(self) -> int:
@@ -233,7 +268,7 @@ class DisjointSubcircuitsState:
         return [i for i, j in enumerate(self.uptree[: self.num_wires]) if i == j]
 
     def get_wire_root_mapping(self) -> list[int]:
-        """Return a list of root wires for each wire in the current cut circuit."""
+        """Return a list of root wires for each wire in the current state of the circuit."""
         self.num_wires = cast(int, self.num_wires)
         return [self.find_wire_root(i) for i in range(self.num_wires)]
 
@@ -371,13 +406,13 @@ class DisjointSubcircuitsState:
     def add_action(
         self,
         action_obj: DisjointSearchAction,
-        gate_spec: list[int | CircuitElement | None | list],
-        *args,
+        gate_spec: GateSpec,
+        args: tuple | None = None,
     ) -> None:
         """Append the specified action to the list of search-space actions that have been performed."""
         if action_obj.get_name() is not None:
             self.actions = cast(list, self.actions)
-            self.actions.append([action_obj, gate_spec, args])
+            self.actions.append(Action(action_obj, gate_spec, [args]))
 
     def get_search_level(self) -> int:
         """Return the search level."""
@@ -398,8 +433,13 @@ class DisjointSubcircuitsState:
         wire_map = np.arange(self.num_wires)
 
         assert self.actions is not None
-        for action, gate_spec, cut_args in self.actions:
-            action.export_cuts(circuit_interface, wire_map, gate_spec, cut_args)
+        for action in self.actions:
+            action.action.export_cuts(  # type: ignore
+                circuit_interface,
+                wire_map,
+                action.gate_spec,
+                action.args,
+            )
 
         root_list = self.get_sub_circuit_indices()
         wires_to_roots = self.get_wire_root_mapping()
@@ -428,8 +468,8 @@ def calc_root_bell_pairs_gamma(root_bell_pairs: Iterable[Hashable]) -> float:
     return gamma
 
 
-def print_actions_list(
-    action_list: list[list],
-) -> list[list[str | list | tuple]]:
+def get_actions_list(
+    action_list: list[Action],
+) -> list[Action]:
     """Return a list specifying objects that represent cutting actions assoicated with an instance of :class:`DisjointSubcircuitsState`."""
-    return [[x[0].get_name()] + x[1:] for x in action_list]
+    return action_list

@@ -105,7 +105,7 @@ class BestFirstSearch:
     """Implement Dijkstra's best-first search algorithm.
 
     The search proceeds by choosing the deepest, lowest-cost state in the search
-    frontier and generating next states.  Successive calls to 
+    frontier and generating next states.  Successive calls to
     :meth:`BestFirstSearch.optimization_pass()` will resume the search at the next deepest,
     lowest-cost state in the search frontier. The costs of goal states that are returned
     are used to constrain subsequent searches. None is returned if no
