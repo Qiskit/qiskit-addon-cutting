@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence, Hashable
-from typing import NamedTuple
+from typing import NamedTuple, cast, Any
 
 from qiskit.circuit import (
     QuantumCircuit,
@@ -28,6 +28,13 @@ from ..utils.observable_grouping import observables_restricted_to_subsystem
 from ..utils.transforms import separate_circuit, _partition_labels_from_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
+from .instructions import CutWire
+from .cut_finding.optimization_settings import OptimizationSettings
+from .cut_finding.quantum_device_constraints import DeviceConstraints
+from .cut_finding.disjoint_subcircuits_state import DisjointSubcircuitsState
+from .cut_finding.circuit_interface import SimpleGateList
+from .cut_finding.lo_cuts_optimizer import LOCutsOptimizer
+from .cut_finding.cco_utils import qc_to_cco_circuit
 
 
 class PartitionedCuttingProblem(NamedTuple):
@@ -260,3 +267,118 @@ def decompose_observables(
     }
 
     return subobservables_by_subsystem
+
+
+def find_cuts(
+    circuit: QuantumCircuit,
+    optimization: dict[str, str | int],
+    constraints: dict[str, int],
+) -> tuple[QuantumCircuit, dict[str, Any]]:
+    """
+    Find cut locations in a circuit, given optimization settings and QPU constraints.
+
+    Args:
+        circuit: The circuit to cut
+        optimization: Settings dictionary for controlling optimizer behavior. Currently,
+            only a best-first optimizer is supported.
+                - max_gamma: Specifies a constraint on the maximum value of gamma that a
+                  solution to the optimization is allowed to have to be considered
+                  feasible. Not that the sampling overhead is ``gamma ** 2``.
+                - max_backjumps: Specifies a constraint on the maximum number of backjump
+                  operations that can be performed by the search algorithm.
+                - rand_seed: Used to provide a repeatable initialization of the pseudorandom
+                  number generators used by the optimization. If ``None`` is used as the
+                  seed, then a seed is obtained using an operating system call to achieve
+                  an unrepeatable random initialization.
+        constraints: Dictionary for specifying the constraints on the quantum device(s).
+            - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
+              after cutting.
+            - num_QPUs: The maximum number of subcircuits produced after cutting
+
+    Returns:
+        A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
+        resulting from cutting these gates will be runnable on the devices
+        specified in ``constraints``.
+
+        A metadata dictionary:
+            - cuts: A list of length-2 tuples describing each cut in the output circuit.
+              The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
+              cut ID is the index of the cut gate or wire in the output circuit's
+              ``data`` field.
+            - sampling_overhead: The sampling overhead incurred from cutting the specified
+              gates and wires.
+    """
+    circuit_cco = qc_to_cco_circuit(circuit)
+    interface = SimpleGateList(circuit_cco)
+
+    opt_settings = OptimizationSettings.from_dict(optimization)
+
+    # Hard-code the optimization type to best-first
+    opt_settings.set_engine_selection("CutOptimization", "BestFirst")
+
+    constraint_settings = DeviceConstraints.from_dict(constraints)
+
+    # Hard-code the optimizer to an LO-only optimizer
+    optimizer = LOCutsOptimizer(interface, opt_settings, constraint_settings)
+
+    # Find cut locations
+    opt_out = optimizer.optimize()
+
+    wire_cut_actions = []
+    gate_ids = []
+
+    opt_out = cast(DisjointSubcircuitsState, opt_out)
+    opt_out.actions = cast(list, opt_out.actions)
+    for action in opt_out.actions:
+        if action[0].get_name() == "CutTwoQubitGate":
+            gate_ids.append(action[1][0])
+        else:
+            # The cut-finding optimizer currently only supports 4 cutting
+            # actions: {CutTwoQubitGate + these 3 wire cut types}
+            assert action[0].get_name() in (
+                "CutLeftWire",
+                "CutRightWire",
+                "CutBothWires",
+            )
+            wire_cut_actions.append(action)
+
+    # First, replace all gates to cut with BaseQPDGate instances.
+    # This assumes each gate to cut is replaced 1-to-1 with a QPD gate.
+    # This may not hold in the future as we stop treating gate cuts individually.
+    circ_out = cut_gates(circuit, gate_ids)[0]
+
+    # Insert all the wire cuts
+    counter = 0
+    for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
+        inst_id = action[1][0]
+        # action[2][0][0] will be either 1 (control) or 2 (target)
+        qubit_id = action[2][0][0] - 1
+        circ_out.data.insert(
+            inst_id + counter,
+            CircuitInstruction(
+                CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id]], []
+            ),
+        )
+        counter += 1
+        if action[0].get_name() == "CutBothWires":
+            # There should be two wires specified in the action in this case
+            assert len(action[2]) == 2
+            qubit_id2 = action[2][1][0] - 1
+            circ_out.data.insert(
+                inst_id + counter,
+                CircuitInstruction(
+                    CutWire(), [circuit.data[inst_id + counter].qubits[qubit_id2]], []
+                ),
+            )
+            counter += 1
+
+    # Return metadata describing the cut scheme
+    metadata: dict[str, Any] = {"cuts": []}
+    for i, inst in enumerate(circ_out.data):
+        if inst.operation.name == "qpd_2q":
+            metadata["cuts"].append(("Gate Cut", i))
+        elif inst.operation.name == "cut_wire":
+            metadata["cuts"].append(("Wire Cut", i))
+    metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
+
+    return circ_out, metadata

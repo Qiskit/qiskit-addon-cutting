@@ -77,12 +77,12 @@ CutQC
     cutqc.reconstruct_full_distribution
 """
 
-from .cut_finding import find_cuts
 from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
     PartitionedCuttingProblem,
+    find_cuts,
 )
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
@@ -98,4 +98,5 @@ __all__ = [
     "PartitionedCuttingProblem",
     "cut_wires",
     "expand_observables",
+    "find_cuts",
 ]
