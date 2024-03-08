@@ -168,7 +168,7 @@ class CutOptimization:
     circuit (:class:`CircuitInterface`) is the interface for the circuit
     to be cut.
 
-    settings (:class:`OptimizationSettings`)contains the settings that
+    settings (:class:`OptimizationSettings`) contains the settings that
     control the optimization process.
 
     constraints (:class:`DeviceConstraints`) contains the device constraints
@@ -201,7 +201,7 @@ class CutOptimization:
     ):
         """Assign member variables.
 
-        A CutOptimization object must be initialized with
+        An instance of :class:`CutOptimization` must be initialized with
         a specification of all of the parameters of the optimization to be
         performed: i.e., the circuit to be cut, the optimization settings,
         the target-device constraints, the functions for generating the
@@ -308,7 +308,10 @@ class CutOptimization:
 
 
 def max_wire_cuts_circuit(circuit_interface: SimpleGateList) -> int:
-    """Calculate an upper bound on the maximum possible number of wire cuts, given the total number of inputs to multiqubit gates in the circuit.
+    """Calculate an upper bound on the maximum possible number of wire cuts.
+
+    This is constrained by the total number of inputs to multiqubit gates in
+    the circuit.
 
     NOTE: There is no advantage gained by cutting wires that
     only have single qubit gates acting on them, so without

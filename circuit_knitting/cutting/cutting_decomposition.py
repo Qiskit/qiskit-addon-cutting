@@ -278,35 +278,37 @@ def find_cuts(
     Find cut locations in a circuit, given optimization settings and QPU constraints.
 
     Args:
-        circuit: The circuit to cut
-        optimization: Settings dictionary for controlling optimizer behavior. Currently,
-            only a best-first optimizer is supported.
-                - max_gamma: Specifies a constraint on the maximum value of gamma that a
-                  solution to the optimization is allowed to have to be considered
-                  feasible. Not that the sampling overhead is ``gamma ** 2``.
-                - max_backjumps: Specifies a constraint on the maximum number of backjump
-                  operations that can be performed by the search algorithm.
-                - rand_seed: Used to provide a repeatable initialization of the pseudorandom
-                  number generators used by the optimization. If ``None`` is used as the
-                  seed, then a seed is obtained using an operating system call to achieve
-                  an unrepeatable random initialization.
-        constraints: Dictionary for specifying the constraints on the quantum device(s).
-            - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
-              after cutting.
-            - num_QPUs: The maximum number of subcircuits produced after cutting
+    circuit: The circuit to cut
+
+    optimization: Settings dictionary for controlling optimizer behavior. Currently,
+    only a best-first optimizer is supported.
+    - max_gamma: Specifies a constraint on the maximum value of gamma that a
+    solution to the optimization is allowed to have to be considered
+    feasible. Not that the sampling overhead is ``gamma ** 2``.
+    - max_backjumps: Specifies a constraint on the maximum number of backjump
+    operations that can be performed by the search algorithm.
+    - rand_seed: Used to provide a repeatable initialization of the pseudorandom
+    number generators used by the optimization. If ``None`` is used as the
+    seed, then a seed is obtained using an operating system call to achieve
+    an unrepeatable random initialization.
+
+    constraints: Dictionary for specifying the constraints on the quantum device(s).
+    - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
+    after cutting.
+    - num_QPUs: The maximum number of subcircuits produced after cutting
 
     Returns:
-        A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
-        resulting from cutting these gates will be runnable on the devices
-        specified in ``constraints``.
+    A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
+    resulting from cutting these gates will be runnable on the devices
+    specified in ``constraints``.
 
-        A metadata dictionary:
-            - cuts: A list of length-2 tuples describing each cut in the output circuit.
-              The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
-              cut ID is the index of the cut gate or wire in the output circuit's
-              ``data`` field.
-            - sampling_overhead: The sampling overhead incurred from cutting the specified
-              gates and wires.
+    A metadata dictionary:
+    - cuts: A list of length-2 tuples describing each cut in the output circuit.
+    The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
+    cut ID is the index of the cut gate or wire in the output circuit's
+    ``data`` field.
+    - sampling_overhead: The sampling overhead incurred from cutting the specified
+    gates and wires.
     """
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
@@ -330,12 +332,12 @@ def find_cuts(
     opt_out = cast(DisjointSubcircuitsState, opt_out)
     opt_out.actions = cast(list, opt_out.actions)
     for action in opt_out.actions:
-        if action[0].get_name() == "CutTwoQubitGate":
-            gate_ids.append(action[1][0])
+        if action.action.get_name() == "CutTwoQubitGate":
+            gate_ids.append(action.gate_spec.instruction_id)
         else:
             # The cut-finding optimizer currently only supports 4 cutting
             # actions: {CutTwoQubitGate + these 3 wire cut types}
-            assert action[0].get_name() in (
+            assert action.action.get_name() in (
                 "CutLeftWire",
                 "CutRightWire",
                 "CutBothWires",
@@ -350,9 +352,9 @@ def find_cuts(
     # Insert all the wire cuts
     counter = 0
     for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
-        inst_id = action[1][0]
-        # action[2][0][0] will be either 1 (control) or 2 (target)
-        qubit_id = action[2][0][0] - 1
+        inst_id = action.gate_spec.instruction_id
+        # args[0][0] will be either 1 (control) or 2 (target)
+        qubit_id = action.args[0][0] - 1
         circ_out.data.insert(
             inst_id + counter,
             CircuitInstruction(
@@ -360,10 +362,10 @@ def find_cuts(
             ),
         )
         counter += 1
-        if action[0].get_name() == "CutBothWires":
+        if action.action.get_name() == "CutBothWires":
             # There should be two wires specified in the action in this case
-            assert len(action[2]) == 2
-            qubit_id2 = action[2][1][0] - 1
+            assert len(action.args) == 2
+            qubit_id2 = action.args[1][0] - 1
             circ_out.data.insert(
                 inst_id + counter,
                 CircuitInstruction(

@@ -76,7 +76,7 @@ class ActionApplyGate(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int | float,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionApplyGate` to state given the two-qubit gate specification: gate_spec."""
+        """Return the new state that results from applying :class:`ActionApplyGate` to state given ``gate_spec``."""
         gate = gate_spec.gate
 
         # extract the root wire for the first qubit
@@ -128,7 +128,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionCutTwoQubitGate` to state given the gate_spec."""
+        """Return the new state that results from applying :class:`ActionCutTwoQubitGate` to state given ``gate_spec``."""
         gate = gate_spec.gate
 
         # Cutting of multi-qubit gates is not supported in this release.

@@ -30,7 +30,21 @@ class CircuitElement(NamedTuple):
 
 
 class GateSpec(NamedTuple):
-    """Named tuple for gate specification."""
+    """Named tuple for gate specification.
+
+    ``cut_constraints`` can be of the form
+    None,[],[None], or  [<cut_type_1>, ..., <cut_type_n>]
+
+    A cut constraint of None indicates that no constraints are placed
+    on how or whether cuts can be performed. An empty list [] or the
+    list [None] indicates that no cuts are to be performed and the gate
+    is to be applied without cutting. A list of cut types of the form
+    [<cut_type_1> ... <cut_type_n>] indicates precisely which types of
+    cuts can be considered. In this case, the cut type None must be
+    explicitly included to indicate the possibilty of not cutting, if
+    not cutting is to be considered. In the current version of the code,
+    the allowed cut types are 'None', 'GateCut' and 'WireCut'.
+    """
 
     instruction_id: int
     gate: CircuitElement
@@ -38,7 +52,7 @@ class GateSpec(NamedTuple):
 
 
 class CircuitInterface(ABC):
-    """Access and manipulate external circuit representations, and convert to the internal representation used by the circuit cutting optimization code."""
+    """Access attributes of input circuit and perform operations on the internal circuit representations."""
 
     @abstractmethod
     def get_num_qubits(self):
@@ -48,48 +62,19 @@ class CircuitInterface(ABC):
     def get_multiqubit_gates(self):
         """Return a list that specifies the multiqubit gates in the input circuit.
 
-        The returned list is of the form:
-            [ ... [<unique_index> <gate_specification> <cut_constraints>] ...]
-
-        The <unique_index> can be any object that uniquely identifies the gate
-        in the circuit. The <unique_index> can be used as an argument in other
-        member functions implemented by the derived class to replace the gate
-        with the decomposition determined by the optimizer.
-
-        The <gate_specification> must be of the form of :class`CircuitElement`.
-
-        The <gate_name> must be a hashable identifier that can be used to
-        look up cutting rules for the specified gate. Gate names are typically
-        the Qiskit names of the gates.
-
-        The <qubit_id> must be a non-negative integer with qubits numbered
-        starting with zero.  Derived classes are responsible for constructing the
-        mappings from external qubit identifiers to the corresponding qubit IDs.
-
-        The <cut_constraints> can be of the form
-            None
-            []
-            [None]
-            [<cut_type_1>, ..., <cut_type_n>]
-
-        A cut constraint of None indicates that no constraints are placed
-        on how or whether cuts can be performed. An empty list [] or the
-        list [None] indicates that no cuts are to be performed and the gate
-        is to be applied without cutting. A list of cut types of the form
-        [<cut_type_1> ... <cut_type_n>] indicates precisely which types of
-        cuts can be considered. In this case, the cut type None must be
-        explicitly included to indicate the possibilty of not cutting, if
-        not cutting is to be considered. In the current version of the code,
-        the allowed cut types are 'None', 'GateCut' and 'WireCut'.
+        The returned list is a list of instances of :class:`GateSpec`.
         """
 
     @abstractmethod
     def insert_gate_cut(self, gate_ID, cut_type):
-        """Mark the specified gate as being cut.  The cut types can only be "LO" in this release."""
+        """Mark the specified gate as being cut. The cut types can only be "LO" in this release."""
 
     @abstractmethod
     def insert_wire_cut(self, gate_ID, input_ID, src_wire_ID, dest_wire_ID, cut_type):
-        """Insert insert a wire cut into the output circuit just prior to the specified gate on the wire connected to the specified input of that gate.
+        """Insert insert a wire cut into the output circuit.
+
+        Wire cuts are inserted just prior to the specified
+        gate on the wire connected to the specified input of that gate.
 
         Gate inputs are numbered starting from 1. The wire/qubit ID of the wire to be cut
         is also provided as input to allow the wire choice to be verified.
@@ -136,22 +121,25 @@ class SimpleGateList(CircuitInterface):
 
         [ ... [<gate_specification>, None] ...]
 
-    where the qubit names have been replaced with qubit IDs in the gate
-    specifications.
+    where <gate_specification> can be a string to denote a "barrier" across
+    the entire circuit, or an instance of :class:`CircuitElement`.
+    Moreover the qubit names have been replaced with qubit IDs
+    in the gate specification.
 
-    new_circuit (list): a list of gate specifications that define
-    the cut circuit. As with ``circuit``, qubit IDs are used to identify
+    new_circuit (list): a list of the form [...<gate_specification>...] that defines
+    the cut circuit. The form of <gate_specification> is as mentioned above.
+    As with ``circuit``, qubit IDs are used to identify
     wires/qubits.
 
     cut_type (list): a list that assigns cut-type annotations to gates
-    in new_circuit.
+    in ``new_circuit``.
 
     new_gate_ID_map (list): a list that maps the positions of gates
-    in circuit to their new positions in new_circuit.
+    in circuit to their new positions in ``new_circuit``.
 
     output_wires (list): a list that maps qubit IDs in circuit to the corresponding
     output wires of new_circuit so that observables defined for circuit
-    can be remapped to new_circuit.
+    can be remapped to ``new_circuit``.
 
     subcircuits (list): a list of list of wire IDs, where each list of
     wire IDs defines a subcircuit.
@@ -211,14 +199,7 @@ class SimpleGateList(CircuitInterface):
     ) -> list[GateSpec]:
         """Extract the multiqubit gates from the circuit and prepend the index of the gate in the circuits to the gate specification.
 
-        The elements of the resulting list therefore have the form
-            [<index> <gate_specification> <cut_constraints>]
-
-        The <gate_specification> and <cut_constraints> have the forms
-        described above.
-
-        The <index> is the list index of the corresponding element in
-        self.circuit.
+        The elements of the resulting list are instances of :class:`GateSpec`.
         """
         subcircuit: list[GateSpec] = list()
         for k, circ_element in enumerate(self.circuit):
@@ -226,7 +207,6 @@ class SimpleGateList(CircuitInterface):
             cut_constraints = circ_element[1]
             if gate != "barrier":
                 if len(gate.qubits) > 1 and gate.name != "barrier":  # type: ignore
-                    # subcircuit = cast(list, subcircuit)
                     subcircuit.append(GateSpec(k, gate, cut_constraints))
 
         return subcircuit
@@ -244,7 +224,10 @@ class SimpleGateList(CircuitInterface):
         dest_wire_id: int,
         cut_type: str,
     ) -> None:
-        """Insert a wire cut into the output circuit just prior to the specified gate on the wire connected to the specified input of that gate.
+        """Insert a wire cut into the output circuit,
+
+        Wire cuts are inserted just prior to the specified
+        gate on the wire connected to the specified input of that gate.
 
         Gate inputs are numbered starting from 1.  The
         wire/qubit ID of the source wire to be cut is also provided as
