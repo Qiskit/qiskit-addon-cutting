@@ -155,7 +155,7 @@ class SimpleGateList(CircuitInterface):
 
     def __init__(
         self,
-        input_circuit: Sequence[CircuitElement | str],
+        input_circuit: list[CircuitElement | str],
         init_qubit_names: list[Hashable] = list(),
     ):
         """Assign member variables."""
@@ -224,7 +224,7 @@ class SimpleGateList(CircuitInterface):
         dest_wire_id: int,
         cut_type: str,
     ) -> None:
-        """Insert a wire cut into the output circuit,
+        """Insert a wire cut into the output circuit.
 
         Wire cuts are inserted just prior to the specified
         gate on the wire connected to the specified input of that gate.
