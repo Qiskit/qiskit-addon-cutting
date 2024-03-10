@@ -83,7 +83,6 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     qc_cut = QuantumCircuit(num_qubits)
     for k, op in enumerate([cut_circuit for cut_circuit in cut_circuit_list]):
         if cut_types[k] is None:  # only append gates that are not cut.
-            op = cast(CircuitElement, op)
             op_name = op.name
             op_qubits = op.qubits
             op_params = op.params

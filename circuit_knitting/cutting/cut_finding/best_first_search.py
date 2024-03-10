@@ -270,7 +270,6 @@ class BestFirstSearch:
                 self.num_backjumps += 1
 
             prev_depth = depth
-            state = cast(DisjointSubcircuitsState, state)
             self.goal_state_func = cast(Callable, self.goal_state_func)
             if self.goal_state_func(state, *args):
                 self.penultimate_stats = self.get_stats()
@@ -281,7 +280,6 @@ class BestFirstSearch:
 
             self.next_state_func = cast(Callable, self.next_state_func)
             next_state_list = self.next_state_func(state, *args)
-            depth = cast(int, depth)
             self.put(next_state_list, depth + 1, args)
 
         # If all states have been explored, then the minimum has been reached

@@ -24,8 +24,8 @@ class CircuitElement(NamedTuple):
     """Named tuple for specifying a circuit element."""
 
     name: str
-    params: list[float | int]
-    qubits: list[int | tuple[str, int]]
+    params: Sequence[float | int]
+    qubits: Sequence[int | tuple[str, int]]
     gamma: int | float | None
 
 
@@ -126,10 +126,12 @@ class SimpleGateList(CircuitInterface):
     Moreover the qubit names have been replaced with qubit IDs
     in the gate specification.
 
-    new_circuit (list): a list of the form [...<gate_specification>...] that defines
-    the cut circuit. The form of <gate_specification> is as mentioned above.
-    As with ``circuit``, qubit IDs are used to identify
-    wires/qubits.
+    new_circuit (list): a list that defines the cut circuit.
+    the cut circuit. In the absence of wire cuts, it has
+    the form [...<gate_specification>...] The form of <gate_specification>
+    is as mentioned above. As with ``circuit``, qubit IDs are used to identify
+    wires/qubits. After wire cuts ``new_circuit``has lists of the form
+    ["move", source_wire_id, destination_wire_id] inserted into it.
 
     cut_type (list): a list that assigns cut-type annotations to gates
     in ``new_circuit``.
@@ -204,7 +206,9 @@ class SimpleGateList(CircuitInterface):
         subcircuit: list[GateSpec] = list()
         for k, circ_element in enumerate(self.circuit):
             gate = circ_element[0]
+            gate = cast(CircuitElement, gate)
             cut_constraints = circ_element[1]
+            assert cut_constraints is None
             if gate != "barrier":
                 if len(gate.qubits) > 1 and gate.name != "barrier":  # type: ignore
                     subcircuit.append(GateSpec(k, gate, cut_constraints))
@@ -258,13 +262,12 @@ class SimpleGateList(CircuitInterface):
         self.replace_wire_ids(self.new_circuit[gate_pos:], wire_map)
 
         # Insert a move operator
-        self.new_circuit = cast(list, self.new_circuit)
         self.new_circuit.insert(gate_pos, ["move", src_wire_id, dest_wire_id])
         self.cut_type.insert(gate_pos, cut_type)
         self.new_gate_id_map[gate_id:] += 1
 
         # Update the output wires
-        op = cast(CircuitElement, self.circuit[gate_id][0])
+        op = self.circuit[gate_id][0]
         qubit = op.qubits[input_id - 1]
         self.output_wires[qubit] = dest_wire_id
 
@@ -283,7 +286,7 @@ class SimpleGateList(CircuitInterface):
     def export_cut_circuit(
         self,
         name_mapping: None | str = "default",
-    ) -> Sequence[CircuitElement | Sequence]:
+    ) -> list[CircuitElement]:
         """Return a list of gates representing the cut circuit.
 
         If None is provided as the name_mapping, then the original qubit names are
@@ -390,6 +393,7 @@ class SimpleGateList(CircuitInterface):
     def replace_wire_ids(
         self,
         gate_list: Sequence[CircuitElement | Sequence[str | int]],
+        # wire_map: Sequence[int | tuple[str, int]],
         wire_map: list[int],
     ) -> None:
         """Iterate through a list of gates and replace wire IDs with the values defined by the wire_map."""
@@ -399,7 +403,7 @@ class SimpleGateList(CircuitInterface):
                     inst.qubits[k] = wire_map[inst.qubits[k]]  # type: ignore
             elif isinstance(inst, list):
                 for k in range(1, len(inst)):
-                    inst[k] = wire_map[inst[k]]  # type: ignore
+                    inst[k] = wire_map[inst[k]]
 
 
 class NameToIDMap:
