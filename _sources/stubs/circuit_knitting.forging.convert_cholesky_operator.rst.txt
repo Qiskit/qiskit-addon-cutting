@@ -1,6 +1,0 @@
-﻿circuit\_knitting.forging.convert\_cholesky\_operator
-=====================================================
-
-.. currentmodule:: circuit_knitting.forging
-
-.. autofunction:: convert_cholesky_operator

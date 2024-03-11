@@ -1,6 +1,0 @@
-﻿circuit\_knitting.forging.cholesky\_decomposition
-=================================================
-
-.. currentmodule:: circuit_knitting.forging
-
-.. autofunction:: cholesky_decomposition

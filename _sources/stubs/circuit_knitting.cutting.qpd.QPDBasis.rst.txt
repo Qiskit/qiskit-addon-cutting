@@ -13,7 +13,6 @@
    .. autosummary::
    
       ~QPDBasis.__init__
-      ~QPDBasis.from_gate
       ~QPDBasis.from_instruction
    
    

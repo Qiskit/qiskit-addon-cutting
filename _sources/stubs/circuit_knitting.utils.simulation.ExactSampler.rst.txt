@@ -25,8 +25,6 @@
 
    .. autosummary::
    
-      ~ExactSampler.circuits
       ~ExactSampler.options
-      ~ExactSampler.parameters
    
    
