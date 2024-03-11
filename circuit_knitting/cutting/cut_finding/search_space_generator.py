@@ -24,7 +24,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class ActionNames:
-    """Map action names to individual action objects and group names to lists of action objects that are used to generate a search space.
+    """Map action names to individual action objects and group names to lists of action objects.
+
+    The action objects are used to generate a search space.
 
     Member Variables:
 
@@ -44,7 +46,7 @@ class ActionNames:
     def copy(
         self, list_of_groups: list[DisjointSearchAction | None] | None = None
     ) -> ActionNames:
-        """Return a copy of :class:`ActionNames` containing only those actions whose group affiliations intersect with list_of_groups.
+        """Return a copy of :class:`ActionNames` containing only those actions whose group affiliations intersect with ``list_of_groups``.
 
         The default is to return a copy containing all actions.
         """
@@ -185,8 +187,7 @@ class SearchFunctions:
     ) = None
 
     mincost_bound_func: (
-        Callable[[CutOptimizationFuncArgs], None | tuple[float, float]]
-        | None
+        Callable[[CutOptimizationFuncArgs], None | tuple[float, float]] | None
     ) = None
 
 
