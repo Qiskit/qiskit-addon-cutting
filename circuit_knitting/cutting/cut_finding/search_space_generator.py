@@ -159,7 +159,7 @@ class SearchFunctions:
     cost_func: (
         Callable[
             [DisjointSubcircuitsState, CutOptimizationFuncArgs],
-            int | float | tuple[int | float, int | float],
+            float | tuple[float, float],
         ]
         | None
     ) = None
@@ -179,13 +179,13 @@ class SearchFunctions:
     upperbound_cost_func: (
         Callable[
             [DisjointSubcircuitsState, CutOptimizationFuncArgs],
-            tuple[int | float, int | float],
+            tuple[float, float],
         ]
         | None
     ) = None
 
     mincost_bound_func: (
-        Callable[[CutOptimizationFuncArgs], None | tuple[int | float, int | float]]
+        Callable[[CutOptimizationFuncArgs], None | tuple[float, float]]
         | None
     ) = None
 

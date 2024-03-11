@@ -49,7 +49,7 @@ def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
         if inst.operation.name == "barrier" and len(inst.qubits) == circuit.num_qubits:
             circuit_element: CircuitElement | str = "barrier"
         else:
-            gamma: int | float | None = None
+            gamma = None
             if isinstance(inst.operation, Gate) and len(inst.qubits) == 2:
                 gamma = QPDBasis.from_instruction(inst.operation).kappa
             name = inst.operation.name

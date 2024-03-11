@@ -40,7 +40,7 @@ class OptimizationSettings:
     flags have been incorporated with an eye towards future releases.
     """
 
-    max_gamma: int = 1024
+    max_gamma: float = 1024
     max_backjumps: int = 10000
     rand_seed: int | None = None
     LO: bool = True
@@ -64,7 +64,7 @@ class OptimizationSettings:
         if self.engine_selections is None:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
-    def get_max_gamma(self) -> int:
+    def get_max_gamma(self) -> float:
         """Return the constraint on the maxiumum allowed value of gamma."""
         return self.max_gamma
 

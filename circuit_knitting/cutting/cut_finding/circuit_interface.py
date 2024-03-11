@@ -26,7 +26,7 @@ class CircuitElement(NamedTuple):
     name: str
     params: Sequence[float | int]
     qubits: Sequence[int | tuple[str, int]]
-    gamma: int | float | None
+    gamma: float | None
 
 
 class GateSpec(NamedTuple):
@@ -206,7 +206,6 @@ class SimpleGateList(CircuitInterface):
         subcircuit: list[GateSpec] = list()
         for k, circ_element in enumerate(self.circuit):
             gate = circ_element[0]
-            gate = cast(CircuitElement, gate)
             cut_constraints = circ_element[1]
             assert cut_constraints is None
             if gate != "barrier":
@@ -336,7 +335,8 @@ class SimpleGateList(CircuitInterface):
         for k, subcircuit in enumerate(self.subcircuits):
             subcircuit = cast(list, subcircuit)
             for wire in subcircuit:
-                out[wire_map[wire]] = alphabet[k]  # type: ignore
+                wire_map = cast(list, wire_map)
+                out[wire_map[wire]] = alphabet[k]
         return "".join(out)
 
     def make_wire_mapping(

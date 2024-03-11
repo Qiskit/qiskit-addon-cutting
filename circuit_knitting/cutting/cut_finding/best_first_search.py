@@ -67,7 +67,7 @@ class BestFirstPriorityQueue:
         self,
         state: DisjointSubcircuitsState,
         depth: int,
-        cost: int | float | tuple[int | float, int | float],
+        cost: float | tuple[float, float],
     ) -> None:
         """Push state onto the priority queue.
 
@@ -81,7 +81,7 @@ class BestFirstPriorityQueue:
     def get(
         self,
     ) -> tuple:
-        """Return the lowest cost state currently on the queue, along with the search depth of that state and its cost.
+        """Return the lowest cost state currently on the queue, along with its depth and cost.
 
         None, None, None is returned if the priority queue is empty.
         """
@@ -238,10 +238,13 @@ class BestFirstSearch:
         tuple[None, None]
         | tuple[
             DisjointSubcircuitsState | None,
-            int | float | tuple[int | float, int | float],
+            float | tuple[float, float],
         ]
     ):
-        """Perform best-first search until either a goal state is reached, or cost-bounds are reached or no further goal states can be found.
+        """Perform best-first search.
+
+        Run until either a goal state is reached,
+        or cost-bounds are reached or no further goal states can be found.
 
         If no further goal states can be found, None is returned.
         The cost of the returned state is also returned. Any input arguments to
@@ -317,13 +320,11 @@ class BestFirstSearch:
 
     def get_upperbound_cost(
         self,
-    ) -> int | float | tuple[int | float, int | float] | None:
+    ) -> float | tuple[float, float] | None:
         """Return the current upperbound cost."""
         return self.upperbound_cost
 
-    def update_upperbound_cost(
-        self, cost_bound: int | float | tuple[int | float, int | float]
-    ) -> None:
+    def update_upperbound_cost(self, cost_bound: float | tuple[float, float]) -> None:
         """Update the cost upper bound based on an input cost bound."""
         if cost_bound is not None and (
             self.upperbound_cost is None or cost_bound < self.upperbound_cost
@@ -361,7 +362,7 @@ class BestFirstSearch:
                 self.num_enqueues += 1
 
     def update_minimum_reached(
-        self, min_cost: None | int | float | tuple[int | float, int | float]
+        self, min_cost: None | float | tuple[float, float]
     ) -> bool:
         """Update the min_reached flag indicating that a global optimum has been reached."""
         if min_cost is None or (
@@ -371,9 +372,7 @@ class BestFirstSearch:
 
         return self.min_reached
 
-    def cost_bounds_exceeded(
-        self, cost: None | int | float | tuple[int | float, int | float]
-    ) -> bool:
+    def cost_bounds_exceeded(self, cost: None | float | tuple[float, float]) -> bool:
         """Return True if any cost bounds  have been exceeded."""
         return cost is not None and (
             (self.mincost_bound is not None and cost > self.mincost_bound)

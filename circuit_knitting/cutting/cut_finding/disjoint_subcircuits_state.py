@@ -57,7 +57,7 @@ class CutIdentifier(NamedTuple):
     gate_cut_location: GateCutLocation
 
 
-# Used for dentifying CutLeftWire and CutRightWire actions.
+# Used for identifying CutLeftWire and CutRightWire actions.
 class OneWireCutIdentifier(NamedTuple):
     """Named tuple for specification of location of :class:`CutLeftWire` or :class:`CutRightWire` instances."""
 

@@ -74,7 +74,7 @@ class ActionApplyGate(DisjointSearchAction):
         self,
         state: DisjointSubcircuitsState,
         gate_spec: GateSpec,
-        max_width: int | float,
+        max_width: int,
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying :class:`ActionApplyGate` to state given ``gate_spec``."""
         gate = gate_spec.gate
@@ -156,16 +156,15 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
         new_state.assert_donot_merge_roots(r1, r2)
 
-        gamma_LB = cast(int, gamma_LB)
-        new_state.gamma_LB = cast(int, new_state.gamma_LB)
+        new_state.gamma_LB = cast(float, new_state.gamma_LB)
         new_state.gamma_LB *= gamma_LB
 
         for k in range(num_bell_pairs):
             new_state.bell_pairs = cast(list, new_state.bell_pairs)
             new_state.bell_pairs.append((r1, r2))
 
-        gamma_UB = cast(int, gamma_UB)
-        new_state.gamma_UB = cast(int, new_state.gamma_UB)
+        gamma_UB = cast(float, gamma_UB)
+        new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.gamma_UB *= gamma_UB
 
         new_state.add_action(self, gate_spec, ((1, w1), (2, w2)))
@@ -175,7 +174,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
     @staticmethod
     def get_cost_params(
         gate_spec: GateSpec,
-    ) -> tuple[int | float | None, int, int | float | None]:
+    ) -> tuple[float | None, int, float | None]:
         """
         Get the cost parameters for gate cuts.
 
@@ -198,7 +197,6 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
     ) -> None:
         """Insert an LO gate cut into the input circuit for the specified gate and cut arguments."""
         # pylint: disable=unused-argument
-        assert isinstance(gate_spec.instruction_id, int)
         circuit_interface.insert_gate_cut(gate_spec.instruction_id, "LO")
 
 
@@ -256,7 +254,7 @@ class ActionCutLeftWire(DisjointSearchAction):
 
         new_state.bell_pairs = cast(list, new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
-        new_state.gamma_UB = cast(int, new_state.gamma_UB)
+        new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.gamma_UB *= 4
 
         new_state.add_action(self, gate_spec, (1, w1, rnew))
@@ -286,7 +284,6 @@ def insert_all_lo_wire_cuts(
 ) -> None:
     """Insert LO wire cuts into the input circuit for the specified gate and all cut arguments."""
     gate_ID = gate_spec.instruction_id
-    gate_ID = cast(int, gate_ID)
     for input_ID, wire_ID, new_wire_ID in cut_args:
         circuit_interface.insert_wire_cut(
             gate_ID, input_ID, wire_map[wire_ID], wire_map[new_wire_ID], "LO"
@@ -312,6 +309,7 @@ class ActionCutRightWire(DisjointSearchAction):
     ) -> list[DisjointSubcircuitsState]:
         """Return the new state that results from applying :class:`ActionCutRightWire` to state given the gate_spec."""
         gate = gate_spec.gate
+
         # Cutting of multi-qubit gates is not supported in this release.
         if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(

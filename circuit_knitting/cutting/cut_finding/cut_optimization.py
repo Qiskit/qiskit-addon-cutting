@@ -26,7 +26,7 @@ from .search_space_generator import (
     SearchSpaceGenerator,
 )
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
-from .circuit_interface import SimpleGateList, CircuitElement, GateSpec
+from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
 from .quantum_device_constraints import DeviceConstraints
 
@@ -43,7 +43,7 @@ class CutOptimizationFuncArgs:
 
 def cut_optimization_cost_func(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
-) -> tuple[int | float, int]:
+) -> tuple[float, int]:
     """Return the cost function.
 
     The particular cost function chosen here aims to minimize the gamma
@@ -57,7 +57,7 @@ def cut_optimization_cost_func(
 
 def cut_optimization_upper_bound_cost_func(
     goal_state, func_args: CutOptimizationFuncArgs
-) -> tuple[int | float, int | float]:
+) -> tuple[float, float]:
     """Return the gamma upper bound."""
     # pylint: disable=unused-argument
     return (goal_state.upper_bound_gamma(), np.inf)
@@ -65,7 +65,7 @@ def cut_optimization_upper_bound_cost_func(
 
 def cut_optimization_min_cost_bound_func(
     func_args: CutOptimizationFuncArgs,
-) -> tuple[int | float, int | float] | None:
+) -> tuple[float, float] | None:
     """Return an a priori min-cost bound defined in the optimization settings."""
     if func_args.max_gamma is None:  # pragma: no cover
         return None
@@ -89,7 +89,6 @@ def cut_optimization_next_state_func(
     # placed on how the current entangling gate is to be handled.
 
     gate = gate_spec.gate
-    gate = cast(CircuitElement, gate_spec.gate)
     if len(gate.qubits) == 2:
         action_list = func_args.search_actions.get_group("TwoQubitGates")
     else:
@@ -98,7 +97,6 @@ def cut_optimization_next_state_func(
         )
 
     gate_actions = gate_spec.cut_constraints
-    gate_actions = cast(list, gate_actions)
     action_list = get_action_subset(action_list, gate_actions)
 
     # Apply the search actions to generate a list of next states.
@@ -272,7 +270,7 @@ class CutOptimization:
         self.search_engine = sq
         self.goal_state_returned = False
 
-    def optimization_pass(self) -> tuple[DisjointSubcircuitsState, int | float]:
+    def optimization_pass(self) -> tuple[DisjointSubcircuitsState, float]:
         """Produce, at each call, a goal state representing a distinct set of cutting decisions.
 
         None is returned once no additional choices
@@ -296,13 +294,11 @@ class CutOptimization:
         """Return the search-engine statistics."""
         return self.search_engine.get_stats(penultimate=penultimate)
 
-    def get_upperbound_cost(self) -> tuple[int | float, int | float]:
+    def get_upperbound_cost(self) -> tuple[float, float]:
         """Return the current upperbound cost."""
         return self.search_engine.get_upperbound_cost()
 
-    def update_upperbound_cost(
-        self, cost_bound: tuple[int | float, int | float]
-    ) -> None:
+    def update_upperbound_cost(self, cost_bound: tuple[float, float]) -> None:
         """Update the cost upper bound based on an input cost bound."""
         self.search_engine.update_upperbound_cost(cost_bound)
 
@@ -318,7 +314,9 @@ def max_wire_cuts_circuit(circuit_interface: SimpleGateList) -> int:
     loss of generality we can assume that wire cutting is
     performed only on the inputs to multiqubit gates.
     """
-    multiqubit_wires = [len(x.gate.qubits) for x in circuit_interface.get_multiqubit_gates()]  # type: ignore
+    multiqubit_wires = [
+        len(x.gate.qubits) for x in circuit_interface.get_multiqubit_gates()
+    ]
     return sum(multiqubit_wires)
 
 
