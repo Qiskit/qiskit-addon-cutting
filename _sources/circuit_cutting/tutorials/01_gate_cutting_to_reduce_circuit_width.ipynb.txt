@@ -58,7 +58,7 @@
    "source": [
     "### Specify some observables\n",
     "\n",
-    "Currently, only `Pauli` observables with phase equal to 1 are supported. Full support for `SparsePauliOp` is expected in CKT v0.6.0."
+    "Currently, only `Pauli` observables with phase equal to 1 are supported. Full support for `SparsePauliOp` is expected in CKT v0.7.0."
    ]
   },
   {
