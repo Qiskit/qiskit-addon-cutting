@@ -18,14 +18,22 @@ import numpy as np
 from numpy.typing import NDArray
 from collections import Counter
 from .circuit_interface import SimpleGateList, GateSpec
-from typing import Hashable, Iterable, TYPE_CHECKING, no_type_check, cast, NamedTuple
+from typing import (
+    Hashable,
+    Iterable,
+    TYPE_CHECKING,
+    no_type_check,
+    cast,
+    NamedTuple,
+    Sequence,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .cutting_actions import DisjointSearchAction
 
 
 class Action(NamedTuple):
-    """Named tuple for specification of cutting action."""
+    """Named tuple for specification of search (cutting) action."""
 
     action: DisjointSearchAction
     gate_spec: GateSpec
@@ -37,6 +45,7 @@ class GateCutLocation(NamedTuple):
 
     instruction_id: int
     gate_name: str
+    qubits: Sequence
 
 
 class WireCutLocation(NamedTuple):
@@ -47,6 +56,7 @@ class WireCutLocation(NamedTuple):
 
     instruction_id: int
     gate_name: str
+    qubits: Sequence
     input: int
 
 
@@ -70,49 +80,49 @@ class DisjointSubcircuitsState:
 
     Each wire cut introduces a new wire. A mapping from qubit IDs
     in QASM-like statements to wire IDs is therefore created
-    and maintained.  Groups of wires form subcircuits. The mapping
+    and maintained. Groups of wires form subcircuits. The mapping
     from wires to subcircuits is represented using an up-tree data
     structure over wires. The number of wires (width) in each
     subcircuit is also tracked to ensure subcircuits will fit on
     target quantum devices.
 
     Member Variables:
-    wiremap: an int Numpy array that provides the mapping from qubit IDs
+    ``wiremap``: an int Numpy array that provides the mapping from qubit IDs
     to wire IDs.
 
-    num_wires: an int which is the number of wires in the cut circuit.
+    ``num_wires``: an int which is the number of wires in the cut circuit.
 
-    uptree: an int Numpy array that contains the uptree data structure that
-    defines groups of wires that form subcircuits.  The uptree array
-    map wire IDs to parent wire IDs in a subcircuit.  If a wire points
+    ``uptree``: an int Numpy array that contains the uptree data structure that
+    defines groups of wires that form subcircuits. The uptree array
+    map wire IDs to parent wire IDs in a subcircuit. If a wire points
     to itself, then that wire is the root wire in the corresponding
-    subcircuit.  Otherwise, you need to follow the parent links to find
+    subcircuit. Otherwise, you need to follow the parent links to find
     the root wire that corresponds to that subcircuit.
 
-    width: an int Numpy array that contains the number of wires in each
+    ``width``: an int Numpy array that contains the number of wires in each
     subcircuit. The values of width are valid only for root wire IDs.
 
-    bell_pairs: a list of pairs of subcircuits (wires) that
+    ``bell_pairs``: a list of pairs of subcircuits (wires) that
     define the virtual Bell pairs that would need to be constructed in
     order to implement optimal LOCC wire and gate cuts using ancillas.
 
-    gamma_LB: a float that is the cumulative lower-bound gamma for circuit cuts
-    that cannot be constructed using Bell pairs.
+    ``gamma_LB``: a float that is the cumulative lower-bound gamma for LOCC
+    circuit cuts that cannot be constructed using Bell pairs.
 
-    gamma_UB: a float that is the cumulative upper-bound gamma for all circuit
-    cuts assuming all cuts are LO.
+    ``gamma_UB``: a float that is the cumulative upper-bound gamma for all
+    circuit cuts assuming all cuts are LO.
 
-    no_merge: a list that contains a list of subcircuit merging constaints.
+    ``no_merge``: a list that contains a list of subcircuit merging constaints.
     Each constraint can either be a pair of wire IDs or a list of pairs
-    of wire IDs.  In the case of a pair of wire IDs, the constraint is
+    of wire IDs. In the case of a pair of wire IDs, the constraint is
     that the subcircuits that contain those wire IDs cannot be merged
-    by subsequent search actions.  In the case of a list of pairs of
+    by subsequent search actions. In the case of a list of pairs of
     wire IDs, the constraint is that at least one pair of corresponding
     subcircuits cannot be merged.
 
-    actions: a list of instances of :class:`Action`.
+    ``actions``: a list of instances of :class:`Action`.
 
-    level: an int which specifies the level in the search tree at which this search
+    ``level``: an int which specifies the level in the search tree at which this search
     state resides, with 0 being the root of the search tree.
     """
 
@@ -209,6 +219,7 @@ class DisjointSubcircuitsState:
                         WireCutLocation(
                             cut_actions[i].gate_spec.instruction_id,
                             cut_actions[i].gate_spec.gate.name,
+                            cut_actions[i].gate_spec.gate.qubits,
                             cut_actions[i].args[0][0],
                         ),
                     )
@@ -224,10 +235,11 @@ class DisjointSubcircuitsState:
                         GateCutLocation(
                             cut_actions[i].gate_spec.instruction_id,
                             cut_actions[i].gate_spec.gate.name,
+                            cut_actions[i].gate_spec.gate.qubits,
                         ),
                     )
                 )
-            if not self.cut_actions_list:
+            if not self.cut_actions_list:  # pragma: no cover
                 self.cut_actions_list = cut_actions
 
         return self.cut_actions_list
@@ -273,13 +285,16 @@ class DisjointSubcircuitsState:
         return [self.find_wire_root(i) for i in range(self.num_wires)]
 
     def find_root_bell_pair(self, bell_pair: tuple[int, int]) -> tuple[int, int]:
-        """Find the root wires for a Bell pair (represented as a pair of wires) and return a sorted tuple representing the Bell pair."""
+        """Find the root wires for a Bell pair (represented as a pair of wires).
+
+        Additionally, return a sorted tuple representing the Bell pair.
+        """
         r0 = self.find_wire_root(bell_pair[0])
         r1 = self.find_wire_root(bell_pair[1])
         return (r0, r1) if (r0 < r1) else (r1, r0)
 
     def lower_bound_gamma(self) -> float:
-        """Calculate a lower bound for gamma using the current counts for the different types of circuit cuts."""
+        """Return a lower bound for gamma using the current counts for the circuit cuts involving bell pairs."""
         self.bell_pairs = cast(list, self.bell_pairs)
         root_bell_pairs = map(lambda x: self.find_root_bell_pair(x), self.bell_pairs)
 
@@ -287,23 +302,23 @@ class DisjointSubcircuitsState:
         return self.gamma_LB * calc_root_bell_pairs_gamma(root_bell_pairs)
 
     def upper_bound_gamma(self) -> float:
-        """Calculate an upper bound for gamma using the current counts for the different types of circuit cuts."""
+        """Return an upper bound for gamma using the current counts for the different types of (LO) circuit cuts."""
         self.gamma_UB = cast(float, self.gamma_UB)
         return self.gamma_UB
 
     def can_add_wires(self, num_wires: int) -> bool:
-        """Return True if an additional num_wires can be cut without exceeding the maximum allowed number of wire cuts."""
+        """Return ``True`` if an additional ``num_wires`` can be cut without exceeding the maximum allowed number of wire cuts."""
         self.num_wires = cast(int, self.num_wires)
         self.uptree = cast(NDArray[np.int_], self.uptree)
         return self.num_wires + num_wires <= self.uptree.shape[0]
 
     def can_expand_subcircuit(self, root: int, num_wires: int, max_width: int) -> bool:
-        """Return True if num_wires can be added to subcircuit root without exceeding the maximum allowed number of qubits."""
+        """Return ``True`` if ``num_wires`` can be added to subcircuit root without exceeding the maximum allowed number of qubits."""
         self.width = cast(NDArray[np.int_], self.width)
         return self.width[root] + num_wires <= max_width
 
     def new_wire(self, qubit: Hashable) -> int:
-        """Cut the wire associated with qubit and return the ID of the new wire now associated with qubit."""
+        """Cut the wire associated with ``qubit`` and return the ID of the new wire now associated with qubit."""
         self.num_wires = cast(int, self.num_wires)
         self.uptree = cast(NDArray[np.int_], self.uptree)
         assert self.num_wires < self.uptree.shape[0], (
@@ -318,13 +333,16 @@ class DisjointSubcircuitsState:
         return self.wiremap[qubit]
 
     def get_wire(self, qubit: Hashable) -> int:
-        """Return the ID of the wire currently associated with qubit."""
+        """Return the ID of the wire currently associated with ``qubit``."""
         self.wiremap = cast(NDArray[np.int_], self.wiremap)
         qubit = cast(int, qubit)
         return self.wiremap[qubit]
 
     def find_wire_root(self, wire: int) -> int:
-        """Return the ID of the root wire in the subcircuit that contains wire and collapse the path to the root."""
+        """Return the ID of the root wire in the subcircuit that contains wire.
+
+        Additionally, collapse the path to the root.
+        """
         # Find the root wire in the subcircuit
         root = wire
         self.uptree = cast(NDArray[np.int_], self.uptree)
@@ -340,13 +358,16 @@ class DisjointSubcircuitsState:
         return root
 
     def find_qubit_root(self, qubit: Hashable) -> int:
-        """Return the ID of the root wire in the subcircuit currently associated with qubit and collapse the path to the root."""
+        """Return the ID of the root wire in the subcircuit associated with ``qubit``.
+
+        Additionally, collapse the path to the root.
+        """
         self.wiremap = cast(NDArray[np.int_], self.wiremap)
         qubit = cast(int, qubit)
         return self.find_wire_root(self.wiremap[qubit])
 
     def check_donot_merge_roots(self, root_1: int, root_2: int) -> bool:
-        """Return True if the subcircuits represented by root wire IDs root_1 and root_2 should not be merged."""
+        """Return True if the subcircuits represented by root wire IDs ``root_1`` and ``root_2`` should not be merged."""
         self.uptree = cast(NDArray[np.int_], self.uptree)
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
             "Arguments must be roots: "
@@ -367,7 +388,7 @@ class DisjointSubcircuitsState:
         return False
 
     def verify_merge_constraints(self) -> bool:
-        """Return True if all merge constraints are satisfied."""
+        """Return ``True`` if all merge constraints are satisfied."""
         self.no_merge = cast(list, self.no_merge)
         for clause in self.no_merge:
             r1 = self.find_wire_root(clause[0])
@@ -378,7 +399,7 @@ class DisjointSubcircuitsState:
         return True
 
     def assert_donot_merge_roots(self, wire_1: int, wire_2: int) -> None:
-        """Add a constraint that the subcircuits associated with wires IDs wire_1 and wire_2 should not be merged."""
+        """Add a constraint that the subcircuits associated with IDs ``wire_1`` and ``wire_2`` should not be merged."""
         assert self.find_wire_root(wire_1) != self.find_wire_root(
             wire_2
         ), f"{wire_1} cannot be the same subcircuit as {wire_2}"
@@ -387,7 +408,10 @@ class DisjointSubcircuitsState:
         self.no_merge.append((wire_1, wire_2))
 
     def merge_roots(self, root_1: int, root_2: int) -> None:
-        """Merge the subcircuits associated with root wire IDs root_1 and root_2 update the statistics (i.e., width) associated with the newly merged subcircuit."""
+        """Merge the subcircuits associated with root wire IDs ``root_1`` and ``root_2``.
+
+        Additionally, update the statistics (i.e., width) associated with the merged subcircuit.
+        """
         self.uptree = cast(NDArray[np.int_], self.uptree)
         self.width = cast(NDArray[np.int_], self.width)
         assert root_1 == self.uptree[root_1] and root_2 == self.uptree[root_2], (
@@ -420,7 +444,7 @@ class DisjointSubcircuitsState:
         return self.level
 
     def set_next_level(self, state: DisjointSubcircuitsState) -> None:
-        """Set the search level of self to one plus the search level of the input state."""
+        """Set the search level to one plus the search level of the input state."""
         self.level = cast(int, self.level)
         state.level = cast(int, state.level)
         self.level = state.level + 1
@@ -471,5 +495,5 @@ def calc_root_bell_pairs_gamma(root_bell_pairs: Iterable[Hashable]) -> float:
 def get_actions_list(
     action_list: list[Action],
 ) -> list[Action]:
-    """Return a list specifying objects that represent cutting actions assoicated with an instance of :class:`DisjointSubcircuitsState`."""
+    """Return a list of cutting actions that have been performed on a state."""
     return action_list

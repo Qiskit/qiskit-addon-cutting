@@ -11,6 +11,7 @@ from circuit_knitting.cutting.cut_finding.cut_optimization import (
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,
+    GateSpec,
 )
 
 
@@ -43,9 +44,7 @@ def test_circuit():
 
 
 def test_state_uncut(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, _ = test_circuit
 
@@ -65,9 +64,7 @@ def test_state_uncut(
 
 
 def test_apply_gate(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, two_qubit_gate = test_circuit
 
@@ -93,9 +90,7 @@ def test_apply_gate(
 
 
 def test_cut_gate(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, two_qubit_gate = test_circuit
 
@@ -129,9 +124,7 @@ def test_cut_gate(
 
 
 def test_cut_left_wire(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, two_qubit_gate = test_circuit
 
@@ -176,9 +169,7 @@ def test_cut_left_wire(
 
 
 def test_cut_right_wire(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, two_qubit_gate = test_circuit
 
@@ -213,9 +204,7 @@ def test_cut_right_wire(
 
 
 def test_cut_both_wires(
-    test_circuit: Callable[
-        [], tuple[DisjointSubcircuitsState, list[int | CircuitElement | None]]
-    ]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
     state, two_qubit_gate = test_circuit
 
@@ -260,3 +249,23 @@ def test_cut_both_wires(
     assert next_state.upper_bound_gamma() == 16  # The 4^n scaling that comes with LO.
 
     assert next_state.verify_merge_constraints() is True
+
+    next_state.no_merge = [
+        (0, 2),
+        (1, 3),
+        (2, 3),
+    ]  # Enforce an incorrect set of no-merge constraints
+    # and verify that verify_merge_constraints is False.
+    assert next_state.verify_merge_constraints() is False
+
+
+# def no_wire_cuts(test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]):
+#     state, two_qubit_gate = test_circuit
+
+#     next_state = disjoint_subcircuit_actions.get_action("CutBothWires").next_state(
+#         state, two_qubit_gate, 1
+#     )[
+#         0
+#     ]  # Imposing a max_width < 2 means no wire cuts.
+
+#     assert next_state == []

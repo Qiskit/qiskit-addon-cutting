@@ -21,17 +21,19 @@ from typing import cast
 class OptimizationSettings:
     """Specify the parameters that control the optimization.
 
-    max_gamma specifies a constraint on the maximum value of gamma that a
-    solution to the optimization is allowed to have to be considered feasible.
+    ``max_gamma`` specifies a constraint on the maximum value of gamma that a
+    solution is allowed to have to be considered feasible. If a solution exists
+    but the associated gamma exceeds ``max_gamma``, :func:`.greedy_best_first_search`,
+    which is used to warm start, the search engine will still attempt to return a
+    solution.
 
-    engine_selections is a dictionary that defines the selection
-    of search engines for the optimization. In this release
-    only "BestFirst" or Dijkstra's best-first search is supported.
+    ``engine_selections`` is a dictionary that defines the selection
+    of search engines for the optimization.
 
-    max_backjumps specifies a constraint on the maximum number of backjump
+    ``max_backjumps`` specifies a constraint on the maximum number of backjump
     operations that can be performed by the search algorithm.
 
-    rand_seed is a seed used to provide a repeatable initialization
+    ``rand_seed`` is a seed used to provide a repeatable initialization
     of the pesudorandom number generators used by the optimization.
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.

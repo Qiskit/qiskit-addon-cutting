@@ -41,18 +41,18 @@ cut_optimization_search_funcs = SearchFunctions(
 class LOCutsOptimizer:
     """Optimize circuit cuts for the case in which only LO decompositions are employed.
 
-    The search_engine_config dictionary that configures the optimization
+    The ``search_engine_config`` dictionary that configures the optimization
     algorithms must be specified in the constructor.  For flexibility, the
     circuit_interface, optimization_settings, and device_constraints can
-    be specified either in the constructor or in :meth:LOCutsOptimizer.optimize().
+    be specified either in the constructor or in :meth:`LOCutsOptimizer.optimize`.
     In the latter case, the values provided overwrite the previous values.
 
-    circuit_interface, an instance of :class:`CircuitInterface`, defines the circuit to be cut.
-    The circuit_interface object that is passed to the :meth:`LOCutsOptimizer.optimize()`
+    ``circuit_interface``, an instance of :class:`CircuitInterface`, defines the circuit to be cut.
+    The circuit_interface object that is passed to the :meth:`LOCutsOptimizer.optimize`
     is updated to reflect the optimized circuit cuts that were
     identified.
 
-    :meth:`LOCutsOptimizer.optimize()` returns ``best_result``, an instance of :class:`DisjointSubcircuitsState`,
+    :meth:`LOCutsOptimizer.optimize` returns ``best_result``, an instance of :class:`DisjointSubcircuitsState`,
     which is the lowest-cost :class:`DisjointSubcircuitsState` instance identified in the search.
     """
 
@@ -82,17 +82,17 @@ class LOCutsOptimizer:
         optimization_settings: OptimizationSettings | None = None,
         device_constraints: DeviceConstraints | None = None,
     ) -> DisjointSubcircuitsState | None:
-        """Optimize the cutting of a circuit by calling :meth:`CutOptimization.optimization_pass()`.
+        """Optimize the cutting of a circuit by calling :meth:`CutOptimization.optimization_pass`.
 
         Args:
-        circuit_interface: defines the circuit to be
+        ``circuit_interface``: defines the circuit to be
         cut. This object is then updated with the optimized cuts that
         were identified.
 
-        optimization_settings: defines the settings
+        ``optimization_settings``: defines the settings
         to be used for the optimization.
 
-        device_constraints:  the capabilties of
+        ``device_constraints``:  the capabilties of
         the target quantum hardware.
 
         Returns:
@@ -138,7 +138,7 @@ class LOCutsOptimizer:
         if min_cost is not None:
             self.best_result = min_cost[-1]
             self.best_result.export_cuts(self.circuit_interface)
-        else:
+        else:  # pragma: no cover
             self.best_result = None
 
         return self.best_result
@@ -161,7 +161,7 @@ class LOCutsOptimizer:
 def print_state_list(
     state_list: list[DisjointSubcircuitsState],
 ) -> None:  # pragma: no cover
-    """Call the :meth:`print()` method defined for a :class:`DisjointSubcircuitsState` instance."""
+    """Call :meth:`print` defined for a :class:`DisjointSubcircuitsState` instance."""
     for x in state_list:
         print()
         x.print(simple=True)

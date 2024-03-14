@@ -30,6 +30,14 @@ from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimizatio
 
 
 @fixture
+def empty_circuit():
+    qc = QuantumCircuit(3)
+    qc.barrier([0])
+    qc.barrier([1])
+    qc.barrier([2])
+
+
+@fixture
 def gate_cut_test_setup():
     qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
     qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
@@ -92,7 +100,7 @@ def test_no_cuts(
 def test_gate_cuts(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
-    # QPU with 2 qubits requires cutting.
+    # QPU with 2 qubits enforces cutting.
     qubits_per_QPU = 2
     num_QPUs = 2
 
@@ -109,11 +117,15 @@ def test_gate_cuts(
     assert cut_actions_list == [
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(instruction_id=9, gate_name="cx"),
+            gate_cut_location=GateCutLocation(
+                instruction_id=9, gate_name="cx", qubits=[1, 2]
+            ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(instruction_id=20, gate_name="cx"),
+            gate_cut_location=GateCutLocation(
+                instruction_id=20, gate_name="cx", qubits=[1, 2]
+            ),
         ),
     ]
 
@@ -152,7 +164,7 @@ def test_wire_cuts(
         OneWireCutIdentifier(
             cut_action="CutLeftWire",
             wire_cut_location=WireCutLocation(
-                instruction_id=10, gate_name="cx", input=1
+                instruction_id=10, gate_name="cx", qubits=[3, 4], input=1
             ),
         )
     ]
@@ -208,7 +220,9 @@ def test_multiqubit_cuts(
     )
 
 
-def test_updated_cost_bounds(
+# Even if the input cost bounds are too stringent, greedy_cut_optimization
+# is able to return a solution.
+def test_greedy_search(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     qubits_per_QPU = 3
@@ -218,14 +232,11 @@ def test_updated_cost_bounds(
 
     constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
 
-    # Perform cut finding with the default cost upper bound.
+    # Impose a stringent cost upper bound.
     cut_opt = CutOptimization(interface, settings, constraint_obj)
-    state, _ = cut_opt.optimization_pass()
-    assert state is not None
-
-    # Update and lower cost upper bound.
     cut_opt.update_upperbound_cost((2, 4))
-    state, _ = cut_opt.optimization_pass()
+    state, cost = cut_opt.optimization_pass()
 
-    # Since any cut has a cost of at least 3, the returned state must be None.
-    assert state is None
+    # 2 cnot cuts are still found
+    assert state is not None
+    assert cost[0] == 9

@@ -19,7 +19,7 @@ from .optimization_settings import OptimizationSettings
 from typing import TYPE_CHECKING, cast, Callable
 
 if TYPE_CHECKING:
-    from .cut_optimization import CutOptimizationFuncArgs
+    from .cut_optimization import CutOptimizationFuncArgs  # pragma: no cover
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .search_space_generator import SearchFunctions
 from .best_first_search import BestFirstSearch
@@ -65,6 +65,7 @@ def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
     return circuit_list_rep
 
 
+# currently not in use, written up for future use.
 def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     """Convert the cut circuit outputted by the cut finder into a :class:`qiskit.QuantumCircuit` instance.
 
@@ -74,7 +75,7 @@ def cco_to_qc_circuit(interface: SimpleGateList) -> QuantumCircuit:
     Returns:
     qc_cut: The SimpleGateList converted into a :class:`qiskit.QuantumCircuit` instance.
 
-    TODO: This is a function that is not used for now and it only works for instances of LO gate cutting.
+    TODO: This function only works for instances of LO gate cutting.
     Expand to cover the wire cutting case if or when needed.
     """
     cut_circuit_list = interface.export_cut_circuit(name_mapping=None)
@@ -99,7 +100,10 @@ def select_search_engine(
 ) -> BestFirstSearch:
     """Select the search algorithm to use.
 
-    In this release, only Dijkstra's algorithm for best first search is supported.
+    In this release, the main search engine is always Dijkstra's best first search algorithm.
+    Note however that there is also :func:``greedy_best_first_search,`` which is used to warm start
+    the search algorithm. It can also provide a solution should the main search engine fail to find a
+    solution given the constraints on the computation it is allowed to perform.
     """
     engine = optimization_settings.get_engine_selection(stage_of_optimization)
 
@@ -121,8 +125,8 @@ def greedy_best_first_search(
 ) -> None | DisjointSubcircuitsState:
     """Perform greedy best-first search using the input starting state and the input search-space functions.
 
-    The resulting goal state is returned, or None if a deadend is reached (no backtracking is performed). Any
-    additional input arguments are passed as additional arguments to the search-space functions.
+    The resulting goal state is returned, or None if a deadend is reached. Any additional input argumnets
+    are passed as additional arguments to the search-space functions.
     """
     search_space_funcs.goal_state_func = cast(
         Callable, search_space_funcs.goal_state_func
@@ -148,5 +152,8 @@ def greedy_best_first_search(
     if best[-1] is not None:
         return greedy_best_first_search(best[-1], search_space_funcs, *args)
 
-    else:
+    # The else block below covers a rare edge case
+    # which needs a clever circuit to get tested.
+    # Excluding from test coverage for now.
+    else:  # pragma: no cover
         return None

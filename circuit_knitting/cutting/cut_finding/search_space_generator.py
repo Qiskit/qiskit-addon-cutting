@@ -30,9 +30,9 @@ class ActionNames:
 
     Member Variables:
 
-    action_dict: maps action names to action objects.
+    ``action_dict``: maps action names to action objects.
 
-    group_dict: maps group names to lists of action objects.
+    ``group_dict``: maps group names to lists of action objects.
     """
 
     action_dict: dict[str, DisjointSearchAction]
@@ -59,7 +59,7 @@ class ActionNames:
         return new_container
 
     def define_action(self, action_object: DisjointSearchAction) -> None:
-        """Insert the specified action object into the look-up dictionaries using the name of the action and its group names."""
+        """Insert the specified ``action_object`` into the look-up dictionaries using the name of the action and its group names."""
         assert (
             action_object.get_name() not in self.action_dict
         ), f"Action {action_object.get_name()} is already defined"
@@ -79,18 +79,18 @@ class ActionNames:
             self.group_dict[group_name].append(action_object)
 
     def get_action(self, action_name: str) -> DisjointSearchAction | None:
-        """Return the action object associated with the specified name.
+        """Return the action object associated with the specified ``action_name``.
 
-        None is returned if there is no associated action object.
+        ``None`` is returned if there is no associated action object.
         """
         if action_name in self.action_dict:
             return self.action_dict[action_name]
         return None
 
-    def get_group(self, group_name: str) -> list | None:
-        """Return the list of action objects associated with the group_name.
+    def get_group(self, group_name: str) -> list[DisjointSearchAction] | None:
+        """Return the list of action objects associated with ``group_name``.
 
-        None is returned if there are no associated action objects.
+        ``None`` is returned if there are no associated action objects.
         """
         if group_name in self.group_dict:
             return self.group_dict[group_name]
@@ -101,7 +101,7 @@ def get_action_subset(
     action_list: list[DisjointSearchAction] | None,
     action_groups: list[DisjointSearchAction | None] | None,
 ) -> list[DisjointSearchAction] | None:
-    """Return the subset of actions in action_list whose group affiliations intersect with action_groups."""
+    """Return the subset of actions in ``action_list`` whose group affiliations intersect with ``action_groups``."""
     if action_groups is None:
         return action_list
 
@@ -126,36 +126,36 @@ class SearchFunctions:
 
     Member Variables:
 
-    cost_func (lambda state, *args) is a function that computes cost values
-    from search states.  The cost returned can be numeric or tuples of
-    numerics.  In the latter case, lexicographical comparisons are performed
+    ``cost_func``: a function that computes cost values
+    from search states. The cost returned can be numeric or tuples of
+    numerics. In the latter case, lexicographical comparisons are performed
     per Python semantics.
 
-    next_state_func (lambda state, *args) is a function that returns a list
-    of next states generated from the input state.  An ActionNames object
-    should be incorporated into the additional input arguments in order to
-    generate next-states.
+    ``next_state_func``: a function that returns a list
+    of next states generated from the input state. An :class:`ActionNames`
+    instance should be incorporated into the additional input arguments
+    in order to generate next-states.
 
-    goal_state_func (lambda state, *args) is a function that returns True if
+    ``goal_state_func``: a function that returns ``True`` if
     the input state is a solution state of the search.
 
-    upperbound_cost_func (lambda goal_state, *args) can either be None or a
-    function that returns an upper bound to the optimal cost given a goal_state
+    ``upperbound_cost_func`` can either be ``None`` or a
+    function that returns an upper bound to the optimal cost given a ``goal_state``
     as input.  The upper bound is used to prune next-states from the search in
-    subsequent calls to the :func:`optimization_pass` method of the search algorithm.
-    If upperbound_cost_func is None, the cost of the goal_state as determined
-    by cost_func is used as an upper bound to the optimal cost.  If the
-    upperbound_cost_func returns None, the effect is equivalent to returning
+    subsequent calls to the :meth:`optimization_pass` method of the search algorithm.
+    If upperbound_cost_func is ``None``, the cost of the ``goal_state`` as determined
+    by ``cost_func`` is used as an upper bound to the optimal cost. If the
+    ``upperbound_cost_func`` returns ``None``, the effect is equivalent to returning
     an infinite upper bound (i.e., no cost pruning is performed on subsequent
-    optimization calls.
+    optimization calls).
 
-    mincost_bound_func (lambda *args) can either be None or a function that
+    ``mincost_bound_func`` can either be ``None`` or a function that
     returns a cost bound that is compared to the minimum cost across all
-    vertices in a search frontier.  If the minimum cost exceeds the min-cost
+    vertices in a search frontier. If the minimum cost exceeds the min-cost
     bound, the search is terminated even if a goal state has not yet been found.
-    Returning None is equivalent to returning an infinite min-cost bound (i.e.,
-    min-cost checking is effectively not performed).  A mincost_bound_func that
-    is None is likewise equivalent to an infinite min-cost bound.
+    Returning ``None`` is equivalent to returning an infinite min-cost bound (i.e.,
+    min-cost checking is effectively not performed). A ``mincost_bound_func`` that
+    is ``None`` is likewise equivalent to an infinite min-cost bound.
     """
 
     cost_func: (

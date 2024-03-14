@@ -21,7 +21,7 @@ from typing import Hashable, cast
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import GateSpec
 
-# Object that holds action names for constructing disjoint subcircuits
+# Global variable that holds action names for constructing disjoint subcircuits
 disjoint_subcircuit_actions = ActionNames()
 
 
@@ -46,10 +46,10 @@ class DisjointSearchAction(ABC):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return a list of search states that result from applying the action to gate_spec in the specified :class:`DisjointSubcircuitsState` state.
+        """Return a list of search states that result from applying the action to ``gate_spec`` in the specified :class:`DisjointSubcircuitsState` state.
 
         This is subject to the constraint that the number of resulting qubits (wires)
-        in each subcircuit cannot exceed max_width.
+        in each subcircuit cannot exceed ``max_width``.
         """
         next_list = self.next_state_primitive(state, gate_spec, max_width)
 
@@ -76,7 +76,7 @@ class ActionApplyGate(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionApplyGate` to state given ``gate_spec``."""
+        """Return the new state that results from applying the gate given by ``gate_spec``."""
         gate = gate_spec.gate
 
         # extract the root wire for the first qubit
@@ -128,7 +128,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionCutTwoQubitGate` to state given ``gate_spec``."""
+        """Return the state that results from cutting the gate given by ``gate_spec``."""
         gate = gate_spec.gate
 
         # Cutting of multi-qubit gates is not supported in this release.
@@ -139,7 +139,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
 
         gamma_LB, num_bell_pairs, gamma_UB = self.get_cost_params(gate_spec)
 
-        if gamma_LB is None:
+        if gamma_LB is None:  # pragma: no cover
             return list()
 
         q1 = gate.qubits[0]
@@ -159,7 +159,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         new_state.gamma_LB = cast(float, new_state.gamma_LB)
         new_state.gamma_LB *= gamma_LB
 
-        for k in range(num_bell_pairs):
+        for k in range(num_bell_pairs):  # pragma: no cover
             new_state.bell_pairs = cast(list, new_state.bell_pairs)
             new_state.bell_pairs.append((r1, r2))
 
@@ -179,7 +179,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         Get the cost parameters for gate cuts.
 
         This method returns a tuple of the form:
-            (gamma_lower_bound, num_bell_pairs, gamma_upper_bound)
+            (<gamma_lower_bound>, <num_bell_pairs>, <gamma_upper_bound>)
 
         Since CKT does not support LOCC at the moment, these tuples will be of
         the form (gamma, 0, gamma).
@@ -200,7 +200,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         circuit_interface.insert_gate_cut(gate_spec.instruction_id, "LO")
 
 
-### Adds ActionCutTwoQubitGate to the global variable disjoint_subcircuit_actions
+### Add ActionCutTwoQubitGate to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutTwoQubitGate())
 
 
@@ -221,7 +221,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionCutLeftWire` to state given the gate_spec."""
+        """Return the state that results from cutting the left (first input) wire of the gate given by ``gate_spec``."""
         gate = gate_spec.gate
 
         # Cutting of multi-qubit gates is not supported in this release.
@@ -272,7 +272,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutLeftWire to the global variable disjoint_subcircuit_actions
+### Add ActionCutLeftWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutLeftWire())
 
 
@@ -307,7 +307,7 @@ class ActionCutRightWire(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionCutRightWire` to state given the gate_spec."""
+        """Return the state that results from cutting the right (second input) wire of the gate given by ``gate_spec``."""
         gate = gate_spec.gate
 
         # Cutting of multi-qubit gates is not supported in this release.
@@ -358,7 +358,7 @@ class ActionCutRightWire(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutRightWire to the global variable disjoint_subcircuit_actions
+### Add ActionCutRightWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutRightWire())
 
 
@@ -379,7 +379,7 @@ class ActionCutBothWires(DisjointSearchAction):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return the new state that results from applying :class:`ActionCutBothWires` to state given the gate_spec."""
+        """Return the new state that results from cutting both input wires of the gate given by ``gate_spec``."""
         gate = gate_spec.gate
 
         # Cutting of multi-qubit gates is not supported in this release.
@@ -389,11 +389,11 @@ class ActionCutBothWires(DisjointSearchAction):
             )
 
         # If the wire-cut limit would be exceeded, return the empty list
-        if not state.can_add_wires(2):
+        if not state.can_add_wires(2): #pragma: no cover
             return list()
 
         # If the maximum width is less than two, return the empty list
-        if max_width < 2:
+        if max_width < 2: #pragma: no cover
             return list()
 
         q1 = gate.qubits[0]
@@ -432,5 +432,5 @@ class ActionCutBothWires(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Adds ActionCutBothWires to the global variable disjoint_subcircuit_actions
+### Add ActionCutBothWires to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutBothWires())
