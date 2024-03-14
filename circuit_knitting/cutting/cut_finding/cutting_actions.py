@@ -389,11 +389,11 @@ class ActionCutBothWires(DisjointSearchAction):
             )
 
         # If the wire-cut limit would be exceeded, return the empty list
-        if not state.can_add_wires(2): #pragma: no cover
+        if not state.can_add_wires(2):  # pragma: no cover
             return list()
 
         # If the maximum width is less than two, return the empty list
-        if max_width < 2: #pragma: no cover
+        if max_width < 2:  # pragma: no cover
             return list()
 
         q1 = gate.qubits[0]
