@@ -17,7 +17,7 @@ import numpy as np
 import string
 from numpy.typing import NDArray
 from abc import ABC, abstractmethod
-from typing import NamedTuple, Hashable, Iterable, cast, Sequence, List
+from typing import NamedTuple, Hashable, Iterable, cast, Sequence
 
 
 class CircuitElement(NamedTuple):
@@ -296,7 +296,7 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.make_wire_mapping(name_mapping)
         out = copy.deepcopy(self.new_circuit)
 
-        wire_map = cast(List[int], wire_map)
+        wire_map = cast(list, wire_map)
         self.replace_wire_ids(out, wire_map)
 
         return out
@@ -330,12 +330,12 @@ class SimpleGateList(CircuitInterface):
         wire_map = self.make_wire_mapping(name_mapping)
 
         out: Sequence[int | str] = list(range(self.get_num_wires()))
-        out = cast(List[str], out)
+        out = cast(list, out)
         alphabet = string.ascii_uppercase + string.ascii_lowercase
         for k, subcircuit in enumerate(self.subcircuits):
-            subcircuit = cast(List[int], subcircuit)
+            subcircuit = cast(list, subcircuit)
             for wire in subcircuit:
-                wire_map = cast(List[int], wire_map)
+                wire_map = cast(list, wire_map)
                 out[wire_map[wire]] = alphabet[k]
         return "".join(out)
 

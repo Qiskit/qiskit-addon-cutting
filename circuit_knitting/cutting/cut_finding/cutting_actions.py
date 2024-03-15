@@ -17,7 +17,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from .circuit_interface import SimpleGateList
 from .search_space_generator import ActionNames
-from typing import Hashable, cast, List
+from typing import Hashable, cast
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import GateSpec
 
@@ -160,7 +160,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         new_state.gamma_LB *= gamma_LB
 
         for k in range(num_bell_pairs):  # pragma: no cover
-            new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
+            new_state.bell_pairs = cast(list, new_state.bell_pairs)
             new_state.bell_pairs.append((r1, r2))
 
         gamma_UB = cast(float, gamma_UB)
@@ -252,7 +252,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         new_state.merge_roots(rnew, r2)
         new_state.assert_donot_merge_roots(r1, r2)  # Because r2 < rnew
 
-        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
+        new_state.bell_pairs = cast(list, new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.gamma_UB *= 4
@@ -339,7 +339,7 @@ class ActionCutRightWire(DisjointSearchAction):
         new_state.assert_donot_merge_roots(r1, r2)  # Because r1 < rnew
 
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
-        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
+        new_state.bell_pairs = cast(list, new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
         new_state.gamma_UB *= 4
 
@@ -411,7 +411,7 @@ class ActionCutBothWires(DisjointSearchAction):
         new_state.assert_donot_merge_roots(r1, rnew_1)  # Because r1 < rnew_1
         new_state.assert_donot_merge_roots(r2, rnew_2)  # Because r2 < rnew_2
 
-        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
+        new_state.bell_pairs = cast(list, new_state.bell_pairs)
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.bell_pairs.append((r1, rnew_1))
         new_state.bell_pairs.append((r2, rnew_2))

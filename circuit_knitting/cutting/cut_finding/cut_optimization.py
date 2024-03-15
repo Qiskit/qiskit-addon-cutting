@@ -113,7 +113,7 @@ def cut_optimization_goal_state_func(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
 ) -> bool:
     """Return True if the input state is a goal state."""
-    func_args.entangling_gates = cast(List[GateSpec], func_args.entangling_gates)
+    func_args.entangling_gates = cast(list, func_args.entangling_gates)
     return state.get_search_level() >= len(func_args.entangling_gates)
 
 
