@@ -144,7 +144,7 @@ class SearchFunctions:
     as input.  The upper bound is used to prune next-states from the search in
     subsequent calls to the :meth:`optimization_pass` method of the search algorithm.
     If upperbound_cost_func is ``None``, the cost of the ``goal_state`` as determined
-    by ``cost_func`` is used as an upper bound to the optimal cost. If the
+    by ``cost_func`` is used as an upper bound to the optimal cost. If
     ``upperbound_cost_func`` returns ``None``, the effect is equivalent to returning
     an infinite upper bound (i.e., no cost pruning is performed on subsequent
     optimization calls).

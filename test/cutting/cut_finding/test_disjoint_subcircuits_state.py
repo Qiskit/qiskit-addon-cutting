@@ -46,6 +46,7 @@ def test_circuit():
 def test_state_uncut(
     test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
+
     state, _ = test_circuit
 
     assert list(state.wiremap) == [0, 1]
@@ -126,6 +127,7 @@ def test_cut_gate(
 def test_cut_left_wire(
     test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
 ):
+
     state, two_qubit_gate = test_circuit
 
     next_state = disjoint_subcircuit_actions.get_action("CutLeftWire").next_state(
@@ -259,13 +261,13 @@ def test_cut_both_wires(
     assert next_state.verify_merge_constraints() is False
 
 
-# def no_wire_cuts(test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]):
-#     state, two_qubit_gate = test_circuit
+def test_no_wire_cuts(
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+):
+    state, two_qubit_gate = test_circuit
 
-#     next_state = disjoint_subcircuit_actions.get_action("CutBothWires").next_state(
-#         state, two_qubit_gate, 1
-#     )[
-#         0
-#     ]  # Imposing a max_width < 2 means no wire cuts.
+    next_state = disjoint_subcircuit_actions.get_action("CutBothWires").next_state(
+        state, two_qubit_gate, 1
+    )  # Imposing a max_width < 2 means no wire cuts.
 
-#     assert next_state == []
+    assert next_state == []

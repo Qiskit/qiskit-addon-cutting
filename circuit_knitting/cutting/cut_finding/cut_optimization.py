@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
-from typing import cast
+from typing import cast, List
 from numpy.typing import NDArray
 from .search_space_generator import ActionNames
 from .cco_utils import select_search_engine, greedy_best_first_search
@@ -113,7 +113,7 @@ def cut_optimization_goal_state_func(
     state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
 ) -> bool:
     """Return True if the input state is a goal state."""
-    func_args.entangling_gates = cast(list, func_args.entangling_gates)
+    func_args.entangling_gates = cast(List[GateSpec], func_args.entangling_gates)
     return state.get_search_level() >= len(func_args.entangling_gates)
 
 

@@ -148,8 +148,7 @@ def test_cut_right_wire(
 
 
 def test_defined_actions():
-    # Check that unsupported cutting actions return None
-    # when the action or corresponding group is requested.
+    """Check that unsupported cutting actions return None"""
 
     assert ActionNames().get_action("LOCCGateCut") is None
 

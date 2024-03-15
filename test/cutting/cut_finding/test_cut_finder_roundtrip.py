@@ -232,7 +232,7 @@ def test_greedy_search(
 
     constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
 
-    # Impose a stringent cost upper bound.
+    # Impose a stringent cost upper bound, insist gamma <=2.
     cut_opt = CutOptimization(interface, settings, constraint_obj)
     cut_opt.update_upperbound_cost((2, 4))
     state, cost = cut_opt.optimization_pass()

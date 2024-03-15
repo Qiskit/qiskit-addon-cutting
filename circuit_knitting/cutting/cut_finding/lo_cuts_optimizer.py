@@ -96,9 +96,9 @@ class LOCutsOptimizer:
         the target quantum hardware.
 
         Returns:
-        The lowest-cost instance of :class:`DisjointSubcircuitsState` identified in
-        the search, or None if no solution could be found. In the
-        case of the former, the circuit_interface object is also
+        The lowest-cost instance of :class:`DisjointSubcircuitsState`
+        identified in the search, or None if no solution could be found.
+        In case of the former, the circuit_interface object is also
         updated as a side effect to incorporate the cuts found.
         """
         if circuit_interface is not None:

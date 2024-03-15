@@ -17,7 +17,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from .circuit_interface import SimpleGateList
 from .search_space_generator import ActionNames
-from typing import Hashable, cast
+from typing import Hashable, cast, List
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import GateSpec
 
@@ -46,7 +46,7 @@ class DisjointSearchAction(ABC):
         gate_spec: GateSpec,
         max_width: int,
     ) -> list[DisjointSubcircuitsState]:
-        """Return a list of search states that result from applying the action to ``gate_spec`` in the specified :class:`DisjointSubcircuitsState` state.
+        """Return list of states resulting from applying associated instance of :class:`DisjointSearchAction` to ``gate_spec``.
 
         This is subject to the constraint that the number of resulting qubits (wires)
         in each subcircuit cannot exceed ``max_width``.
@@ -134,7 +134,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         # Cutting of multi-qubit gates is not supported in this release.
         if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
-                "In this release, only the cutting of two qubit gates is supported."
+                "In the current version, only the cutting of two qubit gates is supported."
             )
 
         gamma_LB, num_bell_pairs, gamma_UB = self.get_cost_params(gate_spec)
@@ -160,7 +160,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         new_state.gamma_LB *= gamma_LB
 
         for k in range(num_bell_pairs):  # pragma: no cover
-            new_state.bell_pairs = cast(list, new_state.bell_pairs)
+            new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
             new_state.bell_pairs.append((r1, r2))
 
         gamma_UB = cast(float, gamma_UB)
@@ -227,7 +227,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         # Cutting of multi-qubit gates is not supported in this release.
         if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
-                "In this release, only the cutting of two qubit gates is supported."
+                "In the current version, only the cutting of two qubit gates is supported."
             )
 
         # If the wire-cut limit would be exceeded, return the empty list
@@ -252,7 +252,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         new_state.merge_roots(rnew, r2)
         new_state.assert_donot_merge_roots(r1, r2)  # Because r2 < rnew
 
-        new_state.bell_pairs = cast(list, new_state.bell_pairs)
+        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.gamma_UB *= 4
@@ -339,7 +339,7 @@ class ActionCutRightWire(DisjointSearchAction):
         new_state.assert_donot_merge_roots(r1, r2)  # Because r1 < rnew
 
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
-        new_state.bell_pairs = cast(list, new_state.bell_pairs)
+        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
         new_state.bell_pairs.append((r1, r2))
         new_state.gamma_UB *= 4
 
@@ -385,15 +385,15 @@ class ActionCutBothWires(DisjointSearchAction):
         # Cutting of multi-qubit gates is not supported in this release.
         if len(gate.qubits) != 2:  # pragma: no cover
             raise ValueError(
-                "In this release, only the cutting of two qubit gates is supported."
+                "In the current version, only the cutting of two qubit gates is supported."
             )
 
-        # If the wire-cut limit would be exceeded, return the empty list
+        # If the wire-cut limit would be exceeded, do not cut.
         if not state.can_add_wires(2):  # pragma: no cover
             return list()
 
-        # If the maximum width is less than two, return the empty list
-        if max_width < 2:  # pragma: no cover
+        # If the maximum width is less than two, do not cut.
+        if max_width < 2:
             return list()
 
         q1 = gate.qubits[0]
@@ -411,7 +411,7 @@ class ActionCutBothWires(DisjointSearchAction):
         new_state.assert_donot_merge_roots(r1, rnew_1)  # Because r1 < rnew_1
         new_state.assert_donot_merge_roots(r2, rnew_2)  # Because r2 < rnew_2
 
-        new_state.bell_pairs = cast(list, new_state.bell_pairs)
+        new_state.bell_pairs = cast(List[tuple[int, int]], new_state.bell_pairs)
         new_state.gamma_UB = cast(float, new_state.gamma_UB)
         new_state.bell_pairs.append((r1, rnew_1))
         new_state.bell_pairs.append((r2, rnew_2))

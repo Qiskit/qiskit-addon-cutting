@@ -26,6 +26,7 @@ from typing import (
     cast,
     NamedTuple,
     Sequence,
+    List,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -148,12 +149,12 @@ class DisjointSubcircuitsState:
             self.uptree: NDArray[np.int_] | None = None
             self.width: NDArray[np.int_] | None = None
 
-            self.bell_pairs: list[tuple[int, int]] | None = None
+            self.bell_pairs: List[tuple[int, int]] | None = None
             self.gamma_LB: float | None = None
             self.gamma_UB: float | None = None
 
-            self.no_merge: list[tuple] | None = None
-            self.actions: list[Action] | None = None
+            self.no_merge: List[tuple] | None = None
+            self.actions: List[Action] | None = None
             self.cut_actions_list: list | None = None
             self.level: int | None = None
 
@@ -206,11 +207,11 @@ class DisjointSubcircuitsState:
 
         Also include the locations of these actions which are specified in terms of the associated gates and wires.
         """
-        self.actions = cast(list, self.actions)
+        self.actions = cast(List[Action], self.actions)
         cut_actions = get_actions_list(self.actions)
 
         # Output formatting for LO gate and wire cuts
-        self.cut_actions_list = cast(list, self.cut_actions_list)
+        self.cut_actions_list = cast(List, self.cut_actions_list)
         for i in range(len(cut_actions)):
             if cut_actions[i].action.get_name() in ("CutLeftWire", "CutRightWire"):
                 self.cut_actions_list.append(
@@ -247,7 +248,7 @@ class DisjointSubcircuitsState:
     def print(self, simple: bool = False) -> None:  # pragma: no cover
         """Print the various properties of a :class:`DisjointSubcircuitState`."""
         cut_actions_list = self.cut_actions_sublist()
-        self.actions = cast(list, self.actions)
+        self.actions = cast(List[Action], self.actions)
         if simple:
             print(cut_actions_list)
         else:
@@ -295,7 +296,7 @@ class DisjointSubcircuitsState:
 
     def lower_bound_gamma(self) -> float:
         """Return a lower bound for gamma using the current counts for the circuit cuts involving bell pairs."""
-        self.bell_pairs = cast(list, self.bell_pairs)
+        self.bell_pairs = cast(List[tuple[int, int]], self.bell_pairs)
         root_bell_pairs = map(lambda x: self.find_root_bell_pair(x), self.bell_pairs)
 
         self.gamma_LB = cast(float, self.gamma_LB)
@@ -375,7 +376,7 @@ class DisjointSubcircuitsState:
             + f"or {root_2} != {self.uptree[root_2]}"
         )
 
-        self.no_merge = cast(list, self.no_merge)
+        self.no_merge = cast(List[tuple], self.no_merge)
         for clause in self.no_merge:
             r1 = self.find_wire_root(clause[0])
             r2 = self.find_wire_root(clause[1])
@@ -389,7 +390,7 @@ class DisjointSubcircuitsState:
 
     def verify_merge_constraints(self) -> bool:
         """Return ``True`` if all merge constraints are satisfied."""
-        self.no_merge = cast(list, self.no_merge)
+        self.no_merge = cast(List[tuple], self.no_merge)
         for clause in self.no_merge:
             r1 = self.find_wire_root(clause[0])
             r2 = self.find_wire_root(clause[1])
@@ -435,7 +436,7 @@ class DisjointSubcircuitsState:
     ) -> None:
         """Append the specified action to the list of search-space actions that have been performed."""
         if action_obj.get_name() is not None:
-            self.actions = cast(list, self.actions)
+            self.actions = cast(List[Action], self.actions)
             self.actions.append(Action(action_obj, gate_spec, [args]))
 
     def get_search_level(self) -> int:
