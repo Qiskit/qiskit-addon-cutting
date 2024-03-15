@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import dataclass
-from typing import cast, List
+from typing import cast
 from numpy.typing import NDArray
 from .search_space_generator import ActionNames
 from .cco_utils import select_search_engine, greedy_best_first_search
