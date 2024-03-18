@@ -145,7 +145,7 @@ def greedy_cut_optimization(
     func_args = CutOptimizationFuncArgs()
     func_args.entangling_gates = circuit_interface.get_multiqubit_gates()
     func_args.search_actions = search_actions
-    func_args.max_gamma = optimization_settings.get_max_gamma()
+    func_args.max_gamma = optimization_settings.get_max_gamma
     func_args.qpu_width = device_constraints.get_qpu_width()
 
     start_state = DisjointSubcircuitsState(
@@ -218,7 +218,7 @@ class CutOptimization:
         self.func_args = CutOptimizationFuncArgs()
         self.func_args.entangling_gates = self.circuit.get_multiqubit_gates()
         self.func_args.search_actions = self.search_actions
-        self.func_args.max_gamma = self.settings.get_max_gamma()
+        self.func_args.max_gamma = self.settings.get_max_gamma
         self.func_args.qpu_width = self.constraints.get_qpu_width()
 
         # Perform an initial greedy best-first search to determine an upper

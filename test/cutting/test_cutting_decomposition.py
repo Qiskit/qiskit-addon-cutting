@@ -27,6 +27,8 @@ from circuit_knitting.cutting import (
     partition_problem,
     cut_gates,
     find_cuts,
+    OptimizationParameters,
+    DeviceConstraints,
 )
 from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
@@ -262,9 +264,11 @@ class TestCuttingDecomposition(unittest.TestCase):
     def test_find_cuts(self):
         with self.subTest("simple circuit"):
             circuit = random_circuit(7, 6, max_operands=2, seed=1242)
+            optimization = OptimizationParameters(seed=111)
+            constraints = DeviceConstraints(qubits_per_qpu=4, max_subcircuits=2)
 
-            cut_circ, metadata = find_cuts(
-                circuit, {"rand_seed": 111}, {"qubits_per_QPU": 4, "num_QPUs": 2}
+            _, metadata = find_cuts(
+                circuit, optimization=optimization, constraints=constraints
             )
             cut_types = {cut[0] for cut in metadata["cuts"]}
 

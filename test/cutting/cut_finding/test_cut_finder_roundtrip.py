@@ -43,7 +43,7 @@ def gate_cut_test_setup():
     qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(rand_seed=12345)
+    settings = OptimizationSettings(seed=12345)
     settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
@@ -61,7 +61,7 @@ def wire_cut_test_setup():
     qc.cx(3, 6)
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(rand_seed=12345)
+    settings = OptimizationSettings(seed=12345)
     settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
@@ -72,7 +72,7 @@ def multiqubit_test_setup():
     qc.ccx(0, 1, 2)
     circuit_internal = qc_to_cco_circuit(qc)
     interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(rand_seed=12345)
+    settings = OptimizationSettings(seed=12345)
     settings.set_engine_selection("CutOptimization", "BestFirst")
     return interface, settings
 
@@ -81,12 +81,12 @@ def test_no_cuts(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     # QPU with 4 qubits requires no cutting.
-    qubits_per_QPU = 4
-    num_QPUs = 2
+    qubits_per_qpu = 4
+    max_subcircuits = 2
 
     interface, settings = gate_cut_test_setup
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
@@ -101,12 +101,12 @@ def test_gate_cuts(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     # QPU with 2 qubits enforces cutting.
-    qubits_per_QPU = 2
-    num_QPUs = 2
+    qubits_per_qpu = 2
+    max_subcircuits = 2
 
     interface, settings = gate_cut_test_setup
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
@@ -147,12 +147,12 @@ def test_gate_cuts(
 def test_wire_cuts(
     wire_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
-    qubits_per_QPU = 4
-    num_QPUs = 2
+    qubits_per_qpu = 4
+    max_subcircuits = 2
 
     interface, settings = wire_cut_test_setup
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
@@ -180,8 +180,8 @@ def test_wire_cuts(
 def test_select_search_engine(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
-    qubits_per_QPU = 4
-    num_QPUs = 2
+    qubits_per_qpu = 4
+    max_subcircuits = 2
 
     interface, settings = gate_cut_test_setup
 
@@ -189,7 +189,7 @@ def test_select_search_engine(
 
     search_engine = settings.get_engine_selection("CutOptimization")
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
@@ -203,12 +203,12 @@ def test_multiqubit_cuts(
     multiqubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
     # QPU with 2 qubits requires cutting.
-    qubits_per_QPU = 2
-    num_QPUs = 2
+    qubits_per_qpu = 2
+    max_subcircuits = 2
 
     interface, settings = multiqubit_test_setup
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
@@ -225,12 +225,12 @@ def test_multiqubit_cuts(
 def test_greedy_search(
     gate_cut_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
 ):
-    qubits_per_QPU = 3
-    num_QPUs = 2
+    qubits_per_qpu = 3
+    max_subcircuits = 2
 
     interface, settings = gate_cut_test_setup
 
-    constraint_obj = DeviceConstraints(qubits_per_QPU, num_QPUs)
+    constraint_obj = DeviceConstraints(qubits_per_qpu, max_subcircuits)
 
     # Impose a stringent cost upper bound, insist gamma <=2.
     cut_opt = CutOptimization(interface, settings, constraint_obj)

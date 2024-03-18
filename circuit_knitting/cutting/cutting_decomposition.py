@@ -29,7 +29,10 @@ from ..utils.transforms import separate_circuit, _partition_labels_from_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
 from .instructions import CutWire
-from .cut_finding.optimization_settings import OptimizationSettings
+from .cut_finding.optimization_settings import (
+    OptimizationSettings,
+    OptimizationParameters,
+)
 from .cut_finding.quantum_device_constraints import DeviceConstraints
 from .cut_finding.disjoint_subcircuits_state import DisjointSubcircuitsState
 from .cut_finding.circuit_interface import SimpleGateList
@@ -271,31 +274,33 @@ def decompose_observables(
 
 def find_cuts(
     circuit: QuantumCircuit,
-    optimization: dict[str, str | int],
-    constraints: dict[str, int],
-) -> tuple[QuantumCircuit, dict[str, Any]]:
+    optimization: OptimizationParameters,
+    constraints: DeviceConstraints,
+) -> tuple[QuantumCircuit, dict[str, float]]:
     """
     Find cut locations in a circuit, given optimization settings and QPU constraints.
 
     Args:
     circuit: The circuit to cut
 
-    optimization: Settings dictionary for controlling optimizer behavior. Currently,
-    only a best-first optimizer is supported.
+    optimization: Instance of :class:`.OptimizationParameters` for controlling
+    optimizer behavior. Currently, the optimal cuts are arrived at using
+    Dijkstra's best-first search algorithm. The specified parameters are:
     - max_gamma: Specifies a constraint on the maximum value of gamma that a
     solution to the optimization is allowed to have to be considered
-    feasible. Not that the sampling overhead is ``gamma ** 2``.
+    feasible. Note that the sampling overhead is ``gamma ** 2``.
     - max_backjumps: Specifies a constraint on the maximum number of backjump
     operations that can be performed by the search algorithm.
-    - rand_seed: Used to provide a repeatable initialization of the pseudorandom
-    number generators used by the optimization. If ``None`` is used as the
-    seed, then a seed is obtained using an operating system call to achieve
-    an unrepeatable random initialization.
+    - seed: Used to provide a repeatable initialization of the pseudorandom
+    number generators used for breaking ties in the optimization. If ``None``
+    is used as the seed, then a seed is obtained using an operating system call
+    to achieve an unrepeatable random initialization.
 
-    constraints: Dictionary for specifying the constraints on the quantum device(s).
+    constraints: An instance of :class:`.DeviceConstraints` with the following
+    specified:
     - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
     after cutting.
-    - num_QPUs: The maximum number of subcircuits produced after cutting
+    - max_subcircuits: The maximum number of subcircuits produced after cutting.
 
     Returns:
     A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
@@ -313,15 +318,14 @@ def find_cuts(
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
 
-    opt_settings = OptimizationSettings.from_dict(optimization)
-
-    # Hard-code the optimization type to best-first
-    opt_settings.set_engine_selection("CutOptimization", "BestFirst")
-
-    constraint_settings = DeviceConstraints.from_dict(constraints)
+    opt_settings = OptimizationSettings(
+        seed=optimization.seed,
+        max_gamma=optimization.max_gamma,
+        max_backjumps=optimization.max_backjumps,
+    )
 
     # Hard-code the optimizer to an LO-only optimizer
-    optimizer = LOCutsOptimizer(interface, opt_settings, constraint_settings)
+    optimizer = LOCutsOptimizer(interface, opt_settings, constraints)
 
     # Find cut locations
     opt_out = optimizer.optimize()

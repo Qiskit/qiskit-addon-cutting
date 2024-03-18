@@ -33,7 +33,7 @@ class OptimizationSettings:
     ``max_backjumps`` specifies a constraint on the maximum number of backjump
     operations that can be performed by the search algorithm.
 
-    ``rand_seed`` is a seed used to provide a repeatable initialization
+    ``seed`` is a seed used to provide a repeatable initialization
     of the pesudorandom number generators used by the optimization.
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.
@@ -44,7 +44,7 @@ class OptimizationSettings:
 
     max_gamma: float = 1024
     max_backjumps: int = 10000
-    rand_seed: int | None = None
+    seed: int | None = None
     LO: bool = True
     LOCC_ancillas: bool = False
     LOCC_no_ancillas: bool = False
@@ -66,17 +66,20 @@ class OptimizationSettings:
         if self.engine_selections is None:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
+    @property
     def get_max_gamma(self) -> float:
         """Return the constraint on the maxiumum allowed value of gamma."""
         return self.max_gamma
 
+    @property
     def get_max_backjumps(self) -> int:
         """Return the maximum number of allowed search backjumps."""
         return self.max_backjumps
 
-    def get_rand_seed(self) -> int | None:
+    @property
+    def get_seed(self) -> int | None:
         """Return the seed used to generate the pseudorandom numbers used in the optimizaton."""
-        return self.rand_seed
+        return self.seed
 
     def get_engine_selection(self, stage_of_optimization: str) -> str:
         """Return the name of the search engine to employ."""
@@ -126,7 +129,15 @@ class OptimizationSettings:
 
         return out
 
-    @classmethod
-    def from_dict(cls, options: dict) -> OptimizationSettings:
-        """Return an instance of :class:`OptimizationSettings` initialized with the parameters passed in."""
-        return cls(**options)
+
+@dataclass
+class OptimizationParameters:
+    """Specify a subset of parameters that control the optimization.
+
+    The other attributes of :class:`OptimizationSettings` are taken
+    to be private.
+    """
+
+    seed: int | None = OptimizationSettings().seed
+    max_gamma: float = OptimizationSettings().max_gamma
+    max_backjumps: int = OptimizationSettings().max_backjumps

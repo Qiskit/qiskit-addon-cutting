@@ -33,7 +33,7 @@ class BestFirstPriorityQueue:
 
     The tuples that are pushed onto the priority queues have the form:
 
-    (<cost>, <neg_search_depth>, <rand_num>, <seq_count>, <search_state>),
+    (<cost>, <neg_search_depth>, <random_num>, <seq_count>, <search_state>),
 
     where:
 
@@ -45,7 +45,7 @@ class BestFirstPriorityQueue:
     have identical costs, priority is given to the deepest states to
     encourage depth-first behavior.
 
-    <rand_num> is a pseudo-random number that randomly break ties in a
+    <random_num> is a pseudo-random number that randomly break ties in a
     stable manner if several search states have identical costs at identical
     search depths.
 
@@ -59,9 +59,9 @@ class BestFirstPriorityQueue:
     internally by the priority-queue implementation.
     """
 
-    def __init__(self, rand_seed: int | None):
+    def __init__(self, seed: int | None):
         """Assign member variables."""
-        self.rand_gen: Generator = np.random.default_rng(rand_seed)
+        self.random_gen: Generator = np.random.default_rng(seed)
         self.unique: count[int] = count()
         self.pqueue: list[tuple] = list()
 
@@ -77,7 +77,7 @@ class BestFirstPriorityQueue:
         """
         heapq.heappush(
             self.pqueue,
-            (cost, (-depth), self.rand_gen.random(), next(self.unique), state),
+            (cost, (-depth), self.random_gen.random(), next(self.unique), state),
         )
 
     def get(
@@ -117,7 +117,7 @@ class BestFirstSearch:
 
      Member Variables:
 
-     ``rand_seed`` (int) is the seed to use when initializing Numpy random number
+     ``seed`` (int) is the seed to use when initializing Numpy random number
      generators in :class:`BestFirstPriorityQueue` instances.
 
      ``cost_func`` is a function that computes cost values from search states.
@@ -200,15 +200,15 @@ class BestFirstSearch:
         return any additional minimum-cost goal states that might exist
         (False).
         """
-        self.rand_seed = optimization_settings.get_rand_seed()
+        self.seed = optimization_settings.get_seed
         self.cost_func = search_functions.cost_func
         self.next_state_func = search_functions.next_state_func
         self.goal_state_func = search_functions.goal_state_func
         self.upperbound_cost_func = search_functions.upperbound_cost_func
         self.mincost_bound_func = search_functions.mincost_bound_func
         self.stop_at_first_min = stop_at_first_min
-        self.max_backjumps = optimization_settings.get_max_backjumps()
-        self.pqueue = BestFirstPriorityQueue(self.rand_seed)
+        self.max_backjumps = optimization_settings.get_max_backjumps
+        self.pqueue = BestFirstPriorityQueue(self.seed)
         self.upperbound_cost = None
         self.mincost_bound = None
         self.min_reached = False
