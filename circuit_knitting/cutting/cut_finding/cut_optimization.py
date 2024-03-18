@@ -94,7 +94,8 @@ def cut_optimization_next_state_func(
         action_list = func_args.search_actions.get_group("TwoQubitGates")
     else:
         raise ValueError(
-            "In the current version, only the cutting of two qubit gates is supported."
+            "The input circuit must contain only single and two-qubits gates. Found "
+            f"{len(gate.qubits)}-qubit gate: ({gate.name})."
         )
 
     gate_actions = gate_spec.cut_constraints

@@ -278,24 +278,25 @@ def find_cuts(
     Find cut locations in a circuit, given optimization settings and QPU constraints.
 
     Args:
-    circuit: The circuit to cut
-
+    circuit: The circuit to cut. The circuit must contain only single and two-qubit
+        gates.
     optimization: Settings dictionary for controlling optimizer behavior. Currently,
     only a best-first optimizer is supported.
-    - max_gamma: Specifies a constraint on the maximum value of gamma that a
-    solution to the optimization is allowed to have to be considered
-    feasible. Not that the sampling overhead is ``gamma ** 2``.
-    - max_backjumps: Specifies a constraint on the maximum number of backjump
-    operations that can be performed by the search algorithm.
-    - rand_seed: Used to provide a repeatable initialization of the pseudorandom
-    number generators used by the optimization. If ``None`` is used as the
-    seed, then a seed is obtained using an operating system call to achieve
-    an unrepeatable random initialization.
+
+        - max_gamma: Specifies a constraint on the maximum value of gamma that a
+        solution to the optimization is allowed to have to be considered
+        feasible. Not that the sampling overhead is ``gamma ** 2``.
+        - max_backjumps: Specifies a constraint on the maximum number of backjump
+        operations that can be performed by the search algorithm.
+        - rand_seed: Used to provide a repeatable initialization of the pseudorandom
+        number generators used by the optimization. If ``None`` is used as the
+        seed, then a seed is obtained using an operating system call to achieve
+        an unrepeatable random initialization.
 
     constraints: Dictionary for specifying the constraints on the quantum device(s).
-    - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
-    after cutting.
-    - num_QPUs: The maximum number of subcircuits produced after cutting
+        - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
+        after cutting.
+        - num_QPUs: The maximum number of subcircuits produced after cutting
 
     Returns:
     A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
@@ -303,12 +304,16 @@ def find_cuts(
     specified in ``constraints``.
 
     A metadata dictionary:
-    - cuts: A list of length-2 tuples describing each cut in the output circuit.
-    The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
-    cut ID is the index of the cut gate or wire in the output circuit's
-    ``data`` field.
-    - sampling_overhead: The sampling overhead incurred from cutting the specified
-    gates and wires.
+
+        - cuts: A list of length-2 tuples describing each cut in the output circuit.
+        The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
+        cut ID is the index of the cut gate or wire in the output circuit's
+        ``data`` field.
+        - sampling_overhead: The sampling overhead incurred from cutting the specified
+        gates and wires.
+
+    Raises:
+        ValueError: The input circuit contains a gate acting on more than 2 qubits.
     """
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)
