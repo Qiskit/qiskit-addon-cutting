@@ -276,6 +276,17 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert {"Wire Cut", "Gate Cut"} == cut_types
             assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
 
+        with self.subTest("3-qubit gate"):
+            circuit = random_circuit(3, 2, max_operands=3, seed=99)
+            with pytest.raises(ValueError) as e_info:
+                cut_circ, metadata = find_cuts(
+                    circuit, {"rand_seed": 111}, {"qubits_per_QPU": 4, "num_QPUs": 2}
+                )
+            assert e_info.value.args[0] == (
+                "The input circuit must contain only single and two-qubits gates. "
+                "Found 3-qubit gate: (cswap)."
+            )
+
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
             compare_qc = QuantumCircuit(2)

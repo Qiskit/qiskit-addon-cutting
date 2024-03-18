@@ -308,12 +308,16 @@ def find_cuts(
     specified in ``constraints``.
 
     A metadata dictionary:
-    - cuts: A list of length-2 tuples describing each cut in the output circuit.
-    The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
-    cut ID is the index of the cut gate or wire in the output circuit's
-    ``data`` field.
-    - sampling_overhead: The sampling overhead incurred from cutting the specified
-    gates and wires.
+
+        - cuts: A list of length-2 tuples describing each cut in the output circuit.
+        The tuples are formatted as ``(cut_type: str, cut_id: int)``. The
+        cut ID is the index of the cut gate or wire in the output circuit's
+        ``data`` field.
+        - sampling_overhead: The sampling overhead incurred from cutting the specified
+        gates and wires.
+
+    Raises:
+        ValueError: The input circuit contains a gate acting on more than 2 qubits.
     """
     circuit_cco = qc_to_cco_circuit(circuit)
     interface = SimpleGateList(circuit_cco)

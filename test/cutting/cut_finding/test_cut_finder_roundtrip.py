@@ -214,9 +214,9 @@ def test_multiqubit_cuts(
 
     with raises(ValueError) as e_info:
         _ = optimization_pass.optimize()
-    assert (
-        e_info.value.args[0]
-        == "In the current version, only the cutting of two qubit gates is supported."
+    assert e_info.value.args[0] == (
+        "The input circuit must contain only single and two-qubits gates. "
+        "Found 3-qubit gate: (ccx)."
     )
 
 
