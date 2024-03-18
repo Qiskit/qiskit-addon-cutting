@@ -279,8 +279,8 @@ class TestCuttingDecomposition(unittest.TestCase):
         with self.subTest("3-qubit gate"):
             circuit = random_circuit(3, 2, max_operands=3, seed=99)
             with pytest.raises(ValueError) as e_info:
-                cut_circ, metadata = find_cuts(
-                    circuit, {"rand_seed": 111}, {"qubits_per_QPU": 4, "num_QPUs": 2}
+                _, metadata = find_cuts(
+                    circuit, optimization=optimization, constraints=constraints
                 )
             assert e_info.value.args[0] == (
                 "The input circuit must contain only single and two-qubits gates. "
