@@ -31,8 +31,8 @@ dependencies = [
     "scipy>=1.5.2",
     "rustworkx>=0.14.0",
     "qiskit-aer>=0.12.0",
-    "qiskit>=0.46.0, <2.0",
-    "qiskit-ibm-runtime>=0.12.2",
+    "qiskit @ git+https://github.com/Qiskit/qiskit.git",
+    "qiskit-ibm-runtime>=0.21.0",
 ]
 
 [project.optional-dependencies]
@@ -115,3 +115,6 @@ remove-all-unused-imports = true
 testpaths = ["./circuit_knitting/", "./test/"]
 filterwarnings = ["ignore:::.*qiskit.opflow*"]
 addopts = "--doctest-modules -rs --durations=10"
+
+[tool.hatch.metadata]
+allow-direct-references = true

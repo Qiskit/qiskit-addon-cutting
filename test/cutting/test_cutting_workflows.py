@@ -20,7 +20,9 @@ from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
+from qiskit.primitives import BackendSamplerV2
 from qiskit_aer.primitives import Sampler
+from qiskit_aer import AerSimulator
 
 from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
 from circuit_knitting.cutting.qpd import QPDBasis
@@ -180,3 +182,54 @@ def test_wire_cut_workflow_with_reused_qubits():
         assert subexpt.count_ops()["reset"] == 1
     for subexpt in subexperiments["B"]:
         assert "reset" not in subexpt.count_ops()
+
+
+def test_reconstruction_with_samplerv2():
+    """Smoke test for reconstruction using samplerv2"""
+    qc = QuantumCircuit(4)
+    qc.h(range(4))
+    qc.ryy(0.1, 1, 2)
+    qc.h(range(4))
+
+    observables = PauliList(["ZIII", "IZII", "IIZI", "IIIZ"])
+
+    partitioned_problem = partition_problem(
+        circuit=qc, partition_labels=[0, 0, 1, 1], observables=observables
+    )
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=100,
+    )
+
+    # Filter out any subexperiment where any classical register has zero bits.
+    # This is a workaround for https://github.com/Qiskit/qiskit/issues/12043.
+    for label in subexperiments.keys():
+        subexperiments[label] = [
+            subexpt
+            for subexpt in subexperiments[label]
+            if all(creg.size > 0 for creg in subexpt.cregs)
+        ]
+    # Ensure we did not just filter out _everything_.
+    assert len(subexperiments) > 0
+
+    # Use BackendSamplerV2 with AerSimulator, following
+    # https://github.com/Qiskit/qiskit-aer/issues/2078#issuecomment-1971498534
+    samplers = {
+        label: BackendSamplerV2(backend=AerSimulator())
+        for label in subexperiments.keys()
+    }
+    results = {
+        label: sampler.run(subexperiments[label], shots=128).result()
+        for label, sampler in samplers.items()
+    }
+
+    # Smoke test of reconstruction
+    reconstructed_expvals = reconstruct_expectation_values(
+        results,
+        coefficients,
+        partitioned_problem.subobservables,
+    )
+
+    assert len(reconstructed_expvals) == len(observables)

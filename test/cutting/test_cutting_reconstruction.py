@@ -16,6 +16,8 @@ import pytest
 import numpy as np
 from qiskit.result import QuasiDistribution
 from qiskit.primitives import SamplerResult
+
+# TODO: PrimitiveResult test in this file
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
@@ -67,7 +69,7 @@ class TestCuttingReconstruction(unittest.TestCase):
                 reconstruct_expectation_values(results2, weights, observables)
             assert (
                 e_info.value.args[0]
-                == "If observables is a PauliList, results must be a SamplerResult instance."
+                == "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
             )
         with self.subTest("Test unsupported phase"):
             results = SamplerResult(
