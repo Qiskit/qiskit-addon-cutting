@@ -300,7 +300,6 @@ def find_cuts(
     specified:
     - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
     after cutting.
-    - max_subcircuits: The maximum number of subcircuits produced after cutting.
 
     Returns:
     A circuit containing :class:`.BaseQPDGate` instances. The subcircuits

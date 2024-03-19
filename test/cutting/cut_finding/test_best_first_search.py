@@ -59,7 +59,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
 
     settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    constraint_obj = DeviceConstraints(qubits_per_qpu=4, max_subcircuits=2)
+    constraint_obj = DeviceConstraints(qubits_per_qpu=4)
 
     op = CutOptimization(test_circuit, settings, constraint_obj)
 

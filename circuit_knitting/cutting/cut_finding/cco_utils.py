@@ -100,10 +100,12 @@ def select_search_engine(
 ) -> BestFirstSearch:
     """Select the search algorithm to use.
 
-    In this release, the main search engine is always Dijkstra's best first search algorithm.
-    Note however that there is also :func:``greedy_best_first_search,`` which is used to warm start
-    the search algorithm. It can also provide a solution should the main search engine fail to find a
-    solution given the constraints on the computation it is allowed to perform.
+    In this release, the main search engine is always Dijkstra's
+    best first search algorithm. Note however that there is also
+    :func:``greedy_best_first_search``, which is used to warm start
+    the search algorithm. It can also provide a solution should the
+    main search engine fail to find a solution given the constraints
+    on the computation it is allowed to perform.
     """
     engine = optimization_settings.get_engine_selection(stage_of_optimization)
 

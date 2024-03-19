@@ -18,17 +18,14 @@ from dataclasses import dataclass
 
 @dataclass
 class DeviceConstraints:
-    """Specify the constraints (qubits per QPU and maximum number of subcircuits) that must be respected."""
+    """Specify the constraints (qubits per QPU) that must be respected."""
 
     qubits_per_qpu: int
-    max_subcircuits: int
 
     def __post_init__(self):
         """Post-init method for data class."""
-        if self.qubits_per_qpu < 1 or self.max_subcircuits < 1:
-            raise ValueError(
-                "qubits_per_QPU and num_QPUs must be positive definite integers."
-            )
+        if self.qubits_per_qpu < 1:
+            raise ValueError("qubits_per_QPU must be a positive definite integer.")
 
     def get_qpu_width(self) -> int:
         """Return the number of qubits supported on each individual QPU."""

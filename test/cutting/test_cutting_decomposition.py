@@ -265,7 +265,7 @@ class TestCuttingDecomposition(unittest.TestCase):
         with self.subTest("simple circuit"):
             circuit = random_circuit(7, 6, max_operands=2, seed=1242)
             optimization = OptimizationParameters(seed=111)
-            constraints = DeviceConstraints(qubits_per_qpu=4, max_subcircuits=2)
+            constraints = DeviceConstraints(qubits_per_qpu=4)
 
             _, metadata = find_cuts(
                 circuit, optimization=optimization, constraints=constraints
