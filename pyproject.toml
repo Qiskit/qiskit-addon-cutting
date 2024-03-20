@@ -31,7 +31,7 @@ dependencies = [
     "scipy>=1.5.2",
     "rustworkx>=0.14.0",
     "qiskit-aer>=0.12.0",
-    "qiskit @ git+https://github.com/Qiskit/qiskit.git",
+    "qiskit @ git+https://github.com/garrison/qiskit-terra.git@backendsamplerv2-empty-creg",
     "qiskit-ibm-runtime>=0.21.0",
 ]
 

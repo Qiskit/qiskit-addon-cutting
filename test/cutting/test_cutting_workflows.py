@@ -20,7 +20,13 @@ from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
-from qiskit.primitives import BackendSamplerV2
+
+try:
+    from qiskit.primitives import BackendSamplerV2
+except ImportError:
+    backendsamplerv2_available = False
+else:
+    backendsamplerv2_available = True
 from qiskit_aer.primitives import Sampler
 from qiskit_aer import AerSimulator
 
@@ -184,6 +190,10 @@ def test_wire_cut_workflow_with_reused_qubits():
         assert "reset" not in subexpt.count_ops()
 
 
+@pytest.mark.skipif(
+    not backendsamplerv2_available,
+    reason="BackendSamplerV2 is not available in Qiskit < 1.1",
+)
 def test_reconstruction_with_samplerv2():
     """Smoke test for reconstruction using samplerv2"""
     qc = QuantumCircuit(4)
@@ -202,17 +212,6 @@ def test_reconstruction_with_samplerv2():
         observables=partitioned_problem.subobservables,
         num_samples=100,
     )
-
-    # Filter out any subexperiment where any classical register has zero bits.
-    # This is a workaround for https://github.com/Qiskit/qiskit/issues/12043.
-    for label in subexperiments.keys():
-        subexperiments[label] = [
-            subexpt
-            for subexpt in subexperiments[label]
-            if all(creg.size > 0 for creg in subexpt.cregs)
-        ]
-    # Ensure we did not just filter out _everything_.
-    assert len(subexperiments) > 0
 
     # Use BackendSamplerV2 with AerSimulator, following
     # https://github.com/Qiskit/qiskit-aer/issues/2078#issuecomment-1971498534
