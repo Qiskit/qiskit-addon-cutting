@@ -290,7 +290,15 @@ class CutOptimization:
         return self.search_engine.minimum_reached()
 
     def get_stats(self, penultimate: bool = False) -> NDArray[np.int_]:
-        """Return the search-engine statistics."""
+        """Return the search-engine statistics.
+
+        This is a Numpy array containing the number of states visited
+        (dequeued), the number of next-states generated, the number of
+        next-states that are enqueued after cost pruning, and the number
+        of backjumps performed. Return None if no search is performed.
+        If the bool penultimate is set to True, return the stats that
+        correspond to the penultimate step in the search.
+        """
         return self.search_engine.get_stats(penultimate=penultimate)
 
     def get_upperbound_cost(self) -> tuple[float, float]:

@@ -30,7 +30,7 @@ class OptimizationSettings:
     ``engine_selections`` is a dictionary that defines the selection
     of search engines for the optimization.
 
-    ``max_backjumps`` specifies a constraint on the maximum number of backjump
+    ``max_backjumps`` specifies any constraints on the maximum number of backjump
     operations that can be performed by the search algorithm.
 
     ``seed`` is a seed used to provide a repeatable initialization
@@ -43,7 +43,7 @@ class OptimizationSettings:
     """
 
     max_gamma: float = 1024
-    max_backjumps: int = 10000
+    max_backjumps: None | int = 10000
     seed: int | None = None
     LO: bool = True
     LOCC_ancillas: bool = False
@@ -54,7 +54,7 @@ class OptimizationSettings:
         """Post-init method for the data class."""
         if self.max_gamma < 1:
             raise ValueError("max_gamma must be a positive definite integer.")
-        if self.max_backjumps < 0:
+        if self.max_backjumps is not None and self.max_backjumps < 0:
             raise ValueError("max_backjumps must be a positive semi-definite integer.")
 
         self.gate_cut_LO = self.LO
@@ -72,8 +72,11 @@ class OptimizationSettings:
         return self.max_gamma
 
     @property
-    def get_max_backjumps(self) -> int:
-        """Return the maximum number of allowed search backjumps."""
+    def get_max_backjumps(self) -> None | int:
+        """Return the maximum number of allowed search backjumps.
+
+        `None` denotes that there is no such restriction in place.
+        """
         return self.max_backjumps
 
     @property
@@ -140,4 +143,4 @@ class OptimizationParameters:
 
     seed: int | None = OptimizationSettings().seed
     max_gamma: float = OptimizationSettings().max_gamma
-    max_backjumps: int = OptimizationSettings().max_backjumps
+    max_backjumps: None | int = OptimizationSettings().max_backjumps

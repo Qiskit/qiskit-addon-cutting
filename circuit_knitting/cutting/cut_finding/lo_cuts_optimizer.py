@@ -148,7 +148,15 @@ class LOCutsOptimizer:
         return self.best_result
 
     def get_stats(self, penultimate=False) -> dict[str, NDArray[np.int_]]:
-        """Return a dictionary containing optimization results."""
+        """Return a dictionary containing optimization results.
+
+        The value is a Numpy array containing the number of states visited
+        (dequeued), the number of next-states generated, the number of
+        next-states that are enqueued after cost pruning, and the number
+        of backjumps performed. Return None if no search is performed.
+        If the bool penultimate is set to True, return the stats that
+        correspond to the penultimate step in the search.
+        """
         return {
             "CutOptimization": self.cut_optimization.get_stats(penultimate=penultimate)
         }
