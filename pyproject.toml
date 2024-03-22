@@ -115,6 +115,3 @@ remove-all-unused-imports = true
 testpaths = ["./circuit_knitting/", "./test/"]
 filterwarnings = ["ignore:::.*qiskit.opflow*"]
 addopts = "--doctest-modules -rs --durations=10"
-
-[tool.hatch.metadata]
-allow-direct-references = true
