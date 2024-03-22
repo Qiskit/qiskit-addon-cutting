@@ -126,17 +126,17 @@ def reconstruct_expectation_values(
                         subsystem_expvals[k] += quasi_prob * _process_outcome(
                             cog, outcome
                         )
-                else:  # pragma: no cover
+                else:
                     # SamplerV2 provides a PrimitiveResult
                     data_pub = current_result[idx].data
-                    qpd_array = data_pub.qpd_measurements.array
                     obs_array = data_pub.observable_measurements.array
+                    qpd_array = data_pub.qpd_measurements.array
                     shots = qpd_array.shape[0]
                     for j in range(shots):
-                        meas_outcomes = int.from_bytes(obs_array[j], "big")
+                        obs_outcomes = int.from_bytes(obs_array[j], "big")
                         qpd_outcomes = int.from_bytes(qpd_array[j], "big")
                         subsystem_expvals[k] += (1 / shots) * _process_outcome_v2(
-                            cog, meas_outcomes, qpd_outcomes
+                            cog, obs_outcomes, qpd_outcomes
                         )
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
@@ -167,25 +167,38 @@ def _process_outcome(
     num_meas_bits = len(_get_pauli_indices(cog))
 
     outcome = _outcome_to_int(outcome)
-    meas_outcomes = outcome & ((1 << num_meas_bits) - 1)
+    obs_outcomes = outcome & ((1 << num_meas_bits) - 1)
     qpd_outcomes = outcome >> num_meas_bits
 
-    return _process_outcome_v2(cog, meas_outcomes, qpd_outcomes)
+    return _process_outcome_v2(cog, obs_outcomes, qpd_outcomes)
 
 
 def _process_outcome_v2(
-    cog: CommutingObservableGroup, meas_outcomes: int, qpd_outcomes: int, /
+    cog: CommutingObservableGroup, obs_outcomes: int, qpd_outcomes: int, /
 ) -> np.typing.NDArray[np.float64]:
+    """
+    Process a single outcome of a QPD experiment with observables.
+
+    Args:
+        cog: The observable set being measured by the current experiment
+        obs_outcomes: An integer containing the outcome bits of the ``observable_measurements`` register
+        qpd_outcomes: An integer containing the outcome bits of the ``qpd_measurements`` register
+
+    Returns:
+        A 1D array of the observable measurements.  The elements of
+        this vector correspond to the elements of ``cog.commuting_observables``,
+        and each result will be either +1 or -1.
+    """
     # qpd_factor will be -1 or +1, depending on the overall parity of qpd
     # measurements.
     qpd_factor = 1 - 2 * (bit_count(qpd_outcomes) & 1)
 
     rv = np.zeros(len(cog.pauli_bitmasks))
     for i, mask in enumerate(cog.pauli_bitmasks):
-        # meas will be -1 or +1, depending on the measurement
+        # obs will be -1 or +1, depending on the measurement
         # of the current operator.
-        meas = 1 - 2 * (bit_count(meas_outcomes & mask) & 1)
-        rv[i] = qpd_factor * meas
+        obs = 1 - 2 * (bit_count(obs_outcomes & mask) & 1)
+        rv[i] = qpd_factor * obs
 
     return rv
 
