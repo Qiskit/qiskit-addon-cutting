@@ -126,7 +126,7 @@ def reconstruct_expectation_values(
                         subsystem_expvals[k] += quasi_prob * _process_outcome(
                             cog, outcome
                         )
-                else:
+                else:  # pragma: no cover
                     # SamplerV2 provides a PrimitiveResult
                     data_pub = current_result[idx].data
                     qpd_array = data_pub.qpd_measurements.array
