@@ -292,8 +292,7 @@ def find_cuts(
             - max_backjumps: Specifies a constraint on the maximum number of backjump
               operations that can be performed by the search algorithm.
             - seed: A seed for the pseudorandom number generator used by the optimizer
-        constraints: An instance of :class:`.DeviceConstraints` with the following
-            specified:
+        constraints: Options for specifying the constraints for circuit cutting
 
             - qubits_per_QPU: The maximum number of qubits each subcircuit can contain
               after cutting.
