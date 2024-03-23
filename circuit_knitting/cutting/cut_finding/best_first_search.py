@@ -41,7 +41,7 @@ class BestFirstPriorityQueue:
     lexically-ordered costs that are to be minimized.
 
     <neg_search_depth> (int) is the negative of the search depth of the
-    search state represented by the tuple.  Thus, if several search states
+    search state represented by the tuple. Thus, if several search states
     have identical costs, priority is given to the deepest states to
     encourage depth-first behavior.
 

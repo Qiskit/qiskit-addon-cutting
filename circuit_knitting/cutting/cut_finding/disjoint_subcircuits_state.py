@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Class needed for representing search-space states when cutting circuits."""
+"""Classes needed for representing search-space states when cutting circuits."""
 
 from __future__ import annotations
 
