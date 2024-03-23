@@ -69,7 +69,7 @@ Automatic Cut Finding
     :nosignatures:
     :template: autosummary/class_no_inherited_members.rst
 
-    cut_finding.OptimizationSettings
+    cut_finding.OptimizationParameters
     cut_finding.DeviceConstraints
 
 CutQC
