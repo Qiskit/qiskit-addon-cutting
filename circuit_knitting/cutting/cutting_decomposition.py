@@ -356,17 +356,11 @@ def find_cuts(
     for action in sorted(wire_cut_actions, key=lambda a: a[1][0]):
         inst_id = action.gate_spec.instruction_id
         # action.args[0][0] will be either 1 (control) or 2 (target)
-        print(action)
         qubit_id = action.args[0][0] - 1
-        print(inst_id)
-        print(qubit_id)
-        print(circuit.data[inst_id + counter])
         circ_out.data.insert(
             inst_id + counter,
             CircuitInstruction(CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []),
-            CircuitInstruction(
-                CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []
-            ),
+            CircuitInstruction(CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []),
         )
         counter += 1
         if action.action.get_name() == "CutBothWires":
