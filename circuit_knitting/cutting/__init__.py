@@ -61,6 +61,17 @@ Quasi-Probability Decomposition (QPD)
     qpd.decompose_qpd_instructions
     qpd.qpdbasis_from_instruction
 
+Automatic Cut Finding
+=====================
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+    :template: autosummary/class_no_inherited_members.rst
+
+    cut_finding.OptimizationSettings
+    cut_finding.DeviceConstraints
+
 CutQC
 =====
 
