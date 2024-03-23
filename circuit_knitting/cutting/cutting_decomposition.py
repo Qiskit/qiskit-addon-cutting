@@ -291,10 +291,7 @@ def find_cuts(
               feasible. Note that the sampling overhead is ``gamma ** 2``.
             - max_backjumps: Specifies a constraint on the maximum number of backjump
               operations that can be performed by the search algorithm.
-            - seed: Used to provide a repeatable initialization of the pseudorandom
-                    number generators used for breaking ties in the optimization. If no seed
-                    is provided, a seed is obtained using an operating system call
-                    to achieve an unrepeatable random initialization.
+            - seed: A seed for the pseudorandom number generator used by the optimizer
         constraints: An instance of :class:`.DeviceConstraints` with the following
             specified:
 
