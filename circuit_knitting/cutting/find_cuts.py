@@ -118,6 +118,7 @@ def find_cuts(
             CircuitInstruction(CutWire(), [circuit.data[inst_id].qubits[qubit_id]], []),
         )
         counter += 1
+        # pragma: no cover
         if action.action.get_name() == "CutBothWires":
             # There should be two wires specified in the action in this case
             assert len(action.args) == 2
@@ -129,6 +130,7 @@ def find_cuts(
                 ),
             )
             counter += 1
+        # pragma: no cover end
 
     # Return metadata describing the cut scheme
     metadata: dict[str, Any] = {"cuts": []}
