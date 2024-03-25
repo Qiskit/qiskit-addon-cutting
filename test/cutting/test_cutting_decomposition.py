@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for cutting_decomposition package."""
+"""Tests for cutting_decomposition module."""
 
 import unittest
 
@@ -19,16 +19,12 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction, Barrier, Clbit
 from qiskit.circuit.library import EfficientSU2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
-from qiskit.circuit.random import random_circuit
 from qiskit.quantum_info import PauliList
 
 from circuit_knitting.cutting import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
-    find_cuts,
-    OptimizationParameters,
-    DeviceConstraints,
 )
 from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
@@ -260,32 +256,6 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert subcircuit.keys() == {0, 1}
             assert subcircuit[0].num_qubits == 3
             assert subcircuit[1].num_qubits == 1
-
-    def test_find_cuts(self):
-        with self.subTest("simple circuit"):
-            circuit = random_circuit(7, 6, max_operands=2, seed=1242)
-            optimization = OptimizationParameters(seed=111)
-            constraints = DeviceConstraints(qubits_per_subcircuit=4)
-
-            _, metadata = find_cuts(
-                circuit, optimization=optimization, constraints=constraints
-            )
-            cut_types = {cut[0] for cut in metadata["cuts"]}
-
-            assert len(metadata["cuts"]) == 2
-            assert {"Wire Cut", "Gate Cut"} == cut_types
-            assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
-
-        with self.subTest("3-qubit gate"):
-            circuit = random_circuit(3, 2, max_operands=3, seed=99)
-            with pytest.raises(ValueError) as e_info:
-                _, metadata = find_cuts(
-                    circuit, optimization=optimization, constraints=constraints
-                )
-            assert e_info.value.args[0] == (
-                "The input circuit must contain only single and two-qubits gates. "
-                "Found 3-qubit gate: (cswap)."
-            )
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):
