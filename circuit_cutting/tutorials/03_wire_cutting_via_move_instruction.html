@@ -565,21 +565,26 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from qiskit_ibm_runtime import Session, Options, Sampler</span>
-
-<span class="c1"># with Session(backend=&quot;ibmq_qasm_simulator&quot;) as session:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from qiskit_ibm_runtime import Session, Options, Sampler, QiskitRuntimeService</span>
+<span class="c1"># from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager</span>
+<span class="c1">#</span>
+<span class="c1"># service = QiskitRuntimeService()</span>
+<span class="c1"># backend = service.least_busy(operational=True, simulator=False)</span>
+<span class="c1">#</span>
+<span class="c1"># # Prepare transpiler for target backend</span>
+<span class="c1"># pass_manager = generate_preset_pass_manager(optimization_level=1, backend=backend)</span>
+<span class="c1">#</span>
+<span class="c1"># with Session(backend=backend) as session:</span>
 <span class="c1">#     # Set up Qiskit Runtime Sampler primitives.</span>
 <span class="c1">#     samplers = {</span>
 <span class="c1">#         label: Sampler(Options(execution={&quot;shots&quot;: 2**12})) for label in subexperiments.keys()</span>
 <span class="c1">#     }</span>
 <span class="c1">#</span>
-<span class="c1"># Retrieve results from each subexperiment</span>
+<span class="c1">#     # Retrieve results from each subexperiment</span>
 <span class="c1">#     results = {</span>
-<span class="c1">#         label: sampler.run(subexperiments[label]).result()</span>
+<span class="c1">#         label: sampler.run(pass_manager.run(subexperiments[label])).result()</span>
 <span class="c1">#         for label, sampler in samplers.items()</span>
 <span class="c1">#     }</span>
-
-<span class="c1">#     session.close()</span>
 </pre></div>
 </div>
 </div>
