@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    Added a function, :func:`circuit_knitting.cutting.find_cuts`, for automatically
+    identifying locations to place gate and wire cuts such that the circuit is
+    separable and runnable, given some QPU constraints. The optimizer will
+    try to choose cut schemes which minimize the sampling overhead, but for larger
+    circuits, the number of cuts needed to separate the circuit will naturally
+    grow larger, leading to exponentially higher sampling overheads.
