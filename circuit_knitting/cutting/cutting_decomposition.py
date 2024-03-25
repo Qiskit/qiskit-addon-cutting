@@ -294,8 +294,7 @@ def find_cuts(
             - seed: A seed for the pseudorandom number generator used by the optimizer.
 
         constraints: Options for specifying the constraints for circuit cutting:
-            - qubits_per_qpu: The maximum number of qubits per qpu, which here
-            is the same as the maximum number of number of qubits per subcircuit.
+            - qubits_per_subcircuit: The maximum number of qubits per subcircuit.
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
         resulting from cutting these gates will be runnable on the devices
