@@ -19,8 +19,12 @@ from collections.abc import Sequence, Hashable
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
+from qiskit.transpiler import PassManager
+from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
+from qiskit.passmanager.flow_controllers import DoWhileController
 
 from ..utils.iteration import strict_zip
+from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
 from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
@@ -57,6 +61,12 @@ def generate_cutting_experiments(
         :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`
 
     The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.
+
+    Note that this function also runs some transpiler passes on each generated
+    circuit, namely :class:`~qiskit.transpiler.passes.RemoveResetInZeroState`,
+    :class:`.RemoveFinalReset`, and :class:`.ConsolidateResets`, in order to
+    remove unnecessary :class:`~qiskit.circuit.library.Reset`\ s from the
+    circuit that are added by the subexperiment decompositions for cut wires.
 
     Args:
         circuits: The circuit(s) to partition and separate
@@ -148,17 +158,39 @@ def generate_cutting_experiments(
             subcircuit = subcircuit_dict[label]
             if is_separated:
                 map_ids_tmp = tuple(map_ids[j] for j in subcirc_map_ids[label])
-            decomp_qc = decompose_qpd_instructions(
-                subcircuit, subcirc_qpd_gate_ids[label], map_ids_tmp
-            )
             for j, cog in enumerate(so.groups):
-                meas_qc = _append_measurement_circuit(decomp_qc, cog)
-                subexperiments_dict[label].append(meas_qc)
+                new_qc = _append_measurement_register(subcircuit, cog)
+                decompose_qpd_instructions(
+                    new_qc, subcirc_qpd_gate_ids[label], map_ids_tmp, inplace=True
+                )
+                _append_measurement_circuit(new_qc, cog, inplace=True)
+                subexperiments_dict[label].append(new_qc)
+
+    # Remove initial and final resets from the subexperiments.  This will
+    # enable the `Move` operation to work on backends that don't support
+    # `Reset`, as long as qubits are not re-used.  See
+    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.
+    # While we are at it, we also consolidate each run of multiple resets
+    # (which can arise when re-using qubits) into a single reset.
+    pass_manager = PassManager()
+    passes = [
+        RemoveResetInZeroState(),
+        RemoveFinalReset(),
+        ConsolidateResets(),
+        DAGFixedPoint(),
+    ]
+    pass_manager.append(
+        DoWhileController(
+            passes, do_while=lambda property_set: not property_set["dag_fixed_point"]
+        )
+    )
+    for label, subexperiments in subexperiments_dict.items():
+        subexperiments_dict[label] = pass_manager.run(subexperiments)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
-    subexperiments_out: list[QuantumCircuit] | dict[
-        Hashable, list[QuantumCircuit]
-    ] = dict(subexperiments_dict)
+    subexperiments_out: list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]] = (
+        dict(subexperiments_dict)
+    )
     assert isinstance(subexperiments_out, dict)
     if isinstance(circuits, QuantumCircuit):
         assert len(subexperiments_out.keys()) == 1
@@ -231,6 +263,37 @@ def _get_bases(circuit: QuantumCircuit) -> tuple[list[QPDBasis], list[list[int]]
     return bases, qpd_gate_ids
 
 
+def _append_measurement_register(
+    qc: QuantumCircuit,
+    cog: CommutingObservableGroup,
+    /,
+    *,
+    inplace: bool = False,
+):
+    """Append a new classical register for the given ``CommutingObservableGroup``.
+
+    The new register will be named ``"observable_measurements"`` and will be
+    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+
+    Args:
+        qc: The quantum circuit
+        cog: The commuting observable set for which to construct measurements
+        inplace: Whether to operate on the circuit in place (default: ``False``)
+
+    Returns:
+        The modified circuit
+    """
+    if not inplace:
+        qc = qc.copy()
+
+    pauli_indices = _get_pauli_indices(cog)
+
+    obs_creg = ClassicalRegister(len(pauli_indices), name="observable_measurements")
+    qc.add_register(obs_creg)
+
+    return qc
+
+
 def _append_measurement_circuit(
     qc: QuantumCircuit,
     cog: CommutingObservableGroup,
@@ -239,15 +302,15 @@ def _append_measurement_circuit(
     qubit_locations: Sequence[int] | None = None,
     inplace: bool = False,
 ) -> QuantumCircuit:
-    """Append a new classical register and measurement instructions for the given ``CommutingObservableGroup``.
+    """Append measurement instructions for the given ``CommutingObservableGroup``.
 
-    The new register will be named ``"observable_measurements"`` and will be
-    the final register in the returned circuit, i.e. ``retval.cregs[-1]``.
+    The measurement results will be placed in a register with the name
+    ``"observable_measurements"``.  Such a register can be created by calling
+    :func:`_append_measurement_register` before calling the current function.
 
     Args:
         qc: The quantum circuit
-        cog: The commuting observable set for
-            which to construct measurements
+        cog: The commuting observable set for which to construct measurements
         qubit_locations: A ``Sequence`` whose length is the number of qubits
             in the observables, where each element holds that qubit's corresponding
             index in the circuit.  By default, the circuit and observables are assumed
@@ -273,19 +336,29 @@ def _append_measurement_circuit(
                 f"qubit_locations has {len(qubit_locations)} element(s) but the "
                 f"observable(s) have {cog.general_observable.num_qubits} qubit(s)."
             )
+
+    # Find observable_measurements register
+    for reg in qc.cregs:
+        if reg.name == "observable_measurements":
+            obs_creg = reg
+            break
+    else:
+        raise ValueError('Cannot locate "observable_measurements" register')
+
+    pauli_indices = _get_pauli_indices(cog)
+
+    if obs_creg.size != len(pauli_indices):
+        raise ValueError(
+            '"observable_measurements" register is the wrong size '
+            "for the given commuting observable group "
+            f"({obs_creg.size} != {len(pauli_indices)})"
+        )
+
     if not inplace:
         qc = qc.copy()
 
-    # If the circuit has no measurements, the Sampler will fail.  So, we
-    # measure one qubit as a temporary workaround to
-    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422
-    pauli_indices = cog.pauli_indices
-    if not pauli_indices:
-        pauli_indices = [0]
-
     # Append the appropriate measurements to qc
-    obs_creg = ClassicalRegister(len(pauli_indices), name="observable_measurements")
-    qc.add_register(obs_creg)
+    #
     # Implement the necessary basis rotations and measurements, as
     # in BackendEstimator._measurement_circuit().
     genobs_x = cog.general_observable.x
@@ -305,3 +378,14 @@ def _append_measurement_circuit(
         qc.measure(actual_qubit, obs_creg[clbit])
 
     return qc
+
+
+def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
+    """Return the indices to qubits to be measured."""
+    # If the circuit has no measurements, the Sampler will fail.  So, we
+    # measure one qubit as a temporary workaround to
+    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422
+    pauli_indices = cog.pauli_indices
+    if not pauli_indices:
+        pauli_indices = [0]
+    return pauli_indices

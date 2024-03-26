@@ -17,7 +17,6 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
-from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
@@ -100,27 +99,6 @@ def partition_circuit_qubits(
         circuit.data[i] = CircuitInstruction(qpd_gate, qubits=qubit_indices)
 
     return circuit
-
-
-@deprecate_func(
-    since="0.3",
-    package_name="circuit-knitting-toolbox",
-    removal_timeline="no earlier than v0.4.0",
-    additional_msg=(
-        "Instead, use ``circuit_knitting.cutting.cut_gates`` "
-        "to automatically transform specified gates into "
-        "``TwoQubitQPDGate`` instances."
-    ),
-)
-def decompose_gates(
-    circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
-) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
-    r"""
-    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
-
-    Deprecated as of 0.3.0. Instead, use :func:`~circuit_knitting.cutting.cut_gates`.
-    """
-    return cut_gates(circuit, gate_ids, inplace)
 
 
 def cut_gates(

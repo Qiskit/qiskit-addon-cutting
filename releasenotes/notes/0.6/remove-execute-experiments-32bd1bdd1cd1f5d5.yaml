@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting.cutting.cutting_evaluation`` module, which has been deprecated since the 0.4 release. Users should first call :func:`circuit_knitting.cutting.generate_cutting_experiments` to generate the subexperiment circuits and then submit these circuits directly to the desired Sampler(s).

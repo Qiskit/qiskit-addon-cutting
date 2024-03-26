@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting_toolbox`` import path. Users should now import from ``circuit_knitting`` instead.
