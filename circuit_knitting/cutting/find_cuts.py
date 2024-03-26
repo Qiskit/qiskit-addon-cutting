@@ -38,15 +38,15 @@ def find_cuts(
     """Find cut locations in a circuit, given optimization settings and cutting constraints.
 
     Args:
-        circuit: The circuit to cut. The circuit must contain only single two-qubit
-            gates.
+        circuit: The circuit to cut. The input circuit may not contain gates acting
+            on more than two qubits.
         optimization: Options for controlling optimizer behavior. Currently, the optimal
-            cuts are arrived at using Dijkstra's best-first search algorithm.
-        constraints: Constraints on how to cut the circuit
+            cuts are chosen using Dijkstra's best-first search algorithm.
+        constraints: Constraints on how the circuit may be partitioned
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
-        resulting from cutting these gates will be runnable on the devices
-        specified in ``constraints``.
+        resulting from cutting these gates will be runnable on the devices meeting
+        the ``constraints``.
 
         A metadata dictionary:
             - cuts: A list of length-2 tuples describing each cut in the output circuit.
