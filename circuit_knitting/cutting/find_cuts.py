@@ -35,24 +35,14 @@ def find_cuts(
     optimization: OptimizationParameters,
     constraints: DeviceConstraints,
 ) -> tuple[QuantumCircuit, dict[str, float]]:
-    """Find cut locations in a circuit, given optimization settings and QPU constraints.
+    """Find cut locations in a circuit, given optimization settings and cutting constraints.
 
     Args:
         circuit: The circuit to cut. The circuit must contain only single two-qubit
             gates.
         optimization: Options for controlling optimizer behavior. Currently, the optimal
-            cuts are arrived at using Dijkstra's best-first search algorithm. The specified
-            parameters are:
-
-            - max_gamma: Specifies a constraint on the maximum value of gamma that a
-              solution to the optimization is allowed to have to be considered
-              feasible. Note that the sampling overhead is ``gamma ** 2``.
-            - max_backjumps: Specifies a constraint on the maximum number of backjump
-              operations that can be performed by the search algorithm.
-            - seed: A seed for the pseudorandom number generator used by the optimizer.
-
-        constraints: Options for specifying the constraints for circuit cutting:
-            - qubits_per_subcircuit: The maximum number of qubits per subcircuit.
+            cuts are arrived at using Dijkstra's best-first search algorithm.
+        constraints: Constraints on how to cut the circuit
     Returns:
         A circuit containing :class:`.BaseQPDGate` instances. The subcircuits
         resulting from cutting these gates will be runnable on the devices
