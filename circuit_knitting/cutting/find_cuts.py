@@ -119,7 +119,7 @@ def find_cuts(
         )
         counter += 1
 
-        if action.action.get_name() == "CutBothWires": # pragma: no cover
+        if action.action.get_name() == "CutBothWires":  # pragma: no cover
             # There should be two wires specified in the action in this case
             assert len(action.args) == 2
             qubit_id2 = action.args[1][0] - 1
