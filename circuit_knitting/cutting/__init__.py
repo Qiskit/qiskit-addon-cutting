@@ -93,8 +93,8 @@ from .cutting_decomposition import (
     partition_problem,
     cut_gates,
     PartitionedCuttingProblem,
-    find_cuts,
 )
+from .find_cuts import find_cuts
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
