@@ -451,8 +451,7 @@ class DisjointSubcircuitsState:
 
     def export_cuts(self, circuit_interface: SimpleGateList):
         """Export LO cuts into the input circuit_interface for each of the cutting decisions made."""
-        # This wire map assumes no reuse of measured qubits that
-        # result from wire cuts
+        # This wire map assumes no reuse of qubits
         assert self.num_wires is not None
         wire_map = np.arange(self.num_wires)
 
