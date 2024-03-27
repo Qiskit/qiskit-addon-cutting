@@ -13,9 +13,10 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple
+
 from collections import defaultdict
 from collections.abc import Sequence, Hashable
+from typing import NamedTuple
 
 from qiskit.circuit import (
     QuantumCircuit,
