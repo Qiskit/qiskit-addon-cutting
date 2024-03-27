@@ -30,9 +30,9 @@ from ..qpd import QPDBasis
 def qc_to_cco_circuit(circuit: QuantumCircuit) -> list[str | CircuitElement]:
     """Convert a :class:`qiskit.QuantumCircuit` instance into a circuit list that is compatible with the :class:`SimpleGateList`.
 
-    To conform with the uniformity of the design, single and multiqubit (that is, gates acting on more than two
-    qubits) are assigned :math:`gamma=None`. In the converted list, a barrier across the entire circuit is
-    represented by the string "barrier." Everything else is represented by an instance of :class:`CircuitElement`.
+    To conform with the uniformity of the design, single qubit gates are assigned :math:`gamma=None`.
+    In the converted list, a barrier across the entire circuit is represented by the string "barrier."
+    Everything else is represented by an instance of :class:`CircuitElement`.
 
     Args:
     circuit: an instance of :class:`qiskit.QuantumCircuit` .
