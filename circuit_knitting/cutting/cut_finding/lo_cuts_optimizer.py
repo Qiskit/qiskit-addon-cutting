@@ -28,7 +28,7 @@ from .optimization_settings import OptimizationSettings
 from .circuit_interface import SimpleGateList
 
 
-### Functions for generating the cut optimization search space
+# Functions for generating the cut optimization search space
 cut_optimization_search_funcs = SearchFunctions(
     cost_func=cut_optimization_upper_bound_cost_func,  # Valid choice only for LO cuts.
     upperbound_cost_func=cut_optimization_upper_bound_cost_func,
@@ -42,7 +42,7 @@ class LOCutsOptimizer:
     """Optimize circuit cuts for the case in which only LO decompositions are employed.
 
     The ``search_engine_config`` dictionary that configures the optimization
-    algorithms must be specified in the constructor.  For flexibility, the
+    algorithms must be specified in the constructor. For flexibility, the
     circuit_interface, optimization_settings, and device_constraints can
     be specified either in the constructor or in :meth:`LOCutsOptimizer.optimize`.
     In the latter case, the values provided overwrite the previous values.

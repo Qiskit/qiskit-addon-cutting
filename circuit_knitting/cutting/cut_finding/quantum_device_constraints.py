@@ -18,7 +18,7 @@ from dataclasses import dataclass
 
 @dataclass
 class DeviceConstraints:
-    """Specify the constraints (qubits per QPU) that must be respected."""
+    """Specify the constraints (qubits per subcircuit) that must be respected."""
 
     qubits_per_subcircuit: int
 
@@ -30,5 +30,5 @@ class DeviceConstraints:
             )
 
     def get_qpu_width(self) -> int:
-        """Return the number of qubits supported on each individual QPU."""
+        """Return the number of qubits per subcircuit."""
         return self.qubits_per_subcircuit

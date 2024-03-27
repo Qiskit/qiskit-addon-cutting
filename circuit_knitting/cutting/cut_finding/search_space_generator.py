@@ -46,7 +46,7 @@ class ActionNames:
     def copy(
         self, list_of_groups: list[DisjointSearchAction | None] | None = None
     ) -> ActionNames:
-        """Return a copy of :class:`ActionNames` containing only those actions whose group affiliations intersect with ``list_of_groups``.
+        """Return copy of :class:`ActionNames` with actions whose group affiliations intersect with ``list_of_groups``.
 
         The default is to return a copy containing all actions.
         """
@@ -59,7 +59,7 @@ class ActionNames:
         return new_container
 
     def define_action(self, action_object: DisjointSearchAction) -> None:
-        """Insert the specified ``action_object`` into the look-up dictionaries using the name of the action and its group names."""
+        """Insert specified ``action_object`` into look-up dictionaries using associated name of action and group names."""
         assert (
             action_object.get_name() not in self.action_dict
         ), f"Action {action_object.get_name()} is already defined"
@@ -121,8 +121,8 @@ class SearchFunctions:
     """Contain functions needed to generate and explore a search space.
 
     In addition to the required input arguments, the function
-    signatures are assumed to also allow additional input arguments that are
-    needed to perform the corresponding computations.
+    signatures are assumed to also allow additional input arguments
+    that are needed to perform the corresponding computations.
 
     Member Variables:
 
@@ -132,7 +132,7 @@ class SearchFunctions:
     per Python semantics.
 
     ``next_state_func``: a function that returns a list
-    of next states generated from the input state. An :class:`ActionNames`
+    of next states generated from the input state. A :class:`ActionNames`
     instance should be incorporated into the additional input arguments
     in order to generate next-states.
 

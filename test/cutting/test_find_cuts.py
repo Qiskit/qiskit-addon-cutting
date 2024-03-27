@@ -15,6 +15,7 @@ import unittest
 
 import pytest
 import numpy as np
+from qiskit import QuantumCircuit
 from qiskit.circuit.random import random_circuit
 
 from circuit_knitting.cutting import (
@@ -50,3 +51,22 @@ class TestCuttingDecomposition(unittest.TestCase):
                 "The input circuit must contain only single and two-qubits gates. "
                 "Found 3-qubit gate: (cswap)."
             )
+        with self.subTest(
+            "right-wire-cut"
+        ):  # tests resolution of https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/508
+
+            circuit = QuantumCircuit(5)
+            circuit.cx(0, 3)
+            circuit.cx(1, 3)
+            circuit.cx(2, 3)
+            circuit.h(4)
+            circuit.cx(3, 4)
+            constraints = DeviceConstraints(qubits_per_subcircuit=3)
+            _, metadata = find_cuts(
+                circuit, optimization=optimization, constraints=constraints
+            )
+            cut_types = {cut[0] for cut in metadata["cuts"]}
+
+            assert len(metadata["cuts"]) == 1
+            assert {"Wire Cut"} == cut_types
+            assert metadata["sampling_overhead"] == 16

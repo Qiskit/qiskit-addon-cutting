@@ -139,7 +139,7 @@ class BestFirstSearch:
      an upper bound to the optimal cost given a goal_state as input.
      The upper bound is used to prune next-states from the search in
      subsequent calls :meth:`BestFirstSearch.optimization_pass`.
-     If upperbound_cost_funcis None, the cost of the ``goal_state`` as
+     If ``upperbound_cost_func`` is None, the cost of the ``goal_state`` as
      determined by cost_func is used asan upper bound to the optimal cost.
      Input arguments to :meth:`BestFirstSearch.optimization_pass`
      are also passed to the ``upperbound_cost_func``.

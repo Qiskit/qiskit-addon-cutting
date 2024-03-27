@@ -46,9 +46,9 @@ def cut_optimization_cost_func(
 ) -> tuple[float, int]:
     """Return the cost function.
 
-    The particular cost function chosen here aims to minimize the classical
-    overhead, gamma, while also (secondarily) giving preference to circuit
-    partitionings that balance the sizes of the resulting partitions, by
+    The particular cost function chosen here aims to minimize the (square root)
+    of the classical overhead, :math:`gamma`, while also (secondarily) giving preference
+    to circuit partitionings that balance the sizes of the resulting partitions, by
     minimizing the maximum width across subcircuits.
     """
     # pylint: disable=unused-argument
@@ -58,7 +58,7 @@ def cut_optimization_cost_func(
 def cut_optimization_upper_bound_cost_func(
     goal_state, func_args: CutOptimizationFuncArgs
 ) -> tuple[float, float]:
-    """Return the value of gamma computed assuming all LO cuts."""
+    """Return the value of :math:`gamma` computed assuming all LO cuts."""
     # pylint: disable=unused-argument
     return (goal_state.upper_bound_gamma(), np.inf)
 
@@ -118,8 +118,8 @@ def cut_optimization_goal_state_func(
     return state.get_search_level() >= len(func_args.entangling_gates)
 
 
-### Global variable that holds the search-space functions for generating
-### the cut optimization search space.
+# Global variable that holds the search-space functions for generating
+# the cut optimization search space.
 cut_optimization_search_funcs = SearchFunctions(
     cost_func=cut_optimization_cost_func,
     upperbound_cost_func=cut_optimization_upper_bound_cost_func,
@@ -153,9 +153,6 @@ def greedy_cut_optimization(
         circuit_interface.get_num_qubits(), max_wire_cuts_circuit(circuit_interface)
     )
     return greedy_best_first_search(start_state, search_space_funcs, func_args)
-
-
-################################################################################
 
 
 class CutOptimization:
@@ -231,7 +228,6 @@ class CutOptimization:
             search_space_funcs=self.search_funcs,
             search_actions=self.search_actions,
         )
-        ################################################################################
 
         # Use the upper bound for the optimal gamma to determine the maximum
         # number of wire cuts that can be performed.
@@ -243,7 +239,7 @@ class CutOptimization:
 
         # The elif block below covers a rare edge case
         # which would need a clever circuit to get tested.
-        # Excluding from test coverage for now.
+        # Excluded from test coverage for now.
         elif self.func_args.max_gamma is not None:  # pragma: no cover
             mwc = max_wire_cuts_gamma(self.func_args.max_gamma)
             max_wire_cuts = min(max_wire_cuts, mwc)

@@ -35,7 +35,7 @@ def find_cuts(
     optimization: OptimizationParameters,
     constraints: DeviceConstraints,
 ) -> tuple[QuantumCircuit, dict[str, float]]:
-    """Find cut locations in a circuit, given optimization settings and cutting constraints.
+    """Find cut locations in a circuit, given optimization parameters and cutting constraints.
 
     Args:
         circuit: The circuit to cut. The input circuit may not contain gates acting

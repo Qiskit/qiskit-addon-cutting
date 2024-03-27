@@ -24,8 +24,8 @@ class OptimizationSettings:
     ``max_gamma`` specifies a constraint on the maximum value of gamma that a
     solution is allowed to have to be considered feasible. If a solution exists
     but the associated gamma exceeds ``max_gamma``, :func:`.greedy_best_first_search`,
-    which is used to warm start, the search engine will still attempt to return a
-    solution.
+    which is used to warm start the search engine will still return a valid albeit
+    typically suboptimal solution.
 
     ``engine_selections`` is a dictionary that defines the selection
     of search engines for the optimization.
@@ -135,7 +135,7 @@ class OptimizationSettings:
 
 @dataclass
 class OptimizationParameters:
-    """Specify a subset of parameters that control the optimization.
+    """Specify parameters that control the optimization.
 
     The other attributes of :class:`OptimizationSettings` are taken
     to be private.

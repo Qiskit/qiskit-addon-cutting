@@ -107,7 +107,7 @@ class ActionApplyGate(DisjointSearchAction):
         return [new_state]
 
 
-### Add ActionApplyGate to the global variable ``disjoint_subcircuit_actions``
+# Add ActionApplyGate to the global variable ``disjoint_subcircuit_actions``
 disjoint_subcircuit_actions.define_action(ActionApplyGate())
 
 
@@ -200,7 +200,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         circuit_interface.insert_gate_cut(gate_spec.instruction_id, "LO")
 
 
-### Add ActionCutTwoQubitGate to the global variable disjoint_subcircuit_actions
+# Add ActionCutTwoQubitGate to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutTwoQubitGate())
 
 
@@ -230,7 +230,7 @@ class ActionCutLeftWire(DisjointSearchAction):
                 "In the current version, only the cutting of two qubit gates is supported."
             )
 
-        # If the wire-cut limit would be exceeded, return the empty list
+        # If the wire-cut limit would be exceeded, return the empty list.
         if not state.can_add_wires(1):
             return list()
 
@@ -272,7 +272,7 @@ class ActionCutLeftWire(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Add ActionCutLeftWire to the global variable disjoint_subcircuit_actions
+# Add ActionCutLeftWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutLeftWire())
 
 
@@ -358,7 +358,7 @@ class ActionCutRightWire(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Add ActionCutRightWire to the global variable disjoint_subcircuit_actions
+# Add ActionCutRightWire to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutRightWire())
 
 
@@ -432,5 +432,5 @@ class ActionCutBothWires(DisjointSearchAction):
         insert_all_lo_wire_cuts(circuit_interface, wire_map, gate_spec, cut_args)
 
 
-### Add ActionCutBothWires to the global variable disjoint_subcircuit_actions
+# Add ActionCutBothWires to the global variable disjoint_subcircuit_actions
 disjoint_subcircuit_actions.define_action(ActionCutBothWires())

@@ -291,7 +291,7 @@ class SimpleGateList(CircuitInterface):
         If None is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
         needed to represent cut wires.  If "default" is used as the mapping
-        then :meth:``default_wire_name_mapping()`` defines the name mapping.
+        then :meth:`default_wire_name_mapping` defines the name mapping.
         """
         wire_map = self.make_wire_mapping(name_mapping)
         out = copy.deepcopy(self.new_circuit)
@@ -310,7 +310,7 @@ class SimpleGateList(CircuitInterface):
         If None is provided as the name_mapping, then the original qubit names are
         used with additional names of form ("cut", <name>) introduced as
         needed to represent cut wires.  If "default" is used as the mapping
-        then :meth:``SimpleGateList.default_wire_name_mapping()`` defines the name mapping.
+        then :meth:``SimpleGateList.default_wire_name_mapping`` defines the name mapping.
         """
         wire_map = self.make_wire_mapping(name_mapping)
         out = dict()
@@ -344,8 +344,9 @@ class SimpleGateList(CircuitInterface):
     ) -> Sequence[int | tuple[str, int]]:
         """Return a wire-mapping list given an input specification of a name mapping.
 
-        If ``None ``is provided as the input name_mapping, then the original qubit names are mapped to themselves.
-        If "default" is used as the ``name_mapping``, then :meth:``default_wire_name_mapping`` is used to define the name mapping.
+        If ``None ``is provided as the input name_mapping, then the original qubit names
+        are mapped to themselves. If "default" is used as the ``name_mapping``,
+        then :meth:``default_wire_name_mapping`` is used to define the name mapping.
         """
         if name_mapping is None:
             name_mapping = dict()
@@ -364,7 +365,7 @@ class SimpleGateList(CircuitInterface):
         return wire_mapping
 
     def default_wire_name_mapping(self) -> dict[Hashable, int]:
-        """Return a dictionary that maps wire names to default numeric output qubit names when exporting a cut circuit.
+        """Return dictionary that maps wire names to default numeric output qubit names when exporting a cut circuit.
 
         Cut wires are assigned numeric IDs that are adjacent to the numeric ID of the wire prior to cutting so that Move
         operators are then applied against adjacent qubits. This is ensured by :meth:`SimpleGateList.sort_order`.
