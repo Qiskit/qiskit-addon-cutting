@@ -14,9 +14,9 @@
 import unittest
 
 import pytest
+import os
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit.random import random_circuit
 
 from circuit_knitting.cutting import (
     find_cuts,
@@ -28,7 +28,12 @@ from circuit_knitting.cutting import (
 class TestCuttingDecomposition(unittest.TestCase):
     def test_find_cuts(self):
         with self.subTest("simple circuit"):
-            circuit = random_circuit(7, 6, max_operands=2, seed=1242)
+            path_to_circuit = os.path.join(
+                os.path.dirname(__file__),
+                "..",
+                "qasm_circuits/circuit_find_cuts_test.qasm",
+            )
+            circuit = QuantumCircuit.from_qasm_file(path_to_circuit)
             optimization = OptimizationParameters(seed=111)
             constraints = DeviceConstraints(qubits_per_subcircuit=4)
 
@@ -42,7 +47,10 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
 
         with self.subTest("3-qubit gate"):
-            circuit = random_circuit(3, 2, max_operands=3, seed=99)
+            circuit = QuantumCircuit(3)
+            circuit.cswap(2, 1, 0)
+            circuit.crx(3.57, 1, 0)
+            circuit.z(2)
             with pytest.raises(ValueError) as e_info:
                 _, metadata = find_cuts(
                     circuit, optimization=optimization, constraints=constraints

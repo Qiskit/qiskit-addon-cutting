@@ -282,7 +282,13 @@ class CutOptimization:
         return state, cost
 
     def minimum_reached(self) -> bool:
-        """Return True if the optimization reached a global minimum."""
+        """Return True if the optimization reached a global minimum.
+
+        Note that this bool being False could mean that the lowest
+        possible value for :math:`gamma` was actually returned but
+        that it was just was not proven to be the lowest attainable
+        value.
+        """
         return self.search_engine.minimum_reached()
 
     def get_stats(self, penultimate: bool = False) -> NDArray[np.int_]:

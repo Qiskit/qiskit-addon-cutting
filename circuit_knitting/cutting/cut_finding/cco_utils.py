@@ -151,11 +151,10 @@ def greedy_best_first_search(
         default=(None, None, None),
     )
 
-    if best[-1] is not None:
-        return greedy_best_first_search(best[-1], search_space_funcs, *args)
-
-    # The else block below covers a rare edge case
-    # which needs a clever circuit to get tested.
-    # Excluding from test coverage for now.
-    else:  # pragma: no cover
+    if best[-1] is None:  # pragma: no cover
+        # This covers a rare edge case.
+        # We have so far found no circuit that triggers it.
+        # Excluding from test coverage for now.
         return None
+
+    return greedy_best_first_search(best[-1], search_space_funcs, *args)

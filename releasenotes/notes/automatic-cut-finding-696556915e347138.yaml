@@ -3,7 +3,7 @@ features:
   - |
     Added a cut-finder function, :func:`circuit_knitting.cutting.find_cuts`, for automatically
     identifying locations to place LO gate and wire cuts such that the circuit is
-    separable and runnable, given the maximum number of qubits per subcircuit. 
+    separable and runnable, given the maximum number of qubits per subcircuit as a parameter. 
     The cut-finder will search for cut schemes which minimize the sampling overhead. 
     Note, however, that for larger circuits, the number of cuts needed to separate the
     circuit will naturally grow larger, leading to an exponentially increasing sampling overhead.
