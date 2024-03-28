@@ -20,11 +20,18 @@ import pytest
 import numpy as np
 import numpy.typing as npt
 from ddt import ddt, data, unpack
-from qiskit.circuit import CircuitInstruction
+from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
 from qiskit.circuit.library import (
     EfficientSU2,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
+    CPhaseGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
+    ECRGate,
     CRXGate,
     CRYGate,
     CRZGate,
@@ -32,19 +39,27 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 
-from circuit_knitting.utils.iteration import unique_by_eq
+from circuit_knitting.utils.iteration import unique_by_eq, strict_zip
+from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
+    WeightType,
     generate_qpd_weights,
+    decompose_qpd_instructions,
+    qpdbasis_from_instruction,
 )
-from circuit_knitting.cutting.qpd.qpd import *
-from circuit_knitting.cutting.qpd.qpd import (
+from circuit_knitting.cutting.qpd.weights import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
+)
+from circuit_knitting.cutting.qpd.decompositions import (
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
     _explicitly_supported_instructions,
@@ -150,6 +165,17 @@ class TestQPDFunctions(unittest.TestCase):
             decomp_circ = decompose_qpd_instructions(circ, [[0]], map_ids=[0])
             circ_compare.add_register(ClassicalRegister(0, name="qpd_measurements"))
             self.assertEqual(decomp_circ, circ_compare)
+        with self.subTest("Single QPD gate with translation"):
+            eagle_basis_gate_set = {"id", "rz", "sx", "x", "measure"}
+            circ = QuantumCircuit(2)
+            qpd_basis = QPDBasis.from_instruction(RXXGate(np.pi / 3))
+            qpd_gate = TwoQubitQPDGate(qpd_basis)
+            circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
+            decomp_circ = decompose_qpd_instructions(
+                circ, [[0]], map_ids=[1], translate_to_qpu="eagle"
+            )
+            for inst in decomp_circ.data:
+                assert inst.operation.name in eagle_basis_gate_set
         with self.subTest("Incorrect map index size"):
             with pytest.raises(ValueError) as e_info:
                 decomp_circ = decompose_qpd_instructions(
