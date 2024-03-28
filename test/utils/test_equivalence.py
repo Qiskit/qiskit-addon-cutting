@@ -30,7 +30,7 @@ class TestEquivalenceLibraries(unittest.TestCase):
     def test_equivalence_library_dict(self):
         assert isinstance(self.heron_lib, EquivalenceLibrary)
         assert isinstance(self.eagle_lib, EquivalenceLibrary)
-        assert self.standard_lib == None
+        assert self.standard_lib is None
 
     def test_equivalence_heron(self):
         heron_equivalence = self.heron_lib.get_entry(SdgGate())[0]

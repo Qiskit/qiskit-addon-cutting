@@ -34,7 +34,6 @@ from qiskit.circuit.library.standard_gates import (
     ZGate,
     HGate,
     SGate,
-    IGate,
     SdgGate,
     SXGate,
     SXdgGate,
