@@ -50,32 +50,6 @@ equivalence_libraries = defaultdict(
     lambda: None, {"heron": EagleEquivalenceLibrary, "eagle": EagleEquivalenceLibrary}
 )
 
-########## Single-qubit Eagle native gate set: x, sx, rz, i ##########
-# XGate
-q = QuantumRegister(1, "q")
-def_x = QuantumCircuit(q)
-def_x.append(XGate(), [0], [])
-_eagle_sel.add_equivalence(XGate(), def_x)
-
-# SXGate
-q = QuantumRegister(1, "q")
-def_sx = QuantumCircuit(q)
-def_sx.append(SXGate(), [0], [])
-_eagle_sel.add_equivalence(SXGate(), def_sx)
-
-# RZGate
-q = QuantumRegister(1, "q")
-def_rz = QuantumCircuit(q)
-theta = Parameter("theta")
-def_rz.append(RZGate(theta), [0], [])
-_eagle_sel.add_equivalence(RZGate(theta), def_rz)
-
-# IGate
-q = QuantumRegister(1, "q")
-def_i = QuantumCircuit(q)
-def_i.append(IGate(), [0], [])
-_eagle_sel.add_equivalence(IGate(), def_i)
-
 ######################################################################
 
 # YGate
