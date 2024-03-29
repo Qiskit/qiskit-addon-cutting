@@ -69,8 +69,8 @@ Automatic Cut Finding
     :nosignatures:
     :template: autosummary/class_no_inherited_members.rst
 
-    cut_finding.OptimizationParameters
-    cut_finding.DeviceConstraints
+    find_cuts.OptimizationParameters
+    find_cuts.DeviceConstraints
 
 CutQC
 =====
@@ -98,8 +98,9 @@ from .find_cuts import find_cuts
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
-from .cut_finding.quantum_device_constraints import DeviceConstraints
-from .cut_finding.optimization_settings import OptimizationParameters
+
+# from .cut_finding.quantum_device_constraints import DeviceConstraints
+# from .cut_finding.optimization_settings import OptimizationParameters
 
 __all__ = [
     "find_cuts",
@@ -111,6 +112,6 @@ __all__ = [
     "PartitionedCuttingProblem",
     "cut_wires",
     "expand_observables",
-    "DeviceConstraints",
-    "OptimizationParameters",
+    # "DeviceConstraints",
+    # "OptimizationParameters",
 ]
