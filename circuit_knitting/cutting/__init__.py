@@ -45,15 +45,15 @@ Automatic Cut Finding
     :toctree: ../stubs/
     :nosignatures:
 
-    find_cuts.find_cuts
+    find_cuts
 
 .. autosummary::
     :toctree: ../stubs/
     :nosignatures:
     :template: autosummary/class_no_inherited_members.rst
 
-    find_cuts.OptimizationParameters
-    find_cuts.DeviceConstraints
+    automated_cut_finding.OptimizationParameters
+    automated_cut_finding.DeviceConstraints
 
 Quasi-Probability Decomposition (QPD)
 =====================================
@@ -102,9 +102,9 @@ from .cutting_decomposition import (
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
+from .automated_cut_finding import find_cuts, DeviceConstraints, OptimizationParameters
 
 __all__ = [
-    "find_cuts",
     "partition_circuit_qubits",
     "partition_problem",
     "cut_gates",
@@ -113,4 +113,7 @@ __all__ = [
     "PartitionedCuttingProblem",
     "cut_wires",
     "expand_observables",
+    "find_cuts",
+    "DeviceConstraints",
+    "OptimizationParameters",
 ]
