@@ -21,7 +21,6 @@ Circuit Cutting
     :toctree: ../stubs/
     :nosignatures:
 
-    find_cuts
     cut_wires
     expand_observables
     partition_circuit_qubits
@@ -62,7 +61,13 @@ Quasi-Probability Decomposition (QPD)
     qpd.qpdbasis_from_instruction
 
 Automatic Cut Finding
-=====================
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+
+    find_cuts
 
 .. autosummary::
     :toctree: ../stubs/
