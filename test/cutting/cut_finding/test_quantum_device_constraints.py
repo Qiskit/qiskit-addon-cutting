@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import pytest
-from circuit_knitting.cutting.find_cuts import DeviceConstraints
+from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
 
 
 @pytest.mark.parametrize("qubits_per_subcircuit", [-1, 0])
