@@ -18,7 +18,7 @@ import os
 import numpy as np
 from qiskit import QuantumCircuit
 
-from circuit_knitting.cutting.find_cuts import (
+from circuit_knitting.cutting.automated_cut_finding import (
     find_cuts,
     OptimizationParameters,
     DeviceConstraints,
