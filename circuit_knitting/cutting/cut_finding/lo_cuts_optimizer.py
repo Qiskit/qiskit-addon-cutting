@@ -25,6 +25,7 @@ from .search_space_generator import SearchFunctions, SearchSpaceGenerator
 import numpy as np
 from numpy.typing import NDArray
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
+
 if TYPE_CHECKING:
     from ..find_cuts import DeviceConstraints
 from .optimization_settings import OptimizationSettings

@@ -30,6 +30,7 @@ from .search_space_generator import (
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
+
 if TYPE_CHECKING:
     from ..find_cuts import DeviceConstraints
 
