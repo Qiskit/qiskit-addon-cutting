@@ -13,9 +13,7 @@ from circuit_knitting.cutting.cut_finding.circuit_interface import (
 from circuit_knitting.cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
-from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
-    DeviceConstraints,
-)
+from circuit_knitting.cutting.find_cuts import DeviceConstraints
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
     OneWireCutIdentifier,

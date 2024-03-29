@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from circuit_knitting.cutting.cut_finding.quantum_device_constraints import (
-    DeviceConstraints,
-)
+from circuit_knitting.cutting.find_cuts import DeviceConstraints
 
 
 @pytest.mark.parametrize("qubits_per_subcircuit", [-1, 0])

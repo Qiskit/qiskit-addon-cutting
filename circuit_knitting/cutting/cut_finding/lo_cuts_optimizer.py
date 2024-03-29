@@ -12,6 +12,8 @@
 """File containing the wrapper class for optimizing LO gate and wire cuts."""
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from .cut_optimization import CutOptimization
 from .cut_optimization import disjoint_subcircuit_actions
 from .cut_optimization import cut_optimization_next_state_func
@@ -23,7 +25,8 @@ from .search_space_generator import SearchFunctions, SearchSpaceGenerator
 import numpy as np
 from numpy.typing import NDArray
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
-from .quantum_device_constraints import DeviceConstraints
+if TYPE_CHECKING:
+    from ..find_cuts import DeviceConstraints
 from .optimization_settings import OptimizationSettings
 from .circuit_interface import SimpleGateList
 

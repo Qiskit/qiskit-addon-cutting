@@ -14,16 +14,13 @@
 from __future__ import annotations
 
 from typing import cast, Any
+from dataclasses import dataclass
 
 from qiskit.circuit import QuantumCircuit, CircuitInstruction
 
 from .instructions import CutWire
 from .cutting_decomposition import cut_gates
-from .cut_finding.optimization_settings import (
-    OptimizationSettings,
-    OptimizationParameters,
-)
-from .cut_finding.quantum_device_constraints import DeviceConstraints
+from .cut_finding.optimization_settings import OptimizationSettings
 from .cut_finding.disjoint_subcircuits_state import DisjointSubcircuitsState
 from .cut_finding.circuit_interface import SimpleGateList
 from .cut_finding.lo_cuts_optimizer import LOCutsOptimizer
@@ -131,3 +128,34 @@ def find_cuts(
     metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
 
     return circ_out, metadata
+
+
+@dataclass
+class OptimizationParameters:
+    """Specify parameters that control the optimization.
+
+    The other attributes of :class:`OptimizationSettings` are taken
+    to be private.
+    """
+
+    seed: int | None = OptimizationSettings().seed
+    max_gamma: float = OptimizationSettings().max_gamma
+    max_backjumps: None | int = OptimizationSettings().max_backjumps
+
+
+@dataclass
+class DeviceConstraints:
+    """Specify the constraints (qubits per subcircuit) that must be respected."""
+
+    qubits_per_subcircuit: int
+
+    def __post_init__(self):
+        """Post-init method for data class."""
+        if self.qubits_per_subcircuit < 1:
+            raise ValueError(
+                "qubits_per_subcircuit must be a positive definite integer."
+            )
+
+    def get_qpu_width(self) -> int:
+        """Return the number of qubits per subcircuit."""
+        return self.qubits_per_subcircuit

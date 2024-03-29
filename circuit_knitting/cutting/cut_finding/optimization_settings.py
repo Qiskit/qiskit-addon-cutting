@@ -131,16 +131,3 @@ class OptimizationSettings:
             out.append("WireCut")
 
         return out
-
-
-@dataclass
-class OptimizationParameters:
-    """Specify parameters that control the optimization.
-
-    The other attributes of :class:`OptimizationSettings` are taken
-    to be private.
-    """
-
-    seed: int | None = OptimizationSettings().seed
-    max_gamma: float = OptimizationSettings().max_gamma
-    max_backjumps: None | int = OptimizationSettings().max_backjumps
