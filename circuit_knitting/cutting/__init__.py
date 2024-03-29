@@ -45,7 +45,7 @@ Automatic Cut Finding
     :toctree: ../stubs/
     :nosignatures:
 
-    find_cuts
+    find_cuts.find_cuts
 
 .. autosummary::
     :toctree: ../stubs/
