@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Callable
 
 import pytest
 from pytest import fixture
@@ -14,17 +15,21 @@ from circuit_knitting.cutting.cut_finding.circuit_interface import (
     CircuitElement,
 )
 
-# test circuit 1.
-tc_1 = QuantumCircuit(2)
-tc_1.h(1)
-tc_1.barrier(1)
-tc_1.s(0)
-tc_1.barrier()
-tc_1.cx(1, 0)
 
-# test circuit 2
-tc_2 = EfficientSU2(2, entanglement="linear", reps=2).decompose()
-tc_2.assign_parameters([0.4] * len(tc_2.parameters), inplace=True)
+def create_test_circuit_1():
+    tc_1 = QuantumCircuit(2)
+    tc_1.h(1)
+    tc_1.barrier(1)
+    tc_1.s(0)
+    tc_1.barrier()
+    tc_1.cx(1, 0)
+    return tc_1
+
+
+def create_test_circuit_2():
+    tc_2 = EfficientSU2(2, entanglement="linear", reps=2).decompose()
+    tc_2.assign_parameters([0.4] * len(tc_2.parameters), inplace=True)
+    return tc_2
 
 
 # test circuit 3
@@ -46,10 +51,10 @@ def internal_test_circuit():
 
 
 @pytest.mark.parametrize(
-    "test_circuit, known_output",
+    "create_test_circuit, known_output",
     [
         (
-            tc_1,
+            create_test_circuit_1,
             [
                 CircuitElement("h", [], [1], None),
                 CircuitElement("barrier", [], [1], None),
@@ -59,7 +64,7 @@ def internal_test_circuit():
             ],
         ),
         (
-            tc_2,
+            create_test_circuit_2,
             [
                 CircuitElement("ry", [0.4], [0], None),
                 CircuitElement("rz", [0.4], [0], None),
@@ -80,8 +85,10 @@ def internal_test_circuit():
     ],
 )
 def test_qc_to_cco_circuit(
-    test_circuit: QuantumCircuit, known_output: list[CircuitElement, str]
+    create_test_circuit: Callable[[], QuantumCircuit],
+    known_output: list[CircuitElement, str],
 ):
+    test_circuit = create_test_circuit()
     test_circuit_internal = qc_to_cco_circuit(test_circuit)
     assert test_circuit_internal == known_output
 
