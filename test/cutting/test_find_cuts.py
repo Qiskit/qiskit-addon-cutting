@@ -31,7 +31,8 @@ class TestCuttingDecomposition(unittest.TestCase):
             path_to_circuit = os.path.join(
                 os.path.dirname(__file__),
                 "..",
-                "qasm_circuits/circuit_find_cuts_test.qasm",
+                "qasm_circuits",
+                "circuit_find_cuts_test.qasm",
             )
             circuit = QuantumCircuit.from_qasm_file(path_to_circuit)
             optimization = OptimizationParameters(seed=111)
