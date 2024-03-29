@@ -106,82 +106,81 @@ class BestFirstPriorityQueue:
 class BestFirstSearch:
     """Implement Dijkstra's best-first search algorithm.
 
-     The search proceeds by choosing the deepest, lowest-cost state
-     in the search frontier and generating next states. Successive calls to
-     :meth:`BestFirstSearch.optimization_pass` will resume the search at
-     the next deepest, lowest-cost state in the search frontier. The costs
-     of goal states that are returned are used to constrain subsequent searches.
-     None is returned if no (additional) feasible solutions can be found, or
-     when no (additional) solutions can be found without exceeding the lowest
-     upper-bound cost across the goal states previously returned.
+    The search proceeds by choosing the deepest, lowest-cost state
+    in the search frontier and generating next states. Successive calls to
+    :meth:`BestFirstSearch.optimization_pass` will resume the search at
+    the next deepest, lowest-cost state in the search frontier. The costs
+    of goal states that are returned are used to constrain subsequent searches.
+    None is returned if no (additional) feasible solutions can be found, or
+    when no (additional) solutions can be found without exceeding the lowest
+    upper-bound cost across the goal states previously returned.
 
-     Member Variables:
+    Member Variables:
 
-     ``seed`` (int) is the seed to use when initializing Numpy random number
-     generators in :class:`BestFirstPriorityQueue` instances.
+    ``seed`` (int) is the seed to use when initializing Numpy random number
+    generators in :class:`BestFirstPriorityQueue` instances.
 
-     ``cost_func`` is a function that computes cost values from search states.
-     Input arguments to :meth:`BestFirstSearch.optimization_pass` are also passed
-     to the ``cost_func``. The cost returned can be numeric or tuples of numerics.
-     In the latter case, lexicographical comparisons are performed per Python semantics.
+    ``cost_func`` is a function that computes cost values from search states.
+    Input arguments to :meth:`BestFirstSearch.optimization_pass` are also passed
+    to the ``cost_func``. The cost returned can be numeric or tuples of numerics.
+    In the latter case, lexicographical comparisons are performed per Python semantics.
 
+    ``next_state_func`` is a function that returns a list
+    of next states generated from the input state. Input arguments to
+    to :meth:`BestFirstSearch.optimization_pass` are also passed to
+    the ``next_state_func``.
 
-     ``next_state_func`` is a function that returns a list
-     of next states generated from the input state.  Input arguments to
-     to :meth:`BestFirstSearch.optimization_pass` are also passed to
-     the ``next_state_func``.
-
-     ``goal_state_func`` is a function that returns True if
-     the input state is a solution state of the search.  Input arguments to
-     :meth:`BestFirstSearch.optimization_pass` are also passed to the ``goal_state_func``.
+    ``goal_state_func`` is a function that returns True if
+    the input state is a solution state of the search. Input arguments to
+    :meth:`BestFirstSearch.optimization_pass` are also passed to the ``goal_state_func``.
 
      ``upperbound_cost_func`` can either be None or a function that returns
-     an upper bound to the optimal cost given a goal_state as input.
-     The upper bound is used to prune next-states from the search in
-     subsequent calls :meth:`BestFirstSearch.optimization_pass`.
-     If ``upperbound_cost_func`` is None, the cost of the ``goal_state`` as
-     determined by cost_func is used asan upper bound to the optimal cost.
-     Input arguments to :meth:`BestFirstSearch.optimization_pass`
-     are also passed to the ``upperbound_cost_func``.
+    an upper bound to the optimal cost given a goal_state as input.
+    The upper bound is used to prune next-states from the search in
+    subsequent calls :meth:`BestFirstSearch.optimization_pass`.
+    If ``upperbound_cost_func`` is None, the cost of the ``goal_state`` as
+    determined by cost_func is used asan upper bound to the optimal cost.
+    Input arguments to :meth:`BestFirstSearch.optimization_pass`
+    are also passed to the ``upperbound_cost_func``.
 
-     ``mincost_bound_func`` can either be None or a function that
-     returns a cost bound that is compared to the minimum cost across all
-     vertices in a search frontier.  If the minimum cost exceeds the min-cost
-     bound, the search is terminated even if a goal state has not yet been found.
-     A ``mincost_bound_func`` that is None is equivalent to an infinite min-cost bound.
+    ``mincost_bound_func`` can either be None or a function that
+    returns a cost bound that is compared to the minimum cost across all
+    vertices in a search frontier. If the minimum cost exceeds the min-cost
+    bound, the search is terminated even if a goal state has not yet been found.
+    A ``mincost_bound_func`` that is None is equivalent to an infinite min-cost bound.
 
-     ``stop_at_first_min`` (Boolean) is a flag that indicates whether or not to
-     stop the search after the first minimum-cost goal state has been reached.
+    ``stop_at_first_min`` (Boolean) is a flag that indicates whether or not to
+    stop the search after the first minimum-cost goal state has been reached.
 
-     ``max_backjumps`` (int or None) is the maximum number of backjump operations that
-     can be performed before the search is forced to terminate.  None indicates
-     that no restriction is placed on the number of backjump operations.
+    ``max_backjumps`` (int or None) is the maximum number of backjump operations that
+    can be performed before the search is forced to terminate. None indicates
+    that no restriction is placed on the number of backjump operations.
 
-     ``pqueue`` is an instance of :class:`BestFirstPriorityQueue`.
+    ``pqueue`` is an instance of :class:`BestFirstPriorityQueue`.
 
     ``upperbound_cost`` (float or tuple) is the cost bound obtained by applying
-     the upperbound_cost_func to the goal states that are encountered.
+    the upperbound_cost_func to the goal states that are encountered.
 
-     ``mincost_bound`` (float or tuple) is the cost bound imposed on the minimum
-     cost across all vertices in the search frontier.  The search is forced to
-     terminate when the minimum cost exceeds this cost bound.
+    ``mincost_bound`` (float or tuple) is the cost bound imposed on the minimum
+    cost across all vertices in the search frontier. The search is forced to
+    terminate when the minimum cost exceeds this cost bound.
 
-     ``min_reached`` (Boolean) is a flag that indicates whether or not the
-     first minimum-cost goal state has been reached.
+    ``min_reached`` (Boolean) is a flag that indicates whether or not the
+    first minimum-cost goal state has been reached.
 
-     ``num_states_visited`` (int) is the number of states that have been dequeued
-     and processed in the search.
+    ``num_states_visited`` (int) is the number of states that have been dequeued
+    and processed in the search.
 
-     ``num_next_states`` (int) is the number of next-states generated from the
-     states visited.
+    ``num_next_states`` (int) is the number of next-states generated from the
+    states visited.
 
-     ``num_enqueues`` (int) is the number of next-states pushed onto the search
-     priority queue after cost pruning.
+    ``num_enqueues`` (int) is the number of next-states pushed onto the search
+    priority queue after cost pruning.
 
-     ``num_backjumps`` (int) is the number of times a backjump operation is
-     performed.  In the case of (Dijkstra's) best-first search, a backjump
-     occurs when the depth of the lowest-cost state in the search frontier
-     is less than or equal to the depth of the previous lowest-cost state.
+    ``num_backjumps`` (int) is the number of times a backjump operation is
+    performed. In the case of (Dijkstra's) best-first search, a backjump
+    occurs when the depth of the lowest-cost state in the search frontier
+    is less than or equal to the depth of the previous lowest-cost state.
     """
 
     def __init__(
