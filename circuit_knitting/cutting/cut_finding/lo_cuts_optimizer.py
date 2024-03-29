@@ -129,7 +129,7 @@ class LOCutsOptimizer:
             search_engine_config=self.search_engine_config,
         )
 
-        out_1 = list()
+        out_1 = []
 
         while True:
             state, cost = self.cut_optimization.optimization_pass()

@@ -91,12 +91,12 @@ class ActionApplyGate(DisjointSearchAction):
         # the qubit limit, then do not apply the gate
         assert state.width is not None
         if r1 != r2 and state.width[r1] + state.width[r2] > max_width:
-            return list()
+            return []
 
         # If the gate cannot be applied because it would violate the
         # merge constraints, then do not apply the gate
         if state.check_donot_merge_roots(r1, r2):
-            return list()
+            return []
 
         new_state = state.copy()
 
@@ -140,7 +140,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         gamma_LB, num_bell_pairs, gamma_UB = self.get_cost_params(gate_spec)
 
         if gamma_LB is None:  # pragma: no cover
-            return list()
+            return []
 
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
@@ -150,7 +150,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         r2 = state.find_qubit_root(q2)
 
         if r1 == r2:
-            return list()
+            return []
 
         new_state = state.copy()
 
@@ -232,7 +232,7 @@ class ActionCutLeftWire(DisjointSearchAction):
 
         # If the wire-cut limit would be exceeded, return the empty list.
         if not state.can_add_wires(1):
-            return list()
+            return []
 
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
@@ -241,10 +241,10 @@ class ActionCutLeftWire(DisjointSearchAction):
         r2 = state.find_qubit_root(q2)
 
         if r1 == r2:
-            return list()
+            return []
 
         if not state.can_expand_subcircuit(r2, 1, max_width):
-            return list()
+            return []
 
         new_state = state.copy()
 
@@ -318,7 +318,7 @@ class ActionCutRightWire(DisjointSearchAction):
 
         # If the wire-cut limit would be exceeded, return the empty list
         if not state.can_add_wires(1):
-            return list()
+            return []
 
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]
@@ -327,10 +327,10 @@ class ActionCutRightWire(DisjointSearchAction):
         r2 = state.find_qubit_root(q2)
 
         if r1 == r2:
-            return list()
+            return []
 
         if not state.can_expand_subcircuit(r1, 1, max_width):
-            return list()
+            return []
 
         new_state = state.copy()
 
@@ -390,11 +390,11 @@ class ActionCutBothWires(DisjointSearchAction):
 
         # If the wire-cut limit would be exceeded, do not cut.
         if not state.can_add_wires(2):  # pragma: no cover
-            return list()
+            return []
 
         # If the maximum width is less than two, do not cut.
         if max_width < 2:
-            return list()
+            return []
 
         q1 = gate.qubits[0]
         q2 = gate.qubits[1]

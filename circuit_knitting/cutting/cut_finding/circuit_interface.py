@@ -158,14 +158,14 @@ class SimpleGateList(CircuitInterface):
     def __init__(
         self,
         input_circuit: list[CircuitElement | str],
-        init_qubit_names: list[Hashable] = list(),
+        init_qubit_names: list[Hashable] = [],
     ):
         """Assign member variables."""
         self.qubit_names = NameToIDMap(init_qubit_names)
 
-        self.circuit = list()
-        self.new_circuit = list()
-        self.cut_type = list()
+        self.circuit = []
+        self.new_circuit = []
+        self.cut_type = []
         for gate in input_circuit:
             self.cut_type.append(None)
             if not isinstance(gate, CircuitElement):
@@ -203,7 +203,7 @@ class SimpleGateList(CircuitInterface):
 
         The elements of the resulting list are instances of :class:`GateSpec`.
         """
-        subcircuit: list[GateSpec] = list()
+        subcircuit: list[GateSpec] = []
         for k, circ_element in enumerate(self.circuit):
             gate = circ_element[0]
             cut_constraints = circ_element[1]
@@ -313,7 +313,7 @@ class SimpleGateList(CircuitInterface):
         then :meth:``SimpleGateList.default_wire_name_mapping`` defines the name mapping.
         """
         wire_map = self.make_wire_mapping(name_mapping)
-        out = dict()
+        out = {}
         for in_wire, out_wire in enumerate(self.output_wires):
             out[self.qubit_names.get_name(in_wire)] = wire_map[out_wire]
         return out
@@ -349,14 +349,14 @@ class SimpleGateList(CircuitInterface):
         then :meth:``default_wire_name_mapping`` is used to define the name mapping.
         """
         if name_mapping is None:
-            name_mapping = dict()
+            name_mapping = {}
             for name in self.get_wire_names():
                 name_mapping[name] = name
 
         elif name_mapping == "default":
             name_mapping = self.default_wire_name_mapping()  # type: ignore
 
-        wire_mapping: list[int | tuple[str, int]] = list()
+        wire_mapping: list[int | tuple[str, int]] = []
 
         for k in self.qubit_names.get_ids():
             name_mapping = cast(dict, name_mapping)
@@ -374,7 +374,7 @@ class SimpleGateList(CircuitInterface):
 
         name_pairs.sort(key=lambda x: x[1])
 
-        name_map: dict[Hashable, int] = dict()
+        name_map: dict[Hashable, int] = {}
         for k, pair in enumerate(name_pairs):
             name_map[pair[0]] = k
 
@@ -416,8 +416,8 @@ class NameToIDMap:
         This is done in order to force a preferred ordering in the assigment of item IDs to those names.
         """
         self.next_id: int = 0
-        self.item_dict: dict[Hashable, int] = dict()
-        self.id_dict: dict[int, Hashable] = dict()
+        self.item_dict: dict[Hashable, int] = {}
+        self.id_dict: dict[int, Hashable] = {}
 
         for name in init_names:
             self.get_id(name)

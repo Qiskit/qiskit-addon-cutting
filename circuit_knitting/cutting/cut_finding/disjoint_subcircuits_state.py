@@ -165,13 +165,13 @@ class DisjointSubcircuitsState:
             self.uptree = np.arange(max_wires)
             self.width = np.ones(max_wires, dtype=int)
 
-            self.bell_pairs = list()
+            self.bell_pairs = []
             self.gamma_LB = 1.0
             self.gamma_UB = 1.0
 
-            self.no_merge = list()
-            self.actions = list()
-            self.cut_actions_list = list()
+            self.no_merge = []
+            self.actions = []
+            self.cut_actions_list = []
             self.level = 0
 
     @no_type_check
