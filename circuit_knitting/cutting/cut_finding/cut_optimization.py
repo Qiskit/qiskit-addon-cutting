@@ -31,7 +31,7 @@ from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
 
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from ..find_cuts import DeviceConstraints
 
 
