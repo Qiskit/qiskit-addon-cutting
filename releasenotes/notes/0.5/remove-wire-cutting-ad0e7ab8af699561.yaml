@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the :mod:`circuit_knitting.cutting.wire_cutting` module. Users are now expected to import from the :mod:`circuit_knitting.cutting.cutqc` module instead.

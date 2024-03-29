@@ -223,7 +223,7 @@ def create_dd_bin(
         subcircuit_entries, subcircuit_instance_probabilities
     )
 
-    bin = dd_build(
+    return dd_build(
         summation_terms=summation_terms,
         subcircuit_entry_probs=subcircuit_entry_probabilities,
         num_cuts=cuts["num_cuts"],
@@ -233,8 +233,6 @@ def create_dd_bin(
         subcircuit_instances=subcircuit_instances,
         num_threads=num_threads,
     )
-
-    return bin
 
 
 def reconstruct_dd_full_distribution(
@@ -265,9 +263,7 @@ def reconstruct_dd_full_distribution(
     return reconstructed_prob
 
 
-def _generate_metadata(
-    cuts: dict[str, Any]
-) -> tuple[
+def _generate_metadata(cuts: dict[str, Any]) -> tuple[
     list[dict[int, int]],
     dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]],
     dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
@@ -433,7 +429,7 @@ def find_wire_cuts(
             if verbose:
                 print("%d subcircuits : IMPOSSIBLE" % (num_subcircuit))
             continue
-        kwargs = dict(
+        kwargs = dict(  # pylint: disable=use-dict-literal
             n_vertices=n_vertices,
             edges=edges,
             vertex_ids=vertex_ids,
@@ -485,7 +481,6 @@ def find_wire_cuts(
         subcircuits: Sequence[Any] = cut_solution["subcircuits"]
         num_cuts: int = cut_solution["num_cuts"]
         _print_cutter_result(
-            num_subcircuit=len(subcircuits),
             num_cuts=num_cuts,
             subcircuits=subcircuits,
             counter=counter,
@@ -560,7 +555,6 @@ def cut_circuit_wire(
     if verbose:
         print("-" * 20)
         _print_cutter_result(
-            num_subcircuit=len(cut_solution["subcircuits"]),
             num_cuts=cut_solution["num_cuts"],
             subcircuits=cut_solution["subcircuits"],
             counter=cut_solution["counter"],
@@ -571,7 +565,6 @@ def cut_circuit_wire(
 
 
 def _print_cutter_result(
-    num_subcircuit: int,
     num_cuts: int,
     subcircuits: Sequence[QuantumCircuit],
     counter: dict[int, dict[str, int]],
@@ -581,7 +574,6 @@ def _print_cutter_result(
     Pretty print the results.
 
     Args:
-        num_subciruit: The number of subcircuits
         num_cuts: The number of cuts
         subcircuits: The list of subcircuits
         counter: The dictionary containing all meta information regarding
@@ -591,7 +583,8 @@ def _print_cutter_result(
     Returns:
         None
     """
-    for subcircuit_idx in range(num_subcircuit):
+    print(f"num_cuts = {num_cuts}")
+    for subcircuit_idx, subcircuit in enumerate(subcircuits):
         print("subcircuit %d" % subcircuit_idx)
         print(
             "\u03C1 qubits = %d, O qubits = %d, width = %d, effective = %d, depth = %d, size = %d"
@@ -604,7 +597,7 @@ def _print_cutter_result(
                 counter[subcircuit_idx]["size"],
             )
         )
-        print(subcircuits[subcircuit_idx])
+        print(subcircuit)
     print("Estimated cost = %.3e" % classical_cost, flush=True)
 
 
@@ -623,7 +616,7 @@ def _cuts_parser(
         that are affected by these cuts
     """
     dag = circuit_to_dag(circ)
-    positions = []
+    positions: list[tuple[Qubit, int]] = []
     for position in cuts:
         if len(position) != 2:
             raise ValueError(

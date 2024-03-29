@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    Removed the ``circuit_knitting.cutting.qpd.generate_qpd_samples`` function, which has been deprecated since the 0.3 release. :func:`~.generate_qpd_weights` should be used instead.

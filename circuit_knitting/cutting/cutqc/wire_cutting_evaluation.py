@@ -24,6 +24,7 @@ from qiskit import QuantumCircuit
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 from qiskit.primitives import BaseSampler, Sampler as TestSampler
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 
@@ -262,6 +263,12 @@ def run_subcircuits(
     if service is not None:
         session = Session(service=service, backend=backend_name)
         sampler = Sampler(session=session, options=options)
+        # Transpile circuits
+        backend = service.backend(session.backend())
+        pass_manager = generate_preset_pass_manager(
+            optimization_level=1, backend=backend
+        )
+        subcircuits = pass_manager.run(subcircuits)
     else:
         sampler = TestSampler(options=options)
 
@@ -389,9 +396,9 @@ def _run_subcircuit_batch(
                 mutated_subcircuit_instance_idx = subcircuit_instance[
                     (init_meas[0], meas)
                 ]
-                subcircuit_instance_probs[
-                    mutated_subcircuit_instance_idx
-                ] = measured_prob
+                subcircuit_instance_probs[mutated_subcircuit_instance_idx] = (
+                    measured_prob
+                )
                 unique_subcircuit_check[mutated_subcircuit_instance_idx] = True
 
     return subcircuit_instance_probs

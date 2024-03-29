@@ -20,11 +20,18 @@ import pytest
 import numpy as np
 import numpy.typing as npt
 from ddt import ddt, data, unpack
-from qiskit.circuit import CircuitInstruction
+from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
 from qiskit.circuit.library import (
     EfficientSU2,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
+    CPhaseGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
+    ECRGate,
     CRXGate,
     CRYGate,
     CRZGate,
@@ -32,19 +39,27 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 
-from circuit_knitting.utils.iteration import unique_by_eq
+from circuit_knitting.utils.iteration import unique_by_eq, strict_zip
+from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
+    WeightType,
     generate_qpd_weights,
+    decompose_qpd_instructions,
+    qpdbasis_from_instruction,
 )
-from circuit_knitting.cutting.qpd.qpd import *
-from circuit_knitting.cutting.qpd.qpd import (
+from circuit_knitting.cutting.qpd.weights import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
+)
+from circuit_knitting.cutting.qpd.decompositions import (
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
     _explicitly_supported_instructions,
@@ -178,7 +193,7 @@ class TestQPDFunctions(unittest.TestCase):
             creg = ClassicalRegister(1, name="qpd_measurements")
             dx_circ_truth.add_register(creg)
             dx_circ_truth.h(0)
-            dx_circ_truth.rx(np.pi / 2, 1)
+            dx_circ_truth.sx(1)
             dx_circ_truth.measure(0, 0)
             dx_circ_truth.h(0)
             dx_circ = decompose_qpd_instructions(qpd_circ, [[0]], [2])

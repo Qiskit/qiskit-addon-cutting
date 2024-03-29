@@ -17,7 +17,6 @@ from collections import defaultdict
 from collections.abc import Sequence, Hashable
 from typing import NamedTuple
 
-from qiskit.utils import deprecate_func
 from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
@@ -34,9 +33,9 @@ from .qpd.instructions import TwoQubitQPDGate
 class PartitionedCuttingProblem(NamedTuple):
     """The result of decomposing and separating a circuit and observable(s)."""
 
-    subcircuits: dict[str | int, QuantumCircuit]
+    subcircuits: dict[Hashable, QuantumCircuit]
     bases: list[QPDBasis]
-    subobservables: dict[str | int, PauliList] | None = None
+    subobservables: dict[Hashable, PauliList] | None = None
 
 
 def partition_circuit_qubits(
@@ -102,27 +101,6 @@ def partition_circuit_qubits(
     return circuit
 
 
-@deprecate_func(
-    since="0.3",
-    package_name="circuit-knitting-toolbox",
-    removal_timeline="no earlier than v0.4.0",
-    additional_msg=(
-        "Instead, use ``circuit_knitting.cutting.cut_gates`` "
-        "to automatically transform specified gates into "
-        "``TwoQubitQPDGate`` instances."
-    ),
-)
-def decompose_gates(
-    circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
-) -> tuple[QuantumCircuit, list[QPDBasis]]:  # pragma: no cover
-    r"""
-    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
-
-    Deprecated as of 0.3.0. Instead, use :func:`~circuit_knitting.cutting.cut_gates`.
-    """
-    return cut_gates(circuit, gate_ids, inplace)
-
-
 def cut_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:
@@ -143,7 +121,7 @@ def cut_gates(
     """
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to cut_gates should contain no classical registers or bits."
         )
     # Replace specified gates with TwoQubitQPDGates
     if not inplace:
@@ -162,7 +140,7 @@ def cut_gates(
 
 def partition_problem(
     circuit: QuantumCircuit,
-    partition_labels: Sequence[str | int] | None = None,
+    partition_labels: Sequence[Hashable] | None = None,
     observables: PauliList | None = None,
 ) -> PartitionedCuttingProblem:
     r"""
@@ -218,7 +196,7 @@ def partition_problem(
 
     if len(circuit.cregs) != 0 or circuit.num_clbits != 0:
         raise ValueError(
-            "Circuits input to execute_experiments should contain no classical registers or bits."
+            "Circuits input to partition_problem should contain no classical registers or bits."
         )
 
     # Determine partition labels from connectivity (ignoring TwoQubitQPDGates)
@@ -258,8 +236,8 @@ def partition_problem(
 
 
 def decompose_observables(
-    observables: PauliList, partition_labels: Sequence[str | int]
-) -> dict[str | int, PauliList]:
+    observables: PauliList, partition_labels: Sequence[Hashable]
+) -> dict[Hashable, PauliList]:
     """
     Decompose a list of observables with respect to some qubit partition labels.
 

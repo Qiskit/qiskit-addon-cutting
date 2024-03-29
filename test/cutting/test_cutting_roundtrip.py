@@ -16,6 +16,7 @@ import logging
 
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import UnitaryGate
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
@@ -39,14 +40,14 @@ from qiskit.circuit.library.standard_gates import (
     iSwapGate,
     DCXGate,
 )
-from qiskit.extensions import UnitaryGate
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
+from qiskit_aer.primitives import Sampler
 
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
     partition_problem,
-    execute_experiments,
+    generate_cutting_experiments,
     reconstruct_expectation_values,
 )
 from circuit_knitting.cutting.instructions import Move
@@ -55,7 +56,7 @@ logger = logging.getLogger(__name__)
 
 
 def append_random_unitary(circuit: QuantumCircuit, qubits):
-    circuit.append(UnitaryGate(random_unitary(2 ** len(qubits))), qubits)
+    circuit.unitary(random_unitary(2 ** len(qubits)), qubits)
 
 
 @pytest.fixture(
@@ -94,12 +95,8 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [Move(), Move()],
     ]
 )
-def example_circuit(
-    request,
-) -> tuple[QuantumCircuit, QuantumCircuit, list[list[int]]]:
+def example_circuit(request) -> QuantumCircuit:
     """Fixture for an example circuit.
-
-    Returns both the original and one with QPDGates as a tuple.
 
     Except for the parametrized gates, the system can be separated according to
     the partition labels "AAB".
@@ -131,17 +128,8 @@ def example_circuit(
 
 
 def test_cutting_exact_reconstruction(example_circuit):
-    """Test gate-cut circuit vs original circuit on statevector simulator
-
-    This test uses a statevector simulator to consider the expectation value of
-    each of the :math:`2^N` different possible projection operators in the z
-    basis at the end of the circuit (or in other words, the precise probability
-    of each full-circuit measurement outcome in the limit of infinite shots).
-    This test ensures that each such expectation value remains the same under
-    the given QPD decomposed gates.
-    """
-    qc0 = example_circuit
-    qc = qc0.copy()
+    """Test gate-cut circuit vs original circuit on statevector simulator"""
+    qc = example_circuit
 
     observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
     phases = np.array([(-1j) ** obs.phase for obs in observables])
@@ -149,26 +137,85 @@ def test_cutting_exact_reconstruction(example_circuit):
 
     estimator = Estimator()
     exact_expvals = (
-        estimator.run([qc0] * len(observables), list(observables)).result().values
+        estimator.run([qc] * len(observables), list(observables)).result().values
     )
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
+    )
     if np.random.randint(2):
-        samplers = ExactSampler()
+        # Re-use a single sampler
+        sampler = ExactSampler()
+        samplers = {label: sampler for label in subcircuits.keys()}
     else:
+        # One sampler per partition
         samplers = {label: ExactSampler() for label in subcircuits.keys()}
-    quasi_dists, coefficients = execute_experiments(
-        circuits=subcircuits,
-        subobservables=subobservables,
-        num_samples=np.inf,
-        samplers=samplers,
+    results = {
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
+    }
+    reconstructed_expvals = reconstruct_expectation_values(
+        results, coefficients, subobservables
     )
-    simulated_expvals = reconstruct_expectation_values(
-        quasi_dists, coefficients, subobservables
+    reconstructed_expvals *= phases
+
+    logger.info("Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals)))
+
+    assert np.allclose(exact_expvals, reconstructed_expvals, atol=1e-8)
+
+
+@pytest.mark.parametrize(
+    "sampler,is_exact_sampler", [(Sampler(), False), (ExactSampler(), True)]
+)
+def test_sampler_with_identity_subobservable(sampler, is_exact_sampler):
+    """This test ensures that the sampler works for a subcircuit with no observable measurements.
+
+    Specifically, that
+
+    - ``Sampler`` does not blow up (Issue #422); and
+    - ``ExactSampler`` returns correct results
+
+    This is related to https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422.
+    """
+    # Create a circuit to cut
+    qc = QuantumCircuit(3)
+    append_random_unitary(qc, [0, 1])
+    append_random_unitary(qc, [2])
+    qc.rxx(np.pi / 3, 1, 2)
+    append_random_unitary(qc, [0, 1])
+    append_random_unitary(qc, [2])
+
+    # Determine expectation value using cutting
+    observables = PauliList(
+        ["IIZ"]
+    )  # Without the workaround to Issue #422, this observable causes a Sampler error.
+    subcircuits, bases, subobservables = partition_problem(
+        qc, "AAB", observables=observables
     )
-    simulated_expvals *= phases
+    subexperiments, coefficients = generate_cutting_experiments(
+        subcircuits, subobservables, num_samples=np.inf
+    )
+    samplers = {label: sampler for label in subexperiments.keys()}
+    results = {
+        label: sampler.run(subexperiments[label]).result()
+        for label, sampler in samplers.items()
+    }
+    reconstructed_expvals = reconstruct_expectation_values(
+        results, coefficients, subobservables
+    )
 
-    logger.info("Max error: %f", np.max(np.abs(exact_expvals - simulated_expvals)))
+    if is_exact_sampler:
+        # Determine exact expectation values
+        estimator = Estimator()
+        exact_expvals = (
+            estimator.run([qc] * len(observables), list(observables)).result().values
+        )
 
-    assert np.allclose(exact_expvals, simulated_expvals, atol=1e-8)
+        logger.info(
+            "Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals))
+        )
+
+        # Ensure both methods yielded equivalent expectation values
+        assert np.allclose(exact_expvals, reconstructed_expvals, atol=1e-8)

@@ -13,62 +13,91 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Sequence, Hashable
 
 import numpy as np
 from qiskit.quantum_info import PauliList
-from qiskit.result import QuasiDistribution
+from qiskit.primitives import (
+    SamplerResult,  # for SamplerV1
+    PrimitiveResult,  # for SamplerV2
+)
 
 from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
 from ..utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
+from .cutting_experiments import _get_pauli_indices
 from .qpd import WeightType
 
 
 def reconstruct_expectation_values(
-    quasi_dists: Sequence[Sequence[Sequence[tuple[QuasiDistribution, int]]]],
+    results: (
+        SamplerResult
+        | PrimitiveResult
+        | dict[Hashable, SamplerResult | PrimitiveResult]
+    ),
     coefficients: Sequence[tuple[float, WeightType]],
-    observables: PauliList | dict[str | int, PauliList],
+    observables: PauliList | dict[Hashable, PauliList],
 ) -> list[float]:
     r"""
     Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
-        quasi_dists: A 3D sequence of length-2 tuples containing the quasi distributions and
-            QPD bit information from each sub-experiment. Its expected shape is
-            (num_unique_samples, num_partitions, num_commuting_observ_groups)
-        coefficients: A sequence of coefficients, such that each coefficient is associated
-            with one unique sample. The length of ``coefficients`` should equal
-            the length of ``quasi_dists``. Each coefficient is a tuple containing the numerical
-            value and the ``WeightType`` denoting how the value was generated.
+        results: The results from running the cutting subexperiments. If the cut circuit
+            was not partitioned between qubits and run separately, this argument should be
+            a :class:`~qiskit.primitives.SamplerResult` instance or a dictionary mapping
+            a single partition to the results. If the circuit was partitioned and its
+            pieces were run separately, this argument should be a dictionary mapping partition labels
+            to the results from each partition's subexperiments.
+
+            The subexperiment results are expected to be ordered in the same way the subexperiments
+            are ordered in the output of :func:`.generate_cutting_experiments` -- one result for every
+            sample and observable, as shown below. The Qiskit Sampler primitive will return the results
+            in the same order the experiments are submitted, so users who do not use :func:`.generate_cutting_experiments`
+            to generate their experiments should take care to order their subexperiments as follows before submitting them
+            to the sampler primitive:
+
+            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`
+
+        coefficients: A sequence containing the coefficient associated with each unique subexperiment. Each element is a tuple
+            containing the coefficient (a ``float``) together with its :class:`.WeightType`, which denotes
+            how the value was generated. The contribution from each subexperiment will be multiplied by
+            its corresponding coefficient, and the resulting terms will be summed to obtain the reconstructed expectation value.
         observables: The observable(s) for which the expectation values will be calculated.
-            This should be a :class:`~qiskit.quantum_info.PauliList` if the decomposed circuit
-            was not separated into subcircuits. If the decomposed circuit was separated, this
-            should be a dictionary mapping from partition label to subobservables.
+            This should be a :class:`~qiskit.quantum_info.PauliList` if ``results`` is a
+            :class:`~qiskit.primitives.SamplerResult` instance. Otherwise, it should be a
+            dictionary mapping partition labels to the observables associated with that partition.
 
     Returns:
-        A ``list`` of ``float``\ s, such that each float is a simulated expectation
+        A ``list`` of ``float``\ s, such that each float is an expectation
         value corresponding to the input observable in the same position
 
     Raises:
-        ValueError: The number of unique samples in quasi_dists does not equal the number of coefficients.
+        ValueError: ``observables`` and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if len(coefficients) != len(quasi_dists):
+    if isinstance(observables, PauliList) and not isinstance(
+        results, (SamplerResult, PrimitiveResult)
+    ):
         raise ValueError(
-            f"The number of unique samples in the quasi_dists list ({len(quasi_dists)}) does "
-            f"not equal the number of coefficients ({len(coefficients)})."
+            "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
         )
-    # Create the commuting observable groups
+    if isinstance(observables, dict) and not isinstance(results, dict):
+        raise ValueError(
+            "If observables is a dictionary, results must also be a dictionary."
+        )
+
+    # If circuit was not separated, transform input data structures to dictionary format
     if isinstance(observables, PauliList):
         if any(obs.phase != 0 for obs in observables):
             raise ValueError("An input observable has a phase not equal to 1.")
         subobservables_by_subsystem = decompose_observables(
             observables, "A" * len(observables[0])
         )
+        results_dict: dict[Hashable, SamplerResult | PrimitiveResult] = {"A": results}
         expvals = np.zeros(len(observables))
 
     else:
+        results_dict = results
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
                 raise ValueError("An input observable has a phase not equal to 1.")
@@ -80,21 +109,35 @@ def reconstruct_expectation_values(
         for label, subobservables in subobservables_by_subsystem.items()
     }
 
-    # Assign each weight's sign and calculate the expectation values for each observable
+    # Reconstruct the expectation values
     for i, coeff in enumerate(coefficients):
-        sorted_subsystems = sorted(subsystem_observables.keys())  # type: ignore
         current_expvals = np.ones((len(expvals),))
-        for j, label in enumerate(sorted_subsystems):
-            so = subsystem_observables[label]
+        for label, so in subsystem_observables.items():
             subsystem_expvals = [
                 np.zeros(len(cog.commuting_observables)) for cog in so.groups
             ]
+            current_result = results_dict[label]
             for k, cog in enumerate(so.groups):
-                quasi_probs = quasi_dists[i][j][k][0]
-                for outcome, quasi_prob in quasi_probs.items():
-                    subsystem_expvals[k] += quasi_prob * _process_outcome(
-                        quasi_dists[i][j][k][1], cog, outcome
-                    )
+                idx = i * len(so.groups) + k
+                if isinstance(current_result, SamplerResult):
+                    # SamplerV1 provides a SamplerResult
+                    quasi_probs = current_result.quasi_dists[idx]
+                    for outcome, quasi_prob in quasi_probs.items():
+                        subsystem_expvals[k] += quasi_prob * _process_outcome(
+                            cog, outcome
+                        )
+                else:
+                    # SamplerV2 provides a PrimitiveResult
+                    data_pub = current_result[idx].data
+                    obs_array = data_pub.observable_measurements.array
+                    qpd_array = data_pub.qpd_measurements.array
+                    shots = qpd_array.shape[0]
+                    for j in range(shots):
+                        obs_outcomes = int.from_bytes(obs_array[j], "big")
+                        qpd_outcomes = int.from_bytes(qpd_array[j], "big")
+                        subsystem_expvals[k] += (1 / shots) * _process_outcome_v2(
+                            cog, obs_outcomes, qpd_outcomes
+                        )
 
             for k, subobservable in enumerate(subobservables_by_subsystem[label]):
                 current_expvals[k] *= np.mean(
@@ -107,16 +150,12 @@ def reconstruct_expectation_values(
 
 
 def _process_outcome(
-    num_qpd_bits: int, cog: CommutingObservableGroup, outcome: int | str, /
+    cog: CommutingObservableGroup, outcome: int | str, /
 ) -> np.typing.NDArray[np.float64]:
     """
     Process a single outcome of a QPD experiment with observables.
 
     Args:
-        num_qpd_bits: The number of QPD measurements in the circuit. It is
-            assumed that the second to last creg in the generating circuit
-            is the creg  containing the QPD measurements, and the last
-            creg is associated with the observable measurements.
         cog: The observable set being measured by the current experiment
         outcome: The outcome of the classical bits
 
@@ -125,20 +164,41 @@ def _process_outcome(
         this vector correspond to the elements of ``cog.commuting_observables``,
         and each result will be either +1 or -1.
     """
-    outcome = _outcome_to_int(outcome)
-    qpd_outcomes = outcome & ((1 << num_qpd_bits) - 1)
-    meas_outcomes = outcome >> num_qpd_bits
+    num_meas_bits = len(_get_pauli_indices(cog))
 
+    outcome = _outcome_to_int(outcome)
+    obs_outcomes = outcome & ((1 << num_meas_bits) - 1)
+    qpd_outcomes = outcome >> num_meas_bits
+
+    return _process_outcome_v2(cog, obs_outcomes, qpd_outcomes)
+
+
+def _process_outcome_v2(
+    cog: CommutingObservableGroup, obs_outcomes: int, qpd_outcomes: int, /
+) -> np.typing.NDArray[np.float64]:
+    """
+    Process a single outcome of a QPD experiment with observables.
+
+    Args:
+        cog: The observable set being measured by the current experiment
+        obs_outcomes: An integer containing the outcome bits of the ``observable_measurements`` register
+        qpd_outcomes: An integer containing the outcome bits of the ``qpd_measurements`` register
+
+    Returns:
+        A 1D array of the observable measurements.  The elements of
+        this vector correspond to the elements of ``cog.commuting_observables``,
+        and each result will be either +1 or -1.
+    """
     # qpd_factor will be -1 or +1, depending on the overall parity of qpd
     # measurements.
     qpd_factor = 1 - 2 * (bit_count(qpd_outcomes) & 1)
 
     rv = np.zeros(len(cog.pauli_bitmasks))
     for i, mask in enumerate(cog.pauli_bitmasks):
-        # meas will be -1 or +1, depending on the measurement
+        # obs will be -1 or +1, depending on the measurement
         # of the current operator.
-        meas = 1 - 2 * (bit_count(meas_outcomes & mask) & 1)
-        rv[i] = qpd_factor * meas
+        obs = 1 - 2 * (bit_count(obs_outcomes & mask) & 1)
+        rv[i] = qpd_factor * obs
 
     return rv
 

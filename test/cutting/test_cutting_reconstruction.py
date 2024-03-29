@@ -15,8 +15,14 @@ from ddt import ddt, data, unpack
 import pytest
 import numpy as np
 from qiskit.result import QuasiDistribution
+from qiskit.primitives import (
+    SamplerResult,
+    PrimitiveResult,
+    PubResult,
+    BitArray,
+)
+from qiskit.primitives.containers import make_data_bin
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
 from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting.cutting.qpd import WeightType
@@ -29,73 +35,98 @@ from circuit_knitting.cutting.cutting_reconstruction import (
 @ddt
 class TestCuttingReconstruction(unittest.TestCase):
     def setUp(self):
-        qc = QuantumCircuit(2)
-        qc.h(0)
-        qc.cx(0, 1)
-        self.qc0 = qc.copy()
-        qc.add_register(ClassicalRegister(1, name="qpd_measurements"))
-        self.qc1 = qc.copy()
-        qc.add_register(ClassicalRegister(2, name="observable_measurements"))
-        self.qc2 = qc
-
         self.cog = CommutingObservableGroup(
             Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"]))
         )
 
     def test_cutting_reconstruction(self):
         with self.subTest("Test PauliList observable"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(1.0, WeightType.EXACT)]
-            observables = PauliList(["ZZ"])
-            expvals = reconstruct_expectation_values(
-                quasi_dists, coefficients, observables
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
+            weights = [(1.0, WeightType.EXACT)]
+            observables = PauliList(["ZZ"])
+            expvals = reconstruct_expectation_values(results, weights, observables)
             self.assertEqual([1.0], expvals)
         with self.subTest("Test mismatching inputs"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
+            observables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "If observables is a dictionary, results must also be a dictionary."
+            )
+            results2 = {"A": results}
             observables = PauliList(["ZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results2, weights, observables)
             assert (
                 e_info.value.args[0]
-                == "The number of unique samples in the quasi_dists list (1) does not equal the number of coefficients (2)."
+                == "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
             )
         with self.subTest("Test unsupported phase"):
-            quasi_dists = [[[(QuasiDistribution({"0": 1.0}), 0)]]]
-            coefficients = [(0.5, WeightType.EXACT)]
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            weights = [(0.5, WeightType.EXACT)]
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results, weights, observables)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
-            observables = {"A": PauliList(["iZZ"])}
+            results = {"A": results}
+            observables = {"A": observables}
             with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(quasi_dists, coefficients, observables)
+                reconstruct_expectation_values(results, weights, observables)
             assert (
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
+        with self.subTest("Test SamplerV2 result"):
+            data_bin_cls = make_data_bin(
+                [("observable_measurements", BitArray), ("qpd_measurements", BitArray)],
+                shape=(),
+            )
+            obs_data = BitArray(
+                np.array([0, 0, 0, 1, 0, 0, 2, 3, 1, 0], dtype=np.uint8).reshape(-1, 1),
+                2,
+            )
+            qpd_data = BitArray(
+                np.array([0, 1, 1, 3, 2, 0, 1, 3, 0, 2], dtype=np.uint8).reshape(-1, 1),
+                2,
+            )
+            data_bin = data_bin_cls(
+                observable_measurements=obs_data, qpd_measurements=qpd_data
+            )
+            pub_result = PubResult(data_bin)
+            results = PrimitiveResult([pub_result])
+            weights = [(1.0, WeightType.EXACT)]
+            observables = PauliList(["II", "IZ", "ZI", "ZZ"])
+            expvals = reconstruct_expectation_values(results, weights, observables)
+            assert expvals == pytest.approx([0.0, -0.6, 0.0, -0.2])
 
     @data(
         ("000", [1, 1, 1]),
-        ("001", [-1, -1, -1]),
-        ("010", [-1, 1, -1]),
-        ("011", [1, -1, 1]),
-        ("100", [1, -1, -1]),
-        ("101", [-1, 1, 1]),
-        ("110", [-1, -1, 1]),
+        ("001", [-1, 1, -1]),
+        ("010", [1, -1, -1]),
+        ("011", [-1, -1, 1]),
+        ("100", [-1, -1, -1]),
+        ("101", [1, -1, 1]),
+        ("110", [-1, 1, 1]),
         ("111", [1, 1, -1]),
     )
     @unpack
     def test_process_outcome(self, outcome, expected):
-        num_qpd_bits = len(self.qc2.cregs[-2])
         for o in (
             outcome,
             f"0b{outcome}",
             int(f"0b{outcome}", 0),
             hex(int(f"0b{outcome}", 0)),
         ):
-            assert np.all(_process_outcome(num_qpd_bits, self.cog, o) == expected)
+            assert np.all(_process_outcome(self.cog, o) == expected)

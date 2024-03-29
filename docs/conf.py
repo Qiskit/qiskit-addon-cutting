@@ -30,7 +30,7 @@ _rootdir = Path(__file__).parent.parent
 sys.path.insert(0, str(_rootdir))
 
 # The full version, including alpha/beta/rc tags
-release = metadata_version("circuit_knitting_toolbox")
+release = metadata_version("circuit-knitting-toolbox")
 # The short X.Y version
 version = ".".join(release.split(".")[:2])
 
@@ -120,9 +120,11 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "qiskit": ("https://qiskit.org/documentation/", None),
-    "qiskit-ibm-runtime": ("https://qiskit.org/ecosystem/ibm-runtime/", None),
-    "qiskit-aer": ("https://qiskit.org/ecosystem/aer/", None),
-    "qiskit-nature": ("https://qiskit.org/ecosystem/nature/", None),
-    "rustworkx": ("https://qiskit.org/documentation/rustworkx/", None),
+    "qiskit": ("https://docs.quantum.ibm.com/api/qiskit/", None),
+    "qiskit-ibm-runtime": (
+        "https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/",
+        None,
+    ),
+    "qiskit-aer": ("https://qiskit.github.io/qiskit-aer/", None),
+    "rustworkx": ("https://www.rustworkx.org/", None),
 }

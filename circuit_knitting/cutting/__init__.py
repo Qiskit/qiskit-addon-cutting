@@ -26,9 +26,7 @@ Circuit Cutting
     partition_circuit_qubits
     partition_problem
     cut_gates
-    decompose_gates
     generate_cutting_experiments
-    execute_experiments
     reconstruct_expectation_values
 
 .. autosummary::
@@ -37,9 +35,25 @@ Circuit Cutting
     :template: autosummary/class_no_inherited_members.rst
 
     PartitionedCuttingProblem
-    CuttingExperimentResults
     instructions.CutWire
     instructions.Move
+
+Automatic Cut Finding
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+
+    find_cuts
+
+.. autosummary::
+    :toctree: ../stubs/
+    :nosignatures:
+    :template: autosummary/class_no_inherited_members.rst
+
+    OptimizationParameters
+    DeviceConstraints
 
 Quasi-Probability Decomposition (QPD)
 =====================================
@@ -60,7 +74,6 @@ Quasi-Probability Decomposition (QPD)
     :nosignatures:
 
     qpd.generate_qpd_weights
-    qpd.generate_qpd_samples
     qpd.decompose_qpd_instructions
     qpd.qpdbasis_from_instruction
 
@@ -84,24 +97,23 @@ from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
     cut_gates,
-    decompose_gates,
     PartitionedCuttingProblem,
 )
-from .cutting_evaluation import execute_experiments, CuttingExperimentResults
 from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
+from .automated_cut_finding import find_cuts, DeviceConstraints, OptimizationParameters
 
 __all__ = [
     "partition_circuit_qubits",
     "partition_problem",
     "cut_gates",
-    "decompose_gates",
     "generate_cutting_experiments",
-    "execute_experiments",
     "reconstruct_expectation_values",
     "PartitionedCuttingProblem",
-    "CuttingExperimentResults",
     "cut_wires",
     "expand_observables",
+    "find_cuts",
+    "DeviceConstraints",
+    "OptimizationParameters",
 ]

@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check for non-ASCII characters
         run: |
           # Fail immediately if there are any non-ASCII characters in
@@ -63,7 +63,7 @@ jobs:
           fi
       - name: Upload PDF
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: preview.pdf
           path: preview.pdf
