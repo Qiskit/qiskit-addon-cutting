@@ -32,7 +32,7 @@ from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..find_cuts import DeviceConstraints
+    from ..automated_cut_finding import DeviceConstraints
 
 
 @dataclass

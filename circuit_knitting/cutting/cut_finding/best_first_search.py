@@ -15,8 +15,6 @@ from __future__ import annotations
 
 import heapq
 import numpy as np
-from numpy.typing import NDArray
-from numpy.random._generator import Generator
 from typing import TYPE_CHECKING, Callable, cast
 from itertools import count
 
@@ -61,7 +59,7 @@ class BestFirstPriorityQueue:
 
     def __init__(self, seed: int | None):
         """Assign member variables."""
-        self.random_gen: Generator = np.random.default_rng(seed)
+        self.random_gen: np.random.Generator = np.random.default_rng(seed)
         self.unique: count[int] = count()
         self.pqueue: list[tuple] = list()
 
@@ -215,7 +213,7 @@ class BestFirstSearch:
         self.num_next_states = 0
         self.num_enqueues = 0
         self.num_backjumps = 0
-        self.penultimate_stats: NDArray | None = None
+        self.penultimate_stats: np.typing.NDArray | None = None
 
     def initialize(
         self,
@@ -301,7 +299,7 @@ class BestFirstSearch:
         """Return True if the optimization reached a global minimum."""
         return self.min_reached
 
-    def get_stats(self, penultimate: bool = False) -> NDArray[np.int_] | None:
+    def get_stats(self, penultimate: bool = False) -> np.typing.NDArray[np.int_] | None:
         """Return statistics of the search that was performed.
 
         This is a Numpy array containing the number of states visited

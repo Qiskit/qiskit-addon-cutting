@@ -27,7 +27,7 @@ from numpy.typing import NDArray
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..find_cuts import DeviceConstraints
+    from ..automated_cut_finding import DeviceConstraints
 from .optimization_settings import OptimizationSettings
 from .circuit_interface import SimpleGateList
 
