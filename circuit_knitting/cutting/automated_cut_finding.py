@@ -132,11 +132,7 @@ def find_cuts(
 
 @dataclass
 class OptimizationParameters:
-    """Specify parameters that control the optimization.
-
-    The other attributes of :class:`OptimizationSettings` are taken
-    to be private.
-    """
+    """Specify parameters that control the optimization."""
 
     seed: int | None = OptimizationSettings().seed
     max_gamma: float = OptimizationSettings().max_gamma
