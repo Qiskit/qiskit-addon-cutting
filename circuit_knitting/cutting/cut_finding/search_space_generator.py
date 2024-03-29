@@ -40,8 +40,8 @@ class ActionNames:
 
     def __init__(self):
         """Initialize :class:`ActionNames` with the specified configuration variables."""
-        self.action_dict = dict()
-        self.group_dict = dict()
+        self.action_dict = {}
+        self.group_dict = {}
 
     def copy(
         self, list_of_groups: list[DisjointSearchAction | None] | None = None
@@ -71,11 +71,11 @@ class ActionNames:
         if isinstance(group_name, list) or isinstance(group_name, tuple):
             for name in group_name:
                 if name not in self.group_dict:
-                    self.group_dict[name] = list()
+                    self.group_dict[name] = []
                 self.group_dict[name].append(action_object)
         else:  # pragma: no cover
             if group_name not in self.group_dict:
-                self.group_dict[group_name] = list()
+                self.group_dict[group_name] = []
             self.group_dict[group_name].append(action_object)
 
     def get_action(self, action_name: str) -> DisjointSearchAction | None:

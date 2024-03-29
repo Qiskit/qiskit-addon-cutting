@@ -61,7 +61,7 @@ class BestFirstPriorityQueue:
         """Assign member variables."""
         self.random_gen: np.random.Generator = np.random.default_rng(seed)
         self.unique: count[int] = count()
-        self.pqueue: list[tuple] = list()
+        self.pqueue: list[tuple] = []
 
     def put(
         self,
