@@ -61,7 +61,7 @@ Quasi-Probability Decomposition (QPD)
     qpd.qpdbasis_from_instruction
 
 Automatic Cut Finding
-=====================
+~~~~~~~~~~~~~~~~~~~~~
 
 .. autosummary::
     :toctree: ../stubs/
