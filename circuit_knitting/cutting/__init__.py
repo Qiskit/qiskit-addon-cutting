@@ -52,8 +52,8 @@ Automatic Cut Finding
     :nosignatures:
     :template: autosummary/class_no_inherited_members.rst
 
-    automated_cut_finding.OptimizationParameters
-    automated_cut_finding.DeviceConstraints
+    OptimizationParameters
+    DeviceConstraints
 
 Quasi-Probability Decomposition (QPD)
 =====================================
