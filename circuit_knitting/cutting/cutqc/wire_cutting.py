@@ -429,7 +429,7 @@ def find_wire_cuts(
             if verbose:
                 print("%d subcircuits : IMPOSSIBLE" % (num_subcircuit))
             continue
-        kwargs = dict(
+        kwargs = dict(  # pylint: disable=use-dict-literal
             n_vertices=n_vertices,
             edges=edges,
             vertex_ids=vertex_ids,
