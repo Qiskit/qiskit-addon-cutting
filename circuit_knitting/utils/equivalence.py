@@ -111,7 +111,7 @@ _eagle_sel.add_equivalence(TdgGate(), def_tdg)
 # RXGate
 q = QuantumRegister(1, "q")
 def_rx = QuantumCircuit(q)
-theta = Parameter("theta")
+theta = Parameter("θ")
 for inst in [
     RZGate(np.pi / 2),
     SXGate(),
@@ -125,7 +125,7 @@ _eagle_sel.add_equivalence(RXGate(theta), def_rx)
 # RYGate
 q = QuantumRegister(1, "q")
 def_ry = QuantumCircuit(q)
-theta = Parameter("theta")
+theta = Parameter("θ")
 for inst in [SXGate(), RZGate(theta + np.pi), SXGate(), RZGate(3 * np.pi)]:
     def_ry.append(inst, [0], [])
 _eagle_sel.add_equivalence(RYGate(theta), def_ry)
@@ -133,6 +133,6 @@ _eagle_sel.add_equivalence(RYGate(theta), def_ry)
 # PhaseGate
 q = QuantumRegister(1, "q")
 def_p = QuantumCircuit(q)
-theta = Parameter("theta")
+theta = Parameter("θ")
 def_p.append(RZGate(theta), [0], [])
 _eagle_sel.add_equivalence(PhaseGate(theta), def_p)
