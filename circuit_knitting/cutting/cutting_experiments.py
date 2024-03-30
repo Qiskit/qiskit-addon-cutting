@@ -41,7 +41,7 @@ def generate_cutting_experiments(
     circuits: QuantumCircuit | dict[Hashable, QuantumCircuit],
     observables: PauliList | dict[Hashable, PauliList],
     num_samples: int | float,
-    translate_to_qpu: str | None = None,
+    basis_gate_set: str | None = None,
 ) -> tuple[
     list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
@@ -75,7 +75,7 @@ def generate_cutting_experiments(
         num_samples: The number of samples to draw from the quasi-probability distribution. If set
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
-        translate_to_qpu: A QPU architecture for which the sampled instructions should be
+        basis_gate_set: A QPU architecture for which the sampled instructions should be
             translated. Supported inputs are: {"heron", "eagle", None}
     Returns:
         A tuple containing the cutting experiments and their associated coefficients.
@@ -167,7 +167,7 @@ def generate_cutting_experiments(
                     new_qc,
                     subcirc_qpd_gate_ids[label],
                     map_ids_tmp,
-                    translate_to_qpu=translate_to_qpu,
+                    basis_gate_set=basis_gate_set,
                     inplace=True,
                 )
                 _append_measurement_circuit(new_qc, cog, inplace=True)

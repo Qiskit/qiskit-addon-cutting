@@ -172,7 +172,7 @@ class TestQPDFunctions(unittest.TestCase):
             qpd_gate = TwoQubitQPDGate(qpd_basis)
             circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
             decomp_circ = decompose_qpd_instructions(
-                circ, [[0]], map_ids=[1], translate_to_qpu="eagle"
+                circ, [[0]], map_ids=[1], basis_gate_set="eagle"
             )
             for inst in decomp_circ.data:
                 assert inst.operation.name in eagle_basis_gate_set

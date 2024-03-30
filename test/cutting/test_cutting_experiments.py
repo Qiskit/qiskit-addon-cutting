@@ -105,7 +105,7 @@ class TestCuttingExperiments(unittest.TestCase):
                 qc,
                 PauliList(["ZZ"]),
                 np.inf,
-                translate_to_qpu="eagle",
+                basis_gate_set="eagle",
             )
             assert coeffs == comp_coeffs
             assert len(coeffs) == len(subexperiments)

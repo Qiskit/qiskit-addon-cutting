@@ -31,7 +31,7 @@ def decompose_qpd_instructions(
     instruction_ids: Sequence[Sequence[int]],
     map_ids: Sequence[int] | None = None,
     *,
-    translate_to_qpu: str | None = None,
+    basis_gate_set: str | None = None,
     inplace: bool = False,
 ) -> QuantumCircuit:
     r"""
@@ -45,7 +45,7 @@ def decompose_qpd_instructions(
         map_ids: Indices to a specific linear mapping to be applied to the decompositions
             in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
             according to the decompositions' joint probability distribution.
-        translate_to_qpu: A QPU architecture for which the sampled instructions should be
+        basis_gate_set: A QPU architecture for which the sampled instructions should be
             translated. Supported inputs are: {"heron", "eagle", None}
         inplace: Whether to modify the input circuit directly
 
@@ -82,7 +82,7 @@ def decompose_qpd_instructions(
 
     # Convert all instances of BaseQPDGate in the circuit to Qiskit instructions
     _decompose_qpd_instructions(
-        circuit, instruction_ids, translate_to_qpu=translate_to_qpu
+        circuit, instruction_ids, basis_gate_set=basis_gate_set
     )
 
     return circuit
@@ -177,7 +177,7 @@ def _decompose_qpd_instructions(
     circuit: QuantumCircuit,
     instruction_ids: Sequence[Sequence[int]],
     inplace: bool = True,
-    translate_to_qpu: str | None = None,
+    basis_gate_set: str | None = None,
 ) -> QuantumCircuit:
     """Decompose all BaseQPDGate instances, ignoring QPDMeasure()."""
     if not inplace:
@@ -207,11 +207,11 @@ def _decompose_qpd_instructions(
         circuit.data.insert(i + data_id_offset, inst2)
 
     # Get equivalence library
-    if translate_to_qpu is not None:
-        translate_to_qpu = translate_to_qpu.lower()
+    if basis_gate_set is not None:
+        basis_gate_set = basis_gate_set.lower()
     else:
-        translate_to_qpu = "standard"
-    equivalence = equivalence_libraries[translate_to_qpu]
+        basis_gate_set = "standard"
+    equivalence = equivalence_libraries[basis_gate_set]
 
     # Decompose all the QPDGates (should all be single qubit now) into Qiskit operations
     new_instruction_ids = []
