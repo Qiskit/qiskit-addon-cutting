@@ -142,7 +142,9 @@ def test_cutting_exact_reconstruction(example_circuit):
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
-    basis_gate_set = [None, "eagle", "heron"][np.random.choice([0, 1, 2], p=[0.5, 0.25, 0.25])]
+    basis_gate_set = [None, "eagle", "heron"][
+        np.random.choice([0, 1, 2], p=[0.5, 0.25, 0.25])
+    ]
     subexperiments, coefficients = generate_cutting_experiments(
         subcircuits,
         subobservables,

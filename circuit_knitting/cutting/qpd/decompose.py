@@ -81,9 +81,7 @@ def decompose_qpd_instructions(
                 circuit.data[gate_id].operation.basis_id = map_ids[i]
 
     # Convert all instances of BaseQPDGate in the circuit to Qiskit instructions
-    _decompose_qpd_instructions(
-        circuit, instruction_ids, basis_gate_set=basis_gate_set
-    )
+    _decompose_qpd_instructions(circuit, instruction_ids, basis_gate_set=basis_gate_set)
 
     return circuit
 
