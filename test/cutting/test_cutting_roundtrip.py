@@ -142,8 +142,9 @@ def test_cutting_exact_reconstruction(example_circuit):
     subcircuits, bases, subobservables = partition_problem(
         qc, "AAB", observables=observables_nophase
     )
+    qpu = [None, "eagle", "heron"][np.random.randint(2)]
     subexperiments, coefficients = generate_cutting_experiments(
-        subcircuits, subobservables, num_samples=np.inf
+        subcircuits, subobservables, num_samples=np.inf, translate_to_qpu=qpu,
     )
     if np.random.randint(2):
         # Re-use a single sampler
