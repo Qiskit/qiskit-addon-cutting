@@ -18,8 +18,6 @@ Equivalence utilities.
    :toctree: ../stubs/
 
 """
-from collections import defaultdict
-
 import numpy as np
 from qiskit.circuit import (
     EquivalenceLibrary,
@@ -45,9 +43,7 @@ from qiskit.circuit.library.standard_gates import (
 )
 
 _eagle_sel = HeronEquivalenceLibrary = EagleEquivalenceLibrary = EquivalenceLibrary()
-equivalence_libraries = defaultdict(
-    lambda: None, {"heron": HeronEquivalenceLibrary, "eagle": EagleEquivalenceLibrary}
-)
+equivalence_libraries = {"heron": HeronEquivalenceLibrary, "eagle": EagleEquivalenceLibrary}
 
 ######################################################################
 
