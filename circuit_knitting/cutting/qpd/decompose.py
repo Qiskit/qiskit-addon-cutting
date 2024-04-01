@@ -209,7 +209,7 @@ def _decompose_qpd_instructions(
         basis_gate_set = basis_gate_set.lower()
     else:
         basis_gate_set = "standard"
-    equivalence = equivalence_libraries[basis_gate_set]
+    equivalence = equivalence_libraries.get(basis_gate_set)
 
     # Decompose all the QPDGates (should all be single qubit now) into Qiskit operations
     new_instruction_ids = []
