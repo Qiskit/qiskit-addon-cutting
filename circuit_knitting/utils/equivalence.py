@@ -43,7 +43,10 @@ from qiskit.circuit.library.standard_gates import (
 )
 
 _eagle_sel = HeronEquivalenceLibrary = EagleEquivalenceLibrary = EquivalenceLibrary()
-equivalence_libraries = {"heron": HeronEquivalenceLibrary, "eagle": EagleEquivalenceLibrary}
+equivalence_libraries = {
+    "heron": HeronEquivalenceLibrary,
+    "eagle": EagleEquivalenceLibrary,
+}
 
 ######################################################################
 

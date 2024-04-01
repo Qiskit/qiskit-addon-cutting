@@ -23,9 +23,9 @@ from circuit_knitting.utils.equivalence import equivalence_libraries
 
 class TestEquivalenceLibraries(unittest.TestCase):
     def setUp(self):
-        self.heron_lib = equivalence_libraries["heron"]
-        self.eagle_lib = equivalence_libraries["eagle"]
-        self.standard_lib = equivalence_libraries["standard"]
+        self.heron_lib = equivalence_libraries.get("heron")
+        self.eagle_lib = equivalence_libraries.get("eagle")
+        self.standard_lib = equivalence_libraries.get("standard")
 
     def test_equivalence_library_dict(self):
         assert isinstance(self.heron_lib, EquivalenceLibrary)
