@@ -38,9 +38,8 @@ __all__ = [
 
 warn(
     f"The package {__name__} is deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.8.0. "
-    "Use wire cutting modules in the circuit_knitting.cutting package for wire cutting."
-    " For automated LO gate and wire cutting, use circuit_knitting.cutting.automated_cut_finding.py."
-    " See circuit_cutting/tutorials/04_automatic_cut_finding.ipynb for a tutorial on the latter.",
+    "There is a new circuit cutting implementation in `circuit_knitting.cutting` that implements similar and improved functionality, which will be maintained going forward."
+    " See docs/tutorials/04_automatic_cut_finding.ipynb for a tutorial on automated LO cut-finding.",
     DeprecationWarning,
     stacklevel=2,
 )

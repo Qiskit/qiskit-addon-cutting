@@ -36,7 +36,7 @@ class MIPModel(object):
         removal_timeline="Circuit knitting toolbox 0.8.0 release",
         since="0.7.0",
         package_name="circuit-knitting-toolbox",
-        additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+        additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
     )
     def __init__(
         self,
@@ -103,7 +103,7 @@ class MIPModel(object):
             from docplex.mp.model import Model
         except ModuleNotFoundError as ex:  # pragma: no cover
             raise ModuleNotFoundError(
-                "DOcplex is not installed.  For automatic cut finding to work, both "
+                "DOcplex is not installed.  For automatic cut-finding to work, both "
                 "DOcplex and cplex must be available."
             ) from ex
 

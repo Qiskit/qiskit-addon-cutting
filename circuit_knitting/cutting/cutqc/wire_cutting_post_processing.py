@@ -27,7 +27,7 @@ from qiskit.circuit import Qubit
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def get_cut_qubit_pairs(
     complete_path_map: dict[Qubit, Sequence[dict[str, int | Qubit]]]
@@ -60,7 +60,7 @@ def get_cut_qubit_pairs(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
     """
@@ -87,7 +87,7 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def attribute_label(
     label: Sequence[str],
@@ -130,7 +130,7 @@ def attribute_label(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def fill_label(
     subcircuit_idx: int,
@@ -174,7 +174,7 @@ def fill_label(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def get_init_meas(
     init_label: Sequence[str], meas_label: Sequence[str]
@@ -221,7 +221,7 @@ def get_init_meas(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     """
@@ -263,7 +263,7 @@ def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def generate_summation_terms(
     subcircuits: Sequence[QuantumCircuit],
@@ -380,7 +380,7 @@ def generate_summation_terms(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def naive_compute(
     subcircuit_order: Sequence[int],
@@ -432,7 +432,7 @@ def naive_compute(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def build(
     summation_terms: Sequence[dict[int, int]],
@@ -494,7 +494,7 @@ def build(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
 )
 def find_process_jobs(
     jobs: Sequence[Any], rank: int, num_workers: int
