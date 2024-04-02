@@ -17,6 +17,8 @@ from typing import Sequence, Any
 
 import numpy as np
 
+from qiskit.utils.deprecation import deprecate_func
+
 
 class MIPModel(object):
     """
@@ -30,6 +32,12 @@ class MIPModel(object):
     can find the optimal wire cuts in the circuit.
     """
 
+    @deprecate_func(
+        removal_timeline="Circuit knitting toolbox 0.8.0 release",
+        since="0.7.0",
+        package_name="cutqc",
+        additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    )
     def __init__(
         self,
         n_vertices: int,

@@ -22,6 +22,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
 from qiskit_aer import Aer
+from qiskit.utils.deprecation import deprecate_func
 
 from ...utils.conversion import quasi_to_real
 from ...utils.metrics import (
@@ -33,6 +34,12 @@ from ...utils.metrics import (
 )
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def verify(
     full_circuit: QuantumCircuit,
     reconstructed_output: np.ndarray,
@@ -74,6 +81,12 @@ def verify(
     return metrics, ground_truth
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
     subcircuits: Sequence[QuantumCircuit],
@@ -134,6 +147,12 @@ def generate_reconstructed_output(
     return np.array(reconstructed_output)
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     """
     Compute exact probability vector of given circuit.

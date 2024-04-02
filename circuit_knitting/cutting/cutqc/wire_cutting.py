@@ -21,6 +21,7 @@ from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit_ibm_runtime import Options, QiskitRuntimeService
+from qiskit.utils.deprecation import deprecate_func
 
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -32,6 +33,12 @@ from .dynamic_definition import (
 )
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def cut_circuit_wires(
     circuit: QuantumCircuit,
     method: str,
@@ -96,6 +103,12 @@ def cut_circuit_wires(
     return cuts
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def evaluate_subcircuits(
     cuts: dict[str, Any],
     service: QiskitRuntimeService | None = None,
@@ -154,6 +167,12 @@ def evaluate_subcircuits(
     return subcircuit_instance_probabilities
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
@@ -196,6 +215,12 @@ def reconstruct_full_distribution(
     return reconstructed_probability
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def create_dd_bin(
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
     cuts: dict[str, Any],
@@ -235,6 +260,12 @@ def create_dd_bin(
     )
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def reconstruct_dd_full_distribution(
     circuit: QuantumCircuit,
     cuts: dict[str, Any],
@@ -263,6 +294,12 @@ def reconstruct_dd_full_distribution(
     return reconstructed_prob
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _generate_metadata(cuts: dict[str, Any]) -> tuple[
     list[dict[int, int]],
     dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]],
@@ -291,6 +328,12 @@ def _generate_metadata(cuts: dict[str, Any]) -> tuple[
     return summation_terms, subcircuit_entries, subcircuit_instances
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _run_subcircuits(
     cuts: dict[str, Any],
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
@@ -325,6 +368,12 @@ def _run_subcircuits(
     return subcircuit_instance_probs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _attribute_shots(
     subcircuit_entries: dict[
         int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]
@@ -385,6 +434,12 @@ def _attribute_shots(
 
 
 @no_type_check
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def find_wire_cuts(
     circuit: QuantumCircuit,
     max_subcircuit_width: int,
@@ -502,6 +557,12 @@ def find_wire_cuts(
     return cut_solution
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def cut_circuit_wire(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]], verbose: bool
 ) -> dict[str, Any]:
@@ -564,6 +625,12 @@ def cut_circuit_wire(
     return cut_solution
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _print_cutter_result(
     num_cuts: int,
     subcircuits: Sequence[QuantumCircuit],
@@ -601,6 +668,12 @@ def _print_cutter_result(
     print("Estimated cost = %.3e" % classical_cost, flush=True)
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _cuts_parser(
     cuts: Sequence[tuple[str]], circ: QuantumCircuit
 ) -> list[tuple[Qubit, int]]:
@@ -674,6 +747,12 @@ def _cuts_parser(
     return positions
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _subcircuits_parser(
     subcircuit_gates: list[list[str]], circuit: QuantumCircuit
 ) -> tuple[Sequence[QuantumCircuit], dict[Qubit, list[dict[str, int | Qubit]]]]:
@@ -808,6 +887,12 @@ def _subcircuits_parser(
     return subcircuits, complete_path_map
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _generate_subcircuits(
     subcircuit_op_nodes: dict[int, list[DAGOpNode]],
     complete_path_map: dict[Qubit, list[dict[str, int | Qubit]]],
@@ -862,6 +947,12 @@ def _generate_subcircuits(
     return subcircuits
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _get_counter(
     subcircuits: Sequence[QuantumCircuit],
     O_rho_pairs: list[tuple[dict[str, int | Qubit], dict[str, int | Qubit]]],
@@ -897,6 +988,12 @@ def _get_counter(
     return counter
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
     """
     Estimate the cost of processing the subcircuits.
@@ -924,6 +1021,12 @@ def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
     return classical_cost
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _get_pairs(
     complete_path_map: dict[Qubit, list[dict[str, int | Qubit]]]
 ) -> list[tuple[dict[str, int | Qubit], dict[str, int | Qubit]]]:
@@ -950,6 +1053,12 @@ def _get_pairs(
     return O_rho_pairs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
     """
     Remove all single qubit and barrier type gates.
@@ -970,6 +1079,12 @@ def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
     return dag_to_circuit(stripped_dag)
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _read_circuit(
     circuit: QuantumCircuit,
 ) -> tuple[int, list[tuple[int, int]], dict[str, int], dict[int, str]]:

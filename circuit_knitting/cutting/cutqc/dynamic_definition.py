@@ -46,10 +46,17 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Sequence, Any
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
+from qiskit.utils.deprecation import deprecate_func
 
 from .wire_cutting_post_processing import build, find_process_jobs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def dd_build(
     summation_terms: Sequence[dict[int, int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -150,6 +157,12 @@ def dd_build(
     return dd_bins
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _initialize_dynamic_definition_schedule(
     counter: dict[int, dict[str, int]], mem_limit: int
 ) -> dict[str, dict[int, str]]:
@@ -185,6 +198,12 @@ def _initialize_dynamic_definition_schedule(
     return schedule
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _next_dynamic_definition_schedule(
     recursion_layer: int,
     bin_id: int,
@@ -250,6 +269,12 @@ def _next_dynamic_definition_schedule(
     return next_dd_schedule
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, int]:
     """
     Determine the size to merge bit depending on memory size.
@@ -277,6 +302,12 @@ def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, in
     return loads
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _merge_prob_vector(
     unmerged_prob_vector: np.ndarray, qubit_states: str
 ) -> np.ndarray:
@@ -317,6 +348,12 @@ def _merge_prob_vector(
     return merged_prob_vector
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _merge_state_into_bins_parallel(
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -359,6 +396,12 @@ def _merge_state_into_bins_parallel(
     return merged_subcircuit_entry_probs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def _merge_states_into_bins(
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -414,6 +457,12 @@ def _merge_states_into_bins(
     return merged_subcircuit_entry_probs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def read_dd_bins(
     subcircuit_out_qubits: dict[int, list[int]], dd_bins: dict[int, dict[str, Any]]
 ) -> np.ndarray:
@@ -483,6 +532,12 @@ def read_dd_bins(
     return reconstructed_prob
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="cutqc",
+    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+)
 def get_reconstruction_qubit_order(
     full_circuit: QuantumCircuit,
     complete_path_map: dict[Qubit, list[dict[str, int | Qubit]]],

@@ -12,6 +12,7 @@
 """Tests for circuit_cutting package."""
 
 import unittest
+import pytest
 import importlib.util
 
 import numpy as np
@@ -30,6 +31,7 @@ cplex_available = importlib.util.find_spec("cplex") is not None
 
 
 class TestCircuitCutting(unittest.TestCase):
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def setUp(self):
         qc = QuantumCircuit(5)
         for i in range(5):
@@ -52,6 +54,7 @@ class TestCircuitCutting(unittest.TestCase):
         self.circuit = qc
 
     @unittest.skipIf(not cplex_available, "cplex is not installed")
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_circuit_cutting_automatic(self):
         qc = self.circuit
         cuts = cut_circuit_wires(
@@ -63,6 +66,7 @@ class TestCircuitCutting(unittest.TestCase):
             max_cuts=10,
             num_subcircuits=[2],
         )
+
         subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
         reconstructed_probabilities = reconstruct_full_distribution(
             qc, subcircuit_instance_probabilities, cuts
@@ -72,6 +76,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_circuit_cutting_manual(self):
         qc = self.circuit
 
@@ -88,6 +93,7 @@ class TestCircuitCutting(unittest.TestCase):
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
     @unittest.skipIf(not cplex_available, "cplex is not installed")
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_circuit_cutting_dynamic_definition(self):
         qc = self.circuit
 
@@ -109,6 +115,7 @@ class TestCircuitCutting(unittest.TestCase):
 
         self.assertAlmostEqual(0.0, metrics["nearest"]["Mean Squared Error"])
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_circuit_cutting_dynamic_definition_ghz(self):
         qc = QuantumCircuit(20, name="ghz")
         qc.h(0)

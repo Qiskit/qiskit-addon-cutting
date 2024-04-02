@@ -11,6 +11,8 @@
 
 """Code to initialize the cutqc imports."""
 
+from warnings import warn
+
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
 from .wire_cutting_verification import verify
@@ -33,3 +35,12 @@ __all__ = [
     "create_dd_bin",
     "reconstruct_dd_full_distribution",
 ]
+
+warn(
+    f"The package {__name__} is deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.8.0. "
+    "Use wire cutting modules in the circuit_knitting.cutting package for wire cutting."
+    " For automated LO gate and wire cutting, use circuit_knitting.cutting.automated_cut_finding.py."
+    " See circuit_cutting/tutorials/04_automatic_cut_finding.ipynb for a tutorial on the latter.",
+    DeprecationWarning,
+    stacklevel=2,
+)
