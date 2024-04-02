@@ -66,7 +66,6 @@ class TestCircuitCutting(unittest.TestCase):
             max_cuts=10,
             num_subcircuits=[2],
         )
-
         subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
         reconstructed_probabilities = reconstruct_full_distribution(
             qc, subcircuit_instance_probabilities, cuts

@@ -55,7 +55,7 @@ from .wire_cutting_post_processing import build, find_process_jobs
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
+    additional_msg="Use the wire cutting or automated cut finding functionality in the `circuit.knitting.cutting` module. ",
 )
 def dd_build(
     summation_terms: Sequence[dict[int, int]],
