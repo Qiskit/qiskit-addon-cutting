@@ -24,8 +24,14 @@ Code for converting types of distributions.
 """
 
 import numpy as np
+from qiskit.utils.deprecation import deprecate_func
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="utils",
+)
 def quasi_to_real(quasiprobability, mode):
     """
     Convert a quasi probability to a valid probability distribution.
@@ -45,6 +51,11 @@ def quasi_to_real(quasiprobability, mode):
         raise NotImplementedError("%s conversion is not implemented" % mode)
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="utils",
+)
 def nearest_probability_distribution(quasiprobability):
     """
     Convert quasiprobability distribution to the nearest probability distribution.
@@ -80,6 +91,11 @@ def nearest_probability_distribution(quasiprobability):
     return new_probs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="utils",
+)
 def naive_probability_distribution(quasiprobability):
     """
     Convert quasiprobability dist to probability dist by zero-ing out negative values.
@@ -99,6 +115,11 @@ def naive_probability_distribution(quasiprobability):
     return new_probs
 
 
+@deprecate_func(
+    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    since="0.7.0",
+    package_name="utils",
+)
 def dict_to_array(distribution_dict, force_prob):
     """
     Convert dictionary of shot results to array of distribution.
