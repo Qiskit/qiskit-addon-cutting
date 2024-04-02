@@ -36,7 +36,7 @@ from .dynamic_definition import (
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def cut_circuit_wires(
@@ -106,7 +106,7 @@ def cut_circuit_wires(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def evaluate_subcircuits(
@@ -170,7 +170,7 @@ def evaluate_subcircuits(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def reconstruct_full_distribution(
@@ -218,7 +218,7 @@ def reconstruct_full_distribution(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def create_dd_bin(
@@ -263,7 +263,7 @@ def create_dd_bin(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def reconstruct_dd_full_distribution(
@@ -297,7 +297,7 @@ def reconstruct_dd_full_distribution(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _generate_metadata(cuts: dict[str, Any]) -> tuple[
@@ -331,7 +331,7 @@ def _generate_metadata(cuts: dict[str, Any]) -> tuple[
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _run_subcircuits(
@@ -371,7 +371,7 @@ def _run_subcircuits(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _attribute_shots(
@@ -437,7 +437,7 @@ def _attribute_shots(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def find_wire_cuts(
@@ -560,7 +560,7 @@ def find_wire_cuts(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def cut_circuit_wire(
@@ -628,7 +628,7 @@ def cut_circuit_wire(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _print_cutter_result(
@@ -671,7 +671,7 @@ def _print_cutter_result(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _cuts_parser(
@@ -750,7 +750,7 @@ def _cuts_parser(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _subcircuits_parser(
@@ -890,7 +890,7 @@ def _subcircuits_parser(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _generate_subcircuits(
@@ -950,7 +950,7 @@ def _generate_subcircuits(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _get_counter(
@@ -991,7 +991,7 @@ def _get_counter(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
@@ -1024,7 +1024,7 @@ def _cost_estimate(counter: dict[int, dict[str, int]]) -> float:
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _get_pairs(
@@ -1056,7 +1056,7 @@ def _get_pairs(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
@@ -1082,7 +1082,7 @@ def _circuit_stripping(circuit: QuantumCircuit) -> QuantumCircuit:
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _read_circuit(

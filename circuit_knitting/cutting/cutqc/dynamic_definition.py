@@ -54,7 +54,7 @@ from .wire_cutting_post_processing import build, find_process_jobs
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def dd_build(
@@ -160,7 +160,7 @@ def dd_build(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _initialize_dynamic_definition_schedule(
@@ -201,7 +201,7 @@ def _initialize_dynamic_definition_schedule(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _next_dynamic_definition_schedule(
@@ -272,7 +272,7 @@ def _next_dynamic_definition_schedule(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, int]:
@@ -305,7 +305,7 @@ def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, in
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _merge_prob_vector(
@@ -351,7 +351,7 @@ def _merge_prob_vector(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _merge_state_into_bins_parallel(
@@ -399,7 +399,7 @@ def _merge_state_into_bins_parallel(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def _merge_states_into_bins(
@@ -460,7 +460,7 @@ def _merge_states_into_bins(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def read_dd_bins(
@@ -535,7 +535,7 @@ def read_dd_bins(
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="cutqc",
+    package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut finding modules in the cutting package. ",
 )
 def get_reconstruction_qubit_order(
