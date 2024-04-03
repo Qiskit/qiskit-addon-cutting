@@ -33,7 +33,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
@@ -114,7 +114,7 @@ def run_subcircuit_instances(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     """
@@ -147,7 +147,7 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def modify_subcircuit_instance(
     subcircuit: QuantumCircuit, init: tuple[str, ...], meas: tuple[str, ...]
@@ -233,7 +233,7 @@ def modify_subcircuit_instance(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def run_subcircuits_using_sampler(
     subcircuits: Sequence[QuantumCircuit],
@@ -271,7 +271,7 @@ def run_subcircuits_using_sampler(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
@@ -310,7 +310,7 @@ def run_subcircuits(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarray:
     """
@@ -339,7 +339,7 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     """
@@ -372,7 +372,7 @@ def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def _run_subcircuit_batch(
     subcircuit_instance: dict[tuple[tuple[str, ...], tuple[Any, ...]], int],

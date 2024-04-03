@@ -38,7 +38,7 @@ from ...utils.metrics import (
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def verify(
     full_circuit: QuantumCircuit,
@@ -85,7 +85,7 @@ def verify(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
@@ -151,7 +151,7 @@ def generate_reconstructed_output(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
 )
 def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     """

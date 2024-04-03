@@ -30,7 +30,7 @@ from qiskit.utils.deprecation import deprecate_func
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="utils",
+    package_name="circuit-knitting-toolbox",
 )
 def quasi_to_real(quasiprobability, mode):
     """
@@ -54,7 +54,7 @@ def quasi_to_real(quasiprobability, mode):
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="utils",
+    package_name="circuit-knitting-toolbox",
 )
 def nearest_probability_distribution(quasiprobability):
     """
@@ -94,7 +94,7 @@ def nearest_probability_distribution(quasiprobability):
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="utils",
+    package_name="circuit-knitting-toolbox",
 )
 def naive_probability_distribution(quasiprobability):
     """
@@ -118,7 +118,7 @@ def naive_probability_distribution(quasiprobability):
 @deprecate_func(
     removal_timeline="Circuit knitting toolbox 0.8.0 release",
     since="0.7.0",
-    package_name="utils",
+    package_name="circuit-knitting-toolbox",
 )
 def dict_to_array(distribution_dict, force_prob):
     """

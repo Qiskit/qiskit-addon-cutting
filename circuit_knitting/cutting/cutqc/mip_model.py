@@ -36,7 +36,7 @@ class MIPModel(object):
         removal_timeline="Circuit knitting toolbox 0.8.0 release",
         since="0.7.0",
         package_name="circuit-knitting-toolbox",
-        additional_msg="Use the wire cutting or automated cut-finding functionality in the `circuit_knitting.cutting` package. ",
+        additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
     )
     def __init__(
         self,
