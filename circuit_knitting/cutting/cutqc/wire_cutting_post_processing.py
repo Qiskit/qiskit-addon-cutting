@@ -24,7 +24,7 @@ from qiskit.circuit import Qubit
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -57,7 +57,7 @@ def get_cut_qubit_pairs(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -84,7 +84,7 @@ def get_label(label_idx: int, num_cuts: int) -> Sequence[str]:
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -127,7 +127,7 @@ def attribute_label(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -171,7 +171,7 @@ def fill_label(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -218,7 +218,7 @@ def get_init_meas(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -260,7 +260,7 @@ def convert_to_physical_init(init: list[str]) -> tuple[int, tuple[str, ...]]:
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -377,7 +377,7 @@ def generate_summation_terms(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -429,7 +429,7 @@ def naive_compute(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -491,7 +491,7 @@ def build(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",

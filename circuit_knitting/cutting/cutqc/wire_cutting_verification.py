@@ -35,7 +35,7 @@ from ...utils.metrics import (
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -82,7 +82,7 @@ def verify(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -147,12 +147,6 @@ def generate_reconstructed_output(
     return np.array(reconstructed_output)
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _evaluate_circuit(circuit: QuantumCircuit) -> Sequence[float]:
     """
     Compute exact probability vector of given circuit.

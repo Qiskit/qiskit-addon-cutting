@@ -2,6 +2,6 @@
 deprecations:
   - |
     The ``circuit_cutting.cutqc`` package is deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.8.0. 
-    The wire cutting functionality in the :mod:`circuit_knitting.cutting` package will be maintained going forward. 
-    Additionally, there is new automated LO gate and wire cut-finding functionality in the :mod:`circuit_knitting.cutting.automated_cut_finding` module.
-    A `tutorial <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docs/circuit_cutting/tutorials/04_automatic_cut_finding.ipynb>`__ has been added to demonstrate automated LO cut-finding.
+    The wire cutting functionality in the :mod:`circuit_knitting.cutting` package is what will be maintained going forward. 
+    Additionally, there is a new automated gate and wire cut-finding functionality in the :mod:`circuit_knitting.cutting.automated_cut_finding` module.
+    A `tutorial <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/docs/circuit_cutting/tutorials/04_automatic_cut_finding.ipynb>`__ has been added to demonstrate automated cut-finding.

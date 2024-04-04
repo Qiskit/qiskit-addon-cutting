@@ -37,9 +37,9 @@ __all__ = [
 ]
 
 warn(
-    f"The package {__name__} is deprecated and will be removed no sooner than Circuit Knitting Toolbox 0.8.0. "
-    "There is a new circuit cutting implementation in circuit_knitting.cutting that implements similar and improved functionality, which will be maintained going forward."
-    " See docs/tutorials/04_automatic_cut_finding.ipynb for a tutorial on automated LO cut-finding.",
+    f"The package {__name__} is deprecated and will be removed no sooner than Circuit Knitting Toolbox v0.8.0. "
+    "The circuit cutting workflow in circuit_knitting.cutting now implements similar and improved functionalities, which will be maintained going forward."
+    " See https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/tutorials/04_automatic_cut_finding.ipynb for a tutorial on the newly added automated cut-finding functioanlity.",
     DeprecationWarning,
     stacklevel=2,
 )

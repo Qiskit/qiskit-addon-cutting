@@ -52,7 +52,7 @@ from .wire_cutting_post_processing import build, find_process_jobs
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -157,12 +157,6 @@ def dd_build(
     return dd_bins
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _initialize_dynamic_definition_schedule(
     counter: dict[int, dict[str, int]], mem_limit: int
 ) -> dict[str, dict[int, str]]:
@@ -198,12 +192,6 @@ def _initialize_dynamic_definition_schedule(
     return schedule
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _next_dynamic_definition_schedule(
     recursion_layer: int,
     bin_id: int,
@@ -269,12 +257,6 @@ def _next_dynamic_definition_schedule(
     return next_dd_schedule
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, int]:
     """
     Determine the size to merge bit depending on memory size.
@@ -302,12 +284,6 @@ def _distribute_load(capacities: dict[int, int], mem_limit: int) -> dict[int, in
     return loads
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _merge_prob_vector(
     unmerged_prob_vector: np.ndarray, qubit_states: str
 ) -> np.ndarray:
@@ -348,12 +324,6 @@ def _merge_prob_vector(
     return merged_prob_vector
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _merge_state_into_bins_parallel(
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -396,12 +366,6 @@ def _merge_state_into_bins_parallel(
     return merged_subcircuit_entry_probs
 
 
-@deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
-    since="0.7.0",
-    package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
-)
 def _merge_states_into_bins(
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -458,7 +422,7 @@ def _merge_states_into_bins(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -533,7 +497,7 @@ def read_dd_bins(
 
 
 @deprecate_func(
-    removal_timeline="Circuit knitting toolbox 0.8.0 release",
+    removal_timeline="No sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
