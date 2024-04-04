@@ -28,7 +28,14 @@ import copy
 
 import numpy as np
 
+from qiskit.utils.deprecation import deprecate_func
 
+
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+)
 def chi2_distance(target, obs):  # noqa: D301
     r"""
     Measure the Chi-square distance.
@@ -76,6 +83,11 @@ def chi2_distance(target, obs):  # noqa: D301
     return distance
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+)
 def MSE(target, obs):  # noqa: D301
     r"""
     Compute the Mean Squared Error (MSE).
@@ -127,6 +139,11 @@ def MSE(target, obs):  # noqa: D301
     return mse
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+)
 def MAPE(target, obs):  # noqa: D301
     r"""
     Compute the Mean Absolute Percentage Error (MAPE).
@@ -186,6 +203,11 @@ def MAPE(target, obs):  # noqa: D301
     return mape * 100
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+)
 def cross_entropy(target, obs):  # noqa: D301
     r"""
     Compute the cross entropy between two distributions.
@@ -236,6 +258,11 @@ def cross_entropy(target, obs):  # noqa: D301
         raise Exception("target type : %s, obs type : %s" % (type(target), type(obs)))
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+)
 def HOP(target, obs):
     """
     Compute the Heavy Output Probability (HOP).

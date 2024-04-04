@@ -21,12 +21,20 @@ from multiprocessing.pool import ThreadPool
 import numpy as np
 
 from qiskit import QuantumCircuit
+from qiskit.utils.deprecation import deprecate_func
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit.circuit.library.standard_gates import HGate, SGate, SdgGate, XGate
 from qiskit.primitives import BaseSampler, Sampler as TestSampler
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def run_subcircuit_instances(
     subcircuits: Sequence[QuantumCircuit],
     subcircuit_instances: dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
@@ -102,6 +110,12 @@ def run_subcircuit_instances(
     return subcircuit_instance_probs
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
     """
     Change of basis for all identity measurements.
@@ -129,6 +143,12 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
         return mutated_meas_out
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def modify_subcircuit_instance(
     subcircuit: QuantumCircuit, init: tuple[str, ...], meas: tuple[str, ...]
 ) -> QuantumCircuit:
@@ -209,6 +229,12 @@ def modify_subcircuit_instance(
     return subcircuit_instance_circuit
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def run_subcircuits_using_sampler(
     subcircuits: Sequence[QuantumCircuit],
     sampler: BaseSampler,
@@ -241,6 +267,12 @@ def run_subcircuits_using_sampler(
     return all_probabilities_out
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def run_subcircuits(
     subcircuits: Sequence[QuantumCircuit],
     service: QiskitRuntimeService | None = None,
@@ -262,12 +294,24 @@ def run_subcircuits(
     if service is not None:
         session = Session(service=service, backend=backend_name)
         sampler = Sampler(session=session, options=options)
+        # Transpile circuits
+        backend = service.backend(session.backend())
+        pass_manager = generate_preset_pass_manager(
+            optimization_level=1, backend=backend
+        )
+        subcircuits = pass_manager.run(subcircuits)
     else:
         sampler = TestSampler(options=options)
 
     return run_subcircuits_using_sampler(subcircuits, sampler)
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarray:
     """
     Compute the effective probability distribution from the subcircuit distribution.
@@ -291,6 +335,12 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
         return measured_prob
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def measure_state(full_state: int, meas: tuple[Any, ...]) -> tuple[int, int]:
     """
     Compute the corresponding effective_state for the given full_state.
