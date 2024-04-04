@@ -32,7 +32,7 @@ from qiskit.utils.deprecation import deprecate_func
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
 )
@@ -84,7 +84,7 @@ def chi2_distance(target, obs):  # noqa: D301
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
 )
@@ -140,7 +140,7 @@ def MSE(target, obs):  # noqa: D301
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
 )
@@ -204,7 +204,7 @@ def MAPE(target, obs):  # noqa: D301
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
 )
@@ -259,7 +259,7 @@ def cross_entropy(target, obs):  # noqa: D301
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
 )

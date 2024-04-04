@@ -30,7 +30,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService, Sampler, Session, Options
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -111,7 +111,7 @@ def run_subcircuit_instances(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -144,7 +144,7 @@ def mutate_measurement_basis(meas: tuple[str, ...]) -> list[tuple[Any, ...]]:
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -230,7 +230,7 @@ def modify_subcircuit_instance(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -268,7 +268,7 @@ def run_subcircuits_using_sampler(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -307,7 +307,7 @@ def run_subcircuits(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -336,7 +336,7 @@ def measure_prob(unmeasured_prob: np.ndarray, meas: tuple[Any, ...]) -> np.ndarr
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",

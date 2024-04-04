@@ -52,7 +52,7 @@ from .wire_cutting_post_processing import build, find_process_jobs
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -422,7 +422,7 @@ def _merge_states_into_bins(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -497,7 +497,7 @@ def read_dd_bins(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",

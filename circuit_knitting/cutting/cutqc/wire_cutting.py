@@ -34,7 +34,7 @@ from .dynamic_definition import (
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -104,7 +104,7 @@ def cut_circuit_wires(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -168,7 +168,7 @@ def evaluate_subcircuits(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -216,7 +216,7 @@ def reconstruct_full_distribution(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -261,7 +261,7 @@ def create_dd_bin(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -417,7 +417,7 @@ def _attribute_shots(
 
 @no_type_check
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
@@ -540,7 +540,7 @@ def find_wire_cuts(
 
 
 @deprecate_func(
-    removal_timeline="No sooner than CKT v0.8.0",
+    removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
     additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
