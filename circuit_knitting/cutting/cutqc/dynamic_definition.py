@@ -46,10 +46,17 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Sequence, Any
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
+from qiskit.utils.deprecation import deprecate_func
 
 from .wire_cutting_post_processing import build, find_process_jobs
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def dd_build(
     summation_terms: Sequence[dict[int, int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -414,6 +421,12 @@ def _merge_states_into_bins(
     return merged_subcircuit_entry_probs
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def read_dd_bins(
     subcircuit_out_qubits: dict[int, list[int]], dd_bins: dict[int, dict[str, Any]]
 ) -> np.ndarray:
@@ -483,6 +496,12 @@ def read_dd_bins(
     return reconstructed_prob
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def get_reconstruction_qubit_order(
     full_circuit: QuantumCircuit,
     complete_path_map: dict[Qubit, list[dict[str, int | Qubit]]],
