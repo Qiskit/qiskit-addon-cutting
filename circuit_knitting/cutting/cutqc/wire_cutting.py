@@ -37,7 +37,7 @@ from .dynamic_definition import (
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def cut_circuit_wires(
     circuit: QuantumCircuit,
@@ -107,7 +107,7 @@ def cut_circuit_wires(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def evaluate_subcircuits(
     cuts: dict[str, Any],
@@ -171,7 +171,7 @@ def evaluate_subcircuits(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
@@ -219,7 +219,7 @@ def reconstruct_full_distribution(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def create_dd_bin(
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
@@ -264,7 +264,7 @@ def create_dd_bin(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def reconstruct_dd_full_distribution(
     circuit: QuantumCircuit,
@@ -420,7 +420,7 @@ def _attribute_shots(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def find_wire_cuts(
     circuit: QuantumCircuit,
@@ -543,7 +543,7 @@ def find_wire_cuts(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def cut_circuit_wire(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]], verbose: bool

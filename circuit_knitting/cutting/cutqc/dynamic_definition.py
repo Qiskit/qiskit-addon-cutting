@@ -55,7 +55,7 @@ from .wire_cutting_post_processing import build, find_process_jobs
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def dd_build(
     summation_terms: Sequence[dict[int, int]],
@@ -425,7 +425,7 @@ def _merge_states_into_bins(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def read_dd_bins(
     subcircuit_out_qubits: dict[int, list[int]], dd_bins: dict[int, dict[str, Any]]
@@ -500,7 +500,7 @@ def read_dd_bins(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def get_reconstruction_qubit_order(
     full_circuit: QuantumCircuit,

@@ -38,7 +38,7 @@ from ...utils.metrics import (
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def verify(
     full_circuit: QuantumCircuit,
@@ -85,7 +85,7 @@ def verify(
     removal_timeline="no sooner than CKT v0.8.0",
     since="0.7.0",
     package_name="circuit-knitting-toolbox",
-    additional_msg="Use the wire cutting or automated cut-finding functionality in the circuit_knitting.cutting package. ",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
 )
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
