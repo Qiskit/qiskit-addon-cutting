@@ -18,6 +18,7 @@ Sphinx documentation builder
 
 # General options:
 from pathlib import Path
+import os
 import sys
 
 from importlib.metadata import version as metadata_version
@@ -88,7 +89,7 @@ autoclass_content = "both"
 
 # nbsphinx options (for tutorials)
 nbsphinx_timeout = 180
-nbsphinx_execute = "auto"
+nbsphinx_execute = "always" if os.environ.get("CI") == "true" else "auto"
 nbsphinx_widgets_path = ""
 exclude_patterns = [
     "_build",
