@@ -151,7 +151,6 @@ def greedy_best_first_search(
             ],
             default=(None, None, None),
         )
-
         if best[-1] is None:  # pragma: no cover
             # This covers a rare edge case.
             # We have so far found no circuit that triggers it.
