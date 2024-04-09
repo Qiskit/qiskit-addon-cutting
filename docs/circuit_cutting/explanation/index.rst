@@ -31,7 +31,7 @@ The sampling overhead is the factor by which the overall number of shots must in
 The overhead of a cut gate depends on which gate is cut; see the final appendix of [`1 <https://arxiv.org/abs/2205.00016>`__] for details.
 For instance, a single cut CNOT gate incurs a sampling overhead of 9 [`2 <https://arxiv.org/abs/1909.07534>`__,\ `6 <https://arxiv.org/abs/2312.11638>`__].
 A circuit with :math:`n` wire cuts incurs a sampling overhead of O(:math:`16^n`) in the LO setting.  If real-time communication *is* available (i.e., if the hardware supports “dynamic circuits”, also known as the LOCC setting), then the sampling overhead for :math:`n` cut wires may be reduced to O(:math:`4^n`) [`4 <https://arxiv.org/abs/2302.03366>`__].
-However, support for wire cutting with classical communication (LOCC) is not yet supported in CKT (see issue `#264 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/264>`__).
+However, wire cutting with classical communication (LOCC) is not yet supported in CKT (see issue `#264 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/264>`__).
 
 The QPD can be given explicitly as follows:
 
