@@ -138,10 +138,7 @@ def greedy_best_first_search(
         Callable, search_space_funcs.next_state_func
     )
 
-    while True:
-        if search_space_funcs.goal_state_func(state, *args):
-            return state
-
+    while not search_space_funcs.goal_state_func(state, *args):
         best = min(
             [
                 (search_space_funcs.cost_func(next_state, *args), k, next_state)
@@ -160,3 +157,4 @@ def greedy_best_first_search(
             # avoid using recursion to stay clear of any risk of stack overflow.
             state = best[-1]
             continue
+    return state
