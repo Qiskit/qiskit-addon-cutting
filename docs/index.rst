@@ -53,6 +53,7 @@ Contents
 
   API References <apidocs/index>
   Release Notes <release-notes>
+  Github <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox>
 
 .. Hiding - Indices and tables
    :ref:`genindex`
