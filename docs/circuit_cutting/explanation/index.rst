@@ -30,7 +30,7 @@ As mentioned above, the cost of any simulation based on quasiprobability distrib
 The sampling overhead is the factor by which the overall number of shots must increase for the quasiprobability decomposition to result in the same amount of error, :math:`\epsilon`, as one would get by executing the original circuit.
 The overhead of a cut gate depends on which gate is cut; see the final appendix of [`1 <https://arxiv.org/abs/2205.00016>`__] for details.
 For instance, a single cut CNOT gate incurs a sampling overhead of 9 [`2 <https://arxiv.org/abs/1909.07534>`__,\ `6 <https://arxiv.org/abs/2312.11638>`__].
-A circuit with :math:`n` wire cuts incurs a sampling overhead of O(:math:`16^n`) in the LO setting.  If real-time communication *is* available (i.e., if the hardware supports “dynamic circuits”, also known as the LOCC setting), then the sampling overhead for :math:`n` cut wires may be reduced to O(:math:`4^n`) [`4 <https://arxiv.org/abs/2302.03366>`__].
+A circuit with :math:`n` wire cuts incurs a sampling overhead of O(:math:`16^n`) when classical communication is not available (LO setting); this is reduced to O(:math:`4^n`) when classical communication is available (LOCC setting) [`4 <https://arxiv.org/abs/2302.03366>`__].
 However, wire cutting with classical communication (LOCC) is not yet supported in CKT (see issue `#264 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/264>`__).
 
 The QPD can be given explicitly as follows:
@@ -53,7 +53,7 @@ Results equivalent to original unitary channel can be obtained by a post-process
 
 For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [`5 <https://arxiv.org/abs/1612.02058>`__].
 
-The essential idea of gate cutting is to replace a two-qubit gate with a linear combination of quantum channels [Eq. eq:`eq:qpd`] that, when recombined, will allow reconstruction of the result for physically measurable quantities like expectation values.  Note that "global phase" is not something that can be physically measured, so we can disregard it when specifying quasiprobability decompositions.
+The essential idea of gate cutting is to replace a two-qubit gate with a linear combination of quantum channels [Eq. :eq:`eq:qpd`] that, when recombined, will allow reconstruction of the result for physically measurable quantities like expectation values.  Note that "global phase" is not something that can be physically measured, so we can disregard it when specifying quasiprobability decompositions.
 
 An example: cutting a :class:`~qiskit.circuit.library.RZZGate`
 -------------------------------------------------------------------
