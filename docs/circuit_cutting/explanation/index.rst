@@ -186,7 +186,6 @@ The below table provides the sampling overhead factor for a variety of two-qubit
 
 Current limitations
 -------------------
-* ``PauliList`` is the only supported observable format until no sooner than CKT v0.7.0.
 * The workflow only allows taking the *expectation value* of observables with respect to a circuit.  Limited support for reconstructing an output probability distribution may be added to a future version of CKT (see issue `#259 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/259>`__).
 * Due to current code limitations, some of the generated subexperiments are redundant.  This can result in more subexperiments than expected, particularly when using wire cutting.  This is tracked by issue `#262 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/262>`__.
 
