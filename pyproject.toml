@@ -119,6 +119,7 @@ enable = [
     "unused-argument",
     "use-list-literal",
     "use-dict-literal",
+    "dangerous-default-value",
 ]
 
 #[tool.coverage.run]

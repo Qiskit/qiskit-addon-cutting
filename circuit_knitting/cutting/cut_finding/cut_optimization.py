@@ -195,14 +195,18 @@ class CutOptimization:
         circuit_interface,
         optimization_settings,
         device_constraints,
-        search_engine_config={
-            "CutOptimization": SearchSpaceGenerator(
-                functions=cut_optimization_search_funcs,
-                actions=disjoint_subcircuit_actions,
-            )
-        },
+        search_engine_config=None,
     ):
         """Assign member variables."""
+        if search_engine_config is None:
+            # Set default config
+            search_engine_config = {
+                "CutOptimization": SearchSpaceGenerator(
+                    functions=cut_optimization_search_funcs,
+                    actions=disjoint_subcircuit_actions,
+                )
+            }
+
         generator = search_engine_config["CutOptimization"]
         search_space_funcs = generator.functions
         search_space_actions = generator.actions
