@@ -136,10 +136,10 @@ class SimpleGateList(CircuitInterface):
     `cut_type` (list): a list that assigns cut-type annotations to gates
     in ``new_circuit``.
 
-    `new_gate_ID`_map (list): a list that maps the positions of gates
+    `new_gate_ID`_map (array): an array that maps the positions of gates
     in circuit to their new positions in ``new_circuit``.
 
-    `output_wires` (list): a list that maps qubit IDs in circuit to the corresponding
+    `output_wires` (array): an array that maps qubit IDs in circuit to the corresponding
     output wires of new_circuit so that observables defined for circuit
     can be remapped to ``new_circuit``.
 
