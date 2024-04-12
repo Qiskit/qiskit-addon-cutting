@@ -138,23 +138,20 @@ def greedy_best_first_search(
         Callable, search_space_funcs.next_state_func
     )
 
-    if search_space_funcs.goal_state_func(state, *args):
-        return state
-
-    best = min(
-        [
-            (search_space_funcs.cost_func(next_state, *args), k, next_state)
-            for k, next_state in enumerate(
-                search_space_funcs.next_state_func(state, *args)
-            )
-        ],
-        default=(None, None, None),
-    )
-
-    if best[-1] is None:  # pragma: no cover
-        # This covers a rare edge case.
-        # We have so far found no circuit that triggers it.
-        # Excluding from test coverage for now.
-        return None
-
-    return greedy_best_first_search(best[-1], search_space_funcs, *args)
+    while not search_space_funcs.goal_state_func(state, *args):
+        best = min(
+            [
+                (search_space_funcs.cost_func(next_state, *args), k, next_state)
+                for k, next_state in enumerate(
+                    search_space_funcs.next_state_func(state, *args)
+                )
+            ],
+            default=(None, None, None),
+        )
+        if best[-1] is None:  # pragma: no cover
+            # This covers a rare edge case.
+            # We have so far found no circuit that triggers it.
+            # Excluding from test coverage for now.
+            return None
+        state = best[-1]
+    return state
