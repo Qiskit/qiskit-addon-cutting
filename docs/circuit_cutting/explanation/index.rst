@@ -42,7 +42,7 @@ where :math:`\mathcal{U}` is the channel implementing the desired operation, and
 
 Note that because this is a sum of channels, *not* a sum of unitaries, expectation values can be evaluated efficiently [`2 <https://arxiv.org/abs/1909.07534>`__].
 
-Results equivalent to original unitary channel can be obtained by a post-processing method, given the coefficients :math:`a_i` and each the outcome of each experiment corresponding to the different local (:math:`\mathcal{F}_i`) channels.  This post-processing boosts the magnitude of each measurement outcome by :math:`\sum_i \left| a_i \right|`, resulting in a sampling overhead of that quantity squared [`6 <https://arxiv.org/abs/2312.11638>`__]:
+Results equivalent to original unitary channel can be obtained by a post-processing method, given the coefficients :math:`a_i` and the outcome of each experiment corresponding to the different local (:math:`\mathcal{F}_i`) channels. This post-processing boosts the magnitude of each measurement outcome by :math:`\sum_i \left| a_i \right|`, resulting in a sampling overhead of that quantity squared [`6 <https://arxiv.org/abs/2312.11638>`__]:
 
 .. math::
    :label: eq:sampling-overhead
