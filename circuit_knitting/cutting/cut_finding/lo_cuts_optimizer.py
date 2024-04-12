@@ -65,14 +65,18 @@ class LOCutsOptimizer:
         circuit_interface=None,
         optimization_settings=None,
         device_constraints=None,
-        search_engine_config={
-            "CutOptimization": SearchSpaceGenerator(
-                functions=cut_optimization_search_funcs,
-                actions=disjoint_subcircuit_actions,
-            )
-        },
+        search_engine_config=None,
     ):
         """Initialize :class:`LOCutsOptimizer with the specified configuration variables."""
+        if search_engine_config is None:
+            # Set default config
+            search_engine_config = {
+                "CutOptimization": SearchSpaceGenerator(
+                    functions=cut_optimization_search_funcs,
+                    actions=disjoint_subcircuit_actions,
+                )
+            }
+
         self.circuit_interface = circuit_interface
         self.optimization_settings = optimization_settings
         self.device_constraints = device_constraints

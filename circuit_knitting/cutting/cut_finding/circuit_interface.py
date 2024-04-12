@@ -136,10 +136,10 @@ class SimpleGateList(CircuitInterface):
     `cut_type` (list): a list that assigns cut-type annotations to gates
     in ``new_circuit``.
 
-    `new_gate_ID`_map (list): a list that maps the positions of gates
+    `new_gate_ID`_map (array): an array that maps the positions of gates
     in circuit to their new positions in ``new_circuit``.
 
-    `output_wires` (list): a list that maps qubit IDs in circuit to the corresponding
+    `output_wires` (array): an array that maps qubit IDs in circuit to the corresponding
     output wires of new_circuit so that observables defined for circuit
     can be remapped to ``new_circuit``.
 
@@ -158,7 +158,7 @@ class SimpleGateList(CircuitInterface):
     def __init__(
         self,
         input_circuit: list[CircuitElement | str],
-        init_qubit_names: list[Hashable] = [],
+        init_qubit_names: Sequence[Hashable] = (),
     ):
         """Assign member variables."""
         self.qubit_names = NameToIDMap(init_qubit_names)
@@ -410,7 +410,7 @@ class SimpleGateList(CircuitInterface):
 class NameToIDMap:
     """Class used to construct maps between hashable items (e.g., qubit names) and natural numbers (e.g., qubit IDs)."""
 
-    def __init__(self, init_names: list[Hashable]):
+    def __init__(self, init_names: Sequence[Hashable]):
         """Allow the name dictionary to be initialized with the names in ``init_names`` in the order the names appear.
 
         This is done in order to force a preferred ordering in the assigment of item IDs to those names.
