@@ -153,8 +153,5 @@ def greedy_best_first_search(
             # We have so far found no circuit that triggers it.
             # Excluding from test coverage for now.
             return None
-        else:
-            # avoid using recursion to stay clear of any risk of stack overflow.
-            state = best[-1]
-            continue
+        state = best[-1]
     return state
