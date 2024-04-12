@@ -68,7 +68,7 @@ class TestCircuitInterface:
         assert max_wire_cuts_gamma(7) == 2
 
         # Assign by hand a different qubit mapping by specifiying init_qubit_names.
-        circuit_converted = SimpleGateList(trial_circuit, ("q0", "q1"))
+        circuit_converted = SimpleGateList(trial_circuit, ["q0", "q1"])
         assert circuit_converted.qubit_names.item_dict == {"q0": 0, "q1": 1}
         assert circuit_converted.circuit == [
             [CircuitElement(name="h", params=[], qubits=[1], gamma=None), None],
