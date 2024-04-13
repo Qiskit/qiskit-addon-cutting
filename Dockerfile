@@ -12,6 +12,7 @@ COPY . .src/circuit-knitting-toolbox
 # Fix the permissions of ~/.src
 USER root
 RUN fix-permissions .src
+RUN mkdir persistent-volume && fix-permissions persistent-volume
 USER ${NB_UID}
 
 # Consolidate the docs into the home directory
