@@ -21,3 +21,6 @@ jobs:
       - name: Test notebooks
         shell: bash
         run: docker compose run notebook "bash" "-c" "pip install pytest nbmake && pytest --nbmake docs"
+      - name: Test that persistent-volume is writable
+        shell: bash
+        run: docker compose run notebook "bash" "-c" "touch persistent-volume/empty-notebook.ipynb"
