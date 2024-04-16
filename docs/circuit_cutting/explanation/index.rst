@@ -121,7 +121,7 @@ We can formalize this notion of local unitary equivalence and expand it to all t
 where :math:`V_1`, :math:`V_2`, :math:`V_3`, and :math:`V_4` are local, single-qubit operations, and the two-qubit portion of the interaction is parametrized entirely by :math:`\vec{\theta} = (\theta_x, \theta_y, \theta_z)`.  By convention, we have chosen :math:`\vec{\theta}` to be in the "Weyl chamber" restricted by :math:`\pi/4 \geq \theta_x \geq \theta_y \geq | \theta_z | \geq 0` [`6 <https://arxiv.org/abs/2312.11638>`__].
 For more information on the KAK decomposition, see Ref. [`7 <https://arxiv.org/abs/quant-ph/0209120>`__].
 
-The code that generates a cut subexperiments from the KAK decomposition currently follows Ref. [`3 <https://arxiv.org/abs/2006.11174>`__], which is now known to be non-optimal.  A provably optimal method has been presented in Ref. [`6 <https://arxiv.org/abs/2312.11638>`__], but this newer method has not yet been implemented in CKT (see issue `#531 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/531>`__).
+The code that generates subexperiments from the KAK decomposition currently follows Ref. [`3 <https://arxiv.org/abs/2006.11174>`__], which is now known to be non-optimal.  A provably optimal method has been presented in Ref. [`6 <https://arxiv.org/abs/2312.11638>`__], but this newer method has not yet been implemented in CKT (see issue `#531 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/531>`__).
 
 .. _wire cutting as move:
 
