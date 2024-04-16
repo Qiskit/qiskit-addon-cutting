@@ -9,9 +9,10 @@ RUN rm -rf work && \
 
 COPY . .src/circuit-knitting-toolbox
 
-# Fix the permissions of ~/.src
+# Fix the permissions of ~/.src and ~/persistent-volume
 USER root
-RUN fix-permissions .src
+RUN fix-permissions .src && \
+    mkdir persistent-volume && fix-permissions persistent-volume
 USER ${NB_UID}
 
 # Consolidate the docs into the home directory

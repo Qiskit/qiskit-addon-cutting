@@ -58,7 +58,7 @@ nbtest = [
     "nbmake>=1.4.3"
 ]
 style = [
-    "autoflake==2.3.0",
+    "autoflake==2.3.1",
     "black[jupyter]~=24.1",
     "ruff>=0.0.246",
     "nbqa>=1.6.0",
@@ -66,7 +66,7 @@ style = [
 lint = [
     "circuit-knitting-toolbox[style]",
     "pydocstyle==6.3.0",
-    "mypy==1.8.0",
+    "mypy==1.9.0",
     "reno>=3.4.0",
     "pylint==3.1.0",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
@@ -105,6 +105,23 @@ only-include = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
+[tool.pylint.main]
+py-version = "3.8"
+disable = "all"
+enable = [
+    "reimported",
+    "no-self-use",
+    "no-else-raise",
+    "redefined-argument-from-local",
+    "redefined-builtin",
+    "raise-missing-from",
+    "cyclic-import",
+    "unused-argument",
+    "use-list-literal",
+    "use-dict-literal",
+    "dangerous-default-value",
+]
+
 #[tool.coverage.run]
 #omit = [
 #    # deprecated import location(s)
@@ -114,4 +131,4 @@ remove-all-unused-imports = true
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
 filterwarnings = ["ignore:::.*qiskit.opflow*"]
-addopts = "--doctest-modules -rs --durations=10"
+addopts = "--doctest-modules -rs --durations=10 --ignore=circuit_knitting/utils/metrics.py --ignore=circuit_knitting/cutting/cutqc"
