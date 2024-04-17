@@ -32,14 +32,11 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
-<<<<<<< HEAD
-=======
     XXPlusYYGate,
     XXMinusYYGate,
     SwapGate,
     iSwapGate,
     DCXGate,
->>>>>>> 299c849 (Add sampling overhead table and expand/update cutting explanation (#342))
 )
 
 from circuit_knitting.utils.iteration import unique_by_eq
