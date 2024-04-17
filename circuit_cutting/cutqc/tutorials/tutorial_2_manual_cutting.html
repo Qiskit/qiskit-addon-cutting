@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Circuit Knitting Toolbox API References" href="../../../apidocs/index.html" /><link rel="prev" title="CutQC Tutorial 1: Circuit Cutting with Automatic Cut Finding" href="tutorial_1_automatic_cut_finding.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
         <title>CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting - Circuit Knitting Toolbox 0.6.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
@@ -305,7 +305,7 @@
         </div>
         <article role="main">
           <section id="CutQC-Tutorial-2:-Circuit-Cutting-with-Manual-Wire-Cutting">
-<h1>CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting<a class="headerlink" href="#CutQC-Tutorial-2:-Circuit-Cutting-with-Manual-Wire-Cutting" title="Link to this heading">#</a></h1>
+<h1>CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting<a class="headerlink" href="#CutQC-Tutorial-2:-Circuit-Cutting-with-Manual-Wire-Cutting" title="Link to this heading">¶</a></h1>
 <p>Circuit cutting is a technique to decompose a quantum circuit into smaller circuits, whose results can be knitted together to reconstruct the original circuit output.</p>
 <p>The circuit knitting toolbox implements a wire cutting method presented in <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a> (Tang et al.). This method allows a circuit wire to be cut such that the generated subcircuits are amended by measurements in the Pauli bases and by state preparation of four Pauli eigenstates (see Fig. 4 of <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a>).</p>
 <p>This wire cutting technique is comprised of the following basic steps:</p>
@@ -315,7 +315,7 @@
 <li><p><strong>Reconstruct</strong>: Knit the subcircuit results together to reconstruct the original circuit output (in this case, the full probability distribution).</p></li>
 </ol>
 <section id="Create-a-quantum-circuit-with-Qiskit">
-<h2>Create a quantum circuit with Qiskit<a class="headerlink" href="#Create-a-quantum-circuit-with-Qiskit" title="Link to this heading">#</a></h2>
+<h2>Create a quantum circuit with Qiskit<a class="headerlink" href="#Create-a-quantum-circuit-with-Qiskit" title="Link to this heading">¶</a></h2>
 <p>In this tutorial, we’ll use the example circuit shown in <a class="reference external" href="https://dl.acm.org/doi/10.1145/3445814.3446758">CutQC</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -358,7 +358,7 @@
 </div>
 </section>
 <section id="Set-up-the-Qiskit-Runtime-Service">
-<h2>Set up the Qiskit Runtime Service<a class="headerlink" href="#Set-up-the-Qiskit-Runtime-Service" title="Link to this heading">#</a></h2>
+<h2>Set up the Qiskit Runtime Service<a class="headerlink" href="#Set-up-the-Qiskit-Runtime-Service" title="Link to this heading">¶</a></h2>
 <p>The Qiskit Runtime Service provides access to IBM Runtime Primitives and quantum backends. Alternatively, a local statevector simulator can be used with the Qiskit primitives.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -393,7 +393,7 @@
 </div>
 </section>
 <section id="Decompose-the-circuit-with-wire-cutting">
-<h2>Decompose the circuit with wire cutting<a class="headerlink" href="#Decompose-the-circuit-with-wire-cutting" title="Link to this heading">#</a></h2>
+<h2>Decompose the circuit with wire cutting<a class="headerlink" href="#Decompose-the-circuit-with-wire-cutting" title="Link to this heading">¶</a></h2>
 <p>In this example, we will use a manual method to specify the wire cuts. See <a class="reference internal" href="tutorial_1_automatic_cut_finding.html"><span class="doc">tutorial 1</span></a> for how to automatically cut a circuit. The figure below shows the steps for producing the <code class="docutils literal notranslate"><span class="pre">subcircuit_vertices</span></code> argument for the <code class="docutils literal notranslate"><span class="pre">cut_circuit_wires</span></code> function.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">method='manual'</span></code>: Manually specify the wire cuts</p></li>
@@ -450,7 +450,7 @@
 </div>
 </section>
 <section id="Evaluate-the-subcircuits">
-<h2>Evaluate the subcircuits<a class="headerlink" href="#Evaluate-the-subcircuits" title="Link to this heading">#</a></h2>
+<h2>Evaluate the subcircuits<a class="headerlink" href="#Evaluate-the-subcircuits" title="Link to this heading">¶</a></h2>
 <p><strong>Set up the Qiskit Runtime Service</strong></p>
 <p>The Qiskit Runtime Service provides access to Qiskit Runtime Primitives and quantum backends. See the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/">Qiskit Runtime documentation</a> for more information. Alternatively, if a Qiskit Runtime Service is not passed, then a local statevector simulator will be used with the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/primitives">Qiskit Primitives</a>.</p>
 <div class="nbinput nblast docutils container">
@@ -501,7 +501,7 @@
 <p><strong>See Tutorial 1 for more info about the subcircuit results.</strong></p>
 </section>
 <section id="Reconstruct-the-full-circuit-output">
-<h2>Reconstruct the full circuit output<a class="headerlink" href="#Reconstruct-the-full-circuit-output" title="Link to this heading">#</a></h2>
+<h2>Reconstruct the full circuit output<a class="headerlink" href="#Reconstruct-the-full-circuit-output" title="Link to this heading">¶</a></h2>
 <p>Next, the results of the subcircuit experiments are classically postprocessed to reconstruct the original circuit’s full probability distribution.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -521,7 +521,7 @@
 </div>
 </section>
 <section id="Verify-the-results">
-<h2>Verify the results<a class="headerlink" href="#Verify-the-results" title="Link to this heading">#</a></h2>
+<h2>Verify the results<a class="headerlink" href="#Verify-the-results" title="Link to this heading">¶</a></h2>
 <p>If the original circuit is small enough, we can use a statevector simulator to check the results of cutting against the original circuit’s exact probability distribution (ground truth).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -696,7 +696,7 @@
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>

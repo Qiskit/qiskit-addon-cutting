@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation Instructions" href="install.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
         <title>Circuit Knitting Toolbox 0.6.0</title>
       <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=82a976d7" />
@@ -304,8 +304,9 @@
         </div>
         <article role="main">
           <section id="circuit-knitting-toolbox">
-<h1>Circuit Knitting Toolbox<a class="headerlink" href="#circuit-knitting-toolbox" title="Link to this heading">#</a></h1>
-<a class="reference external image-reference" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"><img alt="GitHub repository star counter badge" src="https://img.shields.io/github/stars/Qiskit-Extensions/circuit-knitting-toolbox?style=social" /></a>
+<h1>Circuit Knitting Toolbox<a class="headerlink" href="#circuit-knitting-toolbox" title="Link to this heading">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"><img alt="GitHub repository star counter badge" src="https://img.shields.io/github/stars/Qiskit-Extensions/circuit-knitting-toolbox?style=social" />
+</a>
 <p>Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit’s outcome.</p>
 <p>The toolbox currently contains the following tools:</p>
 <ul class="simple">
@@ -313,7 +314,7 @@
 </ul>
 <p>This project is meant to evolve rapidly and, as such, does not follow <a class="reference external" href="https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md">Qiskit’s deprecation policy</a>.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the <a class="reference internal" href="release-notes.html#release-notes"><span class="std std-ref">Release Notes</span></a>.</p>
 <section id="citing-this-project">
-<h2>Citing this project<a class="headerlink" href="#citing-this-project" title="Link to this heading">#</a></h2>
+<h2>Citing this project<a class="headerlink" href="#citing-this-project" title="Link to this heading">¶</a></h2>
 <p>If you use the Circuit Knitting Toolbox in your research, please cite it according to <code class="docutils literal notranslate"><span class="pre">CITATON.bib</span></code> file included in this repository:</p>
 <div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@misc</span><span class="p">{</span><span class="nl">circuit-knitting-toolbox</span><span class="p">,</span>
 <span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Luciano Bello and Agata M. Bra\&#39;{n}czyk and Sergey Bravyi and Almudena {Carrera Vazquez} and Andrew Eddins and Daniel J. Egger and Bryce Fuller and Julien Gacon and James R. Garrison and Jennifer R. Glick and Tanvi P. Gujarati and Ikko Hamamura and Areeq I. Hasan and Takashi Imamichi and Caleb Johnson and Ieva Liepuoniute and Owen Lockwood and Mario Motta and C. D. Pemmaraju and Pedro Rivero and Max Rossmannek and Travis L. Scholten and Seetharami Seelam and Iskandar Sitdikov and Dharmashankar Subramanian and Wei Tang and Stefan Woerner}</span><span class="p">,</span>
@@ -326,12 +327,12 @@
 </div>
 </section>
 <section id="developer-guide">
-<h2>Developer guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h2>
+<h2>Developer guide<a class="headerlink" href="#developer-guide" title="Link to this heading">¶</a></h2>
 <p>The source code to the toolbox is available <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox">on GitHub</a>.</p>
 <p>The developer guide is located at <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> in the root of this project’s repository.</p>
 </section>
 <section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h2>
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">About Circuit Knitting Toolbox</a></li>
@@ -358,8 +359,11 @@
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#overview-of-circuit-cutting">Overview of circuit cutting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#key-terms">Key terms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#circuit-cutting-as-a-quasiprobability-decomposition-qpd">Circuit cutting as a quasiprobability decomposition (QPD)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#sampling-overhead">Sampling overhead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#an-example-cutting-a-rzzgate">An example: cutting a <code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#more-general-cut-two-qubit-gates-via-the-kak-decomposition">More general cut two-qubit gates via the KAK decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#wire-cutting-phrased-as-a-two-qubit-move-operation">Wire cutting phrased as a two-qubit <code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code> operation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#sample-weights-in-ckt">Sample weights in CKT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#sampling-overhead-reference-table">Sampling overhead reference table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#current-limitations">Current limitations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit_cutting/explanation/index.html#references">References</a></li>
 </ul>
@@ -470,7 +474,7 @@
 </div><script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
@@ -478,5 +482,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Explanatory material for the circuit cutting module" href="../explanation/index.html" /><link rel="prev" title="Gate Cutting to Reduce Circuit Depth" href="02_gate_cutting_to_reduce_circuit_depth.html" />
 
-    <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
         <title>Wire Cutting Phrased as a Two-Qubit Move Instruction - Circuit Knitting Toolbox 0.6.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
@@ -305,7 +305,7 @@
         </div>
         <article role="main">
           <section id="Wire-Cutting-Phrased-as-a-Two-Qubit-Move-Instruction">
-<h1>Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction<a class="headerlink" href="#Wire-Cutting-Phrased-as-a-Two-Qubit-Move-Instruction" title="Link to this heading">#</a></h1>
+<h1>Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction<a class="headerlink" href="#Wire-Cutting-Phrased-as-a-Two-Qubit-Move-Instruction" title="Link to this heading">¶</a></h1>
 <p>In this tutorial, we will reconstruct expectation values of a seven-qubit circuit by splitting it into two four-qubit circuits using wire cutting.</p>
 <p>Like any circuit knitting technique, wire cutting can be described as three consecutive steps:</p>
 <ul class="simple">
@@ -314,7 +314,7 @@
 <li><p><strong>reconstruct</strong> the expectation value of the full-sized circuit</p></li>
 </ul>
 <section id="Create-a-circuit-to-cut">
-<h2>Create a circuit to cut<a class="headerlink" href="#Create-a-circuit-to-cut" title="Link to this heading">#</a></h2>
+<h2>Create a circuit to cut<a class="headerlink" href="#Create-a-circuit-to-cut" title="Link to this heading">¶</a></h2>
 <p>First, we begin with a circuit inspired by Fig. 1(a) of <a class="reference external" href="https://arxiv.org/abs/2302.03366v1">arXiv:2302.03366v1</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -365,7 +365,7 @@
 </div>
 </section>
 <section id="Specify-some-observables">
-<h2>Specify some observables<a class="headerlink" href="#Specify-some-observables" title="Link to this heading">#</a></h2>
+<h2>Specify some observables<a class="headerlink" href="#Specify-some-observables" title="Link to this heading">¶</a></h2>
 <p>Next, we specify a list of observables whose expectation values we would like to determine.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -379,7 +379,7 @@
 </div>
 </section>
 <section id="Create-a-new-circuit-where-Move-instructions-have-been-placed-at-the-desired-cut-locations">
-<h2>Create a new circuit where <code class="docutils literal notranslate"><span class="pre">Move</span></code> instructions have been placed at the desired cut locations<a class="headerlink" href="#Create-a-new-circuit-where-Move-instructions-have-been-placed-at-the-desired-cut-locations" title="Link to this heading">#</a></h2>
+<h2>Create a new circuit where <code class="docutils literal notranslate"><span class="pre">Move</span></code> instructions have been placed at the desired cut locations<a class="headerlink" href="#Create-a-new-circuit-where-Move-instructions-have-been-placed-at-the-desired-cut-locations" title="Link to this heading">¶</a></h2>
 <p>Given the above circuit, we would like to place two wire cuts on the middle qubit line, so that the circuit can separate into two circuits of four qubits each. One way to do this is to manually place two-qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> instructions that move the state from one qubit wire to another. A <code class="docutils literal notranslate"><span class="pre">Move</span></code> instruction is conceptually equivalent to a reset operation on the second qubit, followed by a SWAP gate. The effect of this instruction is to transfer the state of the first (source) qubit to the second
 (detination) qubit, while discarding the incoming state of the second qubit. For this to work as intended, it is important that the second (destination) qubit share no entanglement with the remainder of the system; otherwise, the reset operation will cause the state of the remainder of the system to be partially collapsed.</p>
 <p>Here, we build a new circuit with one additional qubit and the <code class="docutils literal notranslate"><span class="pre">Move</span></code> operations in place. In this example, we are able to reuse a qubit: the source qubit of the first <code class="docutils literal notranslate"><span class="pre">Move</span></code> becomes the destination qubit of the second <code class="docutils literal notranslate"><span class="pre">Move</span></code> operation.</p>
@@ -419,7 +419,7 @@
 </div>
 </section>
 <section id="Create-observables-to-go-with-the-new-circuit">
-<h2>Create observables to go with the new circuit<a class="headerlink" href="#Create-observables-to-go-with-the-new-circuit" title="Link to this heading">#</a></h2>
+<h2>Create observables to go with the new circuit<a class="headerlink" href="#Create-observables-to-go-with-the-new-circuit" title="Link to this heading">¶</a></h2>
 <p>These observables correspond with <code class="docutils literal notranslate"><span class="pre">observables_0</span></code>, but we must account correctly for the extra qubit wire that has been added (i.e., we insert an “I” at index 4). Note that in Qiskit, the string representation qubit-0 corresponds to the right-most Pauli character.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -431,7 +431,7 @@
 </div>
 </section>
 <section id="Separate-the-circuit-and-observables">
-<h2>Separate the circuit and observables<a class="headerlink" href="#Separate-the-circuit-and-observables" title="Link to this heading">#</a></h2>
+<h2>Separate the circuit and observables<a class="headerlink" href="#Separate-the-circuit-and-observables" title="Link to this heading">¶</a></h2>
 <p>As in the previous tutorials, qubits sharing a common partition label will be grouped together, and non-local gates spanning more than one partition will be cut.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -450,7 +450,7 @@
 </div>
 </section>
 <section id="Visualize-the-decomposed-problem">
-<h2>Visualize the decomposed problem<a class="headerlink" href="#Visualize-the-decomposed-problem" title="Link to this heading">#</a></h2>
+<h2>Visualize the decomposed problem<a class="headerlink" href="#Visualize-the-decomposed-problem" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -503,7 +503,7 @@
 </div>
 </section>
 <section id="Calculate-the-sampling-overhead-for-the-chosen-cuts">
-<h2>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">#</a></h2>
+<h2>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">¶</a></h2>
 <p>Here we cut two wires, resulting in a sampling overhead of <span class="math notranslate nohighlight">\(4^4\)</span>.</p>
 <p>For more on the sampling overhead incurred by circuit cutting, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <div class="nbinput docutils container">
@@ -524,7 +524,7 @@ Sampling overhead: 256.0
 </div>
 </section>
 <section id="Generate-the-subexperiments-to-run-on-the-backend">
-<h2>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">#</a></h2>
+<h2>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">generate_cutting_experiments</span></code> accepts <code class="docutils literal notranslate"><span class="pre">circuits</span></code>/<code class="docutils literal notranslate"><span class="pre">observables</span></code> args as dictionaries mapping qubit partition labels to the respective <code class="docutils literal notranslate"><span class="pre">subcircuit</span></code>/<code class="docutils literal notranslate"><span class="pre">subobservables</span></code>.</p>
 <p>To simulate the expectation value of the full-sized circuit, many subexperiments are generated from the decomposed gates’ joint quasiprobability distribution and then executed on one or more backends. The number of samples taken from the distribution is controlled by <code class="docutils literal notranslate"><span class="pre">num_samples</span></code>, and one combined coefficient is given for each unique sample. For more information on how the coefficients are calculated, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <div class="nbinput nblast docutils container">
@@ -541,7 +541,7 @@ Sampling overhead: 256.0
 </div>
 </section>
 <section id="Run-the-subexperiments-using-the-Qiskit-Sampler-primitive">
-<h2>Run the subexperiments using the Qiskit Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Sampler-primitive" title="Link to this heading">#</a></h2>
+<h2>Run the subexperiments using the Qiskit Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Sampler-primitive" title="Link to this heading">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -591,7 +591,7 @@ Sampling overhead: 256.0
 </div>
 </section>
 <section id="Reconstruct-the-expectation-values">
-<h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">#</a></h2>
+<h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">¶</a></h2>
 <p>Use the subexperiment results, subobservables, and sampling coefficients to reconstruct the expectation value of the original circuit.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -609,7 +609,7 @@ Sampling overhead: 256.0
 </div>
 </section>
 <section id="Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit">
-<h2>Compare the reconstructed expectation values with the exact expectation values from the original circuit<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit" title="Link to this heading">#</a></h2>
+<h2>Compare the reconstructed expectation values with the exact expectation values from the original circuit<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
@@ -736,7 +736,7 @@ Relative errors in estimation: [-0.11581981, -0.03058, -0.02218384]
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
