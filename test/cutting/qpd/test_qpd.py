@@ -286,7 +286,7 @@ class TestQPDFunctions(unittest.TestCase):
         (iSwapGate(), 7),
         (DCXGate(), 7),
         (XXPlusYYGate(0.1), 1 + 4 * np.sin(0.05) + 2 * np.sin(0.05) ** 2),
-        (XXMinusYYGate(0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
+        (XXMinusYYGate(0.2, beta=0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
         (Move(), 4),
     )
     @unpack
