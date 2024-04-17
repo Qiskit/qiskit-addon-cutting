@@ -32,6 +32,14 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
+<<<<<<< HEAD
+=======
+    XXPlusYYGate,
+    XXMinusYYGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
+>>>>>>> 299c849 (Add sampling overhead table and expand/update cutting explanation (#342))
 )
 
 from circuit_knitting.utils.iteration import unique_by_eq
@@ -268,6 +276,8 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        (XXPlusYYGate(0.1), 1 + 4 * np.sin(0.05) + 2 * np.sin(0.05) ** 2),
+        (XXMinusYYGate(0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
         (Move(), 4),
     )
     @unpack
