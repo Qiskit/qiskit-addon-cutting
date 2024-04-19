@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Explanatory material for the circuit cutting module" href="../explanation/index.html" /><link rel="prev" title="Gate Cutting to Reduce Circuit Depth" href="02_gate_cutting_to_reduce_circuit_depth.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Automatically find cuts using CKT" href="04_automatic_cut_finding.html" /><link rel="prev" title="Gate Cutting to Reduce Circuit Depth" href="02_gate_cutting_to_reduce_circuit_depth.html" />
 
-    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
-        <title>Wire Cutting Phrased as a Two-Qubit Move Instruction - Circuit Knitting Toolbox 0.6.0</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>Wire Cutting Phrased as a Two-Qubit Move Instruction - Circuit Knitting Toolbox 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.6.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.6.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -190,6 +190,7 @@
 <li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html">Automatically find cuts using CKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Cutting Explanatory Material</a></li>
@@ -219,6 +220,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.find_cuts.html">circuit_knitting.cutting.find_cuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.OptimizationParameters.html">circuit_knitting.cutting.OptimizationParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.DeviceConstraints.html">circuit_knitting.cutting.DeviceConstraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
@@ -344,7 +348,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;qiskit.circuit.instructionset.InstructionSet at 0x7fb6f8b361f0&gt;
+&lt;qiskit.circuit.instructionset.InstructionSet at 0x7f8640f91340&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -364,16 +368,15 @@
 </div>
 </div>
 </section>
-<section id="Specify-some-observables">
-<h2>Specify some observables<a class="headerlink" href="#Specify-some-observables" title="Link to this heading">¶</a></h2>
-<p>Next, we specify a list of observables whose expectation values we would like to determine.</p>
+<section id="Specify-an-observable">
+<h2>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
-<span class="n">observables_0</span> <span class="o">=</span> <span class="n">PauliList</span><span class="p">([</span><span class="s2">&quot;ZIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIZ&quot;</span><span class="p">])</span>
+<span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIZ&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -418,14 +421,14 @@
 </div>
 </div>
 </section>
-<section id="Create-observables-to-go-with-the-new-circuit">
-<h2>Create observables to go with the new circuit<a class="headerlink" href="#Create-observables-to-go-with-the-new-circuit" title="Link to this heading">¶</a></h2>
-<p>These observables correspond with <code class="docutils literal notranslate"><span class="pre">observables_0</span></code>, but we must account correctly for the extra qubit wire that has been added (i.e., we insert an “I” at index 4). Note that in Qiskit, the string representation qubit-0 corresponds to the right-most Pauli character.</p>
+<section id="Create-observable-to-go-with-the-new-circuit">
+<h2>Create observable to go with the new circuit<a class="headerlink" href="#Create-observable-to-go-with-the-new-circuit" title="Link to this heading">¶</a></h2>
+<p>This observable corresponds with <code class="docutils literal notranslate"><span class="pre">observable</span></code>, but we must account correctly for the extra qubit wire that has been added (i.e., we insert an “I” at index 4). Note that in Qiskit, the string representation qubit-0 corresponds to the right-most Pauli character.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observables_1</span> <span class="o">=</span> <span class="n">PauliList</span><span class="p">([</span><span class="s2">&quot;ZIIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIIZ&quot;</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observable_expanded</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZIIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIIZ&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -440,7 +443,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="n">partition_problem</span>
 
 <span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
-    <span class="n">circuit</span><span class="o">=</span><span class="n">qc_1</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AAAABBBB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observables_1</span>
+    <span class="n">circuit</span><span class="o">=</span><span class="n">qc_1</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AAAABBBB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observable_expanded</span><span class="o">.</span><span class="n">paulis</span>
 <span class="p">)</span>
 <span class="n">subcircuits</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subcircuits</span>
 <span class="n">subobservables</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subobservables</span>
@@ -540,61 +543,78 @@ Sampling overhead: 256.0
 </div>
 </div>
 </section>
-<section id="Run-the-subexperiments-using-the-Qiskit-Sampler-primitive">
-<h2>Run the subexperiments using the Qiskit Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Sampler-primitive" title="Link to this heading">¶</a></h2>
+<section id="Choose-a-backend">
+<h2>Choose a backend<a class="headerlink" href="#Choose-a-backend" title="Link to this heading">¶</a></h2>
+<p>Here we are using a fake backend, which will result in Qiskit Runtime running in local mode (i.e., on a local simulator).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime.fake_provider</span> <span class="kn">import</span> <span class="n">FakeManilaV2</span>
 
-<span class="c1"># Set up a Qiskit Aer Sampler primitive for each circuit partition</span>
-<span class="n">samplers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">label</span><span class="p">:</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">})</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="p">}</span>
-
-<span class="c1"># Retrieve results from each partition&#39;s subexperiments</span>
-<span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">[</span><span class="n">label</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampler</span> <span class="ow">in</span> <span class="n">samplers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<p>To use the Qiskit Runtime Sampler, replace the code above with this commented block.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from qiskit_ibm_runtime import Session, Options, Sampler, QiskitRuntimeService</span>
-<span class="c1"># from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager</span>
-<span class="c1">#</span>
-<span class="c1"># service = QiskitRuntimeService()</span>
-<span class="c1"># backend = service.least_busy(operational=True, simulator=False)</span>
-<span class="c1">#</span>
-<span class="c1"># # Prepare transpiler for target backend</span>
-<span class="c1"># pass_manager = generate_preset_pass_manager(optimization_level=1, backend=backend)</span>
-<span class="c1">#</span>
-<span class="c1"># with Session(backend=backend) as session:</span>
-<span class="c1">#     # Set up Qiskit Runtime Sampler primitives.</span>
-<span class="c1">#     samplers = {</span>
-<span class="c1">#         label: Sampler(Options(execution={&quot;shots&quot;: 2**12})) for label in subexperiments.keys()</span>
-<span class="c1">#     }</span>
-<span class="c1">#</span>
-<span class="c1">#     # Retrieve results from each subexperiment</span>
-<span class="c1">#     results = {</span>
-<span class="c1">#         label: sampler.run(pass_manager.run(subexperiments[label])).result()</span>
-<span class="c1">#         for label, sampler in samplers.items()</span>
-<span class="c1">#     }</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">FakeManilaV2</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 </section>
+<section id="Prepare-the-subexperiments-for-the-backend">
+<h2>Prepare the subexperiments for the backend<a class="headerlink" href="#Prepare-the-subexperiments-for-the-backend" title="Link to this heading">¶</a></h2>
+<p>We must transpile the circuits with our backend as the target before submitting them to Qiskit Runtime.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.transpiler.preset_passmanagers</span> <span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+
+<span class="c1"># Transpile the subexperiments to ISA circuits</span>
+<span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">optimization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+<span class="n">isa_subexperiments</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">partition_subexpts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">partition_subexpts</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">
+<h2>Run the subexperiments using the Qiskit Runtime Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span><span class="p">,</span> <span class="n">Batch</span>
+
+<span class="c1"># Set up a Qiskit Runtime Sampler primitive for each circuit partition</span>
+<span class="n">samplers</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+<span class="c1"># Submit each partition&#39;s subexperiments as a single batch</span>
+<span class="k">with</span> <span class="n">Batch</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">):</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">isa_subexperiments</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">shots</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampler</span> <span class="ow">in</span> <span class="n">samplers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+<span class="c1"># Retrive results</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/runner/work/circuit-knitting-toolbox/circuit-knitting-toolbox/.tox/docs/lib/python3.9/site-packages/qiskit_ibm_runtime/session.py:157: UserWarning: Session is not supported in local testing mode or when using a simulator.
+  warnings.warn(
+</pre></div></div>
+</div>
+<p>To use the Qiskit Runtime Sampler, replace the code above with this commented block.</p>
+</section>
 <section id="Reconstruct-the-expectation-values">
 <h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">¶</a></h2>
-<p>Use the subexperiment results, subobservables, and sampling coefficients to reconstruct the expectation value of the original circuit.</p>
+<p>Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
@@ -604,33 +624,26 @@ Sampling overhead: 256.0
     <span class="n">coefficients</span><span class="p">,</span>
     <span class="n">subobservables</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="n">final_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit">
-<h2>Compare the reconstructed expectation values with the exact expectation values from the original circuit<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit" title="Link to this heading">¶</a></h2>
+<section id="Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable">
+<h2>Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">EstimatorV2</span>
 
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">approximation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">exact_expvals</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">qc_0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">observables_0</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">observables_0</span><span class="p">))</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
-<span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">()</span>
+<span class="n">exact_expval</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">qc_0</span><span class="p">,</span> <span class="n">observable</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Reconstructed expectation values: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Exact expectation values: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Errors in estimation: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Relative errors in estimation: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -640,10 +653,10 @@ Sampling overhead: 256.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation values: [0.15630245, 0.68548346, 0.69142044]
-Exact expectation values: [0.1767767, 0.70710678, 0.70710678]
-Errors in estimation: [-0.02047424, -0.02162333, -0.01568635]
-Relative errors in estimation: [-0.11581981, -0.03058, -0.02218384]
+Reconstructed expectation value: 1.54284137
+Exact expectation value: 1.59099026
+Error in estimation: -0.04814888
+Relative error in estimation: -0.03026347
 </pre></div></div>
 </div>
 </section>
@@ -653,12 +666,12 @@ Relative errors in estimation: [-0.11581981, -0.03058, -0.02218384]
       </div>
       <footer>
         <div class="related-pages">
-          <a class="next-page" href="../explanation/index.html">
+          <a class="next-page" href="04_automatic_cut_finding.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Explanatory material for the circuit cutting module</div>
+                <div class="title">Automatically find cuts using CKT</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -712,16 +725,18 @@ Relative errors in estimation: [-0.11581981, -0.03058, -0.02218384]
             <ul>
 <li><a class="reference internal" href="#">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a><ul>
 <li><a class="reference internal" href="#Create-a-circuit-to-cut">Create a circuit to cut</a></li>
-<li><a class="reference internal" href="#Specify-some-observables">Specify some observables</a></li>
+<li><a class="reference internal" href="#Specify-an-observable">Specify an observable</a></li>
 <li><a class="reference internal" href="#Create-a-new-circuit-where-Move-instructions-have-been-placed-at-the-desired-cut-locations">Create a new circuit where <code class="docutils literal notranslate"><span class="pre">Move</span></code> instructions have been placed at the desired cut locations</a></li>
-<li><a class="reference internal" href="#Create-observables-to-go-with-the-new-circuit">Create observables to go with the new circuit</a></li>
+<li><a class="reference internal" href="#Create-observable-to-go-with-the-new-circuit">Create observable to go with the new circuit</a></li>
 <li><a class="reference internal" href="#Separate-the-circuit-and-observables">Separate the circuit and observables</a></li>
 <li><a class="reference internal" href="#Visualize-the-decomposed-problem">Visualize the decomposed problem</a></li>
 <li><a class="reference internal" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts">Calculate the sampling overhead for the chosen cuts</a></li>
 <li><a class="reference internal" href="#Generate-the-subexperiments-to-run-on-the-backend">Generate the subexperiments to run on the backend</a></li>
-<li><a class="reference internal" href="#Run-the-subexperiments-using-the-Qiskit-Sampler-primitive">Run the subexperiments using the Qiskit Sampler primitive</a></li>
+<li><a class="reference internal" href="#Choose-a-backend">Choose a backend</a></li>
+<li><a class="reference internal" href="#Prepare-the-subexperiments-for-the-backend">Prepare the subexperiments for the backend</a></li>
+<li><a class="reference internal" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">Run the subexperiments using the Qiskit Runtime Sampler primitive</a></li>
 <li><a class="reference internal" href="#Reconstruct-the-expectation-values">Reconstruct the expectation values</a></li>
-<li><a class="reference internal" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-values-from-the-original-circuit">Compare the reconstructed expectation values with the exact expectation values from the original circuit</a></li>
+<li><a class="reference internal" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable">Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable</a></li>
 </ul>
 </li>
 </ul>
@@ -735,7 +750,7 @@ Relative errors in estimation: [-0.11581981, -0.03058, -0.02218384]
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

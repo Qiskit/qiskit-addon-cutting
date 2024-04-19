@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="How to place wire cuts using a single-qubit CutWire instruction" href="how_to_specify_cut_wires.html" /><link rel="prev" title="How to generate exact quasiprobability distributions from Sampler" href="how_to_generate_exact_quasi_dists_from_sampler.html" />
 
-    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
-        <title>How to generate exact sampling coefficients - Circuit Knitting Toolbox 0.6.0</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>How to generate exact sampling coefficients - Circuit Knitting Toolbox 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.6.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.6.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -190,6 +190,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html">Automatically find cuts using CKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Cutting Explanatory Material</a></li>
@@ -219,6 +220,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.find_cuts.html">circuit_knitting.cutting.find_cuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.OptimizationParameters.html">circuit_knitting.cutting.OptimizationParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.DeviceConstraints.html">circuit_knitting.cutting.DeviceConstraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
@@ -314,7 +318,7 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EfficientSU2</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">partition_problem</span><span class="p">,</span>
@@ -329,7 +333,7 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">circuit</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">([</span><span class="mf">0.8</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">parameters</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">observables</span> <span class="o">=</span> <span class="n">PauliList</span><span class="p">([</span><span class="s2">&quot;ZZZZ&quot;</span><span class="p">])</span>
+<span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZZZZ&quot;</span><span class="p">])</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -348,7 +352,7 @@
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
-    <span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AABB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observables</span>
+    <span class="n">circuit</span><span class="o">=</span><span class="n">circuit</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AABB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observable</span><span class="o">.</span><span class="n">paulis</span>
 <span class="p">)</span>
 <span class="n">subcircuits</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subcircuits</span>
 <span class="n">bases</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">bases</span>
@@ -638,7 +642,7 @@ Number of samples needed to retrieve exact weights: 36.0
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

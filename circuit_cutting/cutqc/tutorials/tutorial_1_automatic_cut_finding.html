@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="CutQC Tutorial 2: Circuit Cutting with Manual Wire Cutting" href="tutorial_2_manual_cutting.html" /><link rel="prev" title="CutQC (legacy circuit cutting implementation)" href="../index.html" />
 
-    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
-        <title>CutQC Tutorial 1: Circuit Cutting with Automatic Cut Finding - Circuit Knitting Toolbox 0.6.0</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>CutQC Tutorial 1: Circuit Cutting with Automatic Cut Finding - Circuit Knitting Toolbox 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.6.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.6.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -190,6 +190,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/04_automatic_cut_finding.html">Automatically find cuts using CKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../explanation/index.html">Cutting Explanatory Material</a></li>
@@ -219,6 +220,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.find_cuts.html">circuit_knitting.cutting.find_cuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.OptimizationParameters.html">circuit_knitting.cutting.OptimizationParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.DeviceConstraints.html">circuit_knitting.cutting.DeviceConstraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
@@ -306,6 +310,7 @@
         <article role="main">
           <section id="CutQC-Tutorial-1:-Circuit-Cutting-with-Automatic-Cut-Finding">
 <h1>CutQC Tutorial 1: Circuit Cutting with Automatic Cut Finding<a class="headerlink" href="#CutQC-Tutorial-1:-Circuit-Cutting-with-Automatic-Cut-Finding" title="Link to this heading">¶</a></h1>
+<p><strong>NOTE: CutQC is deprecated and will be removed no sooner than Circuit Knitting Toolbox v0.8.0. The circuit cutting workflow in ``circuit_knitting.cutting`` now implements similar and improved functionalities, which will be maintained going forward.</strong></p>
 <p>Circuit cutting is a technique to decompose a quantum circuit into smaller circuits, whose results can be knitted together to reconstruct the original circuit output.</p>
 <p>The circuit knitting toolbox implements a wire cutting method presented in <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a> (Tang et al.). This method allows a circuit wire to be cut such that the generated subcircuits are amended by measurements in the Pauli bases and by state preparation of four Pauli eigenstates (see Fig. 4 of <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a>).</p>
 <p>This wire cutting technique is comprised of the following basic steps:</p>
@@ -318,7 +323,7 @@
 <h2>Create a quantum circuit with Qiskit<a class="headerlink" href="#Create-a-quantum-circuit-with-Qiskit" title="Link to this heading">¶</a></h2>
 <p>In this case, we’ll create a hardware-efficient circuit (<code class="docutils literal notranslate"><span class="pre">EfficientSU2</span></code> from the Qiskit circuit library) with two (linear) entangling layers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -341,7 +346,7 @@
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -359,7 +364,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">num_subcircuits=[2]</span></code>: A list of the number of subcircuits to try, in this case 2 subcircuits</p></li>
 </ul>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
@@ -384,7 +389,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">classical_cost</span></code>: the final value of the objective function used to find optimal cut(s). The objective function represents the postprocessing cost to reconstruct the original circuit output and is set to be the number of floating-point multiplications involved in the reconstruction. This quantity is also returned in the case of <a class="reference internal" href="tutorial_2_manual_cutting.html"><span class="doc">manual wire cutting</span></a>. See <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">Section 4.1.4 of CutQC</a>.</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cuts</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -401,7 +406,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 <p><strong>The two subcircuits produced:</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualize the first subcircuit</span>
@@ -410,7 +415,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -418,7 +423,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualize the second subcircuit</span>
@@ -427,7 +432,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -440,7 +445,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 <p><strong>Set up the Qiskit Runtime Service</strong></p>
 <p>The Qiskit Runtime Service provides access to Qiskit Runtime Primitives and quantum backends. See the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/">Qiskit Runtime documentation</a> for more information. Alternatively, if a Qiskit Runtime Service is not passed, then a local statevector simulator will be used with the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/primitives">Qiskit Primitives</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">QiskitRuntimeService</span>  <span class="c1"># noqa: F401</span>
@@ -457,7 +462,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 <p>The wire cutter tool uses a <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> primitive to evaluate the probabilities of each subcircuit. Here, we configure the options for the Qiskit Runtime Sampler and specify the backend(s) to be used to evaluate the subcircuits. Backends could be <a class="reference external" href="https://quantum-computing.ibm.com/services/resources?tab=systems">simulator(s) and/or quantum device(s)</a>. In this tutorial, two local cores will be used to support each of the parallel backend threads we’ll specify below.</p>
 <p>If no service was set up, the <code class="docutils literal notranslate"><span class="pre">backend_names</span></code> argument will be ignored, and Qiskit Primitives will be used with statevector simulator.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">Options</span>
@@ -471,8 +476,8 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 </div>
 <p><strong>Evaluate the subcircuits on the backend(s)</strong></p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting.cutqc</span> <span class="kn">import</span> <span class="n">evaluate_subcircuits</span>
@@ -481,17 +486,26 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 
 <span class="c1"># Uncomment the following lines to instead use Qiskit Runtime Service as configured above.</span>
 <span class="c1"># subcircuit_instance_probabilities = evaluate_subcircuits(cuts,</span>
-<span class="c1">#                                                          service_args=service.active_account(),</span>
+<span class="c1">#                                                          service=service,</span>
 <span class="c1">#                                                          backend_names=backend_names,</span>
 <span class="c1">#                                                          options=options,</span>
 <span class="c1">#                                                         )</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2967/4196057829.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting.evaluate_subcircuits()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
+  subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
+</pre></div></div>
+</div>
 <p><strong>Inspecting the subcircuit results</strong></p>
 <p>In this case, the original circuit was cut 2 times (we can also get this info from the previous step: <code class="docutils literal notranslate"><span class="pre">cuts['num_cuts']</span></code>):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of subcircuits: &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">subcircuit_instance_probabilities</span><span class="p">))</span>
@@ -509,7 +523,7 @@ Number of subcircuits:  2
 <p>From these two wire cuts, there are <span class="math notranslate nohighlight">\(4^2=16\)</span> variants of the first subcircuit corresponding to the combination of measurement bases: <span class="math notranslate nohighlight">\(P_i\otimes P_j\)</span>, for the Paulis <span class="math notranslate nohighlight">\(P_i \in \{I, X, Y, Z \}\)</span>. And there are <span class="math notranslate nohighlight">\(4^2=16\)</span> variants of the second subcircuit corresponding to the combination of initialization states: <span class="math notranslate nohighlight">\(|s_i\rangle\otimes|s_j\rangle\)</span>, where <span class="math notranslate nohighlight">\(|s_i\rangle \in \{ |0\rangle, |1\rangle, |+\rangle |+i\rangle\}\)</span>.</p>
 <p>Note that some subcircuit probabilities returned by the evaluate step can be negative (and not sum to unity). This is because the raw probabilities from subcircuits must be modified to account for the measurement bases of ancillary qubits. See Section 3 of <a class="reference external" href="https://doi.org/10.1145/3445814.3446758">CutQC</a> for more details.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
@@ -532,7 +546,7 @@ Number of variants of 2nd subcircuit:  16
 </div>
 <p>The first subcircuit has two ancillary qubits (induced by the two wire cuts) that do not appear in the original circuit. This means that the first subcircuit has <span class="math notranslate nohighlight">\(5-2=3\)</span> qubits from the original circuit and a probability distribution of size <span class="math notranslate nohighlight">\(2^3=8\)</span>. The second subcircuit has 5 qubits, all from the original circuit, and so its probability distribution is size <span class="math notranslate nohighlight">\(2^5=32\)</span>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
@@ -560,7 +574,7 @@ Size of 2nd subcircuit probability distribution:  32
 <h2>Reconstruct the full circuit output<a class="headerlink" href="#Reconstruct-the-full-circuit-output" title="Link to this heading">¶</a></h2>
 <p>Next, the results of the subcircuit experiments are classically postprocessed to reconstruct the original circuit’s full probability distribution.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
@@ -577,7 +591,7 @@ Size of 2nd subcircuit probability distribution:  32
 </div>
 <p><strong>Here are the reconstructed probabilities for the original 8-qubit circuit:</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
@@ -598,8 +612,8 @@ Size of reconstructed probability distribution:  256
 <section id="Verify-the-results">
 <h2>Verify the results<a class="headerlink" href="#Verify-the-results" title="Link to this heading">¶</a></h2>
 <p>If the original circuit is small enough, we can use a statevector simulator to check the results of cutting against the original circuit’s exact probability distribution (ground truth).</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting.cutqc</span> <span class="kn">import</span> <span class="n">verify</span>
@@ -608,10 +622,19 @@ Size of reconstructed probability distribution:  256
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2967/3419935587.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting_verification.verify()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
+  metrics, exact_probabilities = verify(circuit, reconstructed_probabilities)
+</pre></div></div>
+</div>
 <p><strong>The verify step includes several metrics</strong></p>
 <p>For example, the chi square loss is computed. Since we’re using the Qiskit Sampler with statevector simulator, we expect the reconstructed distributed to exactly match the ground truth. More info about each metric can be found in the <a class="reference external" href="https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/circuit_knitting/utils/metrics.py">utils metrics file</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metrics</span>
@@ -619,27 +642,27 @@ Size of reconstructed probability distribution:  256
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {&#39;nearest&#39;: {&#39;chi2&#39;: 0,
-  &#39;Mean Squared Error&#39;: 8.13178352181795e-35,
-  &#39;Mean Absolute Percentage Error&#39;: 4.4880309854901524e-10,
-  &#39;Cross Entropy&#39;: 3.564551116068219,
-  &#39;HOP&#39;: 0.9945381353717198},
+  &#39;Mean Squared Error&#39;: 1.8155290178685046e-34,
+  &#39;Mean Absolute Percentage Error&#39;: 7.550336449277775e-10,
+  &#39;Cross Entropy&#39;: 3.5645511160682197,
+  &#39;HOP&#39;: 0.9945381353717202},
  &#39;naive&#39;: {&#39;chi2&#39;: 0,
-  &#39;Mean Squared Error&#39;: 3.7794080473092745e-35,
-  &#39;Mean Absolute Percentage Error&#39;: 4.4880563544629694e-10,
-  &#39;Cross Entropy&#39;: 3.564551116068219,
-  &#39;HOP&#39;: 0.99453813537172}}
+  &#39;Mean Squared Error&#39;: 2.9965472816547853e-34,
+  &#39;Mean Absolute Percentage Error&#39;: 7.550351082551326e-10,
+  &#39;Cross Entropy&#39;: 3.5645511160682206,
+  &#39;HOP&#39;: 0.9945381353717199}}
 </pre></div></div>
 </div>
 <p><strong>Visualize both distributions</strong></p>
 <p>If we calculated the ground truth above, we can visualize a comparison to the reconstructed probabilities</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
@@ -676,7 +699,7 @@ Size of reconstructed probability distribution:  256
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -769,7 +792,7 @@ Size of reconstructed probability distribution:  256
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>

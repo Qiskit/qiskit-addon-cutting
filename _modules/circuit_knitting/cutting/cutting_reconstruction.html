@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
-        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.6.0</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>circuit_knitting.cutting.cutting_reconstruction - Circuit Knitting Toolbox 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.6.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.6.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -189,6 +189,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../circuit_cutting/tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../circuit_cutting/tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_cutting/tutorials/04_automatic_cut_finding.html">Automatically find cuts using CKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../circuit_cutting/explanation/index.html">Cutting Explanatory Material</a></li>
@@ -218,6 +219,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.find_cuts.html">circuit_knitting.cutting.find_cuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.OptimizationParameters.html">circuit_knitting.cutting.OptimizationParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.DeviceConstraints.html">circuit_knitting.cutting.DeviceConstraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
@@ -314,7 +318,10 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">SamplerResult</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SamplerResult</span><span class="p">,</span>  <span class="c1"># for SamplerV1</span>
+    <span class="n">PrimitiveResult</span><span class="p">,</span>  <span class="c1"># for SamplerV2</span>
+<span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">..utils.observable_grouping</span> <span class="kn">import</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">ObservableCollection</span>
 <span class="kn">from</span> <span class="nn">..utils.bitwise</span> <span class="kn">import</span> <span class="n">bit_count</span>
@@ -326,7 +333,11 @@
 <div class="viewcode-block" id="reconstruct_expectation_values">
 <a class="viewcode-back" href="../../../stubs/circuit_knitting.cutting.reconstruct_expectation_values.html#circuit_knitting.cutting.reconstruct_expectation_values">[docs]</a>
 <span class="k">def</span> <span class="nf">reconstruct_expectation_values</span><span class="p">(</span>
-    <span class="n">results</span><span class="p">:</span> <span class="n">SamplerResult</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">],</span>
+    <span class="n">results</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">SamplerResult</span>
+        <span class="o">|</span> <span class="n">PrimitiveResult</span>
+        <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span> <span class="o">|</span> <span class="n">PrimitiveResult</span><span class="p">]</span>
+    <span class="p">),</span>
     <span class="n">coefficients</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]],</span>
     <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
@@ -367,9 +378,11 @@
 <span class="sd">        ValueError: ``observables`` and ``results`` are of incompatible types.</span>
 <span class="sd">        ValueError: An input observable has a phase not equal to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">results</span><span class="p">,</span> <span class="p">(</span><span class="n">SamplerResult</span><span class="p">,</span> <span class="n">PrimitiveResult</span><span class="p">)</span>
+    <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;If observables is a PauliList, results must be a SamplerResult instance.&quot;</span>
+            <span class="s2">&quot;If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance.&quot;</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observables</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -383,7 +396,7 @@
         <span class="n">subobservables_by_subsystem</span> <span class="o">=</span> <span class="n">decompose_observables</span><span class="p">(</span>
             <span class="n">observables</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">observables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="p">)</span>
-        <span class="n">results_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
+        <span class="n">results_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">SamplerResult</span> <span class="o">|</span> <span class="n">PrimitiveResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
         <span class="n">expvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">observables</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
@@ -406,10 +419,28 @@
             <span class="n">subsystem_expvals</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">commuting_observables</span><span class="p">))</span> <span class="k">for</span> <span class="n">cog</span> <span class="ow">in</span> <span class="n">so</span><span class="o">.</span><span class="n">groups</span>
             <span class="p">]</span>
+            <span class="n">current_result</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">cog</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">):</span>
-                <span class="n">quasi_probs</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quasi_prob</span> <span class="ow">in</span> <span class="n">quasi_probs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span><span class="n">cog</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">so</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_result</span><span class="p">,</span> <span class="n">SamplerResult</span><span class="p">):</span>
+                    <span class="c1"># SamplerV1 provides a SamplerResult</span>
+                    <span class="n">quasi_probs</span> <span class="o">=</span> <span class="n">current_result</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">quasi_prob</span> <span class="ow">in</span> <span class="n">quasi_probs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quasi_prob</span> <span class="o">*</span> <span class="n">_process_outcome</span><span class="p">(</span>
+                            <span class="n">cog</span><span class="p">,</span> <span class="n">outcome</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># SamplerV2 provides a PrimitiveResult</span>
+                    <span class="n">data_pub</span> <span class="o">=</span> <span class="n">current_result</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                    <span class="n">obs_array</span> <span class="o">=</span> <span class="n">data_pub</span><span class="o">.</span><span class="n">observable_measurements</span><span class="o">.</span><span class="n">array</span>
+                    <span class="n">qpd_array</span> <span class="o">=</span> <span class="n">data_pub</span><span class="o">.</span><span class="n">qpd_measurements</span><span class="o">.</span><span class="n">array</span>
+                    <span class="n">shots</span> <span class="o">=</span> <span class="n">qpd_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shots</span><span class="p">):</span>
+                        <span class="n">obs_outcomes</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">obs_array</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+                        <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">qpd_array</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+                        <span class="n">subsystem_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">shots</span><span class="p">)</span> <span class="o">*</span> <span class="n">_process_outcome_v2</span><span class="p">(</span>
+                            <span class="n">cog</span><span class="p">,</span> <span class="n">obs_outcomes</span><span class="p">,</span> <span class="n">qpd_outcomes</span>
+                        <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">subobservable</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subobservables_by_subsystem</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
                 <span class="n">current_expvals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
@@ -440,19 +471,38 @@
     <span class="n">num_meas_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_get_pauli_indices</span><span class="p">(</span><span class="n">cog</span><span class="p">))</span>
 
     <span class="n">outcome</span> <span class="o">=</span> <span class="n">_outcome_to_int</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-    <span class="n">meas_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_meas_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">obs_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">num_meas_bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">qpd_outcomes</span> <span class="o">=</span> <span class="n">outcome</span> <span class="o">&gt;&gt;</span> <span class="n">num_meas_bits</span>
 
+    <span class="k">return</span> <span class="n">_process_outcome_v2</span><span class="p">(</span><span class="n">cog</span><span class="p">,</span> <span class="n">obs_outcomes</span><span class="p">,</span> <span class="n">qpd_outcomes</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_process_outcome_v2</span><span class="p">(</span>
+    <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">obs_outcomes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">qpd_outcomes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process a single outcome of a QPD experiment with observables.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cog: The observable set being measured by the current experiment</span>
+<span class="sd">        obs_outcomes: An integer containing the outcome bits of the ``observable_measurements`` register</span>
+<span class="sd">        qpd_outcomes: An integer containing the outcome bits of the ``qpd_measurements`` register</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A 1D array of the observable measurements.  The elements of</span>
+<span class="sd">        this vector correspond to the elements of ``cog.commuting_observables``,</span>
+<span class="sd">        and each result will be either +1 or -1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># qpd_factor will be -1 or +1, depending on the overall parity of qpd</span>
     <span class="c1"># measurements.</span>
     <span class="n">qpd_factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">bit_count</span><span class="p">(</span><span class="n">qpd_outcomes</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="n">rv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">pauli_bitmasks</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cog</span><span class="o">.</span><span class="n">pauli_bitmasks</span><span class="p">):</span>
-        <span class="c1"># meas will be -1 or +1, depending on the measurement</span>
+        <span class="c1"># obs will be -1 or +1, depending on the measurement</span>
         <span class="c1"># of the current operator.</span>
-        <span class="n">meas</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">bit_count</span><span class="p">(</span><span class="n">meas_outcomes</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">rv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">qpd_factor</span> <span class="o">*</span> <span class="n">meas</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">bit_count</span><span class="p">(</span><span class="n">obs_outcomes</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">qpd_factor</span> <span class="o">*</span> <span class="n">obs</span>
 
     <span class="k">return</span> <span class="n">rv</span>
 
@@ -505,7 +555,7 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/thebelab-helper.js"></script>

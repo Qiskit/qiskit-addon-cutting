@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="CutQC (legacy circuit cutting implementation)" href="../cutqc/index.html" /><link rel="prev" title="How to generate exact sampling coefficients" href="how_to_generate_exact_sampling_coefficients.html" />
 
-    <!-- Generated with Sphinx 7.3.6 and Furo 2024.01.29 -->
-        <title>How to place wire cuts using a single-qubit CutWire instruction - Circuit Knitting Toolbox 0.6.0</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
+        <title>How to place wire cuts using a single-qubit CutWire instruction - Circuit Knitting Toolbox 0.7.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -146,7 +146,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.6.0</div></a>
+      <a href="../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -173,7 +173,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.6.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -190,6 +190,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html">Automatically find cuts using CKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Cutting Explanatory Material</a></li>
@@ -219,6 +220,9 @@
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.PartitionedCuttingProblem.html">circuit_knitting.cutting.PartitionedCuttingProblem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.CutWire.html">circuit_knitting.cutting.instructions.CutWire</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.instructions.Move.html">circuit_knitting.cutting.instructions.Move</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.find_cuts.html">circuit_knitting.cutting.find_cuts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.OptimizationParameters.html">circuit_knitting.cutting.OptimizationParameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.DeviceConstraints.html">circuit_knitting.cutting.DeviceConstraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.QPDBasis.html">circuit_knitting.cutting.qpd.QPDBasis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.BaseQPDGate.html">circuit_knitting.cutting.qpd.BaseQPDGate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../stubs/circuit_knitting.cutting.qpd.SingleQubitQPDGate.html">circuit_knitting.cutting.qpd.SingleQubitQPDGate</a></li>
@@ -313,8 +317,8 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
-<span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span><span class="p">,</span> <span class="n">Sampler</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">EstimatorV2</span><span class="p">,</span> <span class="n">SamplerV2</span>
 
 <span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">partition_problem</span><span class="p">,</span>
@@ -381,14 +385,14 @@
 </div>
 </div>
 </section>
-<section id="Specify-some-observables">
-<h2>Specify some observables<a class="headerlink" href="#Specify-some-observables" title="Link to this heading">¶</a></h2>
-<p>These observables have 7 qubits, just like the original circuit.</p>
+<section id="Specify-an-observable">
+<h2>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h2>
+<p>This observable has 7 qubits, just like the original circuit.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observables_0</span> <span class="o">=</span> <span class="n">PauliList</span><span class="p">([</span><span class="s2">&quot;ZIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIZ&quot;</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIZ&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -415,16 +419,16 @@
 </div>
 </div>
 </section>
-<section id="Update-the-observables">
-<h2>Update the observables<a class="headerlink" href="#Update-the-observables" title="Link to this heading">¶</a></h2>
-<p>The transformed circuit contains additional qubits (one for each <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction), so the observables must be updated for the new circuit. This can be done using the <code class="docutils literal notranslate"><span class="pre">expand_observables</span></code> function.</p>
+<section id="Update-the-observable-terms-to-account-for-the-extra-qubit">
+<h2>Update the observable terms to account for the extra qubit<a class="headerlink" href="#Update-the-observable-terms-to-account-for-the-extra-qubit" title="Link to this heading">¶</a></h2>
+<p>The transformed circuit contains additional qubits (one for each <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction), so the observables must be updated for the new circuit. This can be done using the <code class="docutils literal notranslate"><span class="pre">expand_observables</span></code> function. Since the observable coefficients are ignored until reconstruction of the final expectation value, the input and output types of the observables for <code class="docutils literal notranslate"><span class="pre">expand_observables</span></code> are <code class="docutils literal notranslate"><span class="pre">PauliList</span></code>s.</p>
 <p>The resulting observables have 9 qubits, just like the transformed circuit.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observables_1</span> <span class="o">=</span> <span class="n">expand_observables</span><span class="p">(</span><span class="n">observables_0</span><span class="p">,</span> <span class="n">qc_0</span><span class="p">,</span> <span class="n">qc_1</span><span class="p">)</span>
-<span class="n">observables_1</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">observable_expanded_paulis</span> <span class="o">=</span> <span class="n">expand_observables</span><span class="p">(</span><span class="n">observable</span><span class="o">.</span><span class="n">paulis</span><span class="p">,</span> <span class="n">qc_0</span><span class="p">,</span> <span class="n">qc_1</span><span class="p">)</span>
+<span class="n">observable_expanded_paulis</span>
 </pre></div>
 </div>
 </div>
@@ -445,7 +449,9 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span><span class="n">circuit</span><span class="o">=</span><span class="n">qc_1</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observables_1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="o">=</span><span class="n">qc_1</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observable_expanded_paulis</span>
+<span class="p">)</span>
 <span class="n">subcircuits</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subcircuits</span>
 <span class="n">subobservables</span> <span class="o">=</span> <span class="n">partitioned_problem</span><span class="o">.</span><span class="n">subobservables</span>
 </pre></div>
@@ -525,9 +531,9 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">})</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">()</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiment</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiment</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subexperiment</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
 <span class="p">}</span>
 </pre></div>
@@ -542,6 +548,7 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
     <span class="n">coefficients</span><span class="p">,</span>
     <span class="n">subobservables</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="n">final_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -549,21 +556,15 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">(</span><span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">approximation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">exact_expvals</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">qc_0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">observables_0</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">observables_0</span><span class="p">))</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">()</span>
+<span class="n">exact_expval</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">qc_0</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="s2">&quot;cut_wire&quot;</span><span class="p">),</span> <span class="n">observable</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Reconstructed expectation values: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Exact expectation values: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Errors in estimation: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Relative errors in estimation: </span><span class="si">{</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">reconstructed_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expvals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exact_expvals</span><span class="p">))]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -573,10 +574,10 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation values: [0.17901284, 0.70971423, 0.68885177]
-Exact expectation values: [0.1767767, 0.70710678, 0.70710678]
-Errors in estimation: [0.00223614, 0.00260745, -0.01825501]
-Relative errors in estimation: [0.01264952, 0.00368749, -0.02581648]
+Reconstructed expectation value: 1.6174469
+Exact expectation value: 1.59099026
+Error in estimation: 0.02645664
+Relative error in estimation: 0.01662904
 </pre></div></div>
 </div>
 </section>
@@ -646,9 +647,9 @@ Relative errors in estimation: [0.01264952, 0.00368749, -0.02581648]
 <li><a class="reference internal" href="#">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a><ul>
 <li><a class="reference internal" href="#Prepare-a-circuit-for-cutting">Prepare a circuit for cutting</a></li>
 <li><a class="reference internal" href="#Recover-the-uncut-circuit">Recover the uncut circuit</a></li>
-<li><a class="reference internal" href="#Specify-some-observables">Specify some observables</a></li>
+<li><a class="reference internal" href="#Specify-an-observable">Specify an observable</a></li>
 <li><a class="reference internal" href="#Transform-cuts-to-moves">Transform cuts to moves</a></li>
-<li><a class="reference internal" href="#Update-the-observables">Update the observables</a></li>
+<li><a class="reference internal" href="#Update-the-observable-terms-to-account-for-the-extra-qubit">Update the observable terms to account for the extra qubit</a></li>
 <li><a class="reference internal" href="#Separate-the-circuit-and-observables">Separate the circuit and observables</a></li>
 <li><a class="reference internal" href="#Visualize-the-decomposed-problem">Visualize the decomposed problem</a></li>
 <li><a class="reference internal" href="#Generate-and-run-the-cutting-experiments;-reconstruct-and-compare-against-uncut-expectation-values">Generate and run the cutting experiments; reconstruct and compare against uncut expectation values</a></li>
@@ -665,7 +666,7 @@ Relative errors in estimation: [0.01264952, 0.00368749, -0.02581648]
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>

@@ -1,0 +1,28 @@
+﻿circuit\_knitting.cutting.DeviceConstraints
+===========================================
+
+.. currentmodule:: circuit_knitting.cutting
+
+.. autoclass:: DeviceConstraints
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DeviceConstraints.__init__
+      ~DeviceConstraints.get_qpu_width
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DeviceConstraints.qubits_per_subcircuit
+   
+   
