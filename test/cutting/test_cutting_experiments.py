@@ -15,7 +15,7 @@ import unittest
 import pytest
 import numpy as np
 from qiskit.quantum_info import PauliList, Pauli
-from qiskit.circuit import QuantumCircuit
+from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library.standard_gates import CXGate
 
 from circuit_knitting.cutting.qpd import (
@@ -30,6 +30,8 @@ from circuit_knitting.cutting import partition_problem
 from circuit_knitting.cutting.cutting_experiments import (
     _append_measurement_register,
     _append_measurement_circuit,
+    _remove_final_resets,
+    _consolidate_resets,
 )
 
 
@@ -219,3 +221,36 @@ class TestCuttingExperiments(unittest.TestCase):
                 e_info.value.args[0]
                 == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
+
+    def test_consolidate_double_reset(self):
+        """Consolidate a pair of resets.
+        qr0:--|0>--|0>--   ==>    qr0:--|0>--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.reset(qr)
+
+        _consolidate_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_two_resets(self):
+        """Remove two final resets
+        qr0:--[H]-|0>-|0>--   ==>    qr0:--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(qr[0])
+        circuit.reset(qr[0])
+        circuit.reset(qr[0])
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr[0])
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
