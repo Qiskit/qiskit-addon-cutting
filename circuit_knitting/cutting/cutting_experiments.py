@@ -13,18 +13,15 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from collections import defaultdict
 from collections.abc import Sequence, Hashable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.transpiler import PassManager
-from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
-from qiskit.passmanager.flow_controllers import DoWhileController
 
 from ..utils.iteration import strict_zip
-from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
 from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
@@ -172,20 +169,11 @@ def generate_cutting_experiments(
     # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.
     # While we are at it, we also consolidate each run of multiple resets
     # (which can arise when re-using qubits) into a single reset.
-    pass_manager = PassManager()
-    passes = [
-        RemoveResetInZeroState(),
-        RemoveFinalReset(),
-        ConsolidateResets(),
-        DAGFixedPoint(),
-    ]
-    pass_manager.append(
-        DoWhileController(
-            passes, do_while=lambda property_set: not property_set["dag_fixed_point"]
-        )
-    )
-    for label, subexperiments in subexperiments_dict.items():
-        subexperiments_dict[label] = pass_manager.run(subexperiments)
+    for subexperiments in subexperiments_dict.values():
+        for circ in subexperiments:
+            _remove_resets_in_zero_state(circ)
+            _remove_final_resets(circ)
+            _consolidate_resets(circ)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]] = (
@@ -389,3 +377,58 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
     if not pauli_indices:
         pauli_indices = [0]
     return pauli_indices
+
+
+def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
+    """Consolidate redundant resets into a single reset."""
+    if not inplace: # pragma: no cover
+        circuit = deepcopy(circuit)
+    resets = {i: False for i in range(circuit.num_qubits)}
+    for inst in circuit.data[:]:
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if resets[qargs[0]]:
+                circuit.data.remove(inst)
+            else:
+                resets[qargs[0]] = True
+        else:
+            for q in qargs:
+                resets[q] = False
+
+    return circuit
+
+
+def _remove_resets_in_zero_state(
+    circuit: QuantumCircuit, inplace=True
+) -> QuantumCircuit:
+    """Remove resets if they are the first instruction on a qubit."""
+    if not inplace: # pragma: no cover
+        circuit = deepcopy(circuit)
+    active_qubits = set()
+    for inst in circuit.data[:]:
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if qargs[0] not in active_qubits:
+                circuit.data.remove(inst)
+        else:
+            for q in qargs:
+                active_qubits.add(q)
+
+    return circuit
+
+
+def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
+    """Remove resets if they are the final instruction on a qubit."""
+    if not inplace: # pragma: no cover
+        circuit = deepcopy(circuit)
+    qubit_ended = set([i for i in range(circuit.num_qubits)])
+    for inst in reversed(circuit.data[:]):
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if qargs[0] in qubit_ended:
+                circuit.data.remove(inst)
+        else:
+            for q in qargs:
+                qubit_ended.discard(q)
+
+    return circuit
