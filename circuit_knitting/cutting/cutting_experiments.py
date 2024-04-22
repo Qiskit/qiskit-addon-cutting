@@ -383,7 +383,11 @@ def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit
     """Consolidate redundant resets into a single reset."""
     if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
+
+    # Keep up with whether the previous instruction on a given qubit was a reset
     resets = {i: False for i in range(circuit.num_qubits)}
+
+    # Remove resets which are immediately following other resets
     for inst in circuit.data[:]:
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
         if inst.operation.name == "reset":
@@ -404,6 +408,8 @@ def _remove_resets_in_zero_state(
     """Remove resets if they are the first instruction on a qubit."""
     if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
+
+    # Keep up with which qubits have at least one non-reset instruction
     active_qubits = set()
     for inst in circuit.data[:]:
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
@@ -421,6 +427,9 @@ def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircui
     """Remove resets if they are the final instruction on a qubit."""
     if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
+
+    # Keep up with whether we are at the end of a qubit
+    # We iterate in reverse, so all qubits begin in the "end" state
     qubit_ended = set([i for i in range(circuit.num_qubits)])
     for inst in reversed(circuit.data[:]):
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
