@@ -381,7 +381,7 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
 
 def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
     """Consolidate redundant resets into a single reset."""
-    if not inplace: # pragma: no cover
+    if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
     resets = {i: False for i in range(circuit.num_qubits)}
     for inst in circuit.data[:]:
@@ -402,7 +402,7 @@ def _remove_resets_in_zero_state(
     circuit: QuantumCircuit, inplace=True
 ) -> QuantumCircuit:
     """Remove resets if they are the first instruction on a qubit."""
-    if not inplace: # pragma: no cover
+    if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
     active_qubits = set()
     for inst in circuit.data[:]:
@@ -419,7 +419,7 @@ def _remove_resets_in_zero_state(
 
 def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
     """Remove resets if they are the final instruction on a qubit."""
-    if not inplace: # pragma: no cover
+    if not inplace:  # pragma: no cover
         circuit = deepcopy(circuit)
     qubit_ended = set([i for i in range(circuit.num_qubits)])
     for inst in reversed(circuit.data[:]):
