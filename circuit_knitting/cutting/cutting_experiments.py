@@ -379,7 +379,7 @@ def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit
         circuit = deepcopy(circuit)
 
     # Keep up with whether the previous instruction on a given qubit was a reset
-    resets = {i: False for i in range(circuit.num_qubits)}
+    resets = [False] * circuit.num_qubits
 
     # Remove resets which are immediately following other resets
     remove_ids = []
