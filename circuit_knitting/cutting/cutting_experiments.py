@@ -388,16 +388,20 @@ def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit
     resets = {i: False for i in range(circuit.num_qubits)}
 
     # Remove resets which are immediately following other resets
-    for inst in circuit.data[:]:
+    remove_ids = []
+    for i, inst in enumerate(circuit.data):
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
         if inst.operation.name == "reset":
             if resets[qargs[0]]:
-                circuit.data.remove(inst)
+                remove_ids.append(i)
             else:
                 resets[qargs[0]] = True
         else:
             for q in qargs:
                 resets[q] = False
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
 
     return circuit
 
@@ -411,14 +415,18 @@ def _remove_resets_in_zero_state(
 
     # Keep up with which qubits have at least one non-reset instruction
     active_qubits = set()
-    for inst in circuit.data[:]:
+    remove_ids = []
+    for i, inst in enumerate(circuit.data):
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
         if inst.operation.name == "reset":
             if qargs[0] not in active_qubits:
-                circuit.data.remove(inst)
+                remove_ids.append(i)
         else:
             for q in qargs:
                 active_qubits.add(q)
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
 
     return circuit
 
@@ -431,13 +439,18 @@ def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircui
     # Keep up with whether we are at the end of a qubit
     # We iterate in reverse, so all qubits begin in the "end" state
     qubit_ended = set([i for i in range(circuit.num_qubits)])
-    for inst in reversed(circuit.data[:]):
+    remove_ids = []
+    num_inst = len(circuit.data)
+    for i, inst in enumerate(reversed(circuit.data)):
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
         if inst.operation.name == "reset":
             if qargs[0] in qubit_ended:
-                circuit.data.remove(inst)
+                remove_ids.append(num_inst - 1 - i)
         else:
             for q in qargs:
                 qubit_ended.discard(q)
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
 
     return circuit
