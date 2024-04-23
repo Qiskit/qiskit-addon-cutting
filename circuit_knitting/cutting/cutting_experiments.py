@@ -13,7 +13,6 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 from collections import defaultdict
 from collections.abc import Sequence, Hashable
 
@@ -376,7 +375,7 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
 def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
     """Consolidate redundant resets into a single reset."""
     if not inplace:  # pragma: no cover
-        circuit = deepcopy(circuit)
+        circuit = circuit.copy()
 
     # Keep up with whether the previous instruction on a given qubit was a reset
     resets = {i: False for i in range(circuit.num_qubits)}
