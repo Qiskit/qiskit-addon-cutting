@@ -432,7 +432,7 @@ def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircui
 
     # Keep up with whether we are at the end of a qubit
     # We iterate in reverse, so all qubits begin in the "end" state
-    qubit_ended = set([i for i in range(circuit.num_qubits)])
+    qubit_ended = set(range(circuit.num_qubits))
     remove_ids = []
     num_inst = len(circuit.data)
     for i, inst in enumerate(reversed(circuit.data)):
