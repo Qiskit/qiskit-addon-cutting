@@ -404,7 +404,7 @@ def _remove_resets_in_zero_state(
 ) -> QuantumCircuit:
     """Remove resets if they are the first instruction on a qubit."""
     if not inplace:  # pragma: no cover
-        circuit = deepcopy(circuit)
+        circuit = circuit.copy()
 
     # Keep up with which qubits have at least one non-reset instruction
     active_qubits = set()
@@ -427,7 +427,7 @@ def _remove_resets_in_zero_state(
 def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
     """Remove resets if they are the final instruction on a qubit."""
     if not inplace:  # pragma: no cover
-        circuit = deepcopy(circuit)
+        circuit = circuit.copy()
 
     # Keep up with whether we are at the end of a qubit
     # We iterate in reverse, so all qubits begin in the "end" state
