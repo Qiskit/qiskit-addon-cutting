@@ -59,12 +59,6 @@ def generate_cutting_experiments(
 
     The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.
 
-    Note that this function also runs some transpiler passes on each generated
-    circuit, namely :class:`~qiskit.transpiler.passes.RemoveResetInZeroState`,
-    :class:`.RemoveFinalReset`, and :class:`.ConsolidateResets`, in order to
-    remove unnecessary :class:`~qiskit.circuit.library.Reset`\ s from the
-    circuit that are added by the subexperiment decompositions for cut wires.
-
     Args:
         circuits: The circuit(s) to partition and separate
         observables: The observable(s) to evaluate for each unique sample
