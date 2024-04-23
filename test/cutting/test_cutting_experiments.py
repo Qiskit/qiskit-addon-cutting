@@ -32,6 +32,7 @@ from circuit_knitting.cutting.cutting_experiments import (
     _append_measurement_circuit,
     _remove_final_resets,
     _consolidate_resets,
+    _remove_resets_in_zero_state,
 )
 
 
@@ -304,5 +305,21 @@ class TestCuttingExperiments(unittest.TestCase):
         expected.h(qr)
 
         _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_remove_reset_in_zero_state(self):
+        """Remove reset if first instruction on qubit
+        qr0:--|0>--[H]--   ==>    qr0:--|0>--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.h(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr)
+
+        _remove_resets_in_zero_state(circuit)
 
         self.assertEqual(expected, circuit)
