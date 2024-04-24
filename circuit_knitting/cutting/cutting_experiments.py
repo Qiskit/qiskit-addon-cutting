@@ -372,7 +372,9 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
     return pauli_indices
 
 
-def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
+def _consolidate_resets(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
     """Consolidate redundant resets into a single reset."""
     if not inplace:  # pragma: no cover
         circuit = circuit.copy()
@@ -400,7 +402,7 @@ def _consolidate_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit
 
 
 def _remove_resets_in_zero_state(
-    circuit: QuantumCircuit, inplace=True
+    circuit: QuantumCircuit, inplace: bool = True
 ) -> QuantumCircuit:
     """Remove resets if they are the first instruction on a qubit."""
     if not inplace:  # pragma: no cover
@@ -424,7 +426,9 @@ def _remove_resets_in_zero_state(
     return circuit
 
 
-def _remove_final_resets(circuit: QuantumCircuit, inplace=True) -> QuantumCircuit:
+def _remove_final_resets(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
     """Remove resets if they are the final instruction on a qubit."""
     if not inplace:  # pragma: no cover
         circuit = circuit.copy()
