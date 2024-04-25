@@ -1,4 +1,4 @@
 ---
-fixes:
+other:
   - |
     The :func:`.generate_cutting_experiments` function has been optimized for faster execution.
