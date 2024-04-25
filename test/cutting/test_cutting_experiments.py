@@ -275,7 +275,7 @@ class TestCuttingExperiments(unittest.TestCase):
         _remove_final_resets(circuit)
         self.assertEqual(expected, circuit)
 
-    def test_optimize_single_reset(self):
+    def test_optimize_single_final_reset(self):
         """Remove a single final reset
         qr0:--[H]--|0>--   ==>    qr0:--[H]--
         """
@@ -286,6 +286,27 @@ class TestCuttingExperiments(unittest.TestCase):
 
         expected = QuantumCircuit(qr)
         expected.h(0)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_final_reset_2(self):
+        """Remove a single final reset on two qubits
+        qr0:--[H]--|0>--   ==>    qr0:--[H]-------
+            --[X]--[S]--              --[X]--[S]--
+        """
+        qr = QuantumRegister(2, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.x(1)
+        circuit.reset(0)
+        circuit.s(1)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+        expected.x(1)
+        expected.s(1)
 
         _remove_final_resets(circuit)
 
