@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.01.29 -->
-        <title>circuit_knitting.cutting.cutting_experiments - Circuit Knitting Toolbox 0.7.0</title>
+        <title>circuit_knitting.cutting.cutting_experiments - Circuit Knitting Toolbox 0.7.1</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.0</div></a>
+      <a href="../../../index.html"><div class="brand">Circuit Knitting Toolbox 0.7.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.0</span>
+  <span class="sidebar-brand-text">Circuit Knitting Toolbox 0.7.1</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -320,12 +320,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">ClassicalRegister</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">PauliList</span>
-<span class="kn">from</span> <span class="nn">qiskit.transpiler</span> <span class="kn">import</span> <span class="n">PassManager</span>
-<span class="kn">from</span> <span class="nn">qiskit.transpiler.passes</span> <span class="kn">import</span> <span class="n">RemoveResetInZeroState</span><span class="p">,</span> <span class="n">DAGFixedPoint</span>
-<span class="kn">from</span> <span class="nn">qiskit.passmanager.flow_controllers</span> <span class="kn">import</span> <span class="n">DoWhileController</span>
 
 <span class="kn">from</span> <span class="nn">..utils.iteration</span> <span class="kn">import</span> <span class="n">strict_zip</span>
-<span class="kn">from</span> <span class="nn">..utils.transpiler_passes</span> <span class="kn">import</span> <span class="n">RemoveFinalReset</span><span class="p">,</span> <span class="n">ConsolidateResets</span>
 <span class="kn">from</span> <span class="nn">..utils.observable_grouping</span> <span class="kn">import</span> <span class="n">ObservableCollection</span><span class="p">,</span> <span class="n">CommutingObservableGroup</span>
 <span class="kn">from</span> <span class="nn">.qpd</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">WeightType</span><span class="p">,</span>
@@ -364,12 +360,6 @@
 <span class="sd">        :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`</span>
 
 <span class="sd">    The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.</span>
-
-<span class="sd">    Note that this function also runs some transpiler passes on each generated</span>
-<span class="sd">    circuit, namely :class:`~qiskit.transpiler.passes.RemoveResetInZeroState`,</span>
-<span class="sd">    :class:`.RemoveFinalReset`, and :class:`.ConsolidateResets`, in order to</span>
-<span class="sd">    remove unnecessary :class:`~qiskit.circuit.library.Reset`\ s from the</span>
-<span class="sd">    circuit that are added by the subexperiment decompositions for cut wires.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuits: The circuit(s) to partition and separate</span>
@@ -475,20 +465,11 @@
     <span class="c1"># https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.</span>
     <span class="c1"># While we are at it, we also consolidate each run of multiple resets</span>
     <span class="c1"># (which can arise when re-using qubits) into a single reset.</span>
-    <span class="n">pass_manager</span> <span class="o">=</span> <span class="n">PassManager</span><span class="p">()</span>
-    <span class="n">passes</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">RemoveResetInZeroState</span><span class="p">(),</span>
-        <span class="n">RemoveFinalReset</span><span class="p">(),</span>
-        <span class="n">ConsolidateResets</span><span class="p">(),</span>
-        <span class="n">DAGFixedPoint</span><span class="p">(),</span>
-    <span class="p">]</span>
-    <span class="n">pass_manager</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="n">DoWhileController</span><span class="p">(</span>
-            <span class="n">passes</span><span class="p">,</span> <span class="n">do_while</span><span class="o">=</span><span class="k">lambda</span> <span class="n">property_set</span><span class="p">:</span> <span class="ow">not</span> <span class="n">property_set</span><span class="p">[</span><span class="s2">&quot;dag_fixed_point&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subexperiments</span> <span class="ow">in</span> <span class="n">subexperiments_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">subexperiments_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">subexperiments</span> <span class="ow">in</span> <span class="n">subexperiments_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">circ</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="p">:</span>
+            <span class="n">_remove_resets_in_zero_state</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+            <span class="n">_remove_final_resets</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+            <span class="n">_consolidate_resets</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
 
     <span class="c1"># If the input was a single quantum circuit, return the subexperiments as a list</span>
     <span class="n">subexperiments_out</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
@@ -693,6 +674,93 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pauli_indices</span><span class="p">:</span>
         <span class="n">pauli_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">pauli_indices</span>
+
+
+<span class="k">def</span> <span class="nf">_consolidate_resets</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Consolidate redundant resets into a single reset.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Keep up with whether the previous instruction on a given qubit was a reset</span>
+    <span class="n">resets</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span>
+
+    <span class="c1"># Remove resets which are immediately following other resets</span>
+    <span class="n">remove_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">qargs</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;reset&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resets</span><span class="p">[</span><span class="n">qargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]:</span>
+                <span class="n">remove_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">resets</span><span class="p">[</span><span class="n">qargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qargs</span><span class="p">:</span>
+                <span class="n">resets</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">remove_ids</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">circuit</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_resets_in_zero_state</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove resets if they are the first instruction on a qubit.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Keep up with which qubits have at least one non-reset instruction</span>
+    <span class="n">active_qubits</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">remove_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">qargs</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;reset&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">qargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">active_qubits</span><span class="p">:</span>
+                <span class="n">remove_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qargs</span><span class="p">:</span>
+                <span class="n">active_qubits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="c1"># Early terminate once all qubits have become active</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_qubits</span><span class="p">)</span> <span class="o">==</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">remove_ids</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">circuit</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_final_resets</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove resets if they are the final instruction on a qubit.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Keep up with whether we are at the end of a qubit</span>
+    <span class="c1"># We iterate in reverse, so all qubits begin in the &quot;end&quot; state</span>
+    <span class="n">qubit_ended</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">))</span>
+    <span class="n">remove_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_inst</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">qargs</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;reset&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">qargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">qubit_ended</span><span class="p">:</span>
+                <span class="n">remove_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num_inst</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qargs</span><span class="p">:</span>
+                <span class="n">qubit_ended</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="c1"># Early terminate once all qubits have been touched</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">qubit_ended</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">remove_ids</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">circuit</span>
 </pre></div>
         </article>
       </div>
@@ -733,7 +801,7 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../../../_static/documentation_options.js?v=5a057da9"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/thebelab-helper.js"></script>
