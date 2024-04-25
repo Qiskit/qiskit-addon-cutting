@@ -409,7 +409,7 @@ def _remove_resets_in_zero_state(
         circuit = circuit.copy()
 
     # Keep up with which qubits have at least one non-reset instruction
-    active_qubits = set()
+    active_qubits: set[int] = set()
     remove_ids = []
     for i, inst in enumerate(circuit.data):
         qargs = [circuit.find_bit(q).index for q in inst.qubits]
@@ -419,6 +419,9 @@ def _remove_resets_in_zero_state(
         else:
             for q in qargs:
                 active_qubits.add(q)
+            # Early terminate once all qubits have become active
+            if len(active_qubits) == circuit.num_qubits:
+                break
 
     for i in sorted(remove_ids, reverse=True):
         del circuit.data[i]
@@ -446,6 +449,9 @@ def _remove_final_resets(
         else:
             for q in qargs:
                 qubit_ended.discard(q)
+            # Early terminate once all qubits have been touched
+            if not qubit_ended:
+                break
 
     for i in sorted(remove_ids, reverse=True):
         del circuit.data[i]
