@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Added a workaround so that the classical registers in the
+    generated circuits will always contain at least one bit.  This is
+    currently necessary for the experiments to be able to reach IBM
+    Quantum's hardware backends due to an `openqasm parser issue
+    <https://github.com/openqasm/qe-qasm/issues/37>`__.
