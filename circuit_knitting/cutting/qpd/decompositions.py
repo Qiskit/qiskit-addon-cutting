@@ -239,7 +239,7 @@ def _nonlocal_qpd_basis_from_u(
     # Projective measurements, each followed by the proper flip.
     Bxy = A0z + [XGate()]
     Byz = A0x + [YGate()]
-    Bzx = A0y + [ZGate()]
+    Bxz = [ZGate()] + A0y
     # Construct "A" and "B" channels from
     # https://quantum-journal.org/papers/q-2021-01-28-388/
     #
@@ -259,7 +259,7 @@ def _nonlocal_qpd_basis_from_u(
         (0, 3): (B0zp, B0zm),
         (1, 2): (Bxy,),
         (2, 3): (Byz,),
-        (1, 3): (Bzx,),  # but with a sign flip, which is handled explicitly below!
+        (1, 3): (Bxz,),
     }
 
     # The following values occur repeatedly in the coefficients
@@ -301,11 +301,6 @@ def _nonlocal_qpd_basis_from_u(
                         for j, R in enumerate(channel_R):
                             factor = (-1) ** (i + j) / len(channel_L) / len(channel_R)
                             factor *= f_L(phi) * f_R(phi) - f_L(phi2) * f_R(phi2)
-                            if bool(L is Bzx) != bool(R is Bzx):
-                                # Flip sign (in this case we have the
-                                # operations of Bzx but the indices correspond
-                                # to Bxz)
-                                factor *= -1
                             coeffs.append(prefactor * factor)
                             maps_L.append(L)
                             maps_R.append(R)
