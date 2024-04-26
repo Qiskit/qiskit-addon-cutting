@@ -10,3 +10,15 @@
 # that they have been altered from the originals.
 
 """Main Circuit Knitting Toolbox public functionality."""
+
+from importlib.metadata import version, PackageNotFoundError
+
+
+try:
+    __version__ = version("circuit-knitting-toolbox")
+except PackageNotFoundError:  # pragma: no cover
+    # Package is not installed
+    pass
+
+__all__ = [
+]
