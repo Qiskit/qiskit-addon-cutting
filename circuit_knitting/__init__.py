@@ -20,5 +20,4 @@ except PackageNotFoundError:  # pragma: no cover
     # Package is not installed
     pass
 
-__all__ = [
-]
+__all__ = []
