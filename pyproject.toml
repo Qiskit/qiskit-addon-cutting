@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.7.1"
+dynamic = ["version"]
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -96,6 +96,8 @@ notebook-dependencies = [
 "Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
 "Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
 
+[tool.hatch.version]
+source = "vcs"
 [tool.hatch.build.targets.wheel]
 only-include = [
     "circuit_knitting",
