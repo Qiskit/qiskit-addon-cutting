@@ -8,6 +8,10 @@ Circuit Knitting Toolbox
 
 Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
 
+The toolbox currently contains the following tools:
+
+- Circuit Cutting
+
 This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md>`_.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
 
 Citing this project
