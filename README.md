@@ -29,11 +29,7 @@
 
 ### About
 
-Circuit Knitting is the process of decomposing a quantum circuit into smaller circuits, executing those smaller circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
-
-Each tool in the CKT partitions a user's problem into quantum and classical components to enable efficient use of resources constrained by scaling limits, i.e. size of quantum processors and classical compute capability. It can assign the execution of "quantum code" to QPUs or QPU simulators and "classical code" to various heterogeneous classical resources such as CPUs, GPUs, and TPUs made available via hybrid cloud, on-prem, data centers, etc. 
-
-The toolbox enables users to run parallelized and hybrid (quantum + classical) workloads without worrying about allocating and managing underlying infrastructure.
+Circuit Knitting is the process of decomposing a larger quantum circuit into many smaller circuits, executing those circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
 
 The toolbox currently contains the following tools:
 - Circuit Cutting [[1-6]](#references)
