@@ -12,7 +12,9 @@ The toolbox currently contains the following tools:
 
 - Circuit Cutting
 
-This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md>`_.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
+For a more detailed discussion on circuit cutting, check out our `technical guide <./circuit_cutting/explanation/index.rst#overview-of-circuit-cutting>`__.
+
+This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md>`__.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
 
 Citing this project
 -------------------
