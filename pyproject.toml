@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.6.0"
+version = "0.7.1"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -66,7 +66,7 @@ style = [
 lint = [
     "circuit-knitting-toolbox[style]",
     "pydocstyle==6.3.0",
-    "mypy==1.9.0",
+    "mypy==1.10.0",
     "reno>=3.4.0",
     "pylint==3.1.0",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
