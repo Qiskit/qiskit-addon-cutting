@@ -187,7 +187,6 @@ def _get_mapping_ids_by_partition(
     # Collect QPDGate id's and relevant map id's for each subcircuit
     subcirc_qpd_gate_ids: dict[Hashable, list[list[int]]] = {}
     subcirc_map_ids: dict[Hashable, list[int]] = {}
-    decomp_ids = set()
     for label, circ in circuits.items():
         subcirc_qpd_gate_ids[label] = []
         subcirc_map_ids[label] = []
@@ -204,7 +203,6 @@ def _get_mapping_ids_by_partition(
                         ' formatted as "<your_label>_N". This allows SingleQubitQPDGates '
                         "belonging to the same cut to be sampled jointly."
                     ) from ex
-                decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[label].append([i])
                 subcirc_map_ids[label].append(decomp_id)
 
