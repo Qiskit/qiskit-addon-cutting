@@ -296,12 +296,12 @@ def _nonlocal_qpd_basis_from_u(
             # Loop through each combination of A and B channels
             for f_L, channel_L in ((math.cos, my_A), (math.sin, my_B)):
                 for f_R, channel_R in ((math.cos, my_A), (math.sin, my_B)):
+                    factor0 = f_L(phi) * f_R(phi) - f_L(phi2) * f_R(phi2)
                     # Loop through terms of the current linear combination (see above)
                     for i, L in enumerate(channel_L):
                         for j, R in enumerate(channel_R):
                             factor = (-1) ** (i + j) / len(channel_L) / len(channel_R)
-                            factor *= f_L(phi) * f_R(phi) - f_L(phi2) * f_R(phi2)
-                            coeffs.append(prefactor * factor)
+                            coeffs.append(prefactor * factor0 * factor)
                             maps_L.append(L)
                             maps_R.append(R)
 
