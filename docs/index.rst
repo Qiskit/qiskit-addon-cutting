@@ -24,6 +24,8 @@ If you use the Circuit Knitting Toolbox in your research, please cite it accordi
 .. literalinclude:: ../CITATION.bib
    :language: bibtex
 
+If you are using the entanglement forging tool in CKT version 0.5.0 or earlier, please use `an older version of the citation file <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/stable/0.5/CITATION.bib>`__ which includes the authors of that tool.
+
 Developer guide
 ---------------
 
