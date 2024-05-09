@@ -125,10 +125,10 @@ def reconstruct_expectation_values(
             current_result = current_result.quasi_dists
         if len(current_result) != len(coefficients) * len(so.groups):
             raise ValueError(
-                f"There number of subexperiments performed in subsystem '{label}' "
+                f"The number of subexperiments performed in subsystem '{label}' "
                 f"({len(current_result)}) should equal the number of coefficients "
-                f"({len(coefficients)}) times the number of subobservable groups "
-                f"({len(so.groups)}), but it does not."
+                f"({len(coefficients)}) times the number of mutually commuting "
+                f"subobservable groups ({len(so.groups)}), but it does not."
             )
 
     # Reconstruct the expectation values

@@ -22,7 +22,7 @@ from qiskit.primitives import (
     BitArray,
 )
 from qiskit.primitives.containers import make_data_bin
-from qiskit.quantum_info import Pauli, PauliList
+from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
 
 from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting.cutting.qpd import WeightType
@@ -48,7 +48,7 @@ class TestCuttingReconstruction(unittest.TestCase):
             observables = PauliList(["ZZ"])
             expvals = reconstruct_expectation_values(results, weights, observables)
             self.assertEqual([1.0], expvals)
-        with self.subTest("Test mismatching inputs"):
+        with self.subTest("Test mismatching input types"):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
@@ -67,6 +67,32 @@ class TestCuttingReconstruction(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
+            )
+        with self.subTest("Test invalid observables type"):
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            weights = [(1.0, WeightType.EXACT)]
+            observables = [SparsePauliOp(["ZZ"])]
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "observables must be either a PauliList or dict."
+            )
+        with self.subTest("Test mismatching subsystem labels"):
+            results = {
+                "A": SamplerResult(
+                    quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+                )
+            }
+            weights = [(1.0, WeightType.EXACT)]
+            observables = {"B": [PauliList("ZZ")]}
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "The subsystem labels of the observables and results do not match."
             )
         with self.subTest("Test unsupported phase"):
             results = SamplerResult(
@@ -110,6 +136,18 @@ class TestCuttingReconstruction(unittest.TestCase):
             observables = PauliList(["II", "IZ", "ZI", "ZZ"])
             expvals = reconstruct_expectation_values(results, weights, observables)
             assert expvals == pytest.approx([0.0, -0.6, 0.0, -0.2])
+        with self.subTest("Test inconsistent number of subexperiment results provided"):
+            results = SamplerResult(
+                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+            )
+            weights = [(1.0, WeightType.EXACT)]
+            observables = PauliList(["ZZ", "XX"])
+            with pytest.raises(ValueError) as e_info:
+                reconstruct_expectation_values(results, weights, observables)
+            assert (
+                e_info.value.args[0]
+                == "The number of subexperiments performed in subsystem 'A' (1) should equal the number of coefficients (1) times the number of mutually commuting subobservable groups (2), but it does not."
+            )
 
     @data(
         ("000", [1, 1, 1]),
