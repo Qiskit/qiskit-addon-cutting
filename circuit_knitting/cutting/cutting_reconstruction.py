@@ -84,8 +84,8 @@ def reconstruct_expectation_values(
             )
         if any(obs.phase != 0 for obs in observables):
             raise ValueError("An input observable has a phase not equal to 1.")
-        subobservables_by_subsystem = decompose_observables(
-            observables, "A" * len(observables[0])
+        subobservables_by_subsystem: Mapping[Hashable, PauliList] = (
+            decompose_observables(observables, "A" * len(observables[0]))
         )
         results_dict: Mapping[Hashable, SamplerResult | PrimitiveResult] = {
             "A": results
