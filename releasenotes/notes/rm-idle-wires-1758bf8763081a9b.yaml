@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    The behavior of :func:`.separate_circuit` and
+    :func:`.partition_problem` have changed so that idle qubits are
+    handled better.
