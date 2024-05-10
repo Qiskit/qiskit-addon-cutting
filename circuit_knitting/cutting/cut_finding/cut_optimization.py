@@ -261,7 +261,7 @@ class CutOptimization:
             "CutOptimization",
             self.settings,
             self.search_funcs,
-            stop_at_first_min=False,
+            stop_at_first_min=True,
         )
         sq.initialize([start_state], self.func_args)
 

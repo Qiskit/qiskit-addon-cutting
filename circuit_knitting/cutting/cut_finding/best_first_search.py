@@ -149,6 +149,8 @@ class BestFirstSearch:
 
     ``stop_at_first_min`` (Boolean) is a flag that indicates whether or not to
     stop the search after the first minimum-cost goal state has been reached.
+    In the absence of any QPD assignments, it always makes sense to stop once
+    the first minimum has been reached and therefore, we set this bool to True.
 
     ``max_backjumps`` (int or None) is the maximum number of backjump operations that
     can be performed before the search is forced to terminate. None indicates
@@ -185,7 +187,7 @@ class BestFirstSearch:
         self,
         optimization_settings: OptimizationSettings,
         search_functions: SearchFunctions,
-        stop_at_first_min: bool = False,
+        stop_at_first_min: bool = True,
     ):
         """Initialize an instance of :class:`BestFirstSearch`.
 
