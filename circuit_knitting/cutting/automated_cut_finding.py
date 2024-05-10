@@ -137,6 +137,8 @@ class OptimizationParameters:
     seed: int | None = OptimizationSettings().seed
     max_gamma: float = OptimizationSettings().max_gamma
     max_backjumps: None | int = OptimizationSettings().max_backjumps
+    gate_lo: bool = OptimizationSettings().gate_lo
+    wire_lo: bool = OptimizationSettings().wire_lo
 
 
 @dataclass

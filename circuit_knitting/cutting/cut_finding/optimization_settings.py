@@ -45,9 +45,11 @@ class OptimizationSettings:
     max_gamma: float = 1024
     max_backjumps: None | int = 10000
     seed: int | None = None
-    LO: bool = True
-    LOCC_ancillas: bool = False
-    LOCC_no_ancillas: bool = False
+    gate_lo: bool = False
+    wire_lo: bool = True
+    gate_LOCC_ancillas: bool = False
+    wire_LOCC_ancillas: bool = False
+    wire_LOCC_no_ancillas: bool = False
     engine_selections: dict[str, str] | None = None
 
     def __post_init__(self):
@@ -57,12 +59,12 @@ class OptimizationSettings:
         if self.max_backjumps is not None and self.max_backjumps < 0:
             raise ValueError("max_backjumps must be a positive semi-definite integer.")
 
-        self.gate_cut_LO = self.LO
-        self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
+        self.gate_cut_LO = self.gate_lo
+        self.gate_cut_LOCC_with_ancillas = self.gate_LOCC_ancillas
 
-        self.wire_cut_LO = self.LO
-        self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
-        self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
+        self.wire_cut_LO = self.wire_lo
+        self.wire_cut_LOCC_with_ancillas = self.wire_LOCC_ancillas
+        self.wire_cut_LOCC_no_ancillas = self.wire_LOCC_no_ancillas
         if self.engine_selections is None:
             self.engine_selections = {"CutOptimization": "BestFirst"}
 
@@ -102,8 +104,8 @@ class OptimizationSettings:
         The default is to only include LO gate cuts, which are the
         only cut types supported in this release.
         """
-        self.gate_cut_LO = self.LO
-        self.gate_cut_LOCC_with_ancillas = self.LOCC_ancillas
+        self.gate_cut_LO = self.gate_lo
+        self.gate_cut_LOCC_with_ancillas = self.gate_LOCC_ancillas
 
     def set_wire_cut_types(self) -> None:
         """Select which wire-cut types to include in the optimization.
@@ -111,9 +113,9 @@ class OptimizationSettings:
         The default is to only include LO wire cuts, which are the
         only cut types supported in this release.
         """
-        self.wire_cut_LO = self.LO
-        self.wire_cut_LOCC_with_ancillas = self.LOCC_ancillas
-        self.wire_cut_LOCC_no_ancillas = self.LOCC_no_ancillas
+        self.wire_cut_LO = self.wire_lo
+        self.wire_cut_LOCC_with_ancillas = self.wire_LOCC_ancillas
+        self.wire_cut_LOCC_no_ancillas = self.wire_LOCC_no_ancillas
 
     def get_cut_search_groups(self) -> list[None | str]:
         """Return a list of action groups to include in the optimization."""
