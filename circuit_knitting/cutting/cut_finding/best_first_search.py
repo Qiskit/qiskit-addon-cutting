@@ -260,7 +260,6 @@ class BestFirstSearch:
             self.mincost_bound = self.mincost_bound_func(*args)  # type: ignore
 
         prev_depth = None
-
         while (
             self.pqueue.qsize() > 0
             and (not self.stop_at_first_min or not self.min_reached)

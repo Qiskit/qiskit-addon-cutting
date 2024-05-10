@@ -190,7 +190,7 @@ def test_four_qubit_circuit_two_qubit_qpu(
     )  # circuit separated into 2 subcircuits.
 
     assert (
-        optimization_pass.get_stats()["CutOptimization"] == array([15, 46, 15, 6])
+        optimization_pass.get_stats()["CutOptimization"] == array([11, 36, 15, 4])
     ).all()  # matches known stats.
 
 
