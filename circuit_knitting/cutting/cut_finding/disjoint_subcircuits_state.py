@@ -37,7 +37,7 @@ class Action(NamedTuple):
 
     action: DisjointSearchAction
     gate_spec: GateSpec
-    args: list
+    args: list | tuple
 
 
 class GateCutLocation(NamedTuple):
