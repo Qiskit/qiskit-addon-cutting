@@ -42,10 +42,10 @@ class OptimizationSettings:
     flags have been incorporated with an eye towards future releases.
     """
 
-    max_gamma: float = 1024
+    max_gamma: float = 1025
     max_backjumps: None | int = 10000
     seed: int | None = None
-    gate_lo: bool = False
+    gate_lo: bool = True
     wire_lo: bool = True
     gate_LOCC_ancillas: bool = False
     wire_LOCC_ancillas: bool = False
