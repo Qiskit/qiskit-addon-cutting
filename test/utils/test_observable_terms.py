@@ -61,10 +61,7 @@ class TestObservableTerms(unittest.TestCase):
             )
             assert len(evs) == 0
         with self.subTest("No observables or terms"):
-            evs = reconstruct_observable_expvals_from_terms(
-                [],
-                {},
-            )
+            evs = reconstruct_observable_expvals_from_terms([], {})
             assert len(evs) == 0
         with self.subTest("Missing term"):
             with pytest.raises(ValueError) as e_info:

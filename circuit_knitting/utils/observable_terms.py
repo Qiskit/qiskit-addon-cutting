@@ -11,6 +11,8 @@
 
 r"""Utilities for working with the unique terms of a collection of :class:`~qiskit.quantum_info.SparsePauliOp`\ s."""
 
+from __future__ import annotations
+
 from typing import Sequence, Iterable, Mapping
 
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
