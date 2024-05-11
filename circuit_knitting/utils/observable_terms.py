@@ -16,7 +16,7 @@ from __future__ import annotations
 from typing import Sequence, Iterable, Mapping
 
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
-from circuit_knitting.utils.iteration import strict_zip
+from .iteration import strict_zip
 
 
 def gather_unique_observable_terms(
