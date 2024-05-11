@@ -24,6 +24,8 @@ def gather_unique_observable_terms(
 ) -> PauliList:
     """Inspect the contents of each observable to find and return the unique Pauli terms."""
     if not observables:
+        if isinstance(observables, PauliList):
+            return observables.copy()
         raise ValueError("observables list cannot be empty")
 
     pauli_list: list[Pauli] = []

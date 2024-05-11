@@ -20,11 +20,11 @@ from circuit_knitting.utils.observable_terms import *
 class TestObservableTerms(unittest.TestCase):
     def test_gather(self):
         with self.subTest("Normal usage"):
-            pl = gather_unique_observable_terms(
+            terms = gather_unique_observable_terms(
                 [Pauli("XX"), SparsePauliOp(PauliList(["iXY", "ZZ", "XX"]))]
             )
-            assert pl.num_qubits == 2
-            assert len(pl) == 3
+            assert terms.num_qubits == 2
+            assert len(terms) == 3
         with self.subTest("Mismatching observables"):
             with pytest.raises(ValueError) as e_info:
                 gather_unique_observable_terms([Pauli("XX"), Pauli("XYZ")])
@@ -32,13 +32,12 @@ class TestObservableTerms(unittest.TestCase):
                 e_info.value.args[0]
                 == "Cannot construct PauliList.  Do provided observables all have the same number of qubits?"
             )
-        with self.subTest("Empty list"):
+        with self.subTest("Empty PauliList should work"):
+            terms = gather_unique_observable_terms(PauliList(["XXXX"])[:0])
+            assert terms == PauliList(["IIII"])[:0]
+        with self.subTest("Empty list should not (unable to infer qubit count)"):
             with pytest.raises(ValueError) as e_info:
                 gather_unique_observable_terms([])
-            assert e_info.value.args[0] == "observables list cannot be empty"
-        with self.subTest("Empty PauliList"):
-            with pytest.raises(ValueError) as e_info:
-                gather_unique_observable_terms(PauliList(["XXXX"])[:0])
             assert e_info.value.args[0] == "observables list cannot be empty"
         with self.subTest("All zero coefficients"):
             unique_terms = gather_unique_observable_terms(
