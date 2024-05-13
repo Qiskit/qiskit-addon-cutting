@@ -268,8 +268,7 @@ class BestFirstSearch:
             state, depth, cost = self.pqueue.get()
 
             self.update_minimum_reached(cost)
-
-            if cost is None or self.cost_bounds_exceeded(cost):  # pragma: no cover
+            if cost is None or self.cost_bounds_exceeded(cost):
                 return None, None
 
             self.num_states_visited += 1

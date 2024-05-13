@@ -20,13 +20,30 @@ from circuit_knitting.cutting.cut_finding.circuit_interface import (
     CircuitElement,
     GateSpec,
 )
-from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimization
+from circuit_knitting.cutting.cut_finding.cut_optimization import (
+    cut_optimization_next_state_func,
+    cut_optimization_min_cost_bound_func,
+    cut_optimization_cost_func,
+    cut_optimization_goal_state_func,
+    cut_optimization_upper_bound_cost_func,
+    CutOptimizationFuncArgs,
+    CutOptimization,
+)
 from circuit_knitting.cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
 from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
+)
+from circuit_knitting.cutting.cut_finding.cutting_actions import (
+    disjoint_subcircuit_actions,
+    DisjointSubcircuitsState,
+)
+
+from circuit_knitting.cutting.cut_finding.best_first_search import (
+    BestFirstSearch,
+    SearchFunctions,
 )
 
 
@@ -124,3 +141,64 @@ def test_best_first_search(test_circuit: SimpleGateList):
     assert op.get_upperbound_cost() == (27, inf)
     assert op.minimum_reached() is True
     assert out is None
+
+
+def test_best_first_search_termination():
+    """Test that if the best first search is run multiple times, it terminates once no further feasible cut states can be found,
+    in which case None is returned for both the cost and the state. This test also serves to describe the workflow of the optimizer
+    at a granular level."""
+
+    # Specify circuit
+    circuit = [
+        CircuitElement(name="cx", params=[], qubits=[0, 1], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[2, 3], gamma=3),
+        CircuitElement(name="cx", params=[], qubits=[1, 2], gamma=3),
+    ]
+
+    interface = SimpleGateList(circuit)
+
+    # Specify optimization settings, search engine, and device constraints.
+    settings = OptimizationSettings(seed=123)
+    settings.set_engine_selection("CutOptimization", "BestFirst")
+
+    constraints = DeviceConstraints(qubits_per_subcircuit=3)
+
+    # Initialize and pass arguments to search space generating object.
+    func_args = CutOptimizationFuncArgs()
+    func_args.entangling_gates = interface.get_multiqubit_gates()
+    func_args.search_actions = disjoint_subcircuit_actions
+    func_args.max_gamma = settings.get_max_gamma
+    func_args.qpu_width = constraints.get_qpu_width()
+
+    # Initialize search functions object, needed to explore a search space.
+    cut_optimization_search_funcs = SearchFunctions(
+        cost_func=cut_optimization_cost_func,
+        upperbound_cost_func=cut_optimization_upper_bound_cost_func,
+        next_state_func=cut_optimization_next_state_func,
+        goal_state_func=cut_optimization_goal_state_func,
+        mincost_bound_func=cut_optimization_min_cost_bound_func,
+    )
+
+    # Initialize disjoint subcircuits state object
+    # while specifying number of qubits and max allowed wire cuts.
+    state = DisjointSubcircuitsState(interface.get_num_qubits(), 2)
+
+    # Initialize bfs object.
+    bfs = BestFirstSearch(
+        optimization_settings=settings, search_functions=cut_optimization_search_funcs
+    )
+
+    # Push an input state.
+    bfs.initialize([state], func_args)
+
+    counter = 0
+
+    cut_state = state
+    while cut_state is not None:
+        cut_state, cut_cost = bfs.optimization_pass(func_args)
+        counter += 1
+
+    # There are 5 possible cut states that can be found for this circuit,
+    # after which, at the 6th iteration, None is returned for both the
+    # state and the cost.
+    assert counter == 6 and cut_cost is None
