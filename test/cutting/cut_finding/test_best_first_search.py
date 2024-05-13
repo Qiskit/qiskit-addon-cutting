@@ -200,7 +200,7 @@ def test_best_first_search_termination():
 
     # There are 5 possible cut states that can be found for this circuit,
     # given that there need to be 3 qubits per subcircuit. These correspond
-    # to 3 gate cuts (i.e cutting any of the 3 gates) and cutting either of 
+    # to 3 gate cuts (i.e cutting any of the 3 gates) and cutting either of
     # the input wires to the CNOT between qubits 1 and 2.
     # After these 5 possible cuts are returned, at the 6th iteration, None
     # is returned for both the state and the cost.
