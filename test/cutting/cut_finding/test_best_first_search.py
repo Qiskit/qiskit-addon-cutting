@@ -199,6 +199,9 @@ def test_best_first_search_termination():
         counter += 1
 
     # There are 5 possible cut states that can be found for this circuit,
-    # after which, at the 6th iteration, None is returned for both the
-    # state and the cost.
+    # given that there need to be 3 qubits per subcircuit. These correspond
+    # to 3 gate cuts (i.e cutting any of the 3 gates) and cutting either of 
+    # the input wires to the CNOT between qubits 1 and 2.
+    # After these 5 possible cuts are returned, at the 6th iteration, None
+    # is returned for both the state and the cost.
     assert counter == 6 and cut_cost is None
