@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import heapq
 import numpy as np
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, Callable, cast, NamedTuple
 from itertools import count
 
 from .optimization_settings import OptimizationSettings
@@ -24,6 +24,21 @@ from .search_space_generator import SearchFunctions
 
 if TYPE_CHECKING:  # pragma: no cover
     from .cut_optimization import CutOptimizationFuncArgs
+
+
+class SearchStats(NamedTuple):
+    """NamedTuple for collecting search statistics.
+
+    It carries information about the number of states visited
+    (dequeued from the search queue), the number of next-states generated,
+    the number of next-states that are enqueued after cost pruning,
+    and the number of backjumps performed.
+    """
+
+    states_visited: int
+    next_states_generated: int
+    states_enqueued: int
+    backjumps: int
 
 
 class BestFirstPriorityQueue:
@@ -149,6 +164,8 @@ class BestFirstSearch:
 
     ``stop_at_first_min`` (Boolean) is a flag that indicates whether or not to
     stop the search after the first minimum-cost goal state has been reached.
+    In the absence of any non-LO QPD assignments, it always makes sense to stop once
+    the first minimum has been reached and therefore, we set this bool to ``True``.
 
     ``max_backjumps`` (int or None) is the maximum number of backjump operations that
     can be performed before the search is forced to terminate. None indicates
@@ -185,7 +202,7 @@ class BestFirstSearch:
         self,
         optimization_settings: OptimizationSettings,
         search_functions: SearchFunctions,
-        stop_at_first_min: bool = False,
+        stop_at_first_min: bool = True,
     ):
         """Initialize an instance of :class:`BestFirstSearch`.
 
@@ -213,7 +230,7 @@ class BestFirstSearch:
         self.num_next_states = 0
         self.num_enqueues = 0
         self.num_backjumps = 0
-        self.penultimate_stats: np.typing.NDArray | None = None
+        self.penultimate_stats: SearchStats | None = None
 
     def initialize(
         self,
@@ -258,7 +275,6 @@ class BestFirstSearch:
             self.mincost_bound = self.mincost_bound_func(*args)  # type: ignore
 
         prev_depth = None
-
         while (
             self.pqueue.qsize() > 0
             and (not self.stop_at_first_min or not self.min_reached)
@@ -267,7 +283,6 @@ class BestFirstSearch:
             state, depth, cost = self.pqueue.get()
 
             self.update_minimum_reached(cost)
-
             if cost is None or self.cost_bounds_exceeded(cost):
                 return None, None
 
@@ -299,10 +314,10 @@ class BestFirstSearch:
         """Return True if the optimization reached a global minimum."""
         return self.min_reached
 
-    def get_stats(self, penultimate: bool = False) -> np.typing.NDArray[np.int_] | None:
+    def get_stats(self, penultimate: bool = False) -> SearchStats | None:
         """Return statistics of the search that was performed.
 
-        This is a Numpy array containing the number of states visited
+        This is a NamedTuple containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number
         of backjumps performed. Return None if no search is performed.
@@ -312,14 +327,11 @@ class BestFirstSearch:
         if penultimate:
             return self.penultimate_stats
 
-        return np.array(
-            (
-                self.num_states_visited,
-                self.num_next_states,
-                self.num_enqueues,
-                self.num_backjumps,
-            ),
-            dtype=int,
+        return SearchStats(
+            states_visited=self.num_states_visited,
+            next_states_generated=self.num_next_states,
+            states_enqueued=self.num_enqueues,
+            backjumps=self.num_backjumps,
         )
 
     def get_upperbound_cost(
