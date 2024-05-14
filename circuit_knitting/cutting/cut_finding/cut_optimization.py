@@ -60,11 +60,16 @@ def cut_optimization_cost_func(
 
 
 def cut_optimization_upper_bound_cost_func(
-    goal_state, func_args: CutOptimizationFuncArgs
+    goal_state: DisjointSubcircuitsState, func_args: CutOptimizationFuncArgs
 ) -> tuple[float, float]:
     """Return the value of :math:`gamma` computed assuming all LO cuts."""
     # pylint: disable=unused-argument
-    return (goal_state.upper_bound_gamma(), np.inf)
+    if goal_state is not None:
+        return (goal_state.upper_bound_gamma(), np.inf)
+    else:
+        raise Exception(
+            "None state encountered. This means that no cut state satisfying the specified constraints and settings was found."
+        )
 
 
 def cut_optimization_min_cost_bound_func(

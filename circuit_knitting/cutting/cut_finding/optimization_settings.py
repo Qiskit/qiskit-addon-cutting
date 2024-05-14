@@ -59,10 +59,10 @@ class OptimizationSettings:
         if self.max_backjumps is not None and self.max_backjumps < 0:
             raise ValueError("max_backjumps must be a positive semi-definite integer.")
 
-        self.gate_cut_LO = self.gate_lo
+        self.gate_cut_lo = self.gate_lo
         self.gate_cut_locc_with_ancillas = self.gate_locc_ancillas
 
-        self.wire_cut_LO = self.wire_lo
+        self.wire_cut_lo = self.wire_lo
         self.wire_cut_locc_with_ancillas = self.wire_locc_ancillas
         self.wire_cut_locc_no_ancillas = self.wire_locc_no_ancillas
         if self.engine_selections is None:
@@ -104,7 +104,7 @@ class OptimizationSettings:
         The default is to only include LO gate cuts, which are the
         only cut types supported in this release.
         """
-        self.gate_cut_LO = self.gate_lo
+        self.gate_cut_lo = self.gate_lo
         self.gate_cut_locc_with_ancillas = self.gate_locc_ancillas
 
     def set_wire_cut_types(self) -> None:
@@ -113,7 +113,7 @@ class OptimizationSettings:
         The default is to only include LO wire cuts, which are the
         only cut types supported in this release.
         """
-        self.wire_cut_LO = self.wire_lo
+        self.wire_cut_lo = self.wire_lo
         self.wire_cut_locc_with_ancillas = self.wire_locc_ancillas
         self.wire_cut_locc_no_ancillas = self.wire_locc_no_ancillas
 
@@ -122,11 +122,11 @@ class OptimizationSettings:
         out: list
         out = [None]
 
-        if self.gate_cut_LO or self.gate_cut_locc_with_ancillas:
+        if self.gate_cut_lo or self.gate_cut_locc_with_ancillas:
             out.append("GateCut")
 
         if (
-            self.wire_cut_LO
+            self.wire_cut_lo
             or self.wire_cut_locc_with_ancillas
             or self.wire_cut_locc_no_ancillas
         ):

@@ -97,7 +97,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 4))],
+            (((1, 3), (2, 4))),
         ),
         (
             GateSpec(
@@ -105,7 +105,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 5], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 5))],
+            (((1, 3), (2, 5))),
         ),
         (
             GateSpec(
@@ -113,7 +113,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 6], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 6))],
+            (((1, 3), (2, 6))),
         ),
     ]
 

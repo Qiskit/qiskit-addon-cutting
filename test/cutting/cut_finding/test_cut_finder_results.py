@@ -29,10 +29,10 @@ from circuit_knitting.cutting.cut_finding.optimization_settings import (
 from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
-    OneWireCutIdentifier,
+    SingleWireCutIdentifier,
     WireCutLocation,
     CutIdentifier,
-    GateCutLocation,
+    CutLocation,
 )
 from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
     LOCutsOptimizer,
@@ -126,15 +126,11 @@ def test_four_qubit_circuit_three_qubit_qpu(
     assert cut_actions_list == [
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=17, gate_name="cx", qubits=[2, 3]
-            ),
+            cut_location=CutLocation(instruction_id=17, gate_name="cx", qubits=[2, 3]),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=25, gate_name="cx", qubits=[2, 3]
-            ),
+            cut_location=CutLocation(instruction_id=25, gate_name="cx", qubits=[2, 3]),
         ),
     ]
     best_result = optimization_pass.get_results()
@@ -167,13 +163,13 @@ def test_four_qubit_circuit_two_qubit_qpu(
     assert cut_actions_list == [
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=9, gate_name="cx", qubits=[1, 2]
             ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=20, gate_name="cx", qubits=[1, 2]
             ),
         ),
@@ -213,31 +209,31 @@ def test_seven_qubit_circuit_two_qubit_qpu(
     assert cut_actions_list == [
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=7, gate_name="cx", qubits=[0, 3]
             ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=8, gate_name="cx", qubits=[1, 3]
             ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=9, gate_name="cx", qubits=[2, 3]
             ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=11, gate_name="cx", qubits=[3, 5]
             ),
         ),
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=12, gate_name="cx", qubits=[3, 6]
             ),
         ),
@@ -270,7 +266,7 @@ def test_one_wire_cut(
     cut_actions_list = output.cut_actions_sublist()
 
     assert cut_actions_list == [
-        OneWireCutIdentifier(
+        SingleWireCutIdentifier(
             cut_action="CutLeftWire",
             wire_cut_location=WireCutLocation(
                 instruction_id=10, gate_name="cx", qubits=[3, 4], input=1
@@ -306,13 +302,13 @@ def test_two_wire_cuts(
     cut_actions_list = output.cut_actions_sublist()
 
     assert cut_actions_list == [
-        OneWireCutIdentifier(
+        SingleWireCutIdentifier(
             cut_action="CutRightWire",
             wire_cut_location=WireCutLocation(
                 instruction_id=9, gate_name="cx", qubits=[2, 3], input=2
             ),
         ),
-        OneWireCutIdentifier(
+        SingleWireCutIdentifier(
             cut_action="CutLeftWire",
             wire_cut_location=WireCutLocation(
                 instruction_id=11, gate_name="cx", qubits=[3, 5], input=1
