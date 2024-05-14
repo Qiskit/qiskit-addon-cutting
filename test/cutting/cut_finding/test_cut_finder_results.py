@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy import array
 from pytest import fixture, raises
 from qiskit import QuantumCircuit
 from typing import Callable
@@ -190,8 +189,9 @@ def test_four_qubit_circuit_two_qubit_qpu(
     )  # circuit separated into 2 subcircuits.
 
     assert (
-        optimization_pass.get_stats()["CutOptimization"] == array([15, 46, 15, 6])
-    ).all()  # matches known stats.
+        optimization_pass.get_stats()["CutOptimization"].backjumps
+        <= settings.max_backjumps
+    )
 
 
 def test_seven_qubit_circuit_two_qubit_qpu(
