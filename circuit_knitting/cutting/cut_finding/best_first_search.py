@@ -327,13 +327,12 @@ class BestFirstSearch:
         if penultimate:
             return self.penultimate_stats
 
-        search_stats = SearchStats(
+        return SearchStats(
             states_visited=self.num_states_visited,
             next_states_generated=self.num_next_states,
             states_enqueued=self.num_enqueues,
             backjumps=self.num_backjumps,
         )
-        return search_stats
 
     def get_upperbound_cost(
         self,
