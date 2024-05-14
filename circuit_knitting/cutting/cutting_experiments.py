@@ -19,12 +19,8 @@ from collections.abc import Sequence, Hashable
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from qiskit.transpiler import PassManager
-from qiskit.transpiler.passes import RemoveResetInZeroState, DAGFixedPoint
-from qiskit.passmanager.flow_controllers import DoWhileController
 
 from ..utils.iteration import strict_zip
-from ..utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
 from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
@@ -62,12 +58,6 @@ def generate_cutting_experiments(
         :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`
 
     The coefficients will always be returned as a 1D array -- one coefficient for each unique sample.
-
-    Note that this function also runs some transpiler passes on each generated
-    circuit, namely :class:`~qiskit.transpiler.passes.RemoveResetInZeroState`,
-    :class:`.RemoveFinalReset`, and :class:`.ConsolidateResets`, in order to
-    remove unnecessary :class:`~qiskit.circuit.library.Reset`\ s from the
-    circuit that are added by the subexperiment decompositions for cut wires.
 
     Args:
         circuits: The circuit(s) to partition and separate
@@ -179,20 +169,11 @@ def generate_cutting_experiments(
     # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.
     # While we are at it, we also consolidate each run of multiple resets
     # (which can arise when re-using qubits) into a single reset.
-    pass_manager = PassManager()
-    passes = [
-        RemoveResetInZeroState(),
-        RemoveFinalReset(),
-        ConsolidateResets(),
-        DAGFixedPoint(),
-    ]
-    pass_manager.append(
-        DoWhileController(
-            passes, do_while=lambda property_set: not property_set["dag_fixed_point"]
-        )
-    )
-    for label, subexperiments in subexperiments_dict.items():
-        subexperiments_dict[label] = pass_manager.run(subexperiments)
+    for subexperiments in subexperiments_dict.values():
+        for circ in subexperiments:
+            _remove_resets_in_zero_state(circ)
+            _remove_final_resets(circ)
+            _consolidate_resets(circ)
 
     # If the input was a single quantum circuit, return the subexperiments as a list
     subexperiments_out: list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]] = (
@@ -213,7 +194,6 @@ def _get_mapping_ids_by_partition(
     # Collect QPDGate id's and relevant map id's for each subcircuit
     subcirc_qpd_gate_ids: dict[Hashable, list[list[int]]] = {}
     subcirc_map_ids: dict[Hashable, list[int]] = {}
-    decomp_ids = set()
     for label, circ in circuits.items():
         subcirc_qpd_gate_ids[label] = []
         subcirc_map_ids[label] = []
@@ -230,7 +210,6 @@ def _get_mapping_ids_by_partition(
                         ' formatted as "<your_label>_N". This allows SingleQubitQPDGates '
                         "belonging to the same cut to be sampled jointly."
                     ) from ex
-                decomp_ids.add(decomp_id)
                 subcirc_qpd_gate_ids[label].append([i])
                 subcirc_map_ids[label].append(decomp_id)
 
@@ -396,3 +375,90 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
     if not pauli_indices:
         pauli_indices = [0]
     return pauli_indices
+
+
+def _consolidate_resets(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
+    """Consolidate redundant resets into a single reset."""
+    if not inplace:  # pragma: no cover
+        circuit = circuit.copy()
+
+    # Keep up with whether the previous instruction on a given qubit was a reset
+    resets = [False] * circuit.num_qubits
+
+    # Remove resets which are immediately following other resets
+    remove_ids = []
+    for i, inst in enumerate(circuit.data):
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if resets[qargs[0]]:
+                remove_ids.append(i)
+            else:
+                resets[qargs[0]] = True
+        else:
+            for q in qargs:
+                resets[q] = False
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
+
+    return circuit
+
+
+def _remove_resets_in_zero_state(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
+    """Remove resets if they are the first instruction on a qubit."""
+    if not inplace:  # pragma: no cover
+        circuit = circuit.copy()
+
+    # Keep up with which qubits have at least one non-reset instruction
+    active_qubits: set[int] = set()
+    remove_ids = []
+    for i, inst in enumerate(circuit.data):
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if qargs[0] not in active_qubits:
+                remove_ids.append(i)
+        else:
+            for q in qargs:
+                active_qubits.add(q)
+            # Early terminate once all qubits have become active
+            if len(active_qubits) == circuit.num_qubits:
+                break
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
+
+    return circuit
+
+
+def _remove_final_resets(
+    circuit: QuantumCircuit, inplace: bool = True
+) -> QuantumCircuit:
+    """Remove resets if they are the final instruction on a qubit."""
+    if not inplace:  # pragma: no cover
+        circuit = circuit.copy()
+
+    # Keep up with whether we are at the end of a qubit
+    # We iterate in reverse, so all qubits begin in the "end" state
+    qubit_ended = set(range(circuit.num_qubits))
+    remove_ids = []
+    num_inst = len(circuit.data)
+    for i, inst in enumerate(reversed(circuit.data)):
+        qargs = [circuit.find_bit(q).index for q in inst.qubits]
+        if inst.operation.name == "reset":
+            if qargs[0] in qubit_ended:
+                remove_ids.append(num_inst - 1 - i)
+        else:
+            for q in qargs:
+                qubit_ended.discard(q)
+            # Early terminate once all qubits have been touched
+            if not qubit_ended:
+                break
+
+    for i in sorted(remove_ids, reverse=True):
+        del circuit.data[i]
+
+    return circuit

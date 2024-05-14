@@ -18,7 +18,6 @@ from typing import TYPE_CHECKING
 import numpy as np
 from dataclasses import dataclass
 from typing import cast
-from numpy.typing import NDArray
 from .search_space_generator import ActionNames
 from .cco_utils import select_search_engine, greedy_best_first_search
 from .cutting_actions import disjoint_subcircuit_actions
@@ -27,6 +26,7 @@ from .search_space_generator import (
     SearchFunctions,
     SearchSpaceGenerator,
 )
+from .best_first_search import SearchStats
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
@@ -195,14 +195,18 @@ class CutOptimization:
         circuit_interface,
         optimization_settings,
         device_constraints,
-        search_engine_config={
-            "CutOptimization": SearchSpaceGenerator(
-                functions=cut_optimization_search_funcs,
-                actions=disjoint_subcircuit_actions,
-            )
-        },
+        search_engine_config=None,
     ):
         """Assign member variables."""
+        if search_engine_config is None:
+            # Set default config
+            search_engine_config = {
+                "CutOptimization": SearchSpaceGenerator(
+                    functions=cut_optimization_search_funcs,
+                    actions=disjoint_subcircuit_actions,
+                )
+            }
+
         generator = search_engine_config["CutOptimization"]
         search_space_funcs = generator.functions
         search_space_actions = generator.actions
@@ -257,7 +261,7 @@ class CutOptimization:
             "CutOptimization",
             self.settings,
             self.search_funcs,
-            stop_at_first_min=False,
+            stop_at_first_min=True,
         )
         sq.initialize([start_state], self.func_args)
 
@@ -295,7 +299,7 @@ class CutOptimization:
         """
         return self.search_engine.minimum_reached()
 
-    def get_stats(self, penultimate: bool = False) -> NDArray[np.int_]:
+    def get_stats(self, penultimate: bool = False) -> SearchStats | None:
         """Return the search-engine statistics.
 
         This is a Numpy array containing the number of states visited

@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    CKT now requires updated versions of some dependencies: ``qiskit``
+    1.0 or later, ``qiskit-aer`` 0.14.0 or later, and
+    ``qiskit-ibm-runtime`` 0.23.0 or later.

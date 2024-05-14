@@ -12,7 +12,9 @@ The toolbox currently contains the following tools:
 
 - Circuit Cutting
 
-This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md>`_.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
+For a more detailed discussion on circuit cutting, check out our `technical guide <./circuit_cutting/explanation/index.rst#overview-of-circuit-cutting>`__.
+
+This project is meant to evolve rapidly and, as such, does not follow `Qiskit's deprecation policy <https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md>`__.  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the :ref:`release notes`.
 
 Citing this project
 -------------------
@@ -21,6 +23,8 @@ If you use the Circuit Knitting Toolbox in your research, please cite it accordi
 
 .. literalinclude:: ../CITATION.bib
    :language: bibtex
+
+If you are using the entanglement forging tool in CKT version 0.5.0 or earlier, please use `an older version of the citation file <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/stable/0.5/CITATION.bib>`__ which includes the authors of that tool.
 
 Developer guide
 ---------------
@@ -53,6 +57,7 @@ Contents
 
   API References <apidocs/index>
   Release Notes <release-notes>
+  GitHub <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox>
 
 .. Hiding - Indices and tables
    :ref:`genindex`

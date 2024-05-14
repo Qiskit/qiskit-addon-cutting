@@ -150,10 +150,10 @@ def _decompose_qpd_measurements(
         if instruction.operation.name.lower() == "qpd_measure"
     ]
 
-    # Create a classical register for the qpd measurement results.  This is
-    # partly for convenience, partly to work around
-    # https://github.com/Qiskit/qiskit-aer/issues/1660.
-    reg = ClassicalRegister(len(qpd_measure_ids), name="qpd_measurements")
+    # Create a classical register for the qpd measurement results.
+    # We force at least one classical bit as a workaround to
+    # https://github.com/openqasm/qe-qasm/issues/37.
+    reg = ClassicalRegister(max(1, len(qpd_measure_ids)), name="qpd_measurements")
     circuit.add_register(reg)
 
     # Place the measurement instructions

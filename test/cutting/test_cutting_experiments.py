@@ -15,7 +15,7 @@ import unittest
 import pytest
 import numpy as np
 from qiskit.quantum_info import PauliList, Pauli
-from qiskit.circuit import QuantumCircuit
+from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library.standard_gates import CXGate
 
 from circuit_knitting.cutting.qpd import (
@@ -30,6 +30,9 @@ from circuit_knitting.cutting import partition_problem
 from circuit_knitting.cutting.cutting_experiments import (
     _append_measurement_register,
     _append_measurement_circuit,
+    _remove_final_resets,
+    _consolidate_resets,
+    _remove_resets_in_zero_state,
 )
 
 
@@ -245,3 +248,125 @@ class TestCuttingExperiments(unittest.TestCase):
                 e_info.value.args[0]
                 == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
+
+    def test_consolidate_double_reset(self):
+        """Consolidate a pair of resets.
+        qr0:--|0>--|0>--   ==>    qr0:--|0>--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.reset(qr)
+
+        _consolidate_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_two_resets(self):
+        """Remove two final resets
+        qr0:--[H]-|0>-|0>--   ==>    qr0:--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(qr[0])
+        circuit.reset(qr[0])
+        circuit.reset(qr[0])
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr[0])
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_reset_in_diff_qubits(self):
+        """Remove a single final reset in different qubits
+        qr0:--[H]--|0>--          qr0:--[H]--
+                      ==>
+        qr1:--[X]--|0>--          qr1:--[X]----
+        """
+        qr = QuantumRegister(2, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.x(1)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+        expected.x(1)
+
+        _remove_final_resets(circuit)
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_final_reset(self):
+        """Remove a single final reset
+        qr0:--[H]--|0>--   ==>    qr0:--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_final_reset_2(self):
+        """Remove a single final reset on two qubits
+        qr0:--[H]--|0>--   ==>    qr0:--[H]-------
+            --[X]--[S]--              --[X]--[S]--
+        """
+        qr = QuantumRegister(2, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.x(1)
+        circuit.reset(0)
+        circuit.s(1)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+        expected.x(1)
+        expected.s(1)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_dont_optimize_non_final_reset(self):
+        """Do not remove reset if not final instruction
+        qr0:--|0>--[H]--   ==>    qr0:--|0>--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.h(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.reset(qr)
+        expected.h(qr)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_remove_reset_in_zero_state(self):
+        """Remove reset if first instruction on qubit
+        qr0:--|0>--[H]--   ==>    qr0:--|0>--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.h(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr)
+
+        _remove_resets_in_zero_state(circuit)
+
+        self.assertEqual(expected, circuit)

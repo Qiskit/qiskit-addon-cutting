@@ -37,15 +37,21 @@ jobs:
         shell: bash
         run: |
           tox -edocs
+      - name: Prepare docs artifact
+        if: always()
+        shell: bash
+        run: |
+          mkdir artifact
+          cp -a docs/_build/html artifact/ckt_html_docs
       - name: Upload docs artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: html_docs
-          path: ./docs/_build/html
+          name: ckt_html_docs
+          path: ./artifact
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.6' }}
-        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/stable/0.7' }}
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/

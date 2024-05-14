@@ -1,0 +1,22 @@
+---
+prelude:
+
+  The 0.7 release introduces an automated cut finding code for the new
+  circuit cutting workflow.  With this milestone, the older cutting
+  workflow (CutQC) is now deprecated.  Additionally, this is the first
+  CKT release to support version 2 of the Qiskit Runtime primitives.
+  User are encouraged to `migrate to v2 primitives
+  <https://docs.quantum.ibm.com/api/migration-guides/v2-primitives>`__
+  as soon as possible.
+
+other:
+  - |
+    The cutting tutorials have been rephrased with the goal of
+    reconstructing the expectation value of a single
+    :class:`~qiskit.quantum_info.SparsePauliOp` with many terms,
+    rather than multiple independent
+    :class:`~qiskit.quantum_info.Pauli` observables.
+  - |
+    The `circuit cutting explanation
+    <./circuit_cutting/explanation/index.rst>`__ document has been
+    expanded significantly.

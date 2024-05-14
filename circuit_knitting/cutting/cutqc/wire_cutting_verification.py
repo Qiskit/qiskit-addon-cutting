@@ -22,6 +22,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 from qiskit.quantum_info import Statevector
 from qiskit_aer import Aer
+from qiskit.utils.deprecation import deprecate_func
 
 from ...utils.conversion import quasi_to_real
 from ...utils.metrics import (
@@ -33,6 +34,12 @@ from ...utils.metrics import (
 )
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def verify(
     full_circuit: QuantumCircuit,
     reconstructed_output: np.ndarray,
@@ -74,6 +81,12 @@ def verify(
     return metrics, ground_truth
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def generate_reconstructed_output(
     full_circuit: QuantumCircuit,
     subcircuits: Sequence[QuantumCircuit],
