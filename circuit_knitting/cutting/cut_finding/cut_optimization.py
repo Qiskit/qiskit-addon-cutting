@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from dataclasses import dataclass
-from typing import cast, NamedTuple
+from typing import cast
 from .search_space_generator import ActionNames
 from .cco_utils import select_search_engine, greedy_best_first_search
 from .cutting_actions import disjoint_subcircuit_actions
@@ -26,6 +26,7 @@ from .search_space_generator import (
     SearchFunctions,
     SearchSpaceGenerator,
 )
+from .best_first_search import SearchStats
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 from .circuit_interface import SimpleGateList, GateSpec
 from .optimization_settings import OptimizationSettings
@@ -298,7 +299,7 @@ class CutOptimization:
         """
         return self.search_engine.minimum_reached()
 
-    def get_stats(self, penultimate: bool = False) -> NamedTuple | None:
+    def get_stats(self, penultimate: bool = False) -> SearchStats | None:
         """Return the search-engine statistics.
 
         This is a Numpy array containing the number of states visited

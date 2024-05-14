@@ -230,7 +230,7 @@ class BestFirstSearch:
         self.num_next_states = 0
         self.num_enqueues = 0
         self.num_backjumps = 0
-        self.penultimate_stats: NamedTuple | None = None
+        self.penultimate_stats: SearchStats | None = None
 
     def initialize(
         self,
@@ -314,7 +314,7 @@ class BestFirstSearch:
         """Return True if the optimization reached a global minimum."""
         return self.min_reached
 
-    def get_stats(self, penultimate: bool = False) -> NamedTuple | None:
+    def get_stats(self, penultimate: bool = False) -> SearchStats | None:
         """Return statistics of the search that was performed.
 
         This is a NamedTuple containing the number of states visited
