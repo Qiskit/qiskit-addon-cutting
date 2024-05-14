@@ -63,6 +63,8 @@ def find_cuts(
         seed=optimization.seed,
         max_gamma=optimization.max_gamma,
         max_backjumps=optimization.max_backjumps,
+        gate_lo=optimization.gate_lo,
+        wire_lo=optimization.wire_lo,
     )
 
     # Hard-code the optimizer to an LO-only optimizer
@@ -106,7 +108,7 @@ def find_cuts(
         )
         counter += 1
 
-        if action.action.get_name() == "CutBothWires":  
+        if action.action.get_name() == "CutBothWires":
             # There should be two wires specified in the action in this case
             assert len(action.args) == 2
             qubit_id2 = action.args[1][0] - 1
