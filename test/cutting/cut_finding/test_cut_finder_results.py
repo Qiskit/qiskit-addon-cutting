@@ -188,7 +188,10 @@ def test_four_qubit_circuit_two_qubit_qpu(
         interface.export_subcircuits_as_string(name_mapping="default") == "AABB"
     )  # circuit separated into 2 subcircuits.
 
-    assert optimization_pass.get_stats()["CutOptimization"][3] <= settings.max_backjumps
+    assert (
+        optimization_pass.get_stats()["CutOptimization"].backjumps
+        <= settings.max_backjumps
+    )
 
 
 def test_seven_qubit_circuit_two_qubit_qpu(

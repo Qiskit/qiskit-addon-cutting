@@ -17,8 +17,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from dataclasses import dataclass
-from typing import cast
-from numpy.typing import NDArray
+from typing import cast, NamedTuple
 from .search_space_generator import ActionNames
 from .cco_utils import select_search_engine, greedy_best_first_search
 from .cutting_actions import disjoint_subcircuit_actions
@@ -299,7 +298,7 @@ class CutOptimization:
         """
         return self.search_engine.minimum_reached()
 
-    def get_stats(self, penultimate: bool = False) -> NDArray[np.int_]:
+    def get_stats(self, penultimate: bool = False) -> NamedTuple | None:
         """Return the search-engine statistics.
 
         This is a Numpy array containing the number of states visited
