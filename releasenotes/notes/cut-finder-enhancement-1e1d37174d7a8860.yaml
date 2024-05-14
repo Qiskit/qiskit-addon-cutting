@@ -1,0 +1,4 @@
+---
+upgrade:
+  - |
+    The search engine inside the automated cut-finder has been primed to avoid extraneous searches and is therefore expected to run faster.
