@@ -68,7 +68,7 @@ def cut_optimization_upper_bound_cost_func(
         return (goal_state.upper_bound_gamma(), np.inf)
     else:
         raise Exception(
-            "None state encountered. This means that no cut state satisfying the specified constraints and settings was found."
+            "None state encountered: no cut state satisfying the specified constraints and settings could be found."
         )
 
 
