@@ -87,7 +87,8 @@ def run_subcircuit_instances(
                 "With no backend specified, CutQC defaults to using "
                 "ibmq_qasm_simulator, but cloud simulators are not expected to be "
                 "operational past May 15, 2024. For more details, see: "
-                "https://docs.quantum.ibm.com/announcements/product-updates/2024-03-22-announcement-cloud-simulators-and-lab"
+                "https://docs.quantum.ibm.com/announcements/product-updates/2024-03-22-announcement-cloud-simulators-and-lab",
+                stacklevel=2,
             )
             backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
             if options:
