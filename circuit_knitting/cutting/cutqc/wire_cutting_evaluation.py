@@ -81,7 +81,8 @@ def run_subcircuit_instances(
                     options[i % len(options)] for i, _ in enumerate(subcircuits)
                 ]
         else:
-            backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
+            least_busy = service.least_busy().name
+            backend_names_repeated = [least_busy] * len(subcircuits)
             if options:
                 options_repeated = [options[0]] * len(subcircuits)
             else:
