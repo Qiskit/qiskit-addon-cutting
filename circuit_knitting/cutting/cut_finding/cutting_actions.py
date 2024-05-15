@@ -417,7 +417,7 @@ class ActionCutBothWires(DisjointSearchAction):
         new_state.bell_pairs.append((r2, rnew_2))
         new_state.gamma_UB *= 16
 
-        new_state.add_action(self, gate_spec, ((1, w1, rnew_1), (2, w2, rnew_2)))
+        new_state.add_action(self, gate_spec, (1, w1, rnew_1), (2, w2, rnew_2))
 
         return [new_state]
 
