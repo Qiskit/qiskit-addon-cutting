@@ -1,0 +1,6 @@
+---
+prelude: |
+  The 0.7.2 release includes two improvements to the automated cut
+  finder: a performance enhancement, and a fix to a bug that occurs
+  when the cut finder finds a solution where both incoming wires to a
+  gate are to be cut.
