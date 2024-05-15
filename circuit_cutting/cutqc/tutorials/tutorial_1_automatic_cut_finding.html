@@ -470,8 +470,10 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 <span class="c1"># Set the Sampler and runtime options</span>
 <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">(</span><span class="n">execution</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">})</span>
 
-<span class="c1"># Run 2 parallel qasm simulator threads</span>
-<span class="n">backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ibmq_qasm_simulator&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="c1"># Use the least busy backend for both threads</span>
+<span class="n">backend_names</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">if</span> <span class="n">service</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">backend_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">service</span><span class="o">.</span><span class="n">least_busy</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -498,7 +500,7 @@ dict_keys([&#39;max_subcircuit_width&#39;, &#39;subcircuits&#39;, &#39;complete_
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_2943/4196057829.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting.evaluate_subcircuits()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
+/tmp/ipykernel_2740/4196057829.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting.evaluate_subcircuits()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
   subcircuit_instance_probabilities = evaluate_subcircuits(cuts)
 </pre></div></div>
 </div>
@@ -627,7 +629,7 @@ Size of reconstructed probability distribution:  256
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_2943/3419935587.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting_verification.verify()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
+/tmp/ipykernel_2740/3419935587.py:3: DeprecationWarning: The function ``circuit_knitting.cutting.cutqc.wire_cutting_verification.verify()`` is deprecated as of circuit-knitting-toolbox 0.7.0. It will be removed no sooner than CKT v0.8.0. Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package.
   metrics, exact_probabilities = verify(circuit, reconstructed_probabilities)
 </pre></div></div>
 </div>
