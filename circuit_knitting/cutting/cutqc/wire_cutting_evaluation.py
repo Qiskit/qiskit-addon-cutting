@@ -17,6 +17,7 @@ import itertools
 import copy
 from typing import Sequence, Any
 from multiprocessing.pool import ThreadPool
+from warnings import warn
 
 import numpy as np
 
@@ -81,8 +82,14 @@ def run_subcircuit_instances(
                     options[i % len(options)] for i, _ in enumerate(subcircuits)
                 ]
         else:
-            least_busy = service.least_busy().name
-            backend_names_repeated = [least_busy] * len(subcircuits)
+            warn(
+                "Please provide a list of `backend_names` alongside the `service`. "
+                "With no backend specified, CutQC defaults to using "
+                "ibmq_qasm_simulator, but cloud simulators are not expected to be "
+                "operational past May 15, 2024. For more details, see: "
+                "https://docs.quantum.ibm.com/announcements/product-updates/2024-03-22-announcement-cloud-simulators-and-lab"
+            )
+            backend_names_repeated = ["ibmq_qasm_simulator"] * len(subcircuits)
             if options:
                 options_repeated = [options[0]] * len(subcircuits)
             else:
