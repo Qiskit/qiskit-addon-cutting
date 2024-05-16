@@ -285,8 +285,12 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        # XXPlusYYGate, XXMinusYYGate, with some combinations:
+        #     beta == 0 or not; and
+        #     within |theta| < pi or not
         (XXPlusYYGate(0.1), 1 + 4 * np.sin(0.05) + 2 * np.sin(0.05) ** 2),
-        (XXMinusYYGate(0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
+        (XXPlusYYGate(4), 1 + 4 * np.sin(2) + 2 * np.sin(2) ** 2),
+        (XXMinusYYGate(0.2, beta=0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
         (Move(), 4),
     )
     @unpack

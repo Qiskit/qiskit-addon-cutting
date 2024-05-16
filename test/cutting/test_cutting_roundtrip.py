@@ -89,7 +89,12 @@ def append_random_unitary(circuit: QuantumCircuit, qubits):
         [RXXGate(np.pi / 3), CPhaseGate(np.pi / 7)],
         [UnitaryGate(random_unitary(2**2))],
         [RZXGate(np.pi / 5)],
+        # XXPlusYYGate, XXMinusYYGate, with some combinations:
+        #     beta == 0 or not; and
+        #     within |theta| < pi or not
         [XXPlusYYGate(7 * np.pi / 11)],
+        [XXPlusYYGate(17 * np.pi / 11, beta=0.4)],
+        [XXPlusYYGate(-19 * np.pi / 11, beta=0.3)],
         [XXMinusYYGate(11 * np.pi / 17)],
         [Move()],
         [Move(), Move()],
