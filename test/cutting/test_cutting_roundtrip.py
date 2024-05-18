@@ -16,7 +16,7 @@ import logging
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
-from qiskit.circuit.library import UnitaryGate
+from qiskit.circuit.library import EfficientSU2, UnitaryGate
 from qiskit.circuit.library.standard_gates import (
     RXXGate,
     RYYGate,
