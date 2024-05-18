@@ -137,14 +137,11 @@ def cut_gates(
     Returns:
         A copy of the input circuit with the specified gates replaced with :class:`.TwoQubitQPDGate`\ s
         and a list of :class:`.QPDBasis` instances -- one for each decomposed gate.
-
-    Raises:
-        ValueError: The input circuit should contain no classical bits or registers.
     """
-    # Replace specified gates with TwoQubitQPDGates
     if not inplace:
         circuit = circuit.copy()
 
+    # Replace specified gates with TwoQubitQPDGates
     bases = []
     for gate_id in gate_ids:
         gate = circuit.data[gate_id]
