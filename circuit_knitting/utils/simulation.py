@@ -152,7 +152,7 @@ class ExactSampler(BaseSampler):
         self,
         circuits: tuple[QuantumCircuit, ...],
         parameter_values: Sequence[Sequence[float]],
-        **run_options,
+        **ignored_run_options,
     ) -> SamplerResult:
         metadata: list[dict[str, Any]] = [{} for _ in range(len(circuits))]
         bound_circuits = [
@@ -170,5 +170,6 @@ class ExactSampler(BaseSampler):
         **run_options,
     ):
         job = PrimitiveJob(self._call, circuits, parameter_values, **run_options)
-        job.submit()
+        # The public submit method was removed in Qiskit 1.0
+        (job.submit if hasattr(job, "submit") else job._submit)()
         return job

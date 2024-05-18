@@ -46,10 +46,17 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Sequence, Any
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
+from qiskit.utils.deprecation import deprecate_func
 
 from .wire_cutting_post_processing import build, find_process_jobs
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def dd_build(
     summation_terms: Sequence[dict[int, int]],
     subcircuit_entry_probs: dict[int, dict[int, np.ndarray]],
@@ -350,11 +357,11 @@ def _merge_state_into_bins_parallel(
             subcircuit_entry_id = subcircuit_instances[subcircuit_idx][
                 subcircuit_entry_init_meas
             ]
-            merged_subcircuit_entry_probs[subcircuit_idx][
-                subcircuit_entry_id
-            ] = _merge_prob_vector(
-                subcircuit_entry_probs[subcircuit_idx][subcircuit_entry_id],
-                dd_schedule["subcircuit_state"][subcircuit_idx],
+            merged_subcircuit_entry_probs[subcircuit_idx][subcircuit_entry_id] = (
+                _merge_prob_vector(
+                    subcircuit_entry_probs[subcircuit_idx][subcircuit_entry_id],
+                    dd_schedule["subcircuit_state"][subcircuit_idx],
+                )
             )
     return merged_subcircuit_entry_probs
 
@@ -404,9 +411,9 @@ def _merge_states_into_bins(
         rank_merged_subcircuit_entry_probs = workers_merge_subcircuit_entry_probs[rank]
         for subcircuit_idx in rank_merged_subcircuit_entry_probs:
             if subcircuit_idx not in merged_subcircuit_entry_probs:
-                merged_subcircuit_entry_probs[
-                    subcircuit_idx
-                ] = rank_merged_subcircuit_entry_probs[subcircuit_idx]
+                merged_subcircuit_entry_probs[subcircuit_idx] = (
+                    rank_merged_subcircuit_entry_probs[subcircuit_idx]
+                )
             else:
                 merged_subcircuit_entry_probs[subcircuit_idx].update(
                     rank_merged_subcircuit_entry_probs[subcircuit_idx]
@@ -414,6 +421,12 @@ def _merge_states_into_bins(
     return merged_subcircuit_entry_probs
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def read_dd_bins(
     subcircuit_out_qubits: dict[int, list[int]], dd_bins: dict[int, dict[str, Any]]
 ) -> np.ndarray:
@@ -474,15 +487,21 @@ def read_dd_bins(
                     ["0", "1"], repeat=num_merged
                 ):
                     for merged_qubit_ctr in range(num_merged):
-                        binary_full_state[
-                            merged_qubit_indices[merged_qubit_ctr]
-                        ] = binary_merged_state[merged_qubit_ctr]
+                        binary_full_state[merged_qubit_indices[merged_qubit_ctr]] = (
+                            binary_merged_state[merged_qubit_ctr]
+                        )
                     full_state = "".join(binary_full_state)[::-1]
                     full_state_idx = int(full_state, 2)
                     reconstructed_prob[full_state_idx] = average_state_prob
     return reconstructed_prob
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def get_reconstruction_qubit_order(
     full_circuit: QuantumCircuit,
     complete_path_map: dict[Qubit, list[dict[str, int | Qubit]]],

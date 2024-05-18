@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - name: Install dependencies
@@ -37,15 +37,21 @@ jobs:
         shell: bash
         run: |
           tox -edocs
+      - name: Prepare docs artifact
+        if: always()
+        shell: bash
+        run: |
+          mkdir artifact
+          cp -a docs/_build/html artifact/ckt_html_docs
       - name: Upload docs artifact
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: html_docs
-          path: ./docs/_build/html
+          name: ckt_html_docs
+          path: ./artifact
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.4' }}
-        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/stable/0.7' }}
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/_build/html/

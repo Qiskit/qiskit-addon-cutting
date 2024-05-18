@@ -386,7 +386,7 @@ class TestTransforms(unittest.TestCase):
         with self.subTest("frozenset for each partition label"):
             circuit = QuantumCircuit(4)
             circuit.x(0)
-            circuit.cnot(1, 2)
+            circuit.cx(1, 2)
             circuit.h(3)
             partition_labels = [
                 frozenset([0]),
@@ -401,7 +401,7 @@ class TestTransforms(unittest.TestCase):
             compare[frozenset([0])] = QuantumCircuit(1)
             compare[frozenset([0])].x(0)
             compare[frozenset([1])] = QuantumCircuit(2)
-            compare[frozenset([1])].cnot(0, 1)
+            compare[frozenset([1])].cx(0, 1)
             compare[frozenset([2])] = QuantumCircuit(1)
             compare[frozenset([2])].h(0)
             assert separated_circuits.subcircuits.keys() == compare.keys()

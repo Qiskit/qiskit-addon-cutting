@@ -20,11 +20,18 @@ import pytest
 import numpy as np
 import numpy.typing as npt
 from ddt import ddt, data, unpack
-from qiskit.circuit import CircuitInstruction
+from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
 from qiskit.circuit.library import (
     EfficientSU2,
     CXGate,
+    CYGate,
     CZGate,
+    CHGate,
+    CPhaseGate,
+    CSGate,
+    CSdgGate,
+    CSXGate,
+    ECRGate,
     CRXGate,
     CRYGate,
     CRZGate,
@@ -32,19 +39,29 @@ from qiskit.circuit.library import (
     RYYGate,
     RZZGate,
     RZXGate,
+    XXPlusYYGate,
+    XXMinusYYGate,
+    SwapGate,
+    iSwapGate,
+    DCXGate,
 )
 
-from circuit_knitting.utils.iteration import unique_by_eq
+from circuit_knitting.utils.iteration import unique_by_eq, strict_zip
+from circuit_knitting.cutting.instructions import Move
 from circuit_knitting.cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
+    WeightType,
     generate_qpd_weights,
+    decompose_qpd_instructions,
+    qpdbasis_from_instruction,
 )
-from circuit_knitting.cutting.qpd.qpd import *
-from circuit_knitting.cutting.qpd.qpd import (
+from circuit_knitting.cutting.qpd.weights import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
+)
+from circuit_knitting.cutting.qpd.decompositions import (
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
     _explicitly_supported_instructions,
@@ -131,7 +148,7 @@ class TestQPDFunctions(unittest.TestCase):
         with self.subTest("Empty circuit"):
             circ = QuantumCircuit()
             new_circ = decompose_qpd_instructions(QuantumCircuit(), [])
-            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            circ.add_register(ClassicalRegister(1, name="qpd_measurements"))
             self.assertEqual(circ, new_circ)
         with self.subTest("No QPD circuit"):
             circ = QuantumCircuit(2, 1)
@@ -139,7 +156,7 @@ class TestQPDFunctions(unittest.TestCase):
             circ.cx(0, 1)
             circ.measure(1, 0)
             new_circ = decompose_qpd_instructions(circ, [])
-            circ.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            circ.add_register(ClassicalRegister(1, name="qpd_measurements"))
             self.assertEqual(circ, new_circ)
         with self.subTest("Single QPD gate"):
             circ = QuantumCircuit(2)
@@ -148,7 +165,7 @@ class TestQPDFunctions(unittest.TestCase):
             qpd_gate = TwoQubitQPDGate(qpd_basis)
             circ.data.append(CircuitInstruction(qpd_gate, qubits=[0, 1]))
             decomp_circ = decompose_qpd_instructions(circ, [[0]], map_ids=[0])
-            circ_compare.add_register(ClassicalRegister(0, name="qpd_measurements"))
+            circ_compare.add_register(ClassicalRegister(1, name="qpd_measurements"))
             self.assertEqual(decomp_circ, circ_compare)
         with self.subTest("Incorrect map index size"):
             with pytest.raises(ValueError) as e_info:
@@ -268,6 +285,12 @@ class TestQPDFunctions(unittest.TestCase):
         (SwapGate(), 7),
         (iSwapGate(), 7),
         (DCXGate(), 7),
+        # XXPlusYYGate, XXMinusYYGate, with some combinations:
+        #     beta == 0 or not; and
+        #     within |theta| < pi or not
+        (XXPlusYYGate(0.1), 1 + 4 * np.sin(0.05) + 2 * np.sin(0.05) ** 2),
+        (XXPlusYYGate(4), 1 + 4 * np.sin(2) + 2 * np.sin(2) ** 2),
+        (XXMinusYYGate(0.2, beta=0.2), 1 + 4 * np.sin(0.1) + 2 * np.sin(0.1) ** 2),
         (Move(), 4),
     )
     @unpack

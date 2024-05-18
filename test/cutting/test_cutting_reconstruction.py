@@ -15,9 +15,14 @@ from ddt import ddt, data, unpack
 import pytest
 import numpy as np
 from qiskit.result import QuasiDistribution
-from qiskit.primitives import SamplerResult
+from qiskit.primitives import (
+    SamplerResult,
+    PrimitiveResult,
+    PubResult,
+    BitArray,
+)
+from qiskit.primitives.containers import make_data_bin
 from qiskit.quantum_info import Pauli, PauliList
-from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
 from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
 from circuit_knitting.cutting.qpd import WeightType
@@ -30,15 +35,6 @@ from circuit_knitting.cutting.cutting_reconstruction import (
 @ddt
 class TestCuttingReconstruction(unittest.TestCase):
     def setUp(self):
-        qc = QuantumCircuit(2)
-        qc.h(0)
-        qc.cx(0, 1)
-        self.qc0 = qc.copy()
-        qc.add_register(ClassicalRegister(1, name="qpd_measurements"))
-        self.qc1 = qc.copy()
-        qc.add_register(ClassicalRegister(2, name="observable_measurements"))
-        self.qc2 = qc
-
         self.cog = CommutingObservableGroup(
             Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"]))
         )
@@ -48,13 +44,7 @@ class TestCuttingReconstruction(unittest.TestCase):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(1.0, WeightType.EXACT)]
-            subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
-            subexperiments[0].add_register(creg1)
-            subexperiments[0].add_register(creg2)
             observables = PauliList(["ZZ"])
             expvals = reconstruct_expectation_values(results, weights, observables)
             self.assertEqual([1.0], expvals)
@@ -62,9 +52,7 @@ class TestCuttingReconstruction(unittest.TestCase):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT), (0.5, WeightType.EXACT)]
-            subexperiments = {"A": QuantumCircuit(2)}
             observables = {"A": PauliList(["Z"]), "B": PauliList(["Z"])}
             with pytest.raises(ValueError) as e_info:
                 reconstruct_expectation_values(results, weights, observables)
@@ -78,19 +66,13 @@ class TestCuttingReconstruction(unittest.TestCase):
                 reconstruct_expectation_values(results2, weights, observables)
             assert (
                 e_info.value.args[0]
-                == "If observables is a PauliList, results must be a SamplerResult instance."
+                == "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
             )
         with self.subTest("Test unsupported phase"):
             results = SamplerResult(
                 quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
             )
-            results.metadata[0]["num_qpd_bits"] = 1
             weights = [(0.5, WeightType.EXACT)]
-            subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
-            subexperiments[0].add_register(creg1)
-            subexperiments[0].add_register(creg2)
             observables = PauliList(["iZZ"])
             with pytest.raises(ValueError) as e_info:
                 reconstruct_expectation_values(results, weights, observables)
@@ -99,7 +81,6 @@ class TestCuttingReconstruction(unittest.TestCase):
                 == "An input observable has a phase not equal to 1."
             )
             results = {"A": results}
-            subexperiments = {"A": subexperiments}
             observables = {"A": observables}
             with pytest.raises(ValueError) as e_info:
                 reconstruct_expectation_values(results, weights, observables)
@@ -107,49 +88,45 @@ class TestCuttingReconstruction(unittest.TestCase):
                 e_info.value.args[0]
                 == "An input observable has a phase not equal to 1."
             )
-        with self.subTest("Test num_qpd_bits"):
-            results = SamplerResult(
-                quasi_dists=[QuasiDistribution({"0": 1.0})], metadata=[{}]
+        with self.subTest("Test SamplerV2 result"):
+            data_bin_cls = make_data_bin(
+                [("observable_measurements", BitArray), ("qpd_measurements", BitArray)],
+                shape=(),
             )
-            results.metadata[0]["num_qpd_bits"] = 1.0
-            weights = [(0.5, WeightType.EXACT)]
-            subexperiments = [QuantumCircuit(2)]
-            creg1 = ClassicalRegister(1, name="qpd_measurements")
-            creg2 = ClassicalRegister(2, name="observable_measurements")
-            subexperiments[0].add_register(creg1)
-            subexperiments[0].add_register(creg2)
-            observables = PauliList(["ZZ"])
-            with pytest.raises(TypeError) as e_info:
-                reconstruct_expectation_values(results, weights, observables)
-            assert (
-                e_info.value.args[0]
-                == "num_qpd_bits must be an integer, but a <class 'float'> was passed."
+            obs_data = BitArray(
+                np.array([0, 0, 0, 1, 0, 0, 2, 3, 1, 0], dtype=np.uint8).reshape(-1, 1),
+                2,
             )
-            results.metadata[0] = {}
-            with pytest.raises(ValueError) as e_info:
-                reconstruct_expectation_values(results, weights, observables)
-            assert (
-                e_info.value.args[0]
-                == "The num_qpd_bits field must be set in each subexperiment result metadata dictionary."
+            qpd_data = BitArray(
+                np.array([0, 1, 1, 3, 2, 0, 1, 3, 0, 2], dtype=np.uint8).reshape(-1, 1),
+                2,
             )
+            data_bin = data_bin_cls(
+                observable_measurements=obs_data, qpd_measurements=qpd_data
+            )
+            pub_result = PubResult(data_bin)
+            results = PrimitiveResult([pub_result])
+            weights = [(1.0, WeightType.EXACT)]
+            observables = PauliList(["II", "IZ", "ZI", "ZZ"])
+            expvals = reconstruct_expectation_values(results, weights, observables)
+            assert expvals == pytest.approx([0.0, -0.6, 0.0, -0.2])
 
     @data(
         ("000", [1, 1, 1]),
-        ("001", [-1, -1, -1]),
-        ("010", [-1, 1, -1]),
-        ("011", [1, -1, 1]),
-        ("100", [1, -1, -1]),
-        ("101", [-1, 1, 1]),
-        ("110", [-1, -1, 1]),
+        ("001", [-1, 1, -1]),
+        ("010", [1, -1, -1]),
+        ("011", [-1, -1, 1]),
+        ("100", [-1, -1, -1]),
+        ("101", [1, -1, 1]),
+        ("110", [-1, 1, 1]),
         ("111", [1, 1, -1]),
     )
     @unpack
     def test_process_outcome(self, outcome, expected):
-        num_qpd_bits = len(self.qc2.cregs[-2])
         for o in (
             outcome,
             f"0b{outcome}",
             int(f"0b{outcome}", 0),
             hex(int(f"0b{outcome}", 0)),
         ):
-            assert np.all(_process_outcome(num_qpd_bits, self.cog, o) == expected)
+            assert np.all(_process_outcome(self.cog, o) == expected)

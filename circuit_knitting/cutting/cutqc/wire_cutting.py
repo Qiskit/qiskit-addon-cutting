@@ -21,6 +21,7 @@ from qiskit.circuit import Qubit
 from qiskit.dagcircuit import DAGCircuit, DAGOpNode
 from qiskit.converters import circuit_to_dag, dag_to_circuit
 from qiskit_ibm_runtime import Options, QiskitRuntimeService
+from qiskit.utils.deprecation import deprecate_func
 
 from .wire_cutting_evaluation import run_subcircuit_instances
 from .wire_cutting_post_processing import generate_summation_terms, build
@@ -32,6 +33,12 @@ from .dynamic_definition import (
 )
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def cut_circuit_wires(
     circuit: QuantumCircuit,
     method: str,
@@ -69,7 +76,7 @@ def cut_circuit_wires(
     if method == "automatic":
         if max_subcircuit_width is None:
             raise ValueError(
-                "The max_subcircuit_width argument must be set if using automatic cut finding."
+                "The max_subcircuit_width argument must be set if using automatic cut-finding."
             )
         cuts = find_wire_cuts(
             circuit=circuit,
@@ -96,6 +103,12 @@ def cut_circuit_wires(
     return cuts
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def evaluate_subcircuits(
     cuts: dict[str, Any],
     service: QiskitRuntimeService | None = None,
@@ -154,6 +167,12 @@ def evaluate_subcircuits(
     return subcircuit_instance_probabilities
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def reconstruct_full_distribution(
     circuit: QuantumCircuit,
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
@@ -196,6 +215,12 @@ def reconstruct_full_distribution(
     return reconstructed_probability
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def create_dd_bin(
     subcircuit_instance_probabilities: dict[int, dict[int, np.ndarray]],
     cuts: dict[str, Any],
@@ -235,6 +260,12 @@ def create_dd_bin(
     )
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def reconstruct_dd_full_distribution(
     circuit: QuantumCircuit,
     cuts: dict[str, Any],
@@ -263,9 +294,7 @@ def reconstruct_dd_full_distribution(
     return reconstructed_prob
 
 
-def _generate_metadata(
-    cuts: dict[str, Any]
-) -> tuple[
+def _generate_metadata(cuts: dict[str, Any]) -> tuple[
     list[dict[int, int]],
     dict[int, dict[tuple[str, str], tuple[int, Sequence[tuple[int, int]]]]],
     dict[int, dict[tuple[tuple[str, ...], tuple[Any, ...]], int]],
@@ -387,6 +416,12 @@ def _attribute_shots(
 
 
 @no_type_check
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def find_wire_cuts(
     circuit: QuantumCircuit,
     max_subcircuit_width: int,
@@ -410,7 +445,7 @@ def find_wire_cuts(
         max_subcircuit_cuts: Max number of cuts for a subcircuit
         max_subcircuit_size: The maximum number of two qubit gates in each
             subcircuit
-        verbose: Whether to print information about the cut finding or not
+        verbose: Whether to print information about the cut-finding or not
 
     Returns:
         The solution found for the cuts
@@ -431,7 +466,7 @@ def find_wire_cuts(
             if verbose:
                 print("%d subcircuits : IMPOSSIBLE" % (num_subcircuit))
             continue
-        kwargs = dict(
+        kwargs = dict(  # pylint: disable=use-dict-literal
             n_vertices=n_vertices,
             edges=edges,
             vertex_ids=vertex_ids,
@@ -483,7 +518,6 @@ def find_wire_cuts(
         subcircuits: Sequence[Any] = cut_solution["subcircuits"]
         num_cuts: int = cut_solution["num_cuts"]
         _print_cutter_result(
-            num_subcircuit=len(subcircuits),
             num_cuts=num_cuts,
             subcircuits=subcircuits,
             counter=counter,
@@ -492,7 +526,7 @@ def find_wire_cuts(
 
         if best_mip_model is None:
             raise ValueError(
-                "Something went wrong during cut finding. The best MIP model object was never instantiated."
+                "Something went wrong during cut-finding. The best MIP model object was never instantiated."
             )
         print("Model objective value = %.2e" % (best_mip_model.objective), flush=True)  # type: ignore
         print("MIP runtime:", best_mip_model.runtime, flush=True)
@@ -505,6 +539,12 @@ def find_wire_cuts(
     return cut_solution
 
 
+@deprecate_func(
+    removal_timeline="no sooner than CKT v0.8.0",
+    since="0.7.0",
+    package_name="circuit-knitting-toolbox",
+    additional_msg="Use the wire cutting or automated cut-finding functionality in the ``circuit_knitting.cutting`` package. ",
+)
 def cut_circuit_wire(
     circuit: QuantumCircuit, subcircuit_vertices: Sequence[Sequence[int]], verbose: bool
 ) -> dict[str, Any]:
@@ -558,7 +598,6 @@ def cut_circuit_wire(
     if verbose:
         print("-" * 20)
         _print_cutter_result(
-            num_subcircuit=len(cut_solution["subcircuits"]),
             num_cuts=cut_solution["num_cuts"],
             subcircuits=cut_solution["subcircuits"],
             counter=cut_solution["counter"],
@@ -569,7 +608,6 @@ def cut_circuit_wire(
 
 
 def _print_cutter_result(
-    num_subcircuit: int,
     num_cuts: int,
     subcircuits: Sequence[QuantumCircuit],
     counter: dict[int, dict[str, int]],
@@ -579,7 +617,6 @@ def _print_cutter_result(
     Pretty print the results.
 
     Args:
-        num_subciruit: The number of subcircuits
         num_cuts: The number of cuts
         subcircuits: The list of subcircuits
         counter: The dictionary containing all meta information regarding
@@ -589,7 +626,8 @@ def _print_cutter_result(
     Returns:
         None
     """
-    for subcircuit_idx in range(num_subcircuit):
+    print(f"num_cuts = {num_cuts}")
+    for subcircuit_idx, subcircuit in enumerate(subcircuits):
         print("subcircuit %d" % subcircuit_idx)
         print(
             "\u03C1 qubits = %d, O qubits = %d, width = %d, effective = %d, depth = %d, size = %d"
@@ -602,7 +640,7 @@ def _print_cutter_result(
                 counter[subcircuit_idx]["size"],
             )
         )
-        print(subcircuits[subcircuit_idx])
+        print(subcircuit)
     print("Estimated cost = %.3e" % classical_cost, flush=True)
 
 
@@ -621,7 +659,7 @@ def _cuts_parser(
         that are affected by these cuts
     """
     dag = circuit_to_dag(circ)
-    positions = []
+    positions: list[tuple[Qubit, int]] = []
     for position in cuts:
         if len(position) != 2:
             raise ValueError(

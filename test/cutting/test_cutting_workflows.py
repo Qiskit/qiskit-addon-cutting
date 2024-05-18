@@ -14,25 +14,32 @@
 import pytest
 from copy import deepcopy
 
+import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit.providers.fake_provider import FakeLagosV2
+from qiskit.providers.fake_provider import GenericBackendV2
+from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer.primitives import Sampler
+from qiskit_aer import AerSimulator
 
 from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
 from circuit_knitting.cutting.qpd import QPDBasis
+from circuit_knitting.cutting.instructions import CutWire, Move
 from circuit_knitting.cutting import (
     partition_problem,
     generate_cutting_experiments,
     reconstruct_expectation_values,
+    cut_wires,
+    expand_observables,
 )
 
 
 def test_transpile_before_realizing_basis_id():
     """Test a workflow where a :class:`.SingleQubitQPDGate` is passed through the transpiler."""
-    circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+    num_qubits = 4
+    circuit = EfficientSU2(num_qubits, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
     subcircuits, bases, subobservables = partition_problem(
@@ -41,7 +48,7 @@ def test_transpile_before_realizing_basis_id():
 
     # Create a fake backend, and modify the target gate set so it thinks a
     # SingleQubitQPDGate is allowed.
-    backend = FakeLagosV2()
+    backend = GenericBackendV2(num_qubits=num_qubits)
     target = deepcopy(backend.target)
     sample_qpd_instruction = SingleQubitQPDGate(QPDBasis.from_instruction(CXGate()), 1)
     target.add_instruction(
@@ -90,16 +97,12 @@ def test_exotic_labels(label1, label2):
         for label, sampler in samplers.items()
     }
 
-    for label in results:
-        for i, subexperiment in enumerate(subexperiments[label]):
-            results[label].metadata[i]["num_qpd_bits"] = len(subexperiment.cregs[0])
-
-    simulated_expvals = reconstruct_expectation_values(
+    reconstructed_expvals = reconstruct_expectation_values(
         results,
         coefficients,
         subobservables,
     )
-    assert len(simulated_expvals) == len(observables)
+    assert len(reconstructed_expvals) == len(observables)
 
 
 def test_workflow_with_unused_qubits():
@@ -113,3 +116,107 @@ def test_workflow_with_unused_qubits():
         subobservables,
         num_samples=10,
     )
+
+
+def test_wire_cut_workflow_without_reused_qubits():
+    """Test no resets in subexperiments when wire cut workflow has no re-used qubits."""
+    qc = QuantumCircuit(2)
+    qc.h(range(2))
+    qc.cx(0, 1)
+    qc.append(CutWire(), [0])
+    qc.cx(1, 0)
+
+    observables = PauliList(["IZ", "ZI", "ZZ", "XX"])
+
+    qc_1 = cut_wires(qc)
+    assert qc_1.num_qubits == 3
+
+    observables_1 = expand_observables(observables, qc, qc_1)
+
+    partitioned_problem = partition_problem(circuit=qc_1, observables=observables_1)
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=np.inf,
+    )
+
+    for subsystem_subexpts in subexperiments.values():
+        for subexpt in subsystem_subexpts:
+            assert "reset" not in subexpt.count_ops()
+
+
+def test_wire_cut_workflow_with_reused_qubits():
+    """Test at most a single reset in subexperiments when wire cut workflow has a single re-used qubit."""
+    qc = QuantumCircuit(8)
+    for i in [*range(4), *range(5, 8)]:
+        qc.rx(np.pi / 4, i)
+    qc.cx(0, 3)
+    qc.cx(1, 3)
+    qc.cx(2, 3)
+    qc.append(Move(), [3, 4])
+    qc.cx(4, 5)
+    qc.cx(4, 6)
+    qc.cx(4, 7)
+    qc.append(Move(), [4, 3])
+    qc.cx(0, 3)
+    qc.cx(1, 3)
+    qc.cx(2, 3)
+
+    observables = PauliList(["ZIIIIIII", "IIIIZIII", "IIIIIIIZ"])
+
+    partitioned_problem = partition_problem(
+        circuit=qc, partition_labels="AAAABBBB", observables=observables
+    )
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=np.inf,
+    )
+
+    # The initial circuit had a single instance of qubit re-use with a Move
+    # instruction.  Each A subexperiment should have a single reset, and each B
+    # subexperiment should be free of resets.
+    for subexpt in subexperiments["A"]:
+        assert subexpt.count_ops()["reset"] == 1
+    for subexpt in subexperiments["B"]:
+        assert "reset" not in subexpt.count_ops()
+
+
+def test_reconstruction_with_samplerv2():
+    """Smoke test for reconstruction using samplerv2"""
+    qc = QuantumCircuit(4)
+    qc.h(range(4))
+    qc.ryy(0.1, 1, 2)
+    qc.h(range(4))
+
+    observables = PauliList(["ZIII", "IZII", "IIZI", "IIIZ"])
+
+    partitioned_problem = partition_problem(
+        circuit=qc, partition_labels=[0, 0, 1, 1], observables=observables
+    )
+
+    subexperiments, coefficients = generate_cutting_experiments(
+        circuits=partitioned_problem.subcircuits,
+        observables=partitioned_problem.subobservables,
+        num_samples=100,
+    )
+
+    # Use SamplerV2 in local mode with AerSimulator
+    samplers = {
+        label: SamplerV2(backend=AerSimulator()) for label in subexperiments.keys()
+    }
+    results = {
+        label: sampler.run(subexperiments[label], shots=128).result()
+        for label, sampler in samplers.items()
+    }
+
+    # Smoke test of reconstruction
+    reconstructed_expvals = reconstruct_expectation_values(
+        results,
+        coefficients,
+        partitioned_problem.subobservables,
+    )
+
+    assert len(reconstructed_expvals) == len(observables)

@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for cutting_decomposition package."""
+"""Tests for cutting_decomposition module."""
 
 import unittest
 
@@ -137,7 +137,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             )
         with self.subTest("Unsupported gate"):
             compare_circuit = QuantumCircuit(3)
-            compare_circuit.toffoli(0, 1, 2)
+            compare_circuit.ccx(0, 1, 2)
             partitions = [0, 1, 1]
             with pytest.raises(ValueError) as e_info:
                 partition_circuit_qubits(compare_circuit, partitions)
@@ -147,7 +147,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             )
         with self.subTest("Toffoli gate in a single partition"):
             circuit = QuantumCircuit(4)
-            circuit.toffoli(0, 1, 2)
+            circuit.ccx(0, 1, 2)
             circuit.rzz(np.pi / 7, 2, 3)
             partition_circuit_qubits(circuit, "AAAB")
 

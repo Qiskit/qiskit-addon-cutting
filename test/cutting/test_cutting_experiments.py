@@ -15,7 +15,7 @@ import unittest
 import pytest
 import numpy as np
 from qiskit.quantum_info import PauliList, Pauli
-from qiskit.circuit import QuantumCircuit, ClassicalRegister
+from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library.standard_gates import CXGate
 
 from circuit_knitting.cutting.qpd import (
@@ -29,7 +29,11 @@ from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
 from circuit_knitting.cutting.cutting_experiments import (
     generate_distribution_cutting_experiments,
+    _append_measurement_register,
     _append_measurement_circuit,
+    _remove_final_resets,
+    _consolidate_resets,
+    _remove_resets_in_zero_state,
 )
 
 
@@ -157,23 +161,37 @@ class TestCuttingExperiments(unittest.TestCase):
                 == "SingleQubitQPDGates are not supported in unseparable circuits."
             )
 
+    def test_append_measurement_register(self):
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.cx(0, 1)
+        cog = CommutingObservableGroup(Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"])))
+        with self.subTest("In place"):
+            qcx = qc.copy()
+            assert _append_measurement_register(qcx, cog, inplace=True) is qcx
+        with self.subTest("Out of place"):
+            assert _append_measurement_register(qc, cog) is not qc
+        with self.subTest("Correct number of bits"):
+            assert _append_measurement_register(qc, cog).num_clbits == len(
+                cog.pauli_indices
+            )
+
     def test_append_measurement_circuit(self):
         qc = QuantumCircuit(2)
         qc.h(0)
         qc.cx(0, 1)
-        qc.add_register(ClassicalRegister(1, name="qpd_measurements"))
         cog = CommutingObservableGroup(Pauli("XZ"), list(PauliList(["IZ", "XI", "XZ"])))
-        qc2 = qc.copy()
-        qc2.add_register(ClassicalRegister(2, name="observable_measurements"))
+        _append_measurement_register(qc, cog, inplace=True)
         with self.subTest("In place"):
             qcx = qc.copy()
             assert _append_measurement_circuit(qcx, cog, inplace=True) is qcx
         with self.subTest("Out of place"):
             assert _append_measurement_circuit(qc, cog) is not qc
         with self.subTest("Correct measurement circuit"):
-            qc2.measure(0, 1)
+            qc2 = qc.copy()
+            qc2.measure(0, 0)
             qc2.h(1)
-            qc2.measure(1, 2)
+            qc2.measure(1, 1)
             assert _append_measurement_circuit(qc, cog) == qc2
         with self.subTest("Mismatch between qubit_locations and number of qubits"):
             with pytest.raises(ValueError) as e_info:
@@ -181,6 +199,21 @@ class TestCuttingExperiments(unittest.TestCase):
             assert (
                 e_info.value.args[0]
                 == "qubit_locations has 1 element(s) but the observable(s) have 2 qubit(s)."
+            )
+        with self.subTest("No observable_measurements register"):
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(QuantumCircuit(2), cog)
+            assert (
+                e_info.value.args[0]
+                == 'Cannot locate "observable_measurements" register'
+            )
+        with self.subTest("observable_measurements register has wrong size"):
+            cog2 = CommutingObservableGroup(Pauli("XI"), list(PauliList(["XI"])))
+            with pytest.raises(ValueError) as e_info:
+                _append_measurement_circuit(qc, cog2)
+            assert (
+                e_info.value.args[0]
+                == '"observable_measurements" register is the wrong size for the given commuting observable group (2 != 1)'
             )
         with self.subTest("Mismatched qubits, no qubit_locations provided"):
             cog = CommutingObservableGroup(Pauli("X"), [Pauli("X")])
@@ -201,3 +234,125 @@ class TestCuttingExperiments(unittest.TestCase):
             with pytest.raises(ValueError) as e_info:
                 generate_distribution_cutting_experiments(qc, np.nan)
             assert e_info.value.args[0] == "num_samples must be at least 1."
+
+    def test_consolidate_double_reset(self):
+        """Consolidate a pair of resets.
+        qr0:--|0>--|0>--   ==>    qr0:--|0>--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.reset(qr)
+
+        _consolidate_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_two_resets(self):
+        """Remove two final resets
+        qr0:--[H]-|0>-|0>--   ==>    qr0:--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(qr[0])
+        circuit.reset(qr[0])
+        circuit.reset(qr[0])
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr[0])
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_reset_in_diff_qubits(self):
+        """Remove a single final reset in different qubits
+        qr0:--[H]--|0>--          qr0:--[H]--
+                      ==>
+        qr1:--[X]--|0>--          qr1:--[X]----
+        """
+        qr = QuantumRegister(2, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.x(1)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+        expected.x(1)
+
+        _remove_final_resets(circuit)
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_final_reset(self):
+        """Remove a single final reset
+        qr0:--[H]--|0>--   ==>    qr0:--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.reset(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_optimize_single_final_reset_2(self):
+        """Remove a single final reset on two qubits
+        qr0:--[H]--|0>--   ==>    qr0:--[H]-------
+            --[X]--[S]--              --[X]--[S]--
+        """
+        qr = QuantumRegister(2, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.h(0)
+        circuit.x(1)
+        circuit.reset(0)
+        circuit.s(1)
+
+        expected = QuantumCircuit(qr)
+        expected.h(0)
+        expected.x(1)
+        expected.s(1)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_dont_optimize_non_final_reset(self):
+        """Do not remove reset if not final instruction
+        qr0:--|0>--[H]--   ==>    qr0:--|0>--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.h(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.reset(qr)
+        expected.h(qr)
+
+        _remove_final_resets(circuit)
+
+        self.assertEqual(expected, circuit)
+
+    def test_remove_reset_in_zero_state(self):
+        """Remove reset if first instruction on qubit
+        qr0:--|0>--[H]--   ==>    qr0:--|0>--[H]--
+        """
+        qr = QuantumRegister(1, "qr")
+        circuit = QuantumCircuit(qr)
+        circuit.reset(qr)
+        circuit.h(qr)
+
+        expected = QuantumCircuit(qr)
+        expected.h(qr)
+
+        _remove_resets_in_zero_state(circuit)
+
+        self.assertEqual(expected, circuit)

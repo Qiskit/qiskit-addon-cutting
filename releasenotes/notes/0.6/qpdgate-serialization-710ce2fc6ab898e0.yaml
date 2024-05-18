@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    It is now possible to serialize :class:`.SingleQubitQPDGate`\ s
+    using :mod:`~qiskit.qpy`,
+    but some other issues with serialization and deserialization still
+    remain.  See issue `#455
+    <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/445>`__
+    for details.
