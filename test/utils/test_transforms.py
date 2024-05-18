@@ -440,7 +440,9 @@ class TestTransforms(unittest.TestCase):
             assert len(separated_circuits.subcircuits["A"].data) == 1
             assert separated_circuits.qubit_map == [("A", 0), (None, None)]
 
-        with self.subTest("Explicit partition label of None on a non-idle qubit should error"):
+        with self.subTest(
+            "Explicit partition label of None on a non-idle qubit should error"
+        ):
             circuit = QuantumCircuit(2)
             circuit.h(0)
             circuit.s(0)
