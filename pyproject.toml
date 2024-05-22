@@ -127,4 +127,4 @@ enable = [
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
-addopts = "--doctest-modules -rs --durations=10 --ignore=circuit_knitting/utils/metrics.py --ignore=circuit_knitting/cutting/cutqc"
+addopts = "--doctest-modules -rs --durations=10
