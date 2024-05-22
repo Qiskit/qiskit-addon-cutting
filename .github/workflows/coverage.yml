@@ -34,10 +34,10 @@ jobs:
         run: |
           tox -e coverage
       - name: Convert to lcov
-        run: coverage3 lcov -o coveralls.info
+        run: coverage3 lcov -o coveralls.lcov
       - name: Upload report to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: coveralls.info
+          file: coveralls.lcov
           format: lcov
