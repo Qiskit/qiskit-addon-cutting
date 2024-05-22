@@ -127,4 +127,4 @@ enable = [
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
-addopts = "--doctest-modules -rs --durations=10
+addopts = "--doctest-modules -rs --durations=10"
