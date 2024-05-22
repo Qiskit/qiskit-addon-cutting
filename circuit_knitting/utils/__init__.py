@@ -18,23 +18,11 @@ Bitwise utilities (:mod:`circuit_knitting.utils.bitwise`)
 
 .. automodule:: circuit_knitting.utils.bitwise
 
-=============================================================
-Conversion (:mod:`circuit_knitting.utils.conversion`)
-=============================================================
-
-.. automodule:: circuit_knitting.utils.conversion
-
 =====================================================================
 Iteration utilities (:mod:`circuit_knitting.utils.iteration`)
 =====================================================================
 
 .. automodule:: circuit_knitting.utils.iteration
-
-=======================================================
-Metrics (:mod:`circuit_knitting.utils.metrics`)
-=======================================================
-
-.. automodule:: circuit_knitting.utils.metrics
 
 ===============================================================================
 Observable grouping (:mod:`circuit_knitting.utils.observable_grouping`)
