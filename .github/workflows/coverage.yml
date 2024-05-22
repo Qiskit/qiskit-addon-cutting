@@ -29,15 +29,15 @@ jobs:
       - name: Install tox
         run: |
           python -m pip install --upgrade pip
-          pip install tox coveragepy-lcov 'coverage<7'
+          pip install tox coverage
       - name: Run coverage
         run: |
           tox -e coverage
       - name: Convert to lcov
-        run: coveragepy-lcov --output_file_path coveralls.info
+        run: coverage3 lcov -o coveralls.lcov
       - name: Upload report to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: coveralls.info
+          file: coveralls.lcov
           format: lcov
