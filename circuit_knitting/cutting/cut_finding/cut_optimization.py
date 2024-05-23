@@ -130,7 +130,7 @@ def cut_optimization_goal_state_func(
 # Global variable that holds the search-space functions for generating
 # the cut optimization search space.
 cut_optimization_search_funcs = SearchFunctions(
-    cost_func=cut_optimization_cost_func,
+    cost_func=cut_optimization_upper_bound_cost_func,  # valid choice when considering only LO cuts.
     upperbound_cost_func=cut_optimization_upper_bound_cost_func,
     next_state_func=cut_optimization_next_state_func,
     goal_state_func=cut_optimization_goal_state_func,

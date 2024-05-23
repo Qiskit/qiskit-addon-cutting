@@ -334,7 +334,7 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
             e_info.value.args[0] == f"Search engine {search_engine} is not supported."
         )
 
-        with self.subTest("Greedy search warm start test"):
+        with self.subTest("Greedy search gate cut warm start test"):
             # Even if the input cost bounds are too stringent, greedy_cut_optimization
             # is able to return a solution.
 
@@ -342,7 +342,7 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
 
             interface = SimpleGateList(self.circuit_internal)
 
-            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=False)
 
             settings.set_engine_selection("CutOptimization", "BestFirst")
 
@@ -356,6 +356,29 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
             # 2 cnot cuts are still found
             assert state is not None
             assert cost[0] == 9
+
+        with self.subTest("Greedy search wire cut warm start test"):
+            # Even if the input cost bounds are too stringent, greedy_cut_optimization
+            # is able to return a solution.
+
+            qubits_per_subcircuit = 3
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            # Impose a stringent cost upper bound, insist gamma <=2.
+            cut_opt = CutOptimization(interface, settings, constraint_obj)
+            cut_opt.update_upperbound_cost((2, 4))
+            state, cost = cut_opt.optimization_pass()
+
+            # 2 LO wire cuts are still found
+            assert state is not None
+            assert cost[0] == 16
 
 
 class TestCuttingSevenQubitCircuit(unittest.TestCase):
