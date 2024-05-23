@@ -77,7 +77,6 @@ docs = [
     "qiskit-sphinx-theme>=1.14.0, <2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
