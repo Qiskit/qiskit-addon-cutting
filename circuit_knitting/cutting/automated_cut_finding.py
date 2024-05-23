@@ -52,6 +52,10 @@ def find_cuts(
               ``data`` field.
             - sampling_overhead: The sampling overhead incurred from cutting the specified
               gates and wires.
+            - min_reached: A bool indicating whether or not the search conclusively found
+              the minimum of cost function. ``min_reached = False`` could also mean that the
+              cost returned was actually the lowest possible cost but that the search was
+              not allowed to run long enough to prove that this was the case.
 
     Raises:
         ValueError: The input circuit contains a gate acting on more than 2 qubits.
@@ -128,6 +132,7 @@ def find_cuts(
         elif inst.operation.name == "cut_wire":
             metadata["cuts"].append(("Wire Cut", i))
     metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
+    metadata["min_reached"] = optimizer.minimum_reached()
 
     return circ_out, metadata
 
