@@ -38,7 +38,7 @@ class OptimizationSettings:
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.
 
-    NOTE: The current release only supports LO gate and wire cuts. locc
+    NOTE: The current release only supports LO gate and wire cuts. LOCC
     flags have been incorporated with an eye towards future releases.
     """
 
