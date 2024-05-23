@@ -432,7 +432,7 @@ class DisjointSubcircuitsState:
         self,
         action_obj: DisjointSearchAction,
         gate_spec: GateSpec,
-        *args: tuple | None,
+        *args: tuple,
     ) -> None:
         """Append the specified action to the list of search-space actions that have been performed."""
         if action_obj.get_name() is not None:
