@@ -508,18 +508,15 @@ Sampling overhead: 81.0
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span><span class="p">,</span> <span class="n">Batch</span>
 
-<span class="c1"># Set up a Qiskit Runtime Sampler primitive for each circuit partition</span>
-<span class="n">samplers</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">subexperiments</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+<span class="c1"># Set up the Qiskit Runtime Sampler primitive</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
 <span class="c1"># Submit each partition&#39;s subexperiments as a single batch</span>
 <span class="k">with</span> <span class="n">Batch</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">):</span>
     <span class="n">jobs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">isa_subexperiments</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">shots</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">sampler</span> <span class="ow">in</span> <span class="n">samplers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subsystem_subexpts</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subsystem_subexpts</span> <span class="ow">in</span> <span class="n">isa_subexperiments</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
-
-<span class="c1"># Retrive results</span>
-<span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 </pre></div>
 </div>
 </div>
@@ -532,12 +529,21 @@ Sampling overhead: 81.0
   warnings.warn(
 </pre></div></div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve results</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="Reconstruct-the-expectation-values">
 <h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">¶</a></h2>
 <p>Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">circuit_knitting.cutting</span> <span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
@@ -558,7 +564,7 @@ Sampling overhead: 81.0
 <section id="Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable">
 <h2>Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">EstimatorV2</span>
@@ -579,10 +585,10 @@ Sampling overhead: 81.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.70743257
+Reconstructed expectation value: 0.70703202
 Exact expectation value: 0.56254612
-Error in estimation: 0.14488644
-Relative error in estimation: 0.25755478
+Error in estimation: 0.1444859
+Relative error in estimation: 0.25684277
 </pre></div></div>
 </div>
 </section>
