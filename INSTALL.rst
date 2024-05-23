@@ -146,7 +146,7 @@ the only one that will be saved across different container runs.
 Platform Support
 ^^^^^^^^^^^^^^^^
 
-We expect this package to work on any common OS and CPU architecture. If
+We expect this package to work on `any platform supported by Qiskit <https://docs.quantum.ibm.com/start/install#operating-system-support>`__. If
 you are experiencing issues running the software on your device, you
 may consider :ref:`using the toolbox within Docker <Option 3>`.
 
