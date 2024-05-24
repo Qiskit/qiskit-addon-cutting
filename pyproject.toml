@@ -36,12 +36,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cplex = [
-    # We use the same restrictions in both of the following lines, as there
-    # is no reason for us to install docplex without cplex.
-    "docplex>=2.23.222; python_version < '3.12' and platform_machine != 'arm64'",
-    "cplex>=22.1.0.0; python_version < '3.12' and platform_machine != 'arm64'",
-]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
 ]
@@ -86,7 +80,6 @@ docs = [
     "qiskit-sphinx-theme>=1.14.0, <2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex]",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
@@ -131,4 +124,4 @@ enable = [
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
 filterwarnings = ["ignore:::.*qiskit.opflow*"]
-addopts = "--doctest-modules -rs --durations=10 --ignore=circuit_knitting/utils/metrics.py --ignore=circuit_knitting/cutting/cutqc"
+addopts = "--doctest-modules -rs --durations=10"
