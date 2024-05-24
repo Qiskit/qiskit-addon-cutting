@@ -9,18 +9,8 @@ packages. There are three primary ways to do this:
 - :ref:`Option 2`
 - :ref:`Option 3`
 
-CutQC users should consult the :ref:`Platform Support` section to determine
-which installation option is appropriate for them. Users who wish to run within a
-containerized environment may skip the pre-installation and move straight
-to :ref:`Option 3`.
-
-.. note::
-
-    If a user wishes to use the circuit cutting toolbox to
-    automatically find optimized wire cuts for a circuit too large for
-    the free version of CPLEX, they should acquire a license and install
-    the `full
-    version <https://www.ibm.com/products/ilog-cplex-optimization-studio>`__.
+Users who wish to run within a containerized environment may skip the
+pre-installation and move straight to :ref:`Option 3`.
 
 Pre-Installation
 ^^^^^^^^^^^^^^^^
@@ -61,14 +51,6 @@ Upgrade pip and install the CKT package.
     pip install --upgrade pip
     pip install circuit-knitting-toolbox
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
-
-Adjust the options below to suit your needs.
-
-.. code:: sh
-    
-    pip install 'circuit-knitting-toolbox[cplex]'
-
 
 .. _Option 2:
 
@@ -94,13 +76,11 @@ The next step is to install CKT to the virtual environment. If you plan on runni
 notebook dependencies in order to run all the visualizations in the notebooks.
 If you plan on developing in the repository, you may want to install the ``dev`` dependencies.
 
-Users intending to use the automatic cut finding functionality in the CutQC package should install the ``cplex`` optional dependency.
-
 Adjust the options below to suit your needs.
 
 .. code:: sh
     
-    pip install tox notebook -e '.[notebook-dependencies,dev,cplex]'
+    pip install tox notebook -e '.[notebook-dependencies,dev]'
 
 If you installed the notebook dependencies, you can get started with CKT by running the notebooks in the docs.
 
@@ -166,27 +146,6 @@ the only one that will be saved across different container runs.
 Platform Support
 ^^^^^^^^^^^^^^^^
 
-Users of Mac M1 or M2 chips and Windows users may have issues running certain components of CKT.
-
-If you are using Linux or macOS with an Intel chip (i.e., not the
-new M1 or M2 chips), everything should work natively, so we
-recommend either :ref:`Option 1` or :ref:`Option 2`.
-
-All users on ARM chips, as well as all Windows users, may have to
-take care when installing the toolbox, depending on which tools they
-intend to use.
-  
-  - The automatic wire cut search in the ``cutqc`` package depends
-    on CPLEX, which is only available on Intel chips and is not yet available
-    for Python 3.12.
-
-In each case, one method that is guaranteed to work is to :ref:`use
-the toolbox within Docker <Option 3>`.  Other methods include:
-
-  - Users on Apple's M series of chips may wish to install an x86
-    version of Python.  For instance, `conda
-    <https://docs.conda.io/en/latest/miniconda.html>`__ users can run
-    ``CONDA_SUBDIR=osx-64 conda create -n x86_venv python=3`` to
-    create a virtual environment that uses Python compiled for the x86
-    instruction set.  No matter the installation method, there is a
-    performance cost due to emulation.
+We expect this package to work on `any platform supported by Qiskit <https://docs.quantum.ibm.com/start/install#operating-system-support>`__. If
+you are experiencing issues running the software on your device, you
+may consider :ref:`using the toolbox within Docker <Option 3>`.

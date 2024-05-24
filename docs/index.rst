@@ -24,7 +24,9 @@ If you use the Circuit Knitting Toolbox in your research, please cite it accordi
 .. literalinclude:: ../CITATION.bib
    :language: bibtex
 
-If you are using the entanglement forging tool in CKT version 0.5.0 or earlier, please use `an older version of the citation file <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/stable/0.5/CITATION.bib>`__ which includes the authors of that tool.
+If you are using the entanglement forging tool in CKT version 0.5 or earlier, please use `an older version of the citation file <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/stable/0.5/CITATION.bib>`__ which includes the authors of that tool.
+
+If you are using the CutQC tool in CKT version 0.7 or earlier, please use `an older version of the citation file <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/stable/0.7/CITATION.bib>`__ which includes the authors of that tool.
 
 Developer guide
 ---------------
@@ -49,7 +51,6 @@ Contents
   Cutting Tutorials <circuit_cutting/tutorials/index>
   Cutting Explanatory Material <circuit_cutting/explanation/index>
   Cutting How-To Guides <circuit_cutting/how-tos/index>
-  CutQC (legacy circuit cutting implementation) <circuit_cutting/cutqc/index>
 
 .. toctree::
   :maxdepth: 2
