@@ -37,7 +37,7 @@ class Action(NamedTuple):
 
     action: DisjointSearchAction
     gate_spec: GateSpec
-    args: list
+    args: list | tuple
 
 
 class GateCutLocation(NamedTuple):
@@ -430,12 +430,12 @@ class DisjointSubcircuitsState:
         self,
         action_obj: DisjointSearchAction,
         gate_spec: GateSpec,
-        args: tuple | None = None,
+        *args: tuple,
     ) -> None:
         """Append the specified action to the list of search-space actions that have been performed."""
         if action_obj.get_name() is not None:
             self.actions = cast(list, self.actions)
-            self.actions.append(Action(action_obj, gate_spec, [args]))
+            self.actions.append(Action(action_obj, gate_spec, args))
 
     def get_search_level(self) -> int:
         """Return the search level."""

@@ -12,7 +12,7 @@
 """File containing the wrapper class for optimizing LO gate and wire cuts."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 from .cut_optimization import CutOptimization
 from .cut_optimization import disjoint_subcircuit_actions
@@ -21,9 +21,6 @@ from .cut_optimization import cut_optimization_goal_state_func
 from .cut_optimization import cut_optimization_min_cost_bound_func
 from .cut_optimization import cut_optimization_upper_bound_cost_func
 from .search_space_generator import SearchFunctions, SearchSpaceGenerator
-
-import numpy as np
-from numpy.typing import NDArray
 from .disjoint_subcircuits_state import DisjointSubcircuitsState
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -155,10 +152,10 @@ class LOCutsOptimizer:
         """Return the optimization results."""
         return self.best_result
 
-    def get_stats(self, penultimate=False) -> dict[str, NDArray[np.int_]]:
+    def get_stats(self, penultimate=False) -> dict[str, NamedTuple | None]:
         """Return a dictionary containing optimization results.
 
-        The value is a Numpy array containing the number of states visited
+        The value is a NamedTuple containing the number of states visited
         (dequeued), the number of next-states generated, the number of
         next-states that are enqueued after cost pruning, and the number
         of backjumps performed. Return None if no search is performed.
