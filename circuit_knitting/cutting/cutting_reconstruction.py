@@ -40,8 +40,6 @@ def reconstruct_distribution(
     quasi_dists_out: dict[str | int, float] = {}
     for quasi_dist, (coeff, _) in strict_zip(results.quasi_dists, coefficients):
         for outcome, weight in quasi_dist.items():
-            # NOTE: The registers are in the opposite order compared to
-            # cutting_reconstruction._process_outcome.
             meas_outcomes = outcome & ((1 << num_meas_bits) - 1)
             qpd_outcomes = outcome >> num_meas_bits
             qpd_factor = 1 - 2 * (bit_count(qpd_outcomes) & 1)
