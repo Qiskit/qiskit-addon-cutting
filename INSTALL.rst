@@ -149,11 +149,3 @@ Platform Support
 We expect this package to work on `any platform supported by Qiskit <https://docs.quantum.ibm.com/start/install#operating-system-support>`__. If
 you are experiencing issues running the software on your device, you
 may consider :ref:`using the toolbox within Docker <Option 3>`.
-
-  - Users on Apple's M series of chips may wish to install an x86
-    version of Python.  For instance, `conda
-    <https://docs.conda.io/en/latest/miniconda.html>`__ users can run
-    ``CONDA_SUBDIR=osx-64 conda create -n x86_venv python=3`` to
-    create a virtual environment that uses Python compiled for the x86
-    instruction set.  No matter the installation method, there is a
-    performance cost due to emulation.
