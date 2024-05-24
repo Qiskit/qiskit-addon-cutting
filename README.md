@@ -35,6 +35,7 @@ The toolbox currently contains the following tools:
 - Circuit Cutting [[1-6]](#references)
  
 For a more detailed discussion on circuit cutting, check out our [technical guide](https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html#overview-of-circuit-cutting).
+
 ----------------------------------------------------------------------------------------------------
   
 ### Documentation
