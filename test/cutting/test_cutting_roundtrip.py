@@ -51,9 +51,6 @@ from circuit_knitting.cutting import (
     generate_cutting_experiments,
     reconstruct_expectation_values,
 )
-from circuit_knitting.cutting.cutting_experiments import (
-    generate_distribution_cutting_experiments,
-)
 from circuit_knitting.cutting.cutting_reconstruction import reconstruct_distribution
 from circuit_knitting.cutting.instructions import Move
 
@@ -260,9 +257,7 @@ def example_sampler_circuit(request):
 
 def test_cutting_exact_distribution_reconstruction(example_sampler_circuit):
     circuit0, circuit1, bases = example_sampler_circuit
-    subexperiments, coefficients = generate_distribution_cutting_experiments(
-        circuit1, np.inf
-    )
+    subexperiments, coefficients = generate_cutting_experiments(circuit1, None, np.inf)
     subexperiment_results = ExactSampler().run(subexperiments).result()
     reconstructed = reconstruct_distribution(
         subexperiment_results, circuit1.num_clbits, coefficients

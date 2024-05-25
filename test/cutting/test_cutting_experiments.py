@@ -28,7 +28,6 @@ from circuit_knitting.cutting import generate_cutting_experiments
 from circuit_knitting.cutting.qpd import WeightType
 from circuit_knitting.cutting import partition_problem
 from circuit_knitting.cutting.cutting_experiments import (
-    generate_distribution_cutting_experiments,
     _append_measurement_register,
     _append_measurement_circuit,
     _remove_final_resets,
@@ -223,17 +222,6 @@ class TestCuttingExperiments(unittest.TestCase):
                 e_info.value.args[0]
                 == "Quantum circuit qubit count (2) does not match qubit count of observable(s) (1).  Try providing `qubit_locations` explicitly."
             )
-
-    def test_generate_distribution_cutting_experiments(self):
-        with self.subTest("test bad num_samples"):
-            qc = QuantumCircuit(4, 1)
-            qc.measure(0, 0)
-            with pytest.raises(ValueError) as e_info:
-                generate_distribution_cutting_experiments(qc, 0)
-            assert e_info.value.args[0] == "num_samples must be at least 1."
-            with pytest.raises(ValueError) as e_info:
-                generate_distribution_cutting_experiments(qc, np.nan)
-            assert e_info.value.args[0] == "num_samples must be at least 1."
 
     def test_consolidate_double_reset(self):
         """Consolidate a pair of resets.
