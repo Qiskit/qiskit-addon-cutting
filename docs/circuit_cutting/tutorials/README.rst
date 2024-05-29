@@ -8,4 +8,4 @@ Circuit Cutting Tutorials
 - `Tutorial 3 <03_wire_cutting_via_move_instruction.ipynb>`__:
   Specify wire cuts as a two-qubit :class:`.Move` operation.
 - `Tutorial 4 <04_automatic_cut_finding.ipynb>`__:
-  Find, in an automated manner, optimal gate and wire cut locations for reducing circuit width.
+  Automatically find optimal gate and wire cut locations for reducing circuit width.
