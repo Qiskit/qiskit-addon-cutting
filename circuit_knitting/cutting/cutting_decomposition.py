@@ -148,14 +148,16 @@ def partition_problem(
 
     If ``partition_labels`` is provided, then qubits with matching partition
     labels will be grouped together, and non-local gates spanning more than one
-    partition will be cut.
+    partition will be cut apart.  The label ``None`` is treated specially: any
+    qubit with that partition label must be unused in the circuit.
 
     If ``partition_labels`` is not provided, then it will be determined
     automatically from the connectivity of the circuit.  This automatic
     determination ignores any :class:`.TwoQubitQPDGate`\ s in the ``circuit``,
     as these denote instructions that are explicitly destined for cutting.  The
     resulting partition labels, in the automatic case, will be consecutive
-    integers starting with 0.
+    integers starting with 0.  Qubits which are idle throughout the circuit
+    will be assigned a partition label of ``None``.
 
     All cut instructions will be replaced with :class:`.SingleQubitQPDGate`\ s.
 
@@ -173,11 +175,11 @@ def partition_problem(
         a list of QPD bases (one for each circuit gate or wire which was decomposed),
         and, optionally, a dictionary mapping a partition label to a list of Pauli observables.
 
-
     Raises:
         ValueError: The number of partition labels does not equal the number of qubits in the circuit.
         ValueError: An input observable acts on a different number of qubits than the input circuit.
         ValueError: An input observable has a phase not equal to 1.
+        ValueError: A qubit with a label of ``None`` is not idle
         ValueError: The input circuit should contain no classical bits or registers.
     """
     if partition_labels is not None and len(partition_labels) != circuit.num_qubits:

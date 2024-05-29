@@ -51,11 +51,12 @@ class SeparatedCircuits(NamedTuple):
     ``qubit_map`` is a list with length equal to the number of qubits in the original circuit.
     Each element of that list is a 2-tuple which includes the partition label
     of that qubit, together with the index of that qubit in the corresponding
-    subcircuit.
+    subcircuit.  If the original qubit is unused and has been removed from the separated circuits,
+    then that tuple will be equal to ``(None, None)``.
     """
 
     subcircuits: dict[Hashable, QuantumCircuit]
-    qubit_map: list[tuple[Hashable, int]]
+    qubit_map: list[tuple[Hashable, int] | tuple[None, None]]
 
 
 def separate_circuit(
@@ -65,26 +66,32 @@ def separate_circuit(
     """Separate the circuit into its disconnected components.
 
     If ``partition_labels`` is provided, then the circuit will be separated
-    according to those labels.  If it is ``None``, then the circuit will be
+    according to those labels.  A partition label of ``None`` is treated specially:
+    it must be applied to an unused (idle) qubit, and that qubit will be removed
+    when separating the circuit.
+
+    If ``partition_labels`` is ``None``, then the circuit will be
     fully separated into its disconnected components, each of which will be
-    labeled with consecutive integers starting with 0.
+    labeled with consecutive integers starting with 0.  Each idle wire
+    will be eliminated in the resulting circuits.
 
     >>> qc = QuantumCircuit(4)
     >>> _ = qc.x(0)
     >>> _ = qc.cx(1, 2)
-    >>> _ = qc.h(3)
     >>> separate_circuit(qc, "ABBA").subcircuits.keys()
     dict_keys(['A', 'B'])
     >>> separate_circuit(qc, "ABBA").qubit_map
     [('A', 0), ('B', 0), ('B', 1), ('A', 1)]
+    >>> separate_circuit(qc, ["A", "B", "B", None]).qubit_map
+    [('A', 0), ('B', 0), ('B', 1), (None, None)]
+    >>> separate_circuit(qc).subcircuits.keys()
+    dict_keys([0, 1])
+    >>> separate_circuit(qc).qubit_map
+    [(0, 0), (1, 0), (1, 1), (None, None)]
     >>> separate_circuit(qc, "BAAC").subcircuits.keys()
     dict_keys(['B', 'A', 'C'])
     >>> separate_circuit(qc, "BAAC").qubit_map
     [('B', 0), ('A', 0), ('A', 1), ('C', 0)]
-    >>> separate_circuit(qc).subcircuits.keys()
-    dict_keys([0, 1, 2])
-    >>> separate_circuit(qc).qubit_map
-    [(0, 0), (1, 0), (1, 1), (2, 0)]
 
     Args:
         circuit: The circuit to separate into disconnected subcircuits
@@ -137,7 +144,9 @@ def separate_circuit(
 def _partition_labels_from_circuit(
     circuit: QuantumCircuit,
     ignore: Callable[[CircuitInstruction], bool] = lambda instr: False,
-) -> list[int]:
+    *,
+    keep_idle_wires: bool = False,
+) -> list[int | None]:
     """Generate partition labels from the connectivity of a quantum circuit."""
     # Determine connectivity structure of the circuit
     graph: PyGraph = PyGraph()
@@ -147,8 +156,8 @@ def _partition_labels_from_circuit(
             continue
         qubits = instruction.qubits
         for i, q1 in enumerate(qubits):
+            q1_id = circuit.find_bit(q1).index
             for q2 in qubits[i + 1 :]:
-                q1_id = circuit.find_bit(q1).index
                 q2_id = circuit.find_bit(q2).index
                 graph.add_edge(q1_id, q2_id, None)
 
@@ -158,12 +167,26 @@ def _partition_labels_from_circuit(
     qubit_subsets = connected_components(graph)
     qubit_subsets.sort(key=min)
 
+    # By default, filter qubit_subsets to remove idle wires
+    if not keep_idle_wires:
+        # Determine which qubit wires are idle/unused
+        idle_wires = set(range(circuit.num_qubits))
+        for instruction in circuit.data:
+            for q1 in instruction.qubits:
+                q1_id = circuit.find_bit(q1).index
+                idle_wires.discard(q1_id)
+        # Replace qubit_subsets with filtered list, removing idle qubits
+        qubit_subsets = [
+            subset
+            for subset in qubit_subsets
+            if not (len(subset) == 1 and next(iter(subset)) in idle_wires)
+        ]
+
     # Create partition labels from the connected components
-    partition_labels = [-1] * circuit.num_qubits
+    partition_labels: list[int | None] = [None] * circuit.num_qubits
     for i, subset in enumerate(qubit_subsets):
         for qubit in subset:
             partition_labels[qubit] = i
-    assert -1 not in partition_labels
 
     return partition_labels
 
@@ -191,44 +214,60 @@ def _circuit_from_instructions(
 
 def _qubit_map_from_partition_labels(
     partition_labels: Sequence[Hashable],
-) -> tuple[list[tuple[Hashable, int]], dict[Hashable, list[int]]]:
+) -> tuple[list[tuple[Hashable, int] | tuple[None, None]], dict[Hashable, list[int]]]:
     """Generate a qubit map given a qubit partitioning."""
-    qubit_map: list[tuple[Hashable, int]] = []
+    qubit_map: list[tuple[Hashable, int] | tuple[None, None]] = []
     qubits_by_subsystem: MutableMapping[Hashable, list[int]] = defaultdict(list)
     for i, qubit_label in enumerate(partition_labels):
-        current_label_qubits = qubits_by_subsystem[qubit_label]
-        qubit_map.append((qubit_label, len(current_label_qubits)))
-        current_label_qubits.append(i)
+        if qubit_label is None:
+            qubit_map.append((None, None))
+        else:
+            current_label_qubits = qubits_by_subsystem[qubit_label]
+            qubit_map.append((qubit_label, len(current_label_qubits)))
+            current_label_qubits.append(i)
     return qubit_map, dict(qubits_by_subsystem)
 
 
 def _separate_instructions_by_partition(
     circuit: QuantumCircuit,
-    qubit_map: Sequence[tuple[Hashable, int]],
+    qubit_map: Sequence[tuple[Hashable, int] | tuple[None, None]],
 ) -> dict[Hashable, list[int]]:
     """Generate a list of instructions for each partition of the circuit."""
-    unique_labels = unique_by_eq(label for label, _ in qubit_map)
+    unique_labels = unique_by_eq(label for label, _ in qubit_map if label is not None)
     subcircuit_data_ids: dict[Hashable, list[int]] = {
         label: [] for label in unique_labels
     }
 
-    for i, gate in enumerate(circuit.data):
-        partitions_spanned = {
-            qubit_map[circuit.find_bit(qubit).index][0] for qubit in gate.qubits
-        }
-        # All qubits for any gate should belong to one subset
+    for i, inst in enumerate(circuit.data):
+        # Collect the partition labels spanned by the instruction
+        partitions_spanned = set()
+        for qubit in inst.qubits:
+            j = circuit.find_bit(qubit).index
+            partition_id = qubit_map[j][0]
+            if partition_id is None:
+                raise ValueError(
+                    f"Operation '{inst.operation.name}' at index {i} acts on the "
+                    f"{j}-th qubit, which was provided a partition label of `None`. "
+                    "If the partition label of a qubit is `None`, then that qubit "
+                    "cannot be used in the circuit."
+                )
+            partitions_spanned.add(partition_id)
+
+        # Ensure that all qubits touched by the instruction belong to the same
+        # partition label
         if len(partitions_spanned) != 1:
             assert len(partitions_spanned) != 0
             raise ValueError(
                 "The input circuit cannot be separated along specified partitions. "
-                f"Operation ({gate.operation.name}) in index ({i}) spans more than "
+                f"Operation '{inst.operation.name}' at index {i} spans more than "
                 "one partition."
             )
+
+        # Record which partition id the current instruction is destined for
         partition_id = partitions_spanned.pop()
         subcircuit_data_ids[partition_id].append(i)
 
-    # Return a regular dict rather than defaultdict
-    return dict(subcircuit_data_ids)
+    return subcircuit_data_ids
 
 
 def _split_barriers(circuit: QuantumCircuit):
