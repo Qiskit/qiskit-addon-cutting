@@ -14,7 +14,10 @@ import pytest
 
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
 
-from circuit_knitting.utils.observable_terms import *
+from circuit_knitting.utils.observable_terms import (
+    gather_unique_observable_terms,
+    reconstruct_observable_expvals_from_terms,
+)
 
 
 class TestObservableTerms(unittest.TestCase):
@@ -25,6 +28,13 @@ class TestObservableTerms(unittest.TestCase):
             )
             assert terms.num_qubits == 2
             assert len(terms) == 3
+        with self.subTest("All zero coefficients"):
+            unique_terms = gather_unique_observable_terms(
+                SparsePauliOp(PauliList(["XYZ"]), [0])
+            )
+            assert unique_terms == PauliList(["III"])[:0]
+
+    def test_gather_exceptions(self):
         with self.subTest("Mismatching observables"):
             with pytest.raises(ValueError) as e_info:
                 gather_unique_observable_terms([Pauli("XX"), Pauli("XYZ")])
@@ -39,11 +49,6 @@ class TestObservableTerms(unittest.TestCase):
             with pytest.raises(ValueError) as e_info:
                 gather_unique_observable_terms([])
             assert e_info.value.args[0] == "observables list cannot be empty"
-        with self.subTest("All zero coefficients"):
-            unique_terms = gather_unique_observable_terms(
-                SparsePauliOp(PauliList(["XYZ"]), [0])
-            )
-            assert unique_terms == PauliList(["III"])[:0]
 
     def test_reconstruct(self):
         with self.subTest("Normal usage"):
@@ -62,6 +67,14 @@ class TestObservableTerms(unittest.TestCase):
         with self.subTest("No observables or terms"):
             evs = reconstruct_observable_expvals_from_terms([], {})
             assert len(evs) == 0
+        with self.subTest("SparsePauliOp including a term with zero coeffient"):
+            evs = reconstruct_observable_expvals_from_terms(
+                [SparsePauliOp(["XX", "-XY"], [0, 1])], {Pauli("XY"): 3}
+            )
+            assert len(evs) == 1
+            assert evs[0] == -3
+
+    def test_reconstruct_exceptions(self):
         with self.subTest("Missing term"):
             with pytest.raises(ValueError) as e_info:
                 reconstruct_observable_expvals_from_terms(
@@ -71,9 +84,3 @@ class TestObservableTerms(unittest.TestCase):
                 e_info.value.args[0]
                 == "An observable contains a Pauli term whose expectation value was not provided."
             )
-        with self.subTest("SparsePauliOp including a term with zero coeffient"):
-            evs = reconstruct_observable_expvals_from_terms(
-                [SparsePauliOp(["XX", "-XY"], [0, 1])], {Pauli("XY"): 3}
-            )
-            assert len(evs) == 1
-            assert evs[0] == -3
