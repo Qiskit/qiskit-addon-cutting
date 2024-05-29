@@ -20,7 +20,7 @@ from .iteration import strict_zip
 
 
 def gather_unique_observable_terms(
-    observables: PauliList | Sequence[Pauli | SparsePauliOp],
+    observables: Sequence[Pauli | SparsePauliOp] | PauliList,
 ) -> PauliList:
     """Inspect the contents of each observable to find and return the unique Pauli terms."""
     if not observables:
@@ -80,7 +80,7 @@ def _reconstruct_observable_expval_from_terms(
 
 
 def reconstruct_observable_expvals_from_terms(
-    observables: PauliList | Iterable[Pauli | SparsePauliOp],
+    observables: Iterable[Pauli | SparsePauliOp] | PauliList,
     term_expvals: Mapping[Pauli, float | complex],
 ) -> list[complex]:
     """Reconstruct the expectation values given the expectation value of each unique term."""
