@@ -24,10 +24,10 @@ class TestObservableTerms(unittest.TestCase):
     def test_gather(self):
         with self.subTest("Normal usage"):
             terms = gather_unique_observable_terms(
-                [Pauli("XX"), SparsePauliOp(PauliList(["iXY", "ZZ", "XX"]))]
+                [Pauli("-XX"), SparsePauliOp(PauliList(["iXY", "ZZ", "XX"]))]
             )
             assert terms.num_qubits == 2
-            assert len(terms) == 3
+            assert terms == PauliList(["XX", "XY", "ZZ"])
         with self.subTest("All zero coefficients"):
             unique_terms = gather_unique_observable_terms(
                 SparsePauliOp(PauliList(["XYZ"]), [0])
@@ -56,23 +56,26 @@ class TestObservableTerms(unittest.TestCase):
                 [Pauli("XX"), SparsePauliOp(PauliList(["iXY", "ZZ", "XX"]))],
                 {Pauli("XX"): 7, Pauli("XY"): 11, Pauli("ZZ"): 13},
             )
-            assert len(evs) == 2
-            assert evs[0] == 7
-            assert evs[1] == 20 + 11j
+            assert evs == [7, 20 + 11j]
         with self.subTest("No observables"):
             evs = reconstruct_observable_expvals_from_terms(
                 [], {Pauli("XX"): 7, Pauli("XY"): 11, Pauli("ZZ"): 13}
             )
-            assert len(evs) == 0
+            assert evs == []
         with self.subTest("No observables or terms"):
             evs = reconstruct_observable_expvals_from_terms([], {})
-            assert len(evs) == 0
+            assert evs == []
         with self.subTest("SparsePauliOp including a term with zero coeffient"):
             evs = reconstruct_observable_expvals_from_terms(
                 [SparsePauliOp(["XX", "-XY"], [0, 1])], {Pauli("XY"): 3}
             )
-            assert len(evs) == 1
-            assert evs[0] == -3
+            assert evs == [-3]
+        with self.subTest("PauliList with phases"):
+            evs = reconstruct_observable_expvals_from_terms(
+                PauliList(["iXY", "-ZZ"]),
+                {Pauli("XY"): 7, Pauli("ZZ"): 11},
+            )
+            assert evs == [7j, -11]
 
     def test_reconstruct_exceptions(self):
         with self.subTest("Missing term"):
