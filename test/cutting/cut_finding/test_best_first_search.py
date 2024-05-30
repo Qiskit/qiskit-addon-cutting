@@ -92,11 +92,10 @@ def test_best_first_search(test_circuit: SimpleGateList):
     op = CutOptimization(test_circuit, settings, constraint_obj)
 
     out, _ = op.optimization_pass()
-
     assert op.search_engine.get_stats(penultimate=True) is not None
     assert op.search_engine.get_stats() is not None
     assert op.get_upperbound_cost() == (27, inf)
-    assert op.minimum_reached() is False
+    assert op.minimum_reached() is True
     assert out is not None
     assert (out.lower_bound_gamma(), out.gamma_UB, out.get_max_width()) == (
         27,

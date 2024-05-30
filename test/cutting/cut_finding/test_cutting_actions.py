@@ -30,7 +30,7 @@ from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
     get_actions_list,
     CutIdentifier,
-    GateCutLocation,
+    CutLocation,
 )
 from circuit_knitting.cutting.cut_finding.search_space_generator import ActionNames
 
@@ -93,7 +93,7 @@ def test_cut_two_qubit_gate(
     assert actions_list == [
         CutIdentifier(
             cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
+            cut_location=CutLocation(
                 instruction_id=2, gate_name="cx", qubits=[0, 1]
             ),  # In renaming qubits here,"q1" -> 0, "q0" -> 1.
         )

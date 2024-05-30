@@ -30,27 +30,33 @@ def test_optimization_parameters(max_gamma: int, max_backjumps: int):
         _ = OptimizationSettings(max_gamma=max_gamma, max_backjumps=max_backjumps)
 
 
-def test_gate_cut_types(LO: bool = True, LOCC_ancillas: bool = False):
+def test_gate_cut_types(gate_lo: bool = True, gate_locc_ancillas: bool = False):
     """Test default gate cut types."""
-    op = OptimizationSettings(LO, LOCC_ancillas)
+    op = OptimizationSettings(gate_lo, gate_locc_ancillas)
     op.set_gate_cut_types()
-    assert op.gate_cut_LO is True
-    assert op.gate_cut_LOCC_with_ancillas is False
+    assert op.gate_cut_lo is True
+    assert op.gate_cut_locc_with_ancillas is False
 
 
 def test_wire_cut_types(
-    LO: bool = True, LOCC_ancillas: bool = False, LOCC_no_ancillas: bool = False
+    wire_lo: bool = True,
+    wire_locc_ancillas: bool = False,
+    wire_locc_no_ancillas: bool = False,
 ):
     """Test default wire cut types."""
-    op = OptimizationSettings(LO, LOCC_ancillas, LOCC_no_ancillas)
+    op = OptimizationSettings(wire_lo, wire_locc_ancillas, wire_locc_no_ancillas)
     op.set_wire_cut_types()
-    assert op.wire_cut_LO
-    assert op.wire_cut_LOCC_with_ancillas is False
-    assert op.wire_cut_LOCC_no_ancillas is False
+    assert op.wire_cut_lo
+    assert op.wire_cut_locc_with_ancillas is False
+    assert op.wire_cut_locc_no_ancillas is False
 
 
 def test_all_cut_search_groups():
     """Test for the existence of all cut search groups."""
     assert OptimizationSettings(
-        LO=True, LOCC_ancillas=True, LOCC_no_ancillas=True
+        gate_lo=True,
+        gate_locc_ancillas=True,
+        wire_lo=True,
+        wire_locc_ancillas=True,
+        wire_locc_no_ancillas=True,
     ).get_cut_search_groups() == [None, "GateCut", "WireCut"]
