@@ -46,9 +46,4 @@ jobs:
         run: |
           pver=${{ matrix.python-version }}
           tox -epy${pver/./} -- --run-slow
-          notebook_flags=""
-          if [ "$pver" = "3.12" ]; then
-            echo Skipping tutorials that require cplex
-            notebook_flags="${notebook_flags} --ignore=docs/circuit_cutting/cutqc/tutorials/tutorial_1_automatic_cut_finding.ipynb"
-          fi
-          tox -epy${pver/./}-notebook -- ${notebook_flags}
+          tox -epy${pver/./}-notebook
