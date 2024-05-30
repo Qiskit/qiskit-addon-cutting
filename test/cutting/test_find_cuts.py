@@ -47,7 +47,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert len(metadata["cuts"]) == 2
             assert {"Wire Cut", "Gate Cut"} == cut_types
             assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
-            assert metadata["min_reached"]
+            assert metadata["minimum_reached"] is True
 
         with self.subTest("Cut both wires instance"):
             qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
