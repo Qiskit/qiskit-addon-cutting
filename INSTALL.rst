@@ -100,6 +100,11 @@ build a Docker image, as well as a
 `compose.yaml <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/compose.yaml>`__ file, which allows one
 to use the Docker image with just a few simple commands.
 
+.. note::
+
+   Running these commands will copy everything in the repository into the container, so it may be preferable to
+   clear extraneous files from your local repository before initializing the container.
+
 .. code:: sh
 
     git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
