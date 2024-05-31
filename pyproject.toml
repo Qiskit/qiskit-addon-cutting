@@ -129,6 +129,9 @@ enable = [
     "dangerous-default-value",
 ]
 
+[tool.mypy]
+ignore_missing_imports = true
+
 #[tool.coverage.run]
 #omit = [
 #    # deprecated import location(s)
