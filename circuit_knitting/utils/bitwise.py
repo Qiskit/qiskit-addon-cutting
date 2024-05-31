@@ -25,7 +25,7 @@ if hasattr(0, "bit_count"):
     def bit_count(x: int, /):  # pragma: no cover
         """Count number of set bits."""
         # New in Python 3.10
-        return x.bit_count()
+        return x.bit_count()  # type: ignore[attr-defined]
 
 else:
 
