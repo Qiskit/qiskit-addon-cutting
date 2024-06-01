@@ -131,6 +131,8 @@ enable = [
 
 [tool.mypy]
 ignore_missing_imports = true
+warn_unused_configs = true
+warn_redundant_casts = true
 
 #[tool.coverage.run]
 #omit = [
