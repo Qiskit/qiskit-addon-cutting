@@ -25,15 +25,18 @@ class TestQPDGateTranslation(unittest.TestCase):
         equiv = translate_qpd_gate(SdgGate(), "heron")
         assert equiv.data[0].operation.name == "rz"
         assert equiv.data[0].operation.params == [-np.pi / 2]
+
     def test_equivalence_eagle(self):
         equiv = translate_qpd_gate(SdgGate(), "eagle")
         assert equiv.data[0].operation.name == "rz"
         assert equiv.data[0].operation.params == [-np.pi / 2]
+
     def test_equivalence_unsupported_basis(self):
         with pytest.raises(ValueError) as e_info:
             translate_qpd_gate(SdgGate(), "falcon")
         assert e_info.value.args[0] == "Unknown basis gate set: falcon"
+
     def test_equivalence_unsupported_gate(self):
         with pytest.raises(ValueError) as e_info:
-            translate_qpd_gate(U3Gate(1., 1., 1.), "eagle")
+            translate_qpd_gate(U3Gate(1.0, 1.0, 1.0), "eagle")
         assert e_info.value.args[0] == "Cannot translate gate: u3"
