@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The ``CutQC`` subpackage has been removed, along with its two associated utility modules, ``circuit_knitting.utils.metrics`` and ``circuit_knitting.utils.conversion``.
+    Users are now encouraged to use the automatic cut-finding and gate/wire cutting from the :mod:`.circuit_knitting.cutting` package.

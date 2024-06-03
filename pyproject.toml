@@ -36,12 +36,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cplex = [
-    # We use the same restrictions in both of the following lines, as there
-    # is no reason for us to install docplex without cplex.
-    "docplex>=2.23.222; python_version < '3.12' and platform_machine != 'arm64'",
-    "cplex>=22.1.0.0; python_version < '3.12' and platform_machine != 'arm64'",
-]
 dev = [
     "circuit-knitting-toolbox[test,nbtest,lint]",
 ]
@@ -68,7 +62,7 @@ lint = [
     "pydocstyle==6.3.0",
     "mypy==1.10.0",
     "reno>=3.4.0",
-    "pylint==3.1.0",
+    "pylint==3.2.2",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
     "toml",
 ]
@@ -77,16 +71,12 @@ docs = [
     "sphinx-autodoc-typehints>=1.12.0",
     "sphinx-reredirects",
     "jupyter-sphinx>=0.3.2",
-    # The following line is needed until
-    # https://github.com/jupyter/jupyter-sphinx/pull/226 is resolved.
-    "ipykernel>=4.5.1",
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
     "reno>=3.4.0",
     "qiskit-sphinx-theme>=1.14.0, <2"
 ]
 notebook-dependencies = [
-    "circuit-knitting-toolbox[cplex]",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
@@ -105,6 +95,23 @@ only-include = [
 remove-unused-variables = true
 remove-all-unused-imports = true
 
+[tool.ruff]
+target-version = "py38"
+
+[tool.ruff.lint]
+ignore = [
+    "E501",  # line too long
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test/**.py" = [
+    "F405",  # star import
+    "F403",  # unable to detect undefined names due to star import
+]
+"docs/**" = [
+    "E402",  # module level import not at top of file
+]
+
 [tool.pylint.main]
 py-version = "3.8"
 disable = "all"
@@ -122,6 +129,9 @@ enable = [
     "dangerous-default-value",
 ]
 
+[tool.mypy]
+ignore_missing_imports = true
+
 #[tool.coverage.run]
 #omit = [
 #    # deprecated import location(s)
@@ -130,5 +140,4 @@ enable = [
 
 [tool.pytest.ini_options]
 testpaths = ["./circuit_knitting/", "./test/"]
-filterwarnings = ["ignore:::.*qiskit.opflow*"]
-addopts = "--doctest-modules -rs --durations=10 --ignore=circuit_knitting/utils/metrics.py --ignore=circuit_knitting/cutting/cutqc"
+addopts = "--doctest-modules -rs --durations=10"

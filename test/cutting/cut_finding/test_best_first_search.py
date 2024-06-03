@@ -92,11 +92,10 @@ def test_best_first_search(test_circuit: SimpleGateList):
     op = CutOptimization(test_circuit, settings, constraint_obj)
 
     out, _ = op.optimization_pass()
-
     assert op.search_engine.get_stats(penultimate=True) is not None
     assert op.search_engine.get_stats() is not None
     assert op.get_upperbound_cost() == (27, inf)
-    assert op.minimum_reached() is False
+    assert op.minimum_reached() is True
     assert out is not None
     assert (out.lower_bound_gamma(), out.gamma_UB, out.get_max_width()) == (
         27,
@@ -114,7 +113,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 4], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 4))],
+            (((1, 3), (2, 4)),),
         ),
         (
             GateSpec(
@@ -122,7 +121,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 5], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 5))],
+            (((1, 3), (2, 5)),),
         ),
         (
             GateSpec(
@@ -130,7 +129,7 @@ def test_best_first_search(test_circuit: SimpleGateList):
                 gate=CircuitElement(name="cx", params=[], qubits=[3, 6], gamma=3),
                 cut_constraints=None,
             ),
-            [((1, 3), (2, 6))],
+            (((1, 3), (2, 6)),),
         ),
     ]
 

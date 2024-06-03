@@ -52,6 +52,10 @@ def find_cuts(
               ``data`` field.
             - sampling_overhead: The sampling overhead incurred from cutting the specified
               gates and wires.
+            - minimum_reached: A bool indicating whether or not the search conclusively found
+              the minimum of cost function. ``minimum_reached = False`` could also mean that the
+              cost returned was actually the lowest possible cost but that the search was
+              not allowed to run long enough to prove that this was the case.
 
     Raises:
         ValueError: The input circuit contains a gate acting on more than 2 qubits.
@@ -63,6 +67,8 @@ def find_cuts(
         seed=optimization.seed,
         max_gamma=optimization.max_gamma,
         max_backjumps=optimization.max_backjumps,
+        gate_lo=optimization.gate_lo,
+        wire_lo=optimization.wire_lo,
     )
 
     # Hard-code the optimizer to an LO-only optimizer
@@ -106,7 +112,7 @@ def find_cuts(
         )
         counter += 1
 
-        if action.action.get_name() == "CutBothWires":  # pragma: no cover
+        if action.action.get_name() == "CutBothWires":
             # There should be two wires specified in the action in this case
             assert len(action.args) == 2
             qubit_id2 = action.args[1][0] - 1
@@ -126,6 +132,7 @@ def find_cuts(
         elif inst.operation.name == "cut_wire":
             metadata["cuts"].append(("Wire Cut", i))
     metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
+    metadata["minimum_reached"] = optimizer.minimum_reached()
 
     return circ_out, metadata
 
@@ -137,6 +144,8 @@ class OptimizationParameters:
     seed: int | None = OptimizationSettings().seed
     max_gamma: float = OptimizationSettings().max_gamma
     max_backjumps: None | int = OptimizationSettings().max_backjumps
+    gate_lo: bool = OptimizationSettings().gate_lo
+    wire_lo: bool = OptimizationSettings().wire_lo
 
 
 @dataclass

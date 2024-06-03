@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    The behavior of :func:`.separate_circuit` and
+    :func:`.partition_problem` have changed so that idle qubits are
+    discarded by default.  Previously, each idle qubit was placed in
+    its own subcircuit if ``partition_labels`` was not provided.

@@ -13,7 +13,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence, Hashable
+from collections.abc import Sequence, Hashable, Mapping
 
 import numpy as np
 from qiskit.quantum_info import PauliList
@@ -75,28 +75,32 @@ def reconstruct_expectation_values(
         ValueError: ``observables`` and ``results`` are of incompatible types.
         ValueError: An input observable has a phase not equal to 1.
     """
-    if isinstance(observables, PauliList) and not isinstance(
-        results, (SamplerResult, PrimitiveResult)
-    ):
-        raise ValueError(
-            "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
-        )
-    if isinstance(observables, dict) and not isinstance(results, dict):
-        raise ValueError(
-            "If observables is a dictionary, results must also be a dictionary."
-        )
-
-    # If circuit was not separated, transform input data structures to dictionary format
+    # If circuit was not separated, transform input data structures to
+    # dictionary format.  Perform some input validation in either case.
     if isinstance(observables, PauliList):
+        if not isinstance(results, (SamplerResult, PrimitiveResult)):
+            raise ValueError(
+                "If observables is a PauliList, results must be a SamplerResult or PrimitiveResult instance."
+            )
         if any(obs.phase != 0 for obs in observables):
             raise ValueError("An input observable has a phase not equal to 1.")
-        subobservables_by_subsystem = decompose_observables(
-            observables, "A" * len(observables[0])
+        subobservables_by_subsystem: Mapping[Hashable, PauliList] = (
+            decompose_observables(observables, "A" * len(observables[0]))
         )
-        results_dict: dict[Hashable, SamplerResult | PrimitiveResult] = {"A": results}
+        results_dict: Mapping[Hashable, SamplerResult | PrimitiveResult] = {
+            "A": results
+        }
         expvals = np.zeros(len(observables))
 
-    else:
+    elif isinstance(observables, Mapping):
+        if not isinstance(results, Mapping):
+            raise ValueError(
+                "If observables is a dictionary, results must also be a dictionary."
+            )
+        if observables.keys() != results.keys():
+            raise ValueError(
+                "The subsystem labels of the observables and results do not match."
+            )
         results_dict = results
         for label, subobservable in observables.items():
             if any(obs.phase != 0 for obs in subobservable):
@@ -104,10 +108,28 @@ def reconstruct_expectation_values(
         subobservables_by_subsystem = observables
         expvals = np.zeros(len(list(observables.values())[0]))
 
+    else:
+        raise ValueError("observables must be either a PauliList or dict.")
+
     subsystem_observables = {
         label: ObservableCollection(subobservables)
         for label, subobservables in subobservables_by_subsystem.items()
     }
+
+    # Validate that the number of subexperiments executed is consistent with
+    # the number of coefficients and observable groups.
+    for label, so in subsystem_observables.items():
+        current_result = results_dict[label]
+        if isinstance(current_result, SamplerResult):
+            # SamplerV1 provides a SamplerResult
+            current_result = current_result.quasi_dists
+        if len(current_result) != len(coefficients) * len(so.groups):
+            raise ValueError(
+                f"The number of subexperiments performed in subsystem '{label}' "
+                f"({len(current_result)}) should equal the number of coefficients "
+                f"({len(coefficients)}) times the number of mutually commuting "
+                f"subobservable groups ({len(so.groups)}), but it does not."
+            )
 
     # Reconstruct the expectation values
     for i, coeff in enumerate(coefficients):

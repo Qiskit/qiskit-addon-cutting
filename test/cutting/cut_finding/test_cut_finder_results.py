@@ -14,9 +14,9 @@
 from __future__ import annotations
 
 import numpy as np
-from pytest import fixture, raises
+import unittest
+from pytest import raises
 from qiskit import QuantumCircuit
-from typing import Callable
 from qiskit.circuit.library import EfficientSU2
 from circuit_knitting.cutting.cut_finding.cco_utils import qc_to_cco_circuit
 from circuit_knitting.cutting.cut_finding.circuit_interface import (
@@ -28,10 +28,10 @@ from circuit_knitting.cutting.cut_finding.optimization_settings import (
 from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
 from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
-    OneWireCutIdentifier,
+    SingleWireCutIdentifier,
     WireCutLocation,
     CutIdentifier,
-    GateCutLocation,
+    CutLocation,
 )
 from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
     LOCutsOptimizer,
@@ -39,362 +39,545 @@ from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
 from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimization
 
 
-@fixture
-def empty_circuit():
-    qc = QuantumCircuit(3)
-    qc.barrier([0])
-    qc.barrier([1])
-    qc.barrier([2])
+class TestCuttingFourQubitCircuit(unittest.TestCase):
+    def setUp(self):
+        qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+        qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
+        self.circuit_internal = qc_to_cco_circuit(qc)
 
+    def test_four_qubit_cutting_workflow(self):
 
-@fixture
-def four_qubit_test_setup():
-    qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
-    qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
-    circuit_internal = qc_to_cco_circuit(qc)
-    interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(seed=12345)
-    settings.set_engine_selection("CutOptimization", "BestFirst")
-    return interface, settings
+        with self.subTest("No cuts needed"):
 
+            qubits_per_subcircuit = 4
 
-@fixture
-def seven_qubit_test_setup():
-    qc = QuantumCircuit(7)
-    for i in range(7):
-        qc.rx(np.pi / 4, i)
-    qc.cx(0, 3)
-    qc.cx(1, 3)
-    qc.cx(2, 3)
-    qc.cx(3, 4)
-    qc.cx(3, 5)
-    qc.cx(3, 6)
-    circuit_internal = qc_to_cco_circuit(qc)
-    interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(seed=12345)
-    settings.set_engine_selection("CutOptimization", "BestFirst")
-    return interface, settings
+            interface = SimpleGateList(self.circuit_internal)
 
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
 
-@fixture
-def multiqubit_gate_test_setup():
-    qc = QuantumCircuit(3)
-    qc.ccx(0, 1, 2)
-    circuit_internal = qc_to_cco_circuit(qc)
-    interface = SimpleGateList(circuit_internal)
-    settings = OptimizationSettings(seed=12345)
-    settings.set_engine_selection("CutOptimization", "BestFirst")
-    return interface, settings
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-def test_no_cuts(
-    four_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    # QPU with 4 qubits for a 4 qubit circuit results in no cutting.
-    qubits_per_subcircuit = 4
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    interface, settings = four_qubit_test_setup
+            output = optimization_pass.optimize(interface, settings, constraint_obj)
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+            assert get_actions_list(output.actions) == []  # no cutting.
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+            assert (
+                interface.export_subcircuits_as_string(name_mapping="default") == "AAAA"
+            )
 
-    output = optimization_pass.optimize(interface, settings, constraint_obj)
+        with self.subTest("No cuts found when all flags set to False"):
 
-    assert get_actions_list(output.actions) == []  # no cutting.
+            qubits_per_subcircuit = 3
 
-    assert interface.export_subcircuits_as_string(name_mapping="default") == "AAAA"
+            interface = SimpleGateList(self.circuit_internal)
 
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=False)
 
-def test_four_qubit_circuit_three_qubit_qpu(
-    four_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    # QPU with 3 qubits for a 4 qubit circuit enforces cutting.
-    qubits_per_subcircuit = 3
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    interface, settings = four_qubit_test_setup
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+            with raises(ValueError) as e_info:
+                optimization_pass.optimize(interface, settings, constraint_obj)
+            assert (
+                e_info.value.args[0]
+                == "None state encountered: no cut state satisfying the specified constraints and settings could be found."
+            )
 
-    output = optimization_pass.optimize()
+        with self.subTest(
+            "No separating cuts possible if one qubit per qpu and only wire cuts allowed"
+        ):
 
-    cut_actions_list = output.cut_actions_sublist()
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=True)
 
-    assert cut_actions_list == [
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=17, gate_name="cx", qubits=[2, 3]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=25, gate_name="cx", qubits=[2, 3]
-            ),
-        ),
-    ]
-    best_result = optimization_pass.get_results()
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    assert output.upper_bound_gamma() == best_result.gamma_UB == 9  # 2 LO cnot cuts.
+            interface = SimpleGateList(self.circuit_internal)
 
-    assert optimization_pass.minimum_reached() is True  # matches optimal solution.
+            qubits_per_subcircuit = 1
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    assert (
-        interface.export_subcircuits_as_string(name_mapping="default") == "AAAB"
-    )  # circuit separated into 2 subcircuits.
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
+            with raises(ValueError) as e_info:
+                optimization_pass.optimize(interface, settings, constraint_obj)
+            assert (
+                e_info.value.args[0]
+                == "None state encountered: no cut state satisfying the specified constraints and settings could be found."
+            )
 
-def test_four_qubit_circuit_two_qubit_qpu(
-    four_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    # QPU with 2 qubits enforces cutting.
-    qubits_per_subcircuit = 2
+        with self.subTest("Gate cuts to get three qubits per subcircuit"):
+            # QPU with 3 qubits for a 4 qubit circuit enforces cutting.
+            qubits_per_subcircuit = 3
 
-    interface, settings = four_qubit_test_setup
+            interface = SimpleGateList(self.circuit_internal)
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    output = optimization_pass.optimize()
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    cut_actions_list = output.cut_actions_sublist()
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    assert cut_actions_list == [
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=9, gate_name="cx", qubits=[1, 2]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=20, gate_name="cx", qubits=[1, 2]
-            ),
-        ),
-    ]
+            output = optimization_pass.optimize()
 
-    best_result = optimization_pass.get_results()
+            cut_actions_list = output.cut_actions_sublist()
 
-    assert output.upper_bound_gamma() == best_result.gamma_UB == 9  # 2 LO cnot cuts.
+            assert cut_actions_list == [
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=17, gate_name="cx", qubits=[2, 3]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=25, gate_name="cx", qubits=[2, 3]
+                    ),
+                ),
+            ]
+            best_result = optimization_pass.get_results()
 
-    assert optimization_pass.minimum_reached() is True  # matches optimal solution.
+            assert (
+                output.upper_bound_gamma() == best_result.gamma_UB == 9
+            )  # 2 LO cnot cuts.
 
-    assert (
-        interface.export_subcircuits_as_string(name_mapping="default") == "AABB"
-    )  # circuit separated into 2 subcircuits.
+            assert (
+                optimization_pass.minimum_reached() is True
+            )  # matches optimal solution.
 
-    assert (
-        optimization_pass.get_stats()["CutOptimization"].backjumps
-        <= settings.max_backjumps
-    )
+            assert (
+                interface.export_subcircuits_as_string(name_mapping="default") == "AAAB"
+            )  # circuit separated into 2 subcircuits.
 
+        with self.subTest("Gate cuts to get two qubits per subcircuit"):
 
-def test_seven_qubit_circuit_two_qubit_qpu(
-    seven_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    # QPU with 2 qubits enforces cutting.
-    qubits_per_subcircuit = 2
+            qubits_per_subcircuit = 2
 
-    interface, settings = seven_qubit_test_setup
+            interface = SimpleGateList(self.circuit_internal)
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    output = optimization_pass.optimize()
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    cut_actions_list = output.cut_actions_sublist()
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    assert cut_actions_list == [
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=7, gate_name="cx", qubits=[0, 3]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=8, gate_name="cx", qubits=[1, 3]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=9, gate_name="cx", qubits=[2, 3]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=11, gate_name="cx", qubits=[3, 5]
-            ),
-        ),
-        CutIdentifier(
-            cut_action="CutTwoQubitGate",
-            gate_cut_location=GateCutLocation(
-                instruction_id=12, gate_name="cx", qubits=[3, 6]
-            ),
-        ),
-    ]
+            output = optimization_pass.optimize()
 
-    best_result = optimization_pass.get_results()
+            cut_actions_list = output.cut_actions_sublist()
 
-    assert output.upper_bound_gamma() == best_result.gamma_UB == 243  # 5 LO cnot cuts.
+            assert cut_actions_list == [
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=9, gate_name="cx", qubits=[1, 2]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=20, gate_name="cx", qubits=[1, 2]
+                    ),
+                ),
+            ]
 
-    assert optimization_pass.minimum_reached() is True  # matches optimal solution.
+        best_result = optimization_pass.get_results()
 
-    assert (
-        interface.export_subcircuits_as_string(name_mapping="default") == "ABCDDEF"
-    )  # circuit separated into 2 subcircuits.
+        assert (
+            output.upper_bound_gamma() == best_result.gamma_UB == 9
+        )  # 2 LO cnot cuts.
 
+        assert optimization_pass.minimum_reached() is True  # matches optimal solution.
 
-def test_one_wire_cut(
-    seven_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    qubits_per_subcircuit = 4
+        assert (
+            interface.export_subcircuits_as_string(name_mapping="default") == "AABB"
+        )  # circuit separated into 2 subcircuits.
 
-    interface, settings = seven_qubit_test_setup
-
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
-
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
-
-    output = optimization_pass.optimize()
-
-    cut_actions_list = output.cut_actions_sublist()
-
-    assert cut_actions_list == [
-        OneWireCutIdentifier(
-            cut_action="CutLeftWire",
-            wire_cut_location=WireCutLocation(
-                instruction_id=10, gate_name="cx", qubits=[3, 4], input=1
-            ),
+        assert (
+            optimization_pass.get_stats()["CutOptimization"].backjumps
+            <= settings.max_backjumps
         )
-    ]
 
-    assert (
-        interface.export_subcircuits_as_string(name_mapping="default") == "AAAABBBB"
-    )  # extra wires because of wire cuts
-    # and not qubit reuse.
+        with self.subTest("Cut both wires instance"):
 
-    best_result = optimization_pass.get_results()
+            qubits_per_subcircuit = 2
 
-    assert output.upper_bound_gamma() == best_result.gamma_UB == 4  # One LO wire cut.
+            interface = SimpleGateList(self.circuit_internal)
 
-    assert optimization_pass.minimum_reached() is True  # matches optimal solution
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+            output = optimization_pass.optimize()
+
+            cut_actions_list = output.cut_actions_sublist()
+
+            assert cut_actions_list == [
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=9, gate_name="cx", qubits=[1, 2], input=1
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutBothWires",
+                    cut_location=CutLocation(
+                        instruction_id=12, gate_name="cx", qubits=[0, 1]
+                    ),
+                ),
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=17, gate_name="cx", qubits=[2, 3], input=1
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutBothWires",
+                    cut_location=CutLocation(
+                        instruction_id=20, gate_name="cx", qubits=[1, 2]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutBothWires",
+                    cut_location=CutLocation(
+                        instruction_id=25, gate_name="cx", qubits=[2, 3]
+                    ),
+                ),
+            ]
+
+        best_result = optimization_pass.get_results()
+
+        assert output.upper_bound_gamma() == best_result.gamma_UB == 65536
+
+        assert (
+            interface.export_subcircuits_as_string(name_mapping="default")
+            == "ADABDEBCEFCF"
+        )
+
+        with self.subTest("Wire cuts to get to 3 qubits per subcircuit"):
+
+            qubits_per_subcircuit = 3
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+            output = optimization_pass.optimize()
+
+            cut_actions_list = output.cut_actions_sublist()
+
+            assert cut_actions_list == [
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=17, gate_name="cx", qubits=[2, 3], input=1
+                    ),
+                ),
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=20, gate_name="cx", qubits=[1, 2], input=1
+                    ),
+                ),
+            ]
+
+        best_result = optimization_pass.get_results()
+
+        assert (
+            output.upper_bound_gamma() == best_result.gamma_UB == 16
+        )  # 2 LO wire cuts.
+
+        assert (
+            interface.export_subcircuits_as_string(name_mapping="default") == "AABABB"
+        )  # circuit separated into 2 subcircuits.
+
+        with self.subTest("Search engine not supported"):
+            # Check if unspported search engine is flagged
+
+            qubits_per_subcircuit = 4
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BeamSearch")
+
+            search_engine = settings.get_engine_selection("CutOptimization")
+
+        constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+        optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+        with raises(ValueError) as e_info:
+            _ = optimization_pass.optimize()
+        assert (
+            e_info.value.args[0] == f"Search engine {search_engine} is not supported."
+        )
+
+        with self.subTest("Greedy search gate cut warm start test"):
+            # Even if the input cost bounds are too stringent, greedy_cut_optimization
+            # is able to return a solution.
+
+            qubits_per_subcircuit = 3
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=False)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            # Impose a stringent cost upper bound, insist gamma <=2.
+            cut_opt = CutOptimization(interface, settings, constraint_obj)
+            cut_opt.update_upperbound_cost((2, 4))
+            state, cost = cut_opt.optimization_pass()
+
+            # 2 cnot cuts are still found
+            assert state is not None
+            assert cost[0] == 9
+
+        with self.subTest("Greedy search wire cut warm start test"):
+            # Even if the input cost bounds are too stringent, greedy_cut_optimization
+            # is able to return a solution.
+
+            qubits_per_subcircuit = 3
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=False, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            # Impose a stringent cost upper bound, insist gamma <=2.
+            cut_opt = CutOptimization(interface, settings, constraint_obj)
+            cut_opt.update_upperbound_cost((2, 4))
+            state, cost = cut_opt.optimization_pass()
+
+            # 2 LO wire cuts are still found
+            assert state is not None
+            assert cost[0] == 16
 
 
-def test_two_wire_cuts(
-    seven_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    qubits_per_subcircuit = 3
+class TestCuttingSevenQubitCircuit(unittest.TestCase):
+    def setUp(self):
+        qc = QuantumCircuit(7)
+        for i in range(7):
+            qc.rx(np.pi / 4, i)
+        qc.cx(0, 3)
+        qc.cx(1, 3)
+        qc.cx(2, 3)
+        qc.cx(3, 4)
+        qc.cx(3, 5)
+        qc.cx(3, 6)
+        self.circuit_internal = qc_to_cco_circuit(qc)
 
-    interface, settings = seven_qubit_test_setup
+    def test_seven_qubit_workflow(self):
+        with self.subTest("Two qubits per subcircuit"):
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+            qubits_per_subcircuit = 2
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+            interface = SimpleGateList(self.circuit_internal)
 
-    output = optimization_pass.optimize()
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
 
-    cut_actions_list = output.cut_actions_sublist()
+            settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    assert cut_actions_list == [
-        OneWireCutIdentifier(
-            cut_action="CutRightWire",
-            wire_cut_location=WireCutLocation(
-                instruction_id=9, gate_name="cx", qubits=[2, 3], input=2
-            ),
-        ),
-        OneWireCutIdentifier(
-            cut_action="CutLeftWire",
-            wire_cut_location=WireCutLocation(
-                instruction_id=11, gate_name="cx", qubits=[3, 5], input=1
-            ),
-        ),
-    ]
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    assert (
-        interface.export_subcircuits_as_string(name_mapping="default") == "AABABCBCC"
-    )  # extra wires because of wire cuts
-    # and no qubit reuse. In the string above,
-    # {A: wire 0, A:wire 1, B:wire 2, A: wire 3,
-    # B: first cut on wire 3, C: second cut on wire 3,
-    # B: wire 4, C: wire 5, C: wire 6}.
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
 
-    best_result = optimization_pass.get_results()
+            output = optimization_pass.optimize()
 
-    assert output.upper_bound_gamma() == best_result.gamma_UB == 16  # Two LO wire cuts.
+            cut_actions_list = output.cut_actions_sublist()
 
-    assert optimization_pass.minimum_reached() is True  # matches optimal solution
+            assert cut_actions_list == [
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=7, gate_name="cx", qubits=[0, 3]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=8, gate_name="cx", qubits=[1, 3]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=9, gate_name="cx", qubits=[2, 3]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=11, gate_name="cx", qubits=[3, 5]
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutTwoQubitGate",
+                    cut_location=CutLocation(
+                        instruction_id=12, gate_name="cx", qubits=[3, 6]
+                    ),
+                ),
+            ]
+
+            best_result = optimization_pass.get_results()
+
+            assert (
+                output.upper_bound_gamma() == best_result.gamma_UB == 243
+            )  # 5 LO cnot cuts.
+
+            assert (
+                optimization_pass.minimum_reached() is True
+            )  # matches optimal solution.
+
+            assert (
+                interface.export_subcircuits_as_string(name_mapping="default")
+                == "ABCDDEF"
+            )  # circuit separated into 2 subcircuits.
+
+        with self.subTest("Single wire cut"):
+
+            qubits_per_subcircuit = 4
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+            output = optimization_pass.optimize()
+
+            cut_actions_list = output.cut_actions_sublist()
+
+            assert cut_actions_list == [
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=10, gate_name="cx", qubits=[3, 4], input=1
+                    ),
+                )
+            ]
+
+            assert (
+                interface.export_subcircuits_as_string(name_mapping="default")
+                == "AAAABBBB"
+            )  # extra wires because of wire cuts
+            # and no qubit reuse.
+
+            best_result = optimization_pass.get_results()
+
+            assert (
+                output.upper_bound_gamma() == best_result.gamma_UB == 4
+            )  # One LO wire cut.
+
+            assert (
+                optimization_pass.minimum_reached() is True
+            )  # matches optimal solution
+
+        with self.subTest("Two single wire cuts"):
+
+            qubits_per_subcircuit = 3
+
+            interface = SimpleGateList(self.circuit_internal)
+
+            settings = OptimizationSettings(seed=12345, gate_lo=True, wire_lo=True)
+
+            settings.set_engine_selection("CutOptimization", "BestFirst")
+
+            constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+
+            optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
+
+            output = optimization_pass.optimize()
+
+            cut_actions_list = output.cut_actions_sublist()
+
+            assert cut_actions_list == [
+                SingleWireCutIdentifier(
+                    cut_action="CutRightWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=9, gate_name="cx", qubits=[2, 3], input=2
+                    ),
+                ),
+                SingleWireCutIdentifier(
+                    cut_action="CutLeftWire",
+                    wire_cut_location=WireCutLocation(
+                        instruction_id=11, gate_name="cx", qubits=[3, 5], input=1
+                    ),
+                ),
+            ]
+
+            assert (
+                interface.export_subcircuits_as_string(name_mapping="default")
+                == "AABABCBCC"
+            )  # extra wires because of wire cuts
+        # and no qubit reuse. In the string above,
+        # {A: wire 0, A:wire 1, B:wire 2, A: wire 3,
+        # B: first cut on wire 3, C: second cut on wire 3,
+        # B: wire 4, C: wire 5, C: wire 6}.
+
+        best_result = optimization_pass.get_results()
+
+        assert (
+            output.upper_bound_gamma() == best_result.gamma_UB == 16
+        )  # Two LO wire cuts.
+
+        assert optimization_pass.minimum_reached() is True  # matches optimal solution
 
 
-# check if unsupported search engine is flagged.
-def test_supported_search_engine(
-    four_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    qubits_per_subcircuit = 4
+class TestCuttingMultiQubitGates(unittest.TestCase):
+    def setUp(self):
+        qc = QuantumCircuit(3)
+        qc.ccx(0, 1, 2)
+        circuit_internal = qc_to_cco_circuit(qc)
+        self.interface = SimpleGateList(circuit_internal)
+        self.settings = OptimizationSettings(seed=12345)
+        self.settings.set_engine_selection("CutOptimization", "BestFirst")
 
-    interface, settings = four_qubit_test_setup
+    def no_cutting_multiqubit_gates(self):
 
-    settings.set_engine_selection("CutOptimization", "BeamSearch")
+        # The cutting of multiqubit gates is not supported at present.
+        qubits_per_subcircuit = 2
 
-    search_engine = settings.get_engine_selection("CutOptimization")
+        constraint_obj = DeviceConstraints(qubits_per_subcircuit)
 
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
+        optimization_pass = LOCutsOptimizer(
+            self.interface, self.settings, constraint_obj
+        )
 
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
-
-    with raises(ValueError) as e_info:
-        _ = optimization_pass.optimize()
-    assert e_info.value.args[0] == f"Search engine {search_engine} is not supported."
-
-
-# The cutting of multiqubit gates is not supported at present.
-def test_multiqubit_cuts(
-    multiqubit_gate_test_setup: Callable[
-        [], tuple[SimpleGateList, OptimizationSettings]
-    ]
-):
-    # QPU with 2 qubits requires cutting.
-    qubits_per_subcircuit = 2
-
-    interface, settings = multiqubit_gate_test_setup
-
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
-
-    optimization_pass = LOCutsOptimizer(interface, settings, constraint_obj)
-
-    with raises(ValueError) as e_info:
-        _ = optimization_pass.optimize()
-    assert e_info.value.args[0] == (
-        "The input circuit must contain only single and two-qubits gates. "
-        "Found 3-qubit gate: (ccx)."
-    )
-
-
-# Even if the input cost bounds are too stringent, greedy_cut_optimization
-# is able to return a solution.
-def test_greedy_search(
-    four_qubit_test_setup: Callable[[], tuple[SimpleGateList, OptimizationSettings]]
-):
-    qubits_per_subcircuit = 3
-
-    interface, settings = four_qubit_test_setup
-
-    constraint_obj = DeviceConstraints(qubits_per_subcircuit)
-
-    # Impose a stringent cost upper bound, insist gamma <=2.
-    cut_opt = CutOptimization(interface, settings, constraint_obj)
-    cut_opt.update_upperbound_cost((2, 4))
-    state, cost = cut_opt.optimization_pass()
-
-    # 2 cnot cuts are still found
-    assert state is not None
-    assert cost[0] == 9
+        with raises(ValueError) as e_info:
+            _ = optimization_pass.optimize()
+        assert e_info.value.args[0] == (
+            "The input circuit must contain only single and two-qubits gates. "
+            "Found 3-qubit gate: (ccx)."
+        )

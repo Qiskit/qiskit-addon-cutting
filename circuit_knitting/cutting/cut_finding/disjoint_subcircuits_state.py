@@ -37,11 +37,15 @@ class Action(NamedTuple):
 
     action: DisjointSearchAction
     gate_spec: GateSpec
-    args: list
+    args: list | tuple
 
 
-class GateCutLocation(NamedTuple):
-    """Named tuple for specification of gate cut location."""
+class CutLocation(NamedTuple):
+    """Named tuple for specifying cut locations.
+
+    This is used to specify instances of both :class:`CutTwoQubitGate` and :class:`CutBothWires`.
+    Both of these instances are fully specified by a gate reference.
+    """
 
     instruction_id: int
     gate_name: str
@@ -49,7 +53,7 @@ class GateCutLocation(NamedTuple):
 
 
 class WireCutLocation(NamedTuple):
-    """Named tuple for specification of wire cut location.
+    """Named tuple for specification of (single) wire cut locations.
 
     Wire cuts are identified through the gates whose input wires are cut.
     """
@@ -64,10 +68,10 @@ class CutIdentifier(NamedTuple):
     """Named tuple for specification of location of :class:`CutTwoQubitGate` or :class:`CutBothWires` instances."""
 
     cut_action: DisjointSearchAction
-    gate_cut_location: GateCutLocation
+    cut_location: CutLocation
 
 
-class OneWireCutIdentifier(NamedTuple):
+class SingleWireCutIdentifier(NamedTuple):
     """Named tuple for specification of location of :class:`CutLeftWire` or :class:`CutRightWire` instances."""
 
     cut_action: DisjointSearchAction
@@ -130,15 +134,13 @@ class DisjointSubcircuitsState:
         if not (
             num_qubits is None or (isinstance(num_qubits, int) and num_qubits >= 0)
         ):
-            raise ValueError("num_qubits must be either be None or a positive integer.")
+            raise ValueError("num_qubits must either be None or a positive integer.")
 
         if not (
             max_wire_cuts is None
             or (isinstance(max_wire_cuts, int) and max_wire_cuts >= 0)
         ):
-            raise ValueError(
-                "max_wire_cuts must be either be None or a positive integer."
-            )
+            raise ValueError("max_wire_cuts must either be None or a positive integer.")
 
         if num_qubits is None or max_wire_cuts is None:
             self.wiremap: NDArray[np.int_] | None = None
@@ -213,7 +215,7 @@ class DisjointSubcircuitsState:
         for i in range(len(cut_actions)):
             if cut_actions[i].action.get_name() in ("CutLeftWire", "CutRightWire"):
                 self.cut_actions_list.append(
-                    OneWireCutIdentifier(
+                    SingleWireCutIdentifier(
                         cut_actions[i].action.get_name(),
                         WireCutLocation(
                             cut_actions[i].gate_spec.instruction_id,
@@ -231,7 +233,7 @@ class DisjointSubcircuitsState:
                 self.cut_actions_list.append(
                     CutIdentifier(
                         cut_actions[i].action.get_name(),
-                        GateCutLocation(
+                        CutLocation(
                             cut_actions[i].gate_spec.instruction_id,
                             cut_actions[i].gate_spec.gate.name,
                             cut_actions[i].gate_spec.gate.qubits,
@@ -430,12 +432,12 @@ class DisjointSubcircuitsState:
         self,
         action_obj: DisjointSearchAction,
         gate_spec: GateSpec,
-        args: tuple | None = None,
+        *args: tuple,
     ) -> None:
         """Append the specified action to the list of search-space actions that have been performed."""
         if action_obj.get_name() is not None:
             self.actions = cast(list, self.actions)
-            self.actions.append(Action(action_obj, gate_spec, [args]))
+            self.actions.append(Action(action_obj, gate_spec, args))
 
     def get_search_level(self) -> int:
         """Return the search level."""

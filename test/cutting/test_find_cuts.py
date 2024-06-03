@@ -17,6 +17,7 @@ import pytest
 import os
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import EfficientSU2
 
 from circuit_knitting.cutting.automated_cut_finding import (
     find_cuts,
@@ -46,6 +47,24 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert len(metadata["cuts"]) == 2
             assert {"Wire Cut", "Gate Cut"} == cut_types
             assert np.isclose(127.06026169, metadata["sampling_overhead"], atol=1e-8)
+            assert metadata["minimum_reached"] is True
+
+        with self.subTest("Cut both wires instance"):
+            qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+            qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
+            optimization = OptimizationParameters(
+                seed=12345, gate_lo=False, wire_lo=True
+            )
+            constraints = DeviceConstraints(qubits_per_subcircuit=2)
+
+            _, metadata = find_cuts(
+                qc, optimization=optimization, constraints=constraints
+            )
+            cut_types = {cut[0] for cut in metadata["cuts"]}
+
+            assert len(metadata["cuts"]) == 8
+            assert {"Wire Cut"} == cut_types
+            assert np.isclose(65536.0**2, metadata["sampling_overhead"], atol=1e-8)
 
         with self.subTest("3-qubit gate"):
             circuit = QuantumCircuit(3)

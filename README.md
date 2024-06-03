@@ -32,9 +32,10 @@
 Circuit Knitting is the process of decomposing a larger quantum circuit into many smaller circuits, executing those circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
 
 The toolbox currently contains the following tools:
-- Circuit Cutting [[1-6]](#references)
+- Circuit Cutting [[1-5]](#references)
  
 For a more detailed discussion on circuit cutting, check out our [technical guide](https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html#overview-of-circuit-cutting).
+
 ----------------------------------------------------------------------------------------------------
   
 ### Documentation
@@ -45,10 +46,10 @@ All CKT documentation is available at https://qiskit-extensions.github.io/circui
   
 ### Installation
 
-We encourage installing CKT via ``pip``, when possible. Users intending to use the automatic cut finding functionality in the ``CutQC`` package should install the ``cplex`` optional dependency.
+We encourage installing CKT via ``pip``, when possible.
 
 ```bash
-pip install 'circuit-knitting-toolbox[cplex]'
+pip install 'circuit-knitting-toolbox'
 ```
 
 For information on installing from source, running CKT in a container, and platform support, refer to the [installation instructions](https://qiskit-extensions.github.io/circuit-knitting-toolbox/install.html) in the CKT documentation.
@@ -71,9 +72,7 @@ This project is meant to evolve rapidly and, as such, does not follow [Qiskit's 
 
 [4] Lukas Brenner, Christophe Piveteau, David Sutter, [Optimal wire cutting with classical communication](https://arxiv.org/abs/2302.03366), arXiv:2302.03366 [quant-ph].
 
-[5] Wei Tang, Teague Tomesh, Martin Suchara, Jeffrey Larson, Margaret Martonosi, [CutQC: Using small quantum computers for large quantum circuit evaluations](https://doi.org/10.1145/3445814.3446758), Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems. pp. 473 (2021).
-  
-[6] K. Temme, S. Bravyi, and J. M. Gambetta, [Error mitigation for short-depth quantum circuits](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509), Physical Review Letters, 119(18), (2017).
+[5] K. Temme, S. Bravyi, and J. M. Gambetta, [Error mitigation for short-depth quantum circuits](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.119.180509), Physical Review Letters, 119(18), (2017).
   
 ----------------------------------------------------------------------------------------------------
 
