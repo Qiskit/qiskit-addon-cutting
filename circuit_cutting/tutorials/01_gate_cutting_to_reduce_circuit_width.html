@@ -508,11 +508,10 @@ Sampling overhead: 81.0
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span><span class="p">,</span> <span class="n">Batch</span>
 
-<span class="c1"># Set up the Qiskit Runtime Sampler primitive</span>
-<span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-
-<span class="c1"># Submit each partition&#39;s subexperiments as a single batch</span>
-<span class="k">with</span> <span class="n">Batch</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">):</span>
+<span class="c1"># Submit each partition&#39;s subexperiments to the Qiskit Runtime Sampler</span>
+<span class="c1"># primitive, in a single batch so that the jobs will run back-to-back.</span>
+<span class="k">with</span> <span class="n">Batch</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span> <span class="k">as</span> <span class="n">batch</span><span class="p">:</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
     <span class="n">jobs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">label</span><span class="p">:</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subsystem_subexpts</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">12</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subsystem_subexpts</span> <span class="ow">in</span> <span class="n">isa_subexperiments</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -585,10 +584,10 @@ Sampling overhead: 81.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.68161559
+Reconstructed expectation value: 0.69702762
 Exact expectation value: 0.56254612
-Error in estimation: 0.11906947
-Relative error in estimation: 0.2116617
+Error in estimation: 0.1344815
+Relative error in estimation: 0.23905862
 </pre></div></div>
 </div>
 </section>
