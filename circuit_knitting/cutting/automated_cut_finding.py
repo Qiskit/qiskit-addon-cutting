@@ -151,7 +151,7 @@ class OptimizationParameters:
     #: Maximum allowed value of gamma which, if exceeded, forces the search to terminate.
     max_gamma: float = OptimizationSettings().max_gamma
 
-    #: Maximum number of backjumps that can be performed before the search is forced to terminate; setting it to None implies that no such restrictions is placed.
+    #: Maximum number of backjumps that can be performed before the search is forced to terminate; setting it to ``None`` implies that no such restriction is placed.
     max_backjumps: None | int = OptimizationSettings().max_backjumps
 
     #: Bool indicating whether or not to allow LO gate cuts while finding cuts.
