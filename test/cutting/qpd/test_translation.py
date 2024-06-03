@@ -15,7 +15,8 @@ import unittest
 
 import pytest
 import numpy as np
-from qiskit.circuit.library.standard_gates import SdgGate, U3Gate
+from qiskit.circuit import Parameter
+from qiskit.circuit.library.standard_gates import SdgGate, U3Gate, PhaseGate
 
 from circuit_knitting.cutting.qpd import translate_qpd_gate
 
@@ -27,9 +28,15 @@ class TestQPDGateTranslation(unittest.TestCase):
         assert equiv.data[0].operation.params == [-np.pi / 2]
 
     def test_equivalence_eagle(self):
-        equiv = translate_qpd_gate(SdgGate(), "eagle")
+        equiv = translate_qpd_gate(PhaseGate(1.0), "eagle")
         assert equiv.data[0].operation.name == "rz"
-        assert equiv.data[0].operation.params == [-np.pi / 2]
+        assert equiv.data[0].operation.params == [1.0]
+
+    def test_unassigned_param(self):
+        param = Parameter("θ")
+        equiv = translate_qpd_gate(PhaseGate(param), "eagle")
+        assert equiv.data[0].operation.name == "rz"
+        assert equiv.data[0].operation.params == [param]
 
     def test_equivalence_unsupported_basis(self):
         with pytest.raises(ValueError) as e_info:

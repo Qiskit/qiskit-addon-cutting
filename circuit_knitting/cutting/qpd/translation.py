@@ -82,20 +82,29 @@ def translate_qpd_gate(gate: Gate, basis_gate_set: str, /) -> QuantumCircuit:
 
 # XGate
 @_register_gate("x")
-def _(_: XGate):
+def _(gate: XGate):
     q = QuantumRegister(1, "q")
     def_x = QuantumCircuit(q)
-    def_x.x(0)
+    def_x.append(gate, [0], [])
     return def_x
 
 
 # SXGate
 @_register_gate("sx")
-def _(_: SXGate):
+def _(gate: SXGate):
     q = QuantumRegister(1, "q")
     def_sx = QuantumCircuit(q)
-    def_sx.sx(0)
+    def_sx.append(gate, [0], [])
     return def_sx
+
+
+# RZGate
+@_register_gate("rz")
+def _(gate: RZGate):
+    q = QuantumRegister(1, "q")
+    def_rz = QuantumCircuit(q)
+    def_rz.append(gate, [0], [])
+    return def_rz
 
 
 # YGate

@@ -23,7 +23,7 @@ from qiskit.circuit import (
 )
 
 from .instructions import BaseQPDGate, TwoQubitQPDGate
-from .equivalence import translate_qpd_gate
+from .translation import translate_qpd_gate
 
 
 def decompose_qpd_instructions(
