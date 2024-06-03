@@ -59,10 +59,4 @@ Transpiler passes (:mod:`circuit_knitting.utils.transpiler_passes`)
 ===================================================================
 
 .. automodule:: circuit_knitting.utils.transpiler_passes
-
-===================================================================
-Gate equivalence rules (:mod:`circuit_knitting.utils.equivalence`)
-===================================================================
-
-.. automodule:: circuit_knitting.utils.equivalence
 """

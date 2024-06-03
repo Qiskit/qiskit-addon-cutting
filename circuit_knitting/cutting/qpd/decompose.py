@@ -23,7 +23,7 @@ from qiskit.circuit import (
 )
 
 from .instructions import BaseQPDGate, TwoQubitQPDGate
-from ...utils.equivalence import equivalence_libraries
+from .equivalence import translate_qpd_gate
 
 
 def decompose_qpd_instructions(
@@ -207,9 +207,6 @@ def _decompose_qpd_instructions(
     # Get equivalence library
     if basis_gate_set is not None:
         basis_gate_set = basis_gate_set.lower()
-    else:
-        basis_gate_set = "standard"
-    equivalence = equivalence_libraries.get(basis_gate_set)
 
     # Decompose all the QPDGates (should all be single qubit now) into Qiskit operations
     new_instruction_ids = []
@@ -227,22 +224,12 @@ def _decompose_qpd_instructions(
         for data in inst.operation.definition.data:
             # Can ignore clbits here, as QPDGates don't use clbits directly
             assert data.clbits == ()
-            if equivalence is None:
+            if basis_gate_set is None or data.operation.name in {"qpd_measure"}:
                 tmp_data.append(CircuitInstruction(data.operation, qubits=[qubits[0]]))
             else:
-                equiv_entry = equivalence.get_entry(data.operation)
-                # CKT SELs currently only provide at most one translation
-                assert len(equiv_entry) <= 1
-                if equiv_entry == []:
-                    tmp_data.append(
-                        CircuitInstruction(data.operation, qubits=[qubits[0]])
-                    )
-                else:
-                    new_insts = equiv_entry[0]
-                    for d in new_insts.data:
-                        tmp_data.append(
-                            CircuitInstruction(d.operation, qubits=[qubits[0]])
-                        )
+                equiv_circ = translate_qpd_gate(data.operation, basis_gate_set)
+                for d in equiv_circ.data:
+                    tmp_data.append(CircuitInstruction(d.operation, qubits=[qubits[0]]))
 
         # Replace QPDGate with local operations
         if tmp_data:
