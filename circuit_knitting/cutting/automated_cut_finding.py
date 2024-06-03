@@ -141,27 +141,23 @@ def find_cuts(
 class OptimizationParameters:
     """Specify parameters that control the optimization.
 
-    ``seed``: The seed to use when initializing Numpy random number
-    generators in :class:`.BestFirstPriorityQueue` instances.
-
-    ``gate_lo``: Bool indicating whether or not to allow lo gate cuts while finding cuts.
-
-    ``wire_lo``: Bool indicating whether or not to allow lo wire cuts while finding cuts.
-
-    ``max_backjumps``: Maximum number of backjumps that
-    can be performed before the search is forced to terminate.
-    Setting it to None indicates that no restriction is placed on the number of backjumps.
-
-    ``max_gamma``: Maximum allowed value of gamma. In the event that this is exceeded, the search is forced to terminate.
-
     If either of the constraints specified by ``max_backjumps`` or ``max_gamma`` are exceeded, the search terminates but
     nevertheless returns the result of a greedy best first search, which gives an *upper-bound* on gamma.
     """
 
+    #: The seed to use when initializing Numpy random number generators in the best first search priority queue.
     seed: int | None = OptimizationSettings().seed
+
+    #: Maximum allowed value of gamma which, if exceeded, forces the search to terminate.
     max_gamma: float = OptimizationSettings().max_gamma
+
+    #: Maximum number of backjumps that can be performed before the search is forced to terminate; setting it to None implies that no such restrictions is placed.
     max_backjumps: None | int = OptimizationSettings().max_backjumps
+
+    #: Bool indicating whether or not to allow LO gate cuts while finding cuts.
     gate_lo: bool = OptimizationSettings().gate_lo
+
+    #: Bool indicating whether or not to allow LO wire cuts while finding cuts.
     wire_lo: bool = OptimizationSettings().wire_lo
 
 
