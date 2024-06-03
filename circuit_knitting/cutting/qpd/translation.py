@@ -18,6 +18,8 @@ Equivalence utilities.
    :toctree: ../stubs/
 
 """
+from __future__ import annotations
+
 from collections.abc import Callable
 
 import numpy as np
