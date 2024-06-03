@@ -24,7 +24,7 @@ from .instructions import (
     TwoQubitQPDGate,
     QPDMeasure,
 )
-from .equivalence import translate_qpd_gate
+from .translation import translate_qpd_gate
 
 __all__ = [
     "qpdbasis_from_instruction",
