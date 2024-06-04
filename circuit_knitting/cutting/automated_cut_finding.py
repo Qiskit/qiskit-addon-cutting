@@ -133,6 +133,9 @@ def find_cuts(
             metadata["cuts"].append(("Wire Cut", i))
     metadata["sampling_overhead"] = opt_out.upper_bound_gamma() ** 2
     metadata["minimum_reached"] = optimizer.minimum_reached()
+    metadata["actions"] = [
+        (x[0], x[1]) for x in opt_out.cut_actions_sublist()
+    ]  # pragma: no cover
 
     return circ_out, metadata
 
