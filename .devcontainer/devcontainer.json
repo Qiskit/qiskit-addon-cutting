@@ -1,0 +1,5 @@
+{
+  "name": "circuit-knitting-toolbox",
+  "dockerComposeFile": "../compose.yaml",
+  "service": "notebook"
+}
