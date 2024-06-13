@@ -314,6 +314,8 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptimizationParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backjumps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/circuit_knitting/cutting/automated_cut_finding.html#OptimizationParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#circuit_knitting.cutting.OptimizationParameters" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Specify parameters that control the optimization.</p>
+<p>If either of the constraints specified by <code class="docutils literal notranslate"><span class="pre">max_backjumps</span></code> or <code class="docutils literal notranslate"><span class="pre">max_gamma</span></code> are exceeded, the search terminates but
+nevertheless returns the result of a greedy best first search, which gives an <em>upper-bound</em> on gamma.</p>
 <p class="rubric">Methods</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
@@ -329,13 +331,13 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_backjumps</span></code></p></td>
-<td><p></p></td>
+<td><p>Maximum number of backjumps that can be performed before the search is forced to terminate; setting it to <code class="docutils literal notranslate"><span class="pre">None</span></code> implies that no such restriction is placed.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_gamma</span></code></p></td>
-<td><p></p></td>
+<td><p>Maximum allowed value of gamma which, if exceeded, forces the search to terminate.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">seed</span></code></p></td>
-<td><p></p></td>
+<td><p>The seed to use when initializing Numpy random number generators in the best first search priority queue.</p></td>
 </tr>
 </tbody>
 </table>

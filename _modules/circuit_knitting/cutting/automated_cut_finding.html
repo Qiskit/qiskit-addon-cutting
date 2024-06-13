@@ -438,10 +438,19 @@
 <a class="viewcode-back" href="../../../stubs/circuit_knitting.cutting.OptimizationParameters.html#circuit_knitting.cutting.OptimizationParameters">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">OptimizationParameters</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specify parameters that control the optimization.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specify parameters that control the optimization.</span>
 
+<span class="sd">    If either of the constraints specified by ``max_backjumps`` or ``max_gamma`` are exceeded, the search terminates but</span>
+<span class="sd">    nevertheless returns the result of a greedy best first search, which gives an *upper-bound* on gamma.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#: The seed to use when initializing Numpy random number generators in the best first search priority queue.</span>
     <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">OptimizationSettings</span><span class="p">()</span><span class="o">.</span><span class="n">seed</span>
+
+    <span class="c1">#: Maximum allowed value of gamma which, if exceeded, forces the search to terminate.</span>
     <span class="n">max_gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">OptimizationSettings</span><span class="p">()</span><span class="o">.</span><span class="n">max_gamma</span>
+
+    <span class="c1">#: Maximum number of backjumps that can be performed before the search is forced to terminate; setting it to ``None`` implies that no such restriction is placed.</span>
     <span class="n">max_backjumps</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">OptimizationSettings</span><span class="p">()</span><span class="o">.</span><span class="n">max_backjumps</span></div>
 
 
