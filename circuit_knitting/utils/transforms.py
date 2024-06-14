@@ -276,18 +276,18 @@ def _split_barriers(circuit: QuantumCircuit):
         num_qubits = len(inst.qubits)
         if num_qubits == 1 or inst.operation.name != "barrier":
             continue
-        barrier_uuid = uuid4()
+        barrier_uuid_label = str(uuid4())
 
         # Replace the N-qubit barrier with a single-qubit barrier
         circuit.data[i] = CircuitInstruction(
-            Barrier(1, label=barrier_uuid), qubits=[inst.qubits[0]]
+            Barrier(1, label=barrier_uuid_label), qubits=[inst.qubits[0]]
         )
         # Insert the remaining single-qubit barriers directly behind the first
         for j in range(1, num_qubits):
             circuit.data.insert(
                 i + j,
                 CircuitInstruction(
-                    Barrier(1, label=barrier_uuid), qubits=[inst.qubits[j]]
+                    Barrier(1, label=barrier_uuid_label), qubits=[inst.qubits[j]]
                 ),
             )
 
