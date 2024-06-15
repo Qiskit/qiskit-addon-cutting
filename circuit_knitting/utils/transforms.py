@@ -27,7 +27,7 @@ Functions for manipulating quantum circuits.
 """
 from __future__ import annotations
 
-from uuid import uuid4, UUID
+from uuid import uuid4
 from collections import defaultdict
 from collections.abc import Sequence, Iterable, Hashable, MutableMapping
 from typing import NamedTuple, Callable
@@ -276,18 +276,18 @@ def _split_barriers(circuit: QuantumCircuit):
         num_qubits = len(inst.qubits)
         if num_qubits == 1 or inst.operation.name != "barrier":
             continue
-        barrier_uuid_label = str(uuid4())
+        barrier_uuid = f"_uuid={uuid4()}"
 
         # Replace the N-qubit barrier with a single-qubit barrier
         circuit.data[i] = CircuitInstruction(
-            Barrier(1, label=barrier_uuid_label), qubits=[inst.qubits[0]]
+            Barrier(1, label=barrier_uuid), qubits=[inst.qubits[0]]
         )
         # Insert the remaining single-qubit barriers directly behind the first
         for j in range(1, num_qubits):
             circuit.data.insert(
                 i + j,
                 CircuitInstruction(
-                    Barrier(1, label=barrier_uuid_label), qubits=[inst.qubits[j]]
+                    Barrier(1, label=barrier_uuid), qubits=[inst.qubits[j]]
                 ),
             )
 
@@ -298,13 +298,13 @@ def _combine_barriers(circuit: QuantumCircuit):
     uuid_map = defaultdict(list)
     for i, inst in enumerate(circuit):
         if (
-            inst.operation.name != "barrier"
-            or len(inst.qubits) != 1
-            or not isinstance(inst.operation.label, UUID)
+            inst.operation.name == "barrier"
+            and len(inst.qubits) == 1
+            and inst.operation.label is not None
+            and inst.operation.label.startswith("_uuid=")
         ):
-            continue
-        barrier_uuid = inst.operation.label
-        uuid_map[barrier_uuid].append(i)
+            barrier_uuid = inst.operation.label
+            uuid_map[barrier_uuid].append(i)
 
     # Replace the first single-qubit barrier in each group with the full-sized barrier
     cleanup_inst = []
