@@ -204,9 +204,7 @@ def test_reconstruction_with_samplerv2():
     )
 
     # Use SamplerV2 in local mode with AerSimulator
-    samplers = {
-        label: SamplerV2(AerSimulator()) for label in subexperiments.keys()
-    }
+    samplers = {label: SamplerV2(AerSimulator()) for label in subexperiments.keys()}
     results = {
         label: sampler.run(subexperiments[label], shots=128).result()
         for label, sampler in samplers.items()
