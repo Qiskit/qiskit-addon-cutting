@@ -76,7 +76,7 @@ def _transform_cut_wires(
             mapping[gate_index[0]] += 1
         else:
             new_circuit.compose(
-                other=instructions[0],
+                other=instructions.operation,
                 qubits=[mapping[index] for index in gate_index],
                 inplace=True,
             )
