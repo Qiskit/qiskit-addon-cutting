@@ -380,7 +380,7 @@
             <span class="n">mapping</span><span class="p">[</span><span class="n">gate_index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_circuit</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span>
-                <span class="n">other</span><span class="o">=</span><span class="n">instructions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">instructions</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span>
                 <span class="n">qubits</span><span class="o">=</span><span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">gate_index</span><span class="p">],</span>
                 <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
