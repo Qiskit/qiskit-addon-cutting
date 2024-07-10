@@ -37,7 +37,7 @@ def prepare_hwea():
 
     # Exchange CNOTs with gates we support
     for i, gate in enumerate(circuit.data):
-        if len(gate[1]) == 2:
+        if len(gate.qubits) == 2:
             q1 = circuit.find_bit(gate.qubits[0])[0]
             q2 = circuit.find_bit(gate.qubits[1])[0]
             circuit.data[i] = CircuitInstruction(RZZGate(np.pi / 4), qubits=[q1, q2])
