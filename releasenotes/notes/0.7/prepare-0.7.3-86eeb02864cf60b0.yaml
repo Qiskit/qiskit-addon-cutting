@@ -1,0 +1,12 @@
+---
+prelude: |
+  The 0.7.3 release fixes the circuit cutting code to be compatible
+  with the forthcoming Qiskit 1.2 release.  It also pins numpy to
+  version 1.X, as DOCplex (which is used by the legacy CutQC
+  implementation) is incompatible with numpy 2.0.
+fixes:
+  - |
+    The circuit cutting module now uses a stringified UUID instead of
+    a ``UUID`` object when it needs to generate a unique label for
+    circuit barriers during processing, as the forthcoming Qiskit 1.2
+    release requires that labels always be a string.
