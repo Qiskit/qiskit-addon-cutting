@@ -91,7 +91,7 @@ class BaseQPDGate(Instruction):
     def __eq__(self, other):
         """Check equivalence for QPDGate class."""
         return (
-            type(other) == type(self)
+            type(other) is type(self)
             and self.basis == other.basis
             and self.basis_id == other.basis_id
             and self.num_qubits == other.num_qubits
