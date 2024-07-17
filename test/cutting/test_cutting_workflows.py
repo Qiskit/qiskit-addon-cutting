@@ -21,7 +21,7 @@ from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit_ibm_runtime import SamplerV2
-from qiskit_aer.primitives import Sampler
+from qiskit_aer.primitives import SamplerV2 as AerSamplerV2
 from qiskit_aer import AerSimulator
 
 from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
@@ -89,8 +89,8 @@ def test_exotic_labels(label1, label2):
     assert subexperiments.keys() == subcircuits.keys()
 
     samplers = {
-        label1: Sampler(run_options={"shots": 10}),
-        label2: Sampler(run_options={"shots": 10}),
+        label1: AerSamplerV2(run_options={"shots": 10}),
+        label2: AerSamplerV2(run_options={"shots": 10}),
     }
     results = {
         label: sampler.run(subexperiments[label]).result()

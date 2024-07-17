@@ -42,7 +42,7 @@ from qiskit.circuit.library.standard_gates import (
 )
 from qiskit.quantum_info import PauliList, random_unitary
 from qiskit.primitives import Estimator
-from qiskit_aer.primitives import Sampler
+from qiskit_aer.primitives import Sampler, SamplerV2
 
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
@@ -172,7 +172,8 @@ def test_cutting_exact_reconstruction(example_circuit):
 
 
 @pytest.mark.parametrize(
-    "sampler,is_exact_sampler", [(Sampler(), False), (ExactSampler(), True)]
+    "sampler,is_exact_sampler",
+    [(Sampler(), False), (SamplerV2(), False), (ExactSampler(), True)],
 )
 def test_sampler_with_identity_subobservable(sampler, is_exact_sampler):
     """This test ensures that the sampler works for a subcircuit with no observable measurements.
