@@ -218,9 +218,7 @@ def test_sampler_with_identity_subobservable(sampler, is_exact_sampler):
     if is_exact_sampler:
         # Determine exact expectation values
         estimator = EstimatorV2()
-        exact_expvals = (
-            estimator.run([(qc, list(observables))]).result()[0].data.evs
-        )
+        exact_expvals = estimator.run([(qc, list(observables))]).result()[0].data.evs
 
         logger.info(
             "Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals))
