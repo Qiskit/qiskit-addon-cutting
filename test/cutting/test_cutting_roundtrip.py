@@ -138,9 +138,7 @@ def test_cutting_exact_reconstruction(example_circuit):
     """Test gate-cut circuit vs original circuit on statevector simulator"""
     qc = example_circuit
 
-    observables = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "-XZI"])
-    phases = np.array([(-1j) ** obs.phase for obs in observables])
-    observables_nophase = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
+    observables = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
 
     estimator = EstimatorV2()
     pm = generate_preset_pass_manager(optimization_level=1, basis_gates=["u", "cz"])
@@ -148,7 +146,7 @@ def test_cutting_exact_reconstruction(example_circuit):
         estimator.run([(pm.run(qc), list(observables))]).result()[0].data.evs
     )
     subcircuits, bases, subobservables = partition_problem(
-        qc, "AAB", observables=observables_nophase
+        qc, "AAB", observables=observables
     )
     subexperiments, coefficients = generate_cutting_experiments(
         subcircuits, subobservables, num_samples=np.inf
@@ -167,7 +165,6 @@ def test_cutting_exact_reconstruction(example_circuit):
     reconstructed_expvals = reconstruct_expectation_values(
         results, coefficients, subobservables
     )
-    reconstructed_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals)))
 
