@@ -41,10 +41,10 @@ from qiskit.circuit.library.standard_gates import (
     DCXGate,
 )
 from qiskit.quantum_info import PauliList, random_unitary
-from qiskit.primitives import Estimator
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import AerSimulator
-from qiskit_aer.primitives import Sampler
+from qiskit_aer.primitives import Sampler, EstimatorV2
 
 from circuit_knitting.utils.simulation import ExactSampler
 from circuit_knitting.cutting import (
@@ -138,16 +138,15 @@ def test_cutting_exact_reconstruction(example_circuit):
     """Test gate-cut circuit vs original circuit on statevector simulator"""
     qc = example_circuit
 
-    observables = PauliList(["III", "IIY", "XII", "XYZ", "iZZZ", "-XZI"])
-    phases = np.array([(-1j) ** obs.phase for obs in observables])
-    observables_nophase = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
+    observables = PauliList(["III", "IIY", "XII", "XYZ", "ZZZ", "XZI"])
 
-    estimator = Estimator()
+    estimator = EstimatorV2()
+    pm = generate_preset_pass_manager(optimization_level=1, basis_gates=["u", "cz"])
     exact_expvals = (
-        estimator.run([qc] * len(observables), list(observables)).result().values
+        estimator.run([(pm.run(qc), list(observables))]).result()[0].data.evs
     )
     subcircuits, bases, subobservables = partition_problem(
-        qc, "AAB", observables=observables_nophase
+        qc, "AAB", observables=observables
     )
     subexperiments, coefficients = generate_cutting_experiments(
         subcircuits, subobservables, num_samples=np.inf
@@ -166,7 +165,6 @@ def test_cutting_exact_reconstruction(example_circuit):
     reconstructed_expvals = reconstruct_expectation_values(
         results, coefficients, subobservables
     )
-    reconstructed_expvals *= phases
 
     logger.info("Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals)))
 
@@ -216,10 +214,8 @@ def test_sampler_with_identity_subobservable(sampler, is_exact_sampler):
 
     if is_exact_sampler:
         # Determine exact expectation values
-        estimator = Estimator()
-        exact_expvals = (
-            estimator.run([qc] * len(observables), list(observables)).result().values
-        )
+        estimator = EstimatorV2()
+        exact_expvals = estimator.run([(qc, list(observables))]).result()[0].data.evs
 
         logger.info(
             "Max error: %f", np.max(np.abs(exact_expvals - reconstructed_expvals))
