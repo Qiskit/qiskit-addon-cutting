@@ -261,7 +261,7 @@ class TestTransforms(unittest.TestCase):
             self.assertEqual(
                 [("A", 0), ("B", 0), ("C", 0)], separated_circuits.qubit_map
             )
-            
+
         with self.subTest("barriers are ignored"):
             qreg = QuantumRegister(3)
             circuit = QuantumCircuit(qreg)
@@ -303,7 +303,7 @@ class TestTransforms(unittest.TestCase):
             self.assertEqual(
                 [("A", 0), ("B", 0), ("C", 0)], separated_circuits.qubit_map
             )
-            
+
         with self.subTest("Test bit mapping with partition labels"):
             # Prepare a HWEA and add some measurements to clbits in a random order
             circuit = prepare_hwea()
