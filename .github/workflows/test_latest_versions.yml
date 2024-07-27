@@ -44,6 +44,6 @@ jobs:
       - name: Test using tox environment
         shell: bash
         run: |
-          pver=${{ matrix.python-version }}
-          tox -epy${pver/./} -- --run-slow
-          tox -epy${pver/./}-notebook
+          pver=$(echo ${{ matrix.python-version }} | sed -E 's/^([0-9]+)\.([0-9]+).*$/\1\2/')
+          tox -epy${pver} -- --run-slow
+          tox -epy${pver}-notebook
