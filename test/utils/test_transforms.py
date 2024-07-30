@@ -262,6 +262,48 @@ class TestTransforms(unittest.TestCase):
                 [("A", 0), ("B", 0), ("C", 0)], separated_circuits.qubit_map
             )
 
+        with self.subTest("barriers are ignored"):
+            qreg = QuantumRegister(3)
+            circuit = QuantumCircuit(qreg)
+            circuit.h(0)
+            circuit.x(0)
+            circuit.barrier(0)
+            circuit.x(1)
+            circuit.h(1)
+            circuit.y(2)
+            circuit.h(2)
+
+            separated_circuits = separate_circuit(circuit, partition_labels="ABC")
+
+            compare1 = QuantumCircuit(1)
+            compare1.h(0)
+            compare1.x(0)
+            compare2 = QuantumCircuit(1)
+            compare2.x(0)
+            compare2.h(0)
+            compare3 = QuantumCircuit(1)
+            compare3.y(0)
+            compare3.h(0)
+
+            for i, operation in enumerate(compare1.data):
+                self.assertEqual(
+                    operation.operation.name,
+                    separated_circuits.subcircuits["A"].data[i].operation.name,
+                )
+            for i, operation in enumerate(compare2.data):
+                self.assertEqual(
+                    operation.operation.name,
+                    separated_circuits.subcircuits["B"].data[i].operation.name,
+                )
+            for i, operation in enumerate(compare3.data):
+                self.assertEqual(
+                    operation.operation.name,
+                    separated_circuits.subcircuits["C"].data[i].operation.name,
+                )
+            self.assertEqual(
+                [("A", 0), ("B", 0), ("C", 0)], separated_circuits.qubit_map
+            )
+
         with self.subTest("Test bit mapping with partition labels"):
             # Prepare a HWEA and add some measurements to clbits in a random order
             circuit = prepare_hwea()

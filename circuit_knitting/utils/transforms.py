@@ -172,6 +172,8 @@ def _partition_labels_from_circuit(
         # Determine which qubit wires are idle/unused
         idle_wires = set(range(circuit.num_qubits))
         for instruction in circuit.data:
+            if instruction.operation.name == "barrier":
+                continue
             for q1 in instruction.qubits:
                 q1_id = circuit.find_bit(q1).index
                 idle_wires.discard(q1_id)
