@@ -29,7 +29,7 @@ from typing import Any
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.quantum_info import Statevector, Operator
-from qiskit.primitives.base import BaseSampler, SamplerResult
+from qiskit.primitives.base import BaseSamplerV1, SamplerResult
 from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.result import QuasiDistribution
 
@@ -128,7 +128,7 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
     return {outcome: sum(prob for prob, _ in svs) for outcome, svs in current.items()}
 
 
-class ExactSampler(BaseSampler):
+class ExactSampler(BaseSamplerV1):
     """Sampler which returns exact probabilities for each possible outcome.
 
     This sampler supports:
