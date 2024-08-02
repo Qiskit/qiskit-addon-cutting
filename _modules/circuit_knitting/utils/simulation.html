@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.4.5 and Furo 2024.01.29 -->
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
         <title>circuit_knitting.utils.simulation - Circuit Knitting Toolbox 0.7.3</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
@@ -330,7 +330,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span><span class="p">,</span> <span class="n">Operator</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives.base</span> <span class="kn">import</span> <span class="n">BaseSampler</span><span class="p">,</span> <span class="n">SamplerResult</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives.base</span> <span class="kn">import</span> <span class="n">BaseSamplerV1</span><span class="p">,</span> <span class="n">SamplerResult</span>
 <span class="kn">from</span> <span class="nn">qiskit.primitives.primitive_job</span> <span class="kn">import</span> <span class="n">PrimitiveJob</span>
 <span class="kn">from</span> <span class="nn">qiskit.result</span> <span class="kn">import</span> <span class="n">QuasiDistribution</span>
 
@@ -434,7 +434,7 @@
 
 <div class="viewcode-block" id="ExactSampler">
 <a class="viewcode-back" href="../../../stubs/circuit_knitting.utils.simulation.ExactSampler.html#circuit_knitting.utils.simulation.ExactSampler">[docs]</a>
-<span class="k">class</span> <span class="nc">ExactSampler</span><span class="p">(</span><span class="n">BaseSampler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ExactSampler</span><span class="p">(</span><span class="n">BaseSamplerV1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampler which returns exact probabilities for each possible outcome.</span>
 
 <span class="sd">    This sampler supports:</span>
