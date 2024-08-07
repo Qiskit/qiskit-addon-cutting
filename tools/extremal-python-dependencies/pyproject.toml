@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "extremal-python-dependencies"
 version = "0.0.0"
 description = "A utility for installing extremal versions of dependencies for more robust testing"
-#readme = "README.md"
+readme = "README.md"
 license = {file = "../../LICENSE.txt"}
 classifiers = [
     "Development Status :: 3 - Alpha",
