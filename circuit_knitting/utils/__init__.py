@@ -18,6 +18,12 @@ Bitwise utilities (:mod:`circuit_knitting.utils.bitwise`)
 
 .. automodule:: circuit_knitting.utils.bitwise
 
+=================================================================
+Bootstrapping (:mod:`circuit_knitting.utils.bootstrap`)
+=================================================================
+
+.. automodule:: circuit_knitting.utils.bootstrap
+
 =====================================================================
 Iteration utilities (:mod:`circuit_knitting.utils.iteration`)
 =====================================================================
