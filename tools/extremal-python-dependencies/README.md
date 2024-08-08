@@ -10,7 +10,7 @@ This utility works with dependencies specified in a `pyproject.toml` file.  It m
 
 ## How to use
 
-The following snippet modifies `pyproject.toml` in place to test with the minimum supported version of each direct dependency, under the minimum supported [tox](https://tox.wiki/) version.
+The following snippet modifies `pyproject.toml` in place to test with the minimum supported version of each direct dependency, under the minimum supported [tox](https://tox.wiki/) version (as specified by `minversion` in `tox.ini`).
 
 ```sh
 pip install "tox==$(extremal-python-dependencies get-tox-minversion)"
