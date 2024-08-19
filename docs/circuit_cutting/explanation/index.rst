@@ -60,10 +60,10 @@ As a basic and explicit example, let us consider the decomposition of a cut :cla
 
 As shown in [`2 <https://arxiv.org/abs/1909.07534>`__], a quantum circuit which implements an :class:`~qiskit.circuit.library.RZZGate` can be simulated by performing six subexperiments where the :class:`~qiskit.circuit.library.RZZGate` in the original circuit has been replaced with only local (single-qubit) operations [the :math:`\mathcal{F}_i`\ 's in Eq. :eq:`eq:qpd`].  The result is then reconstructed by combining the subexperiment results with certain coefficients [the :math:`a_i`\ 's in Eq. :eq:`eq:qpd`], which can be either positive or negative.  Given the :math:`\theta` parameter of the :class:`~qiskit.circuit.library.RZZGate`, the six subexperiments are as follows:
 
-1. With coefficient :math:`a_1 = \cos^2 \theta/2`, do nothing (:math:`I \otimes I`, where :math:`I` is the identity operation on a single qubit).
-2. With coefficient :math:`a_2 = \sin^2 \theta/2`, perform a :class:`~qiskit.circuit.library.ZGate` on each qubit (:math:`Z \otimes Z`).
-3. With coefficient :math:`a_3 = -\sin(\theta)/2`, perform a projective measurement in the Z basis on the first qubit and an :class:`~qiskit.circuit.library.SGate` gate on the second qubit (denote this as :math:`M_z \otimes S`).  If the result of the measurement is 1, flip the sign of that outcome's contribution during reconstruction.
-4. With coefficient :math:`a_4 = \sin(\theta)/2`, perform a projective measurement in the Z basis on the first qubit and an :class:`~qiskit.circuit.library.SdgGate` gate on the second qubit (denote this as :math:`M_z \otimes S^\dagger`).  If the result of the measurement is 1, flip the sign of that outcome's contribution during reconstruction.
+1. With coefficient :math:`a_1 = \cos^2 (\theta/2)`, do nothing (:math:`I \otimes I`, where :math:`I` is the identity operation on a single qubit).
+2. With coefficient :math:`a_2 = \sin^2 (\theta/2)`, perform a :class:`~qiskit.circuit.library.ZGate` on each qubit (:math:`Z \otimes Z`).
+3. With coefficient :math:`a_3 = -\sin\theta/2`, perform a projective measurement in the Z basis on the first qubit and an :class:`~qiskit.circuit.library.SGate` gate on the second qubit (denote this as :math:`M_z \otimes S`).  If the result of the measurement is 1, flip the sign of that outcome's contribution during reconstruction.
+4. With coefficient :math:`a_4 = \sin \theta/2`, perform a projective measurement in the Z basis on the first qubit and an :class:`~qiskit.circuit.library.SdgGate` gate on the second qubit (denote this as :math:`M_z \otimes S^\dagger`).  If the result of the measurement is 1, flip the sign of that outcome's contribution during reconstruction.
 5. Same as term 3 (:math:`a_5 = a_3`), but swap the qubits (:math:`S \otimes M_z`).
 6. Same as term 4 (:math:`a_6 = a_4`), but swap the qubits (:math:`S^\dagger \otimes M_z`).
 
