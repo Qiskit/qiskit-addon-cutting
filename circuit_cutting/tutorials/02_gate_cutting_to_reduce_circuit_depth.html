@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -385,12 +385,21 @@
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Transpiled circuit depth: 30
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3944/2612043398.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+  print(f&#34;Transpiled circuit depth: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -512,12 +521,23 @@ Original circuit depth after transpile: 30
 QPD subexperiment depth after transpile: 7
 </pre></div></div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3944/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+  f&#34;Original circuit depth after transpile: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
+/tmp/ipykernel_3944/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+  f&#34;QPD subexperiment depth after transpile: {transpiled_qpd_circuit.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/circuit_cutting_tutorials_02_gate_cutting_to_reduce_circuit_depth_17_1.png" src="../../_images/circuit_cutting_tutorials_02_gate_cutting_to_reduce_circuit_depth_17_1.png" />
+<img alt="../../_images/circuit_cutting_tutorials_02_gate_cutting_to_reduce_circuit_depth_17_2.png" src="../../_images/circuit_cutting_tutorials_02_gate_cutting_to_reduce_circuit_depth_17_2.png" />
 </div>
 </div>
 </section>
@@ -594,10 +614,10 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.4140625
+Reconstructed expectation value: 0.39868164
 Exact expectation value: 0.50497603
-Error in estimation: -0.09091353
-Relative error in estimation: -0.18003534
+Error in estimation: -0.10629439
+Relative error in estimation: -0.21049393
 </pre></div></div>
 </div>
 </section>

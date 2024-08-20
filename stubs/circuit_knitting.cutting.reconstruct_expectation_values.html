@@ -318,7 +318,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>results</strong> (<span class="sphinx_autodoc_typehints-type">SamplerResult | PrimitiveResult | dict[Hashable, SamplerResult | PrimitiveResult]</span>) – <p>The results from running the cutting subexperiments. If the cut circuit
 was not partitioned between qubits and run separately, this argument should be
-a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.SamplerResult" title="(in Qiskit v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance or a dictionary mapping
+a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.SamplerResult" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance or a dictionary mapping
 a single partition to the results. If the circuit was partitioned and its
 pieces were run separately, this argument should be a dictionary mapping partition labels
 to the results from each partition’s subexperiments.</p>
@@ -335,8 +335,8 @@ containing the coefficient (a <code class="docutils literal notranslate"><span c
 how the value was generated. The contribution from each subexperiment will be multiplied by
 its corresponding coefficient, and the resulting terms will be summed to obtain the reconstructed expectation value.</p></li>
 <li><p><strong>observables</strong> (<span class="sphinx_autodoc_typehints-type">PauliList | dict[Hashable, PauliList]</span>) – The observable(s) for which the expectation values will be calculated.
-This should be a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.PauliList" title="(in Qiskit v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code></a> if <code class="docutils literal notranslate"><span class="pre">results</span></code> is a
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.SamplerResult" title="(in Qiskit v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance. Otherwise, it should be a
+This should be a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.PauliList" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PauliList</span></code></a> if <code class="docutils literal notranslate"><span class="pre">results</span></code> is a
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.SamplerResult" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplerResult</span></code></a> instance. Otherwise, it should be a
 dictionary mapping partition labels to the observables associated with that partition.</p></li>
 </ul>
 </dd>

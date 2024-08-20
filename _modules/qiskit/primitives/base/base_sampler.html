@@ -311,7 +311,7 @@
 <span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
 <span class="c1"># that they have been altered from the originals.</span>
 
-<span class="sd">&quot;&quot;&quot;Base Sampler Classes&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Base Sampler V1 and V2 classes&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
@@ -322,6 +322,7 @@
 
 <span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">JobV1</span> <span class="k">as</span> <span class="n">Job</span>
+<span class="kn">from</span> <span class="nn">qiskit.utils.deprecation</span> <span class="kn">import</span> <span class="n">deprecate_func</span>
 
 <span class="kn">from</span> <span class="nn">..containers.primitive_result</span> <span class="kn">import</span> <span class="n">PrimitiveResult</span>
 <span class="kn">from</span> <span class="nn">..containers.sampler_pub</span> <span class="kn">import</span> <span class="n">SamplerPubLike</span>
@@ -451,7 +452,30 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The subclass of BaseSampler must implement `_run` method.&quot;</span><span class="p">)</span>
 
 
-<span class="n">BaseSampler</span> <span class="o">=</span> <span class="n">BaseSamplerV1</span>
+<span class="k">class</span> <span class="nc">BaseSampler</span><span class="p">(</span><span class="n">BaseSamplerV1</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED. Type alias for Sampler V1 base class</span>
+
+<span class="sd">    See :class:`.BaseSamplerV1` for details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@deprecate_func</span><span class="p">(</span>
+        <span class="n">since</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">,</span>
+        <span class="n">additional_msg</span><span class="o">=</span><span class="s2">&quot;The `BaseSampler` class is a type alias for the `BaseSamplerV1` &quot;</span>
+        <span class="s2">&quot;interface that has been deprecated in favor of explicitly versioned interface classes. &quot;</span>
+        <span class="s2">&quot;It is recommended to migrate all implementations to use `BaseSamplerV2`. &quot;</span>
+        <span class="s2">&quot;However, for implementations incompatible with `BaseSamplerV2`, `BaseSampler` can &quot;</span>
+        <span class="s2">&quot;be replaced with the explicitly versioned `BaseSamplerV1` class.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            options: Default options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">BaseSamplerV2</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
