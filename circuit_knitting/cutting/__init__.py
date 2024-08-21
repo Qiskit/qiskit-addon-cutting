@@ -78,6 +78,8 @@ Quasi-Probability Decomposition (QPD)
     qpd.qpdbasis_from_instruction
 """
 
+from warnings import warn
+
 from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
@@ -102,3 +104,12 @@ __all__ = [
     "DeviceConstraints",
     "OptimizationParameters",
 ]
+
+warn(
+    "The `circuit_knitting.cutting` import location has been deprecated and "
+    "has been moved to `qiskit_addon_cutting` in the "
+    "qiskit-addon-cutting package.  Users are encouraged to migrate to the "
+    "new package name and import locations to receive further updates.",
+    category=DeprecationWarning,
+    stacklevel=1,
+)
