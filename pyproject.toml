@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "circuit-knitting-toolbox"
-version = "0.7.3"
+version = "0.8.0.dev"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
