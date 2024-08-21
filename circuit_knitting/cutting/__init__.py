@@ -76,21 +76,6 @@ Quasi-Probability Decomposition (QPD)
     qpd.generate_qpd_weights
     qpd.decompose_qpd_instructions
     qpd.qpdbasis_from_instruction
-
-CutQC
-=====
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-    cutqc.run_subcircuit_instances
-    cutqc.generate_summation_terms
-    cutqc.build
-    cutqc.verify
-    cutqc.cut_circuit_wires
-    cutqc.evaluate_subcircuits
-    cutqc.reconstruct_full_distribution
 """
 
 from .cutting_decomposition import (
