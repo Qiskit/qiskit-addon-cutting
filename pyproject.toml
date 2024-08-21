@@ -87,7 +87,6 @@ docs = [
 ]
 notebook-dependencies = [
     "circuit-knitting-toolbox[cplex]",
-    "qiskit-ibm-runtime>=0.23.0, <0.28",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
