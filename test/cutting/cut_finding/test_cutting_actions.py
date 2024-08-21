@@ -15,24 +15,24 @@ from __future__ import annotations
 
 from pytest import fixture
 from typing import Callable
-from circuit_knitting.cutting.cut_finding.circuit_interface import (
+from qiskit_addon_cutting.cut_finding.circuit_interface import (
     CircuitElement,
     SimpleGateList,
     GateSpec,
 )
-from circuit_knitting.cutting.cut_finding.cutting_actions import (
+from qiskit_addon_cutting.cut_finding.cutting_actions import (
     ActionApplyGate,
     ActionCutTwoQubitGate,
     ActionCutLeftWire,
     ActionCutRightWire,
 )
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
+from qiskit_addon_cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
     get_actions_list,
     CutIdentifier,
     CutLocation,
 )
-from circuit_knitting.cutting.cut_finding.search_space_generator import ActionNames
+from qiskit_addon_cutting.cut_finding.search_space_generator import ActionNames
 
 
 @fixture

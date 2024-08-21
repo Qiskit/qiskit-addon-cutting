@@ -46,13 +46,13 @@ from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Sampler, EstimatorV2
 
-from circuit_knitting.utils.simulation import ExactSampler
-from circuit_knitting.cutting import (
+from qiskit_addon_cutting.utils.simulation import ExactSampler
+from qiskit_addon_cutting import (
     partition_problem,
     generate_cutting_experiments,
     reconstruct_expectation_values,
 )
-from circuit_knitting.cutting.instructions import Move
+from qiskit_addon_cutting.instructions import Move
 
 logger = logging.getLogger(__name__)
 

@@ -18,25 +18,25 @@ import unittest
 from pytest import raises
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
-from circuit_knitting.cutting.cut_finding.cco_utils import qc_to_cco_circuit
-from circuit_knitting.cutting.cut_finding.circuit_interface import (
+from qiskit_addon_cutting.cut_finding.cco_utils import qc_to_cco_circuit
+from qiskit_addon_cutting.cut_finding.circuit_interface import (
     SimpleGateList,
 )
-from circuit_knitting.cutting.cut_finding.optimization_settings import (
+from qiskit_addon_cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
-from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
+from qiskit_addon_cutting.automated_cut_finding import DeviceConstraints
+from qiskit_addon_cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
     SingleWireCutIdentifier,
     WireCutLocation,
     CutIdentifier,
     CutLocation,
 )
-from circuit_knitting.cutting.cut_finding.lo_cuts_optimizer import (
+from qiskit_addon_cutting.cut_finding.lo_cuts_optimizer import (
     LOCutsOptimizer,
 )
-from circuit_knitting.cutting.cut_finding.cut_optimization import CutOptimization
+from qiskit_addon_cutting.cut_finding.cut_optimization import CutOptimization
 
 
 class TestCuttingFourQubitCircuit(unittest.TestCase):

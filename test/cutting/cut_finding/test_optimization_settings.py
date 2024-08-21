@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import pytest
-from circuit_knitting.cutting.cut_finding.optimization_settings import (
+from qiskit_addon_cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
 

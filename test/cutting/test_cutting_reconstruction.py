@@ -24,9 +24,9 @@ from qiskit.primitives import (
 from qiskit.primitives.containers import make_data_bin
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
 
-from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
-from circuit_knitting.cutting.qpd import WeightType
-from circuit_knitting.cutting.cutting_reconstruction import (
+from qiskit_addon_cutting.utils.observable_grouping import CommutingObservableGroup
+from qiskit_addon_cutting.qpd import WeightType
+from qiskit_addon_cutting.cutting_reconstruction import (
     _process_outcome,
     reconstruct_expectation_values,
 )

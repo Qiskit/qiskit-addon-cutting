@@ -15,12 +15,12 @@ from __future__ import annotations
 
 from pytest import fixture
 from numpy import inf
-from circuit_knitting.cutting.cut_finding.circuit_interface import (
+from qiskit_addon_cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,
     GateSpec,
 )
-from circuit_knitting.cutting.cut_finding.cut_optimization import (
+from qiskit_addon_cutting.cut_finding.cut_optimization import (
     cut_optimization_next_state_func,
     cut_optimization_min_cost_bound_func,
     cut_optimization_cost_func,
@@ -29,19 +29,19 @@ from circuit_knitting.cutting.cut_finding.cut_optimization import (
     CutOptimizationFuncArgs,
     CutOptimization,
 )
-from circuit_knitting.cutting.cut_finding.optimization_settings import (
+from qiskit_addon_cutting.cut_finding.optimization_settings import (
     OptimizationSettings,
 )
-from circuit_knitting.cutting.automated_cut_finding import DeviceConstraints
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
+from qiskit_addon_cutting.automated_cut_finding import DeviceConstraints
+from qiskit_addon_cutting.cut_finding.disjoint_subcircuits_state import (
     get_actions_list,
 )
-from circuit_knitting.cutting.cut_finding.cutting_actions import (
+from qiskit_addon_cutting.cut_finding.cutting_actions import (
     disjoint_subcircuit_actions,
     DisjointSubcircuitsState,
 )
 
-from circuit_knitting.cutting.cut_finding.best_first_search import (
+from qiskit_addon_cutting.cut_finding.best_first_search import (
     BestFirstSearch,
     SearchFunctions,
 )

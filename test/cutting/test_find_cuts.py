@@ -19,7 +19,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 
-from circuit_knitting.cutting.automated_cut_finding import (
+from qiskit_addon_cutting.automated_cut_finding import (
     find_cuts,
     OptimizationParameters,
     DeviceConstraints,

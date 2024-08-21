@@ -24,7 +24,7 @@ import numpy as np
 import numpy.typing as npt
 
 from .qpd_basis import QPDBasis
-from ...utils.iteration import strict_zip
+from ..utils.iteration import strict_zip
 
 
 logger = logging.getLogger(__name__)

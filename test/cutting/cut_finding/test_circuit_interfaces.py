@@ -13,13 +13,13 @@
 
 from __future__ import annotations
 
-from circuit_knitting.cutting.cut_finding.circuit_interface import (
+from qiskit_addon_cutting.cut_finding.circuit_interface import (
     CircuitElement,
     SimpleGateList,
     GateSpec,
 )
 
-from circuit_knitting.cutting.cut_finding.cut_optimization import (
+from qiskit_addon_cutting.cut_finding.cut_optimization import (
     max_wire_cuts_circuit,
     max_wire_cuts_gamma,
 )

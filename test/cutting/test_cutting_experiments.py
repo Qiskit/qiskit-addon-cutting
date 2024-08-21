@@ -18,16 +18,16 @@ from qiskit.quantum_info import PauliList, Pauli
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library.standard_gates import CXGate
 
-from circuit_knitting.cutting.qpd import (
+from qiskit_addon_cutting.qpd import (
     SingleQubitQPDGate,
     TwoQubitQPDGate,
     QPDBasis,
 )
-from circuit_knitting.utils.observable_grouping import CommutingObservableGroup
-from circuit_knitting.cutting import generate_cutting_experiments
-from circuit_knitting.cutting.qpd import WeightType
-from circuit_knitting.cutting import partition_problem
-from circuit_knitting.cutting.cutting_experiments import (
+from qiskit_addon_cutting.utils.observable_grouping import CommutingObservableGroup
+from qiskit_addon_cutting import generate_cutting_experiments
+from qiskit_addon_cutting.qpd import WeightType
+from qiskit_addon_cutting import partition_problem
+from qiskit_addon_cutting.cutting_experiments import (
     _append_measurement_register,
     _append_measurement_circuit,
     _remove_final_resets,

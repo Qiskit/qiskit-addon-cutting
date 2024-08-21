@@ -19,7 +19,7 @@ import pytest
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit.library.standard_gates import CXGate, XGate, YGate, ZGate
 
-from circuit_knitting.cutting.qpd import (
+from qiskit_addon_cutting.qpd import (
     QPDBasis,
     TwoQubitQPDGate,
     SingleQubitQPDGate,

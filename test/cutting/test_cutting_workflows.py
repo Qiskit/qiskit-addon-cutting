@@ -23,10 +23,10 @@ from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import AerSimulator
 
-from circuit_knitting.cutting.qpd.instructions import SingleQubitQPDGate
-from circuit_knitting.cutting.qpd import QPDBasis
-from circuit_knitting.cutting.instructions import CutWire, Move
-from circuit_knitting.cutting import (
+from qiskit_addon_cutting.qpd.instructions import SingleQubitQPDGate
+from qiskit_addon_cutting.qpd import QPDBasis
+from qiskit_addon_cutting.instructions import CutWire, Move
+from qiskit_addon_cutting import (
     partition_problem,
     generate_cutting_experiments,
     reconstruct_expectation_values,

@@ -12,7 +12,7 @@
 """
 Iteration utilities.
 
-.. currentmodule:: circuit_knitting.utils.iteration
+.. currentmodule:: qiskit_addon_cutting.utils.iteration
 
 .. autosummary::
    :toctree: ../stubs/

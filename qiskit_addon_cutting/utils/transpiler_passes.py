@@ -12,7 +12,7 @@
 """
 Transpiler passes useful for circuit knitting.
 
-.. currentmodule:: circuit_knitting.utils.transpiler_passes
+.. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
 
 .. autosummary::
    :toctree: ../stubs/

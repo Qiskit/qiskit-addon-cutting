@@ -16,10 +16,10 @@ from __future__ import annotations
 from pytest import fixture, mark, raises
 from qiskit.circuit import QuantumCircuit, QuantumRegister, Qubit, ClassicalRegister
 from qiskit.quantum_info import PauliList
-from circuit_knitting.cutting.instructions import Move, CutWire
-from circuit_knitting.cutting.qpd.instructions import TwoQubitQPDGate
-from circuit_knitting.cutting import cut_wires, expand_observables
-from circuit_knitting.cutting.wire_cutting_transforms import _transform_cuts_to_moves
+from qiskit_addon_cutting.instructions import Move, CutWire
+from qiskit_addon_cutting.qpd.instructions import TwoQubitQPDGate
+from qiskit_addon_cutting import cut_wires, expand_observables
+from qiskit_addon_cutting.wire_cutting_transforms import _transform_cuts_to_moves
 
 
 @fixture

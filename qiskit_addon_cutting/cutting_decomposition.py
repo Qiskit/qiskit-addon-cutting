@@ -24,8 +24,8 @@ from qiskit.circuit import (
 )
 from qiskit.quantum_info import PauliList
 
-from ..utils.observable_grouping import observables_restricted_to_subsystem
-from ..utils.transforms import separate_circuit, _partition_labels_from_circuit
+from .utils.observable_grouping import observables_restricted_to_subsystem
+from .utils.transforms import separate_circuit, _partition_labels_from_circuit
 from .qpd.qpd_basis import QPDBasis
 from .qpd.instructions import TwoQubitQPDGate
 

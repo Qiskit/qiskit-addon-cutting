@@ -12,7 +12,7 @@
 """
 Simulation of precise measurement outcome probabilities.
 
-.. currentmodule:: circuit_knitting.utils.simulation
+.. currentmodule:: qiskit_addon_cutting.utils.simulation
 
 .. autosummary::
    :toctree: ../stubs

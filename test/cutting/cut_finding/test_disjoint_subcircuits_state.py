@@ -15,13 +15,13 @@ from __future__ import annotations
 
 from pytest import mark, raises, fixture
 from typing import Callable
-from circuit_knitting.cutting.cut_finding.disjoint_subcircuits_state import (
+from qiskit_addon_cutting.cut_finding.disjoint_subcircuits_state import (
     DisjointSubcircuitsState,
 )
-from circuit_knitting.cutting.cut_finding.cut_optimization import (
+from qiskit_addon_cutting.cut_finding.cut_optimization import (
     disjoint_subcircuit_actions,
 )
-from circuit_knitting.cutting.cut_finding.circuit_interface import (
+from qiskit_addon_cutting.cut_finding.circuit_interface import (
     SimpleGateList,
     CircuitElement,
     GateSpec,

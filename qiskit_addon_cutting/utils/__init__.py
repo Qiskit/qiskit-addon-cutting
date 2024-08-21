@@ -13,38 +13,38 @@
 Utility functions.
 
 =================================================================
-Bitwise utilities (:mod:`circuit_knitting.utils.bitwise`)
+Bitwise utilities (:mod:`qiskit_addon_cutting.utils.bitwise`)
 =================================================================
 
-.. automodule:: circuit_knitting.utils.bitwise
+.. automodule:: qiskit_addon_cutting.utils.bitwise
 
 =====================================================================
-Iteration utilities (:mod:`circuit_knitting.utils.iteration`)
+Iteration utilities (:mod:`qiskit_addon_cutting.utils.iteration`)
 =====================================================================
 
-.. automodule:: circuit_knitting.utils.iteration
+.. automodule:: qiskit_addon_cutting.utils.iteration
 
 ===============================================================================
-Observable grouping (:mod:`circuit_knitting.utils.observable_grouping`)
+Observable grouping (:mod:`qiskit_addon_cutting.utils.observable_grouping`)
 ===============================================================================
 
-.. automodule:: circuit_knitting.utils.observable_grouping
+.. automodule:: qiskit_addon_cutting.utils.observable_grouping
 
 =============================================================
-Simulation (:mod:`circuit_knitting.utils.simulation`)
+Simulation (:mod:`qiskit_addon_cutting.utils.simulation`)
 =============================================================
 
-.. automodule:: circuit_knitting.utils.simulation
+.. automodule:: qiskit_addon_cutting.utils.simulation
 
 =============================================================
-Transforms (:mod:`circuit_knitting.utils.transforms`)
+Transforms (:mod:`qiskit_addon_cutting.utils.transforms`)
 =============================================================
 
-.. automodule:: circuit_knitting.utils.transforms
+.. automodule:: qiskit_addon_cutting.utils.transforms
 
-===================================================================
-Transpiler passes (:mod:`circuit_knitting.utils.transpiler_passes`)
-===================================================================
+=======================================================================
+Transpiler passes (:mod:`qiskit_addon_cutting.utils.transpiler_passes`)
+=======================================================================
 
-.. automodule:: circuit_knitting.utils.transpiler_passes
+.. automodule:: qiskit_addon_cutting.utils.transpiler_passes
 """

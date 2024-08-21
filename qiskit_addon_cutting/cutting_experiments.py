@@ -20,8 +20,8 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 
-from ..utils.iteration import strict_zip
-from ..utils.observable_grouping import ObservableCollection, CommutingObservableGroup
+from .utils.iteration import strict_zip
+from .utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
     QPDBasis,

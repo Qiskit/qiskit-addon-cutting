@@ -46,9 +46,9 @@ from qiskit.circuit.library import (
     DCXGate,
 )
 
-from circuit_knitting.utils.iteration import unique_by_eq, strict_zip
-from circuit_knitting.cutting.instructions import Move
-from circuit_knitting.cutting.qpd import (
+from qiskit_addon_cutting.utils.iteration import unique_by_eq, strict_zip
+from qiskit_addon_cutting.instructions import Move
+from qiskit_addon_cutting.qpd import (
     QPDBasis,
     SingleQubitQPDGate,
     TwoQubitQPDGate,
@@ -57,11 +57,11 @@ from circuit_knitting.cutting.qpd import (
     decompose_qpd_instructions,
     qpdbasis_from_instruction,
 )
-from circuit_knitting.cutting.qpd.weights import (
+from qiskit_addon_cutting.qpd.weights import (
     _generate_qpd_weights,
     _generate_exact_weights_and_conditional_probabilities,
 )
-from circuit_knitting.cutting.qpd.decompositions import (
+from qiskit_addon_cutting.qpd.decompositions import (
     _nonlocal_qpd_basis_from_u,
     _u_from_thetavec,
     _explicitly_supported_instructions,

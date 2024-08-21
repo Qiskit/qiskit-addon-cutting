@@ -52,7 +52,7 @@ class Move(Instruction):
 
        import numpy as np
        from qiskit import QuantumCircuit
-       from circuit_knitting.cutting.instructions import Move
+       from qiskit_addon_cutting.instructions import Move
 
        qc = QuantumCircuit(4)
        qc.ryy(np.pi / 4, 0, 1)

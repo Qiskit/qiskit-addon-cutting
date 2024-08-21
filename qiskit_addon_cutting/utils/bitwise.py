@@ -12,7 +12,7 @@
 """
 Bitwise utilities.
 
-.. currentmodule:: circuit_knitting.utils.bitwise
+.. currentmodule:: qiskit_addon_cutting.utils.bitwise
 
 .. autosummary::
    :toctree: ../stubs/

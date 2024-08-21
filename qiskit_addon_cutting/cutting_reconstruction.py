@@ -22,8 +22,8 @@ from qiskit.primitives import (
     PrimitiveResult,  # for SamplerV2
 )
 
-from ..utils.observable_grouping import CommutingObservableGroup, ObservableCollection
-from ..utils.bitwise import bit_count
+from .utils.observable_grouping import CommutingObservableGroup, ObservableCollection
+from .utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
 from .cutting_experiments import _get_pauli_indices
 from .qpd import WeightType

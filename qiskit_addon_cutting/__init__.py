@@ -10,9 +10,9 @@
 # that they have been altered from the originals.
 
 """
-Circuit Cutting (:mod:`circuit_knitting.cutting`).
+Circuit Cutting (:mod:`qiskit_addon_cutting`).
 
-.. currentmodule:: circuit_knitting.cutting
+.. currentmodule:: qiskit_addon_cutting
 
 Circuit Cutting
 ===============
@@ -78,6 +78,9 @@ Quasi-Probability Decomposition (QPD)
     qpd.qpdbasis_from_instruction
 """
 
+from __future__ import annotations
+from importlib.metadata import version, PackageNotFoundError
+
 from .cutting_decomposition import (
     partition_circuit_qubits,
     partition_problem,
@@ -88,6 +91,12 @@ from .cutting_experiments import generate_cutting_experiments
 from .cutting_reconstruction import reconstruct_expectation_values
 from .wire_cutting_transforms import cut_wires, expand_observables
 from .automated_cut_finding import find_cuts, DeviceConstraints, OptimizationParameters
+
+try:
+    __version__ = version("qiskit-addon-cutting")
+except PackageNotFoundError:  # pragma: no cover
+    # Package is not installed
+    pass
 
 __all__ = [
     "partition_circuit_qubits",
