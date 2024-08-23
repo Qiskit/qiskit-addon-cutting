@@ -74,7 +74,7 @@ Equation :eq:`eq:qpd` for :class:`~qiskit.circuit.library.RZZGate` can thus be w
    import numpy as np
    import matplotlib.pyplot as plt
    from qiskit.circuit.library import RZZGate
-   from circuit_knitting.cutting.qpd import QPDBasis
+   from qiskit_addon_cutting.qpd import QPDBasis
 
    theta_values = np.linspace(0, np.pi, 101)
    bases = [QPDBasis.from_instruction(RZZGate(theta)) for theta in theta_values]

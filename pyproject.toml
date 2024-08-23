@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "circuit-knitting-toolbox"
-version = "0.7.1"
+name = "qiskit-addon-cutting"
+version = "0.9.0.dev"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
@@ -37,18 +37,18 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "circuit-knitting-toolbox[test,nbtest,lint]",
+    "qiskit-addon-cutting[test,nbtest,lint]",
 ]
 basetest = [
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
 ]
 test = [
-    "circuit-knitting-toolbox[basetest]",
+    "qiskit-addon-cutting[basetest]",
     "ddt>=1.4.4",
 ]
 nbtest = [
-    "circuit-knitting-toolbox[basetest]",
+    "qiskit-addon-cutting[basetest]",
     "nbmake>=1.4.3"
 ]
 style = [
@@ -58,7 +58,7 @@ style = [
     "nbqa>=1.6.0",
 ]
 lint = [
-    "circuit-knitting-toolbox[style]",
+    "qiskit-addon-cutting[style]",
     "pydocstyle==6.3.0",
     "mypy==1.11.1",
     "reno>=3.4.0",
@@ -88,7 +88,7 @@ notebook-dependencies = [
 
 [tool.hatch.build.targets.wheel]
 only-include = [
-    "circuit_knitting",
+    "qiskit_addon_cutting",
 ]
 
 [tool.autoflake]
@@ -135,9 +135,9 @@ ignore_missing_imports = true
 #[tool.coverage.run]
 #omit = [
 #    # deprecated import location(s)
-#    "circuit_knitting/path/to/deprecated/module",
+#    "qiskit_addon_cutting/path/to/deprecated/module",
 #]
 
 [tool.pytest.ini_options]
-testpaths = ["./circuit_knitting/", "./test/"]
+testpaths = ["./qiskit_addon_cutting/", "./test/"]
 addopts = "--doctest-modules -rs --durations=10"

@@ -24,14 +24,14 @@ import sys
 from importlib.metadata import version as metadata_version
 
 project = "Circuit Knitting Toolbox"
-copyright = "2023"  # pylint: disable=redefined-builtin
+copyright = "2024"  # pylint: disable=redefined-builtin
 author = "IBM Quantum"
 
 _rootdir = Path(__file__).parent.parent
 sys.path.insert(0, str(_rootdir))
 
 # The full version, including alpha/beta/rc tags
-release = metadata_version("circuit-knitting-toolbox")
+release = metadata_version("qiskit-addon-cutting")
 # The short X.Y version
 version = ".".join(release.split(".")[:2])
 
@@ -59,7 +59,7 @@ numfig_format = {"table": "Table %s"}
 language = "en"
 pygments_style = "colorful"
 add_module_names = False
-modindex_common_prefix = ["circuit_knitting."]
+modindex_common_prefix = ["qiskit_addon_cutting."]
 
 html_theme = "qiskit-ecosystem"
 html_title = f"{project} {release}"
