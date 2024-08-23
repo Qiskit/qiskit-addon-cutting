@@ -1,3 +1,7 @@
+:exclamation: _This repository is in the process of being renamed to `qiskit-addon-cutting`.  The first release under the new name is expected by mid-September._
+
+---
+
 <!-- SHIELDS -->
 <div align="left">
 
