@@ -21,7 +21,7 @@ from pathlib import Path
 import os
 import sys
 
-from importlib.metadata import version as metadata_version
+import qiskit_addon_cutting
 
 project = "Circuit Knitting Toolbox"
 copyright = "2024"  # pylint: disable=redefined-builtin
@@ -31,7 +31,7 @@ _rootdir = Path(__file__).parent.parent
 sys.path.insert(0, str(_rootdir))
 
 # The full version, including alpha/beta/rc tags
-release = metadata_version("qiskit-addon-cutting")
+release = qiskit_addon_cutting.__version__
 # The short X.Y version
 version = ".".join(release.split(".")[:2])
 
