@@ -60,7 +60,7 @@ style = [
 lint = [
     "qiskit-addon-cutting[style]",
     "pydocstyle==6.3.0",
-    "mypy==1.11.1",
+    "mypy==1.11.2",
     "reno>=3.4.0",
     "pylint==3.2.6",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
