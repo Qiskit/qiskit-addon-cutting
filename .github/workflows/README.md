@@ -2,7 +2,7 @@
 
 This directory contains a number of workflows for use with [GitHub Actions](https://docs.github.com/actions).  They specify what standards should be expected for development of this software, including pull requests.  These workflows are designed to work out of the box for any research software prototype, especially those based on [Qiskit](https://qiskit.org/).
 
-## Styles check (`lint.yml`)
+## Lint check (`lint.yml`)
 
 This workflow checks that the code is formatted properly and follows the style guide by installing tox and running the [lint environment](/tests/#lint-environment) (`tox -e lint`).
 
