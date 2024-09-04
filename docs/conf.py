@@ -80,7 +80,10 @@ html_theme_options = {
     "source_repository": "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/",
     "source_branch": "main",
     "source_directory": "docs/",
+    "dark_logo": "images/qiskit-dark-logo.svg",
+    "light_logo": "images/qiskit-light-logo.svg",
 }
+html_static_path = ["_static"]
 
 # autodoc/autosummary options
 autosummary_generate = True
