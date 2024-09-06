@@ -34,17 +34,16 @@ jobs:
         run: |
           if [ -f "CITATION.bib" ]; then
           arr=(${GITHUB_REPOSITORY//\// })
-          REPO=${arr[1]}
-          export PROTOTYPE=${REPO#"prototype-"}
+          export REPO=${arr[1]}
           cat <<- EOF > preview.tex
           \documentclass[preprint,aps,physrev,notitlepage]{revtex4-2}
           \usepackage{hyperref}
           \begin{document}
-          \title{\texttt{$PROTOTYPE} BibTeX test}
+          \title{\texttt{$REPO} BibTeX test}
           \maketitle
           \noindent
-          \texttt{$PROTOTYPE}
-          \cite{$PROTOTYPE}
+          \texttt{$REPO}
+          \cite{$REPO}
           \bibliography{CITATION}
           \end{document}
           EOF
