@@ -34,36 +34,35 @@ jobs:
         run: |
           if [ -f "CITATION.bib" ]; then
           arr=(${GITHUB_REPOSITORY//\// })
-          REPO=${arr[1]}
-          export PROTOTYPE=${REPO#"prototype-"}
-          cat <<- EOF > preview.tex
+          export REPO=${arr[1]}
+          cat <<- EOF > citation-preview.tex
           \documentclass[preprint,aps,physrev,notitlepage]{revtex4-2}
           \usepackage{hyperref}
           \begin{document}
-          \title{\texttt{$PROTOTYPE} BibTeX test}
+          \title{\texttt{$REPO} BibTeX test}
           \maketitle
           \noindent
-          \texttt{$PROTOTYPE}
-          \cite{$PROTOTYPE}
+          \texttt{$REPO}
+          \cite{$REPO}
           \bibliography{CITATION}
           \end{document}
           EOF
-          pdflatex preview
+          pdflatex citation-preview
           fi
       - name: Run BibTeX
         run: |
           if [ -f "CITATION.bib" ]; then
-          bibtex preview
+          bibtex citation-preview
           fi
       - name: Re-run LaTeX
         run: |
           if [ -f "CITATION.bib" ]; then
-          pdflatex preview
-          pdflatex preview
+          pdflatex citation-preview
+          pdflatex citation-preview
           fi
       - name: Upload PDF
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: preview.pdf
-          path: preview.pdf
+          name: citation-preview.pdf
+          path: citation-preview.pdf
