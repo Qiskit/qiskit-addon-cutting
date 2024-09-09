@@ -159,7 +159,7 @@ def generate_cutting_experiments(
     # Remove initial and final resets from the subexperiments.  This will
     # enable the `Move` operation to work on backends that don't support
     # `Reset`, as long as qubits are not re-used.  See
-    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/452.
+    # https://github.com/Qiskit/qiskit-addon-cutting/issues/452.
     # While we are at it, we also consolidate each run of multiple resets
     # (which can arise when re-using qubits) into a single reset.
     for subexperiments in subexperiments_dict.values():
@@ -363,7 +363,7 @@ def _get_pauli_indices(cog: CommutingObservableGroup) -> list[int]:
     """Return the indices to qubits to be measured."""
     # If the circuit has no measurements, the Sampler will fail.  So, we
     # measure one qubit as a temporary workaround to
-    # https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422
+    # https://github.com/Qiskit/qiskit-addon-cutting/issues/422
     pauli_indices = cog.pauli_indices
     if not pauli_indices:
         pauli_indices = [0]

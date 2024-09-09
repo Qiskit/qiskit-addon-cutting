@@ -80,7 +80,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             )
         with self.subTest(
             "right-wire-cut"
-        ):  # tests resolution of https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/508
+        ):  # tests resolution of https://github.com/Qiskit/qiskit-addon-cutting/issues/508
 
             circuit = QuantumCircuit(5)
             circuit.cx(0, 3)

@@ -5,17 +5,17 @@ build-backend = "hatchling.build"
 [project]
 name = "qiskit-addon-cutting"
 version = "0.9.0.dev"
-description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
+description = "Circuit cutting addon for Qiskit, supporting gate & wire cuts and automated cut finding"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: Apache Software License",
     "Natural Language :: English",
     "Operating System :: MacOS",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -83,8 +83,8 @@ notebook-dependencies = [
 ]
 
 [project.urls]
-"Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
-"Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
+"Documentation" = "https://qiskit.github.io/qiskit-addon-cutting/"
+"Repository" = "https://github.com/Qiskit/qiskit-addon-cutting"
 
 [tool.hatch.build.targets.wheel]
 only-include = [

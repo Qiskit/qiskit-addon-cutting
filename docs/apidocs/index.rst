@@ -2,9 +2,9 @@
 
 .. module:: qiskit_addon_cutting
 
-=======================================
-Circuit Knitting Toolbox API References
-=======================================
+==============
+API References
+==============
 
 ###############
 Circuit Cutting

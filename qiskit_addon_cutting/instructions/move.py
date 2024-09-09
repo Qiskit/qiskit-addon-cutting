@@ -67,7 +67,7 @@ class Move(Instruction):
 
     A full demonstration of the :class:`Move` instruction is available in `the
     introductory tutorial on wire cutting
-    <../circuit_cutting/tutorials/03_wire_cutting_via_move_instruction.ipynb>`__.
+    <../tutorials/03_wire_cutting_via_move_instruction.ipynb>`__.
     """
 
     def __init__(self, label: str | None = None):

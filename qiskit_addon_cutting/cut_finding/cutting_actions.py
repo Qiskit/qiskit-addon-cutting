@@ -181,7 +181,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
         This method returns a tuple of the form:
             (<gamma_lower_bound>, <num_bell_pairs>, <gamma_upper_bound>)
 
-        Since CKT does not support LOCC at the moment, these tuples will be of
+        Since this package does not support LOCC at the moment, these tuples will be of
         the form (gamma, 0, gamma).
         """
         gate = gate_spec.gate
