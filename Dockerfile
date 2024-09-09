@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook:python-3.12
+FROM quay.io/jupyter/minimal-notebook
 
 LABEL maintainer="Jim Garrison <garrison@ibm.com>"
 
