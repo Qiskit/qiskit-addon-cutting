@@ -1,0 +1,28 @@
+﻿qiskit\_addon\_cutting.PartitionedCuttingProblem
+================================================
+
+.. currentmodule:: qiskit_addon_cutting
+
+.. autoclass:: PartitionedCuttingProblem
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PartitionedCuttingProblem.bases
+      ~PartitionedCuttingProblem.subcircuits
+      ~PartitionedCuttingProblem.subobservables
+   
+   

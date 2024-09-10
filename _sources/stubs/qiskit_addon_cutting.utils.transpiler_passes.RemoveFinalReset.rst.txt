@@ -1,0 +1,33 @@
+﻿qiskit\_addon\_cutting.utils.transpiler\_passes.RemoveFinalReset
+================================================================
+
+.. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
+
+.. autoclass:: RemoveFinalReset
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RemoveFinalReset.__init__
+      ~RemoveFinalReset.execute
+      ~RemoveFinalReset.name
+      ~RemoveFinalReset.run
+      ~RemoveFinalReset.update_status
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RemoveFinalReset.is_analysis_pass
+      ~RemoveFinalReset.is_transformation_pass
+   
+   

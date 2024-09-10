@@ -1,0 +1,27 @@
+﻿qiskit\_addon\_cutting.utils.transforms.SeparatedCircuits
+=========================================================
+
+.. currentmodule:: qiskit_addon_cutting.utils.transforms
+
+.. autoclass:: SeparatedCircuits
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SeparatedCircuits.qubit_map
+      ~SeparatedCircuits.subcircuits
+   
+   

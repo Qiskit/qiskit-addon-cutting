@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.cutqc.build
-=====================================
-
-.. currentmodule:: circuit_knitting.cutting.cutqc
-
-.. autofunction:: build

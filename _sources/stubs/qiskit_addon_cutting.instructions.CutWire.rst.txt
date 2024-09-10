@@ -1,0 +1,26 @@
+﻿qiskit\_addon\_cutting.instructions.CutWire
+===========================================
+
+.. currentmodule:: qiskit_addon_cutting.instructions
+
+.. autoclass:: CutWire
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CutWire.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+   
+   

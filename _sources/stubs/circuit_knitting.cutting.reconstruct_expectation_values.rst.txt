@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.reconstruct\_expectation\_values
-==========================================================
-
-.. currentmodule:: circuit_knitting.cutting
-
-.. autofunction:: reconstruct_expectation_values

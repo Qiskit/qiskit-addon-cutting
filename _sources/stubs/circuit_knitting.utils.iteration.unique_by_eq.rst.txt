@@ -1,6 +1,0 @@
-﻿circuit\_knitting.utils.iteration.unique\_by\_eq
-================================================
-
-.. currentmodule:: circuit_knitting.utils.iteration
-
-.. autofunction:: unique_by_eq

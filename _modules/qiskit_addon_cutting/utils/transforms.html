@@ -1,0 +1,667 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>qiskit_addon_cutting.utils.transforms - Qiskit addon: circuit cutting 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2H2C1.73478 2 1.48043 2.10536 1.29289 2.29289C1.10536 2.48043 1 2.73478 1 3V13C1 13.2652 1.10536 13.5196 1.29289 13.7071C1.48043 13.8946 1.73478 14 2 14H14C14.2652 14 14.5196 13.8946 14.7071 13.7071C14.8946 13.5196 15 13.2652 15 13V3C15 2.73478 14.8946 2.48043 14.7071 2.29289C14.5196 2.10536 14.2652 2 14 2V2ZM2 3H10V13H2V3ZM14 13H11V3H14V13Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 3H2V4H14V3Z" fill="currentColor"/>
+      <path d="M14 12H2V13H14V12Z" fill="currentColor"/>
+      <path d="M14 6H2V7H14V6Z" fill="currentColor"/>
+      <path d="M14 9H2V10H14V9Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 8L6.00005 13L5.30005 12.3L9.60005 8L5.30005 3.7L6.00005 3L11 8Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 13H1V14H15V13Z" fill="currentColor"/>
+      <path d="M12.7 4.5C13.1 4.1 13.1 3.5 12.7 3.1L10.9 1.3C10.5 0.9 9.9 0.9 9.5 1.3L2 8.8V12H5.2L12.7 4.5ZM10.2 2L12 3.8L10.5 5.3L8.7 3.5L10.2 2ZM3 11V9.2L8 4.2L9.8 6L4.8 11H3Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 13.0002C11.5523 13.0002 12 12.5525 12 12.0002C12 11.4479 11.5523 11.0002 11 11.0002C10.4477 11.0002 10 11.4479 10 12.0002C10 12.5525 10.4477 13.0002 11 13.0002Z" fill="currentColor"/>
+      <path d="M14.8884 11.7394C14.5795 10.9524 14.0464 10.2734 13.3552 9.78646C12.664 9.29954 11.8451 9.02615 11 9.00017C10.1549 9.02615 9.33604 9.29954 8.64484 9.78646C7.95365 10.2734 7.42052 10.9524 7.11155 11.7394L7 12.0002L7.11155 12.2609C7.42052 13.0479 7.95365 13.727 8.64484 14.2139C9.33604 14.7008 10.1549 14.9742 11 15.0002C11.8451 14.9742 12.664 14.7008 13.3552 14.2139C14.0464 13.727 14.5795 13.0479 14.8884 12.2609L15 12.0002L14.8884 11.7394ZM11 14.0002C10.6044 14.0002 10.2178 13.8829 9.88886 13.6631C9.55996 13.4433 9.30362 13.131 9.15224 12.7655C9.00087 12.4001 8.96126 11.998 9.03843 11.61C9.1156 11.222 9.30608 10.8657 9.58579 10.586C9.86549 10.3063 10.2219 10.1158 10.6098 10.0386C10.9978 9.96143 11.3999 10.001 11.7654 10.1524C12.1308 10.3038 12.4432 10.5601 12.6629 10.889C12.8827 11.2179 13 11.6046 13 12.0002C12.9994 12.5304 12.7885 13.0388 12.4136 13.4137C12.0386 13.7887 11.5303 13.9996 11 14.0002Z" fill="currentColor"/>
+      <path d="M6 14.0002H4V2.00017H8V5.00017C8.00077 5.26515 8.10637 5.51906 8.29374 5.70643C8.48111 5.8938 8.73502 5.99941 9 6.00017H12V8.00017H13V5.00017C13.0018 4.93446 12.9893 4.86913 12.9634 4.80871C12.9375 4.74828 12.8988 4.6942 12.85 4.65017L9.35 1.15017C9.30599 1.10134 9.2519 1.06263 9.19147 1.03674C9.13104 1.01084 9.06572 0.998364 9 1.00017H4C3.73502 1.00094 3.48111 1.10654 3.29374 1.29391C3.10637 1.48128 3.00077 1.73519 3 2.00017V14.0002C3.00077 14.2652 3.10637 14.5191 3.29374 14.7064C3.48111 14.8938 3.73502 14.9994 4 15.0002H6V14.0002ZM9 2.20017L11.8 5.00017H9V2.20017Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Qiskit addon: circuit cutting 0.9.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/images/qiskit-light-logo.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../_static/images/qiskit-dark-logo.svg" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.9.0</span>
+  
+</a>
+<form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Instructions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/04_automatic_cut_finding.html">Automatically find cuts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../explanation/index.html">Explanatory Material</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../how-tos/index.html">How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/index.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.cut_wires.html">qiskit_addon_cutting.cut_wires</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.expand_observables.html">qiskit_addon_cutting.expand_observables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.partition_circuit_qubits.html">qiskit_addon_cutting.partition_circuit_qubits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.partition_problem.html">qiskit_addon_cutting.partition_problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.cut_gates.html">qiskit_addon_cutting.cut_gates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.generate_cutting_experiments.html">qiskit_addon_cutting.generate_cutting_experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.reconstruct_expectation_values.html">qiskit_addon_cutting.reconstruct_expectation_values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.PartitionedCuttingProblem.html">qiskit_addon_cutting.PartitionedCuttingProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.instructions.CutWire.html">qiskit_addon_cutting.instructions.CutWire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.instructions.Move.html">qiskit_addon_cutting.instructions.Move</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.find_cuts.html">qiskit_addon_cutting.find_cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.OptimizationParameters.html">qiskit_addon_cutting.OptimizationParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.DeviceConstraints.html">qiskit_addon_cutting.DeviceConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.QPDBasis.html">qiskit_addon_cutting.qpd.QPDBasis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.BaseQPDGate.html">qiskit_addon_cutting.qpd.BaseQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.SingleQubitQPDGate.html">qiskit_addon_cutting.qpd.SingleQubitQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.TwoQubitQPDGate.html">qiskit_addon_cutting.qpd.TwoQubitQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.WeightType.html">qiskit_addon_cutting.qpd.WeightType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.generate_qpd_weights.html">qiskit_addon_cutting.qpd.generate_qpd_weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.decompose_qpd_instructions.html">qiskit_addon_cutting.qpd.decompose_qpd_instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.qpd.qpdbasis_from_instruction.html">qiskit_addon_cutting.qpd.qpdbasis_from_instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.bitwise.bit_count.html">qiskit_addon_cutting.utils.bitwise.bit_count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.iteration.unique_by_id.html">qiskit_addon_cutting.utils.iteration.unique_by_id</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.iteration.unique_by_eq.html">qiskit_addon_cutting.utils.iteration.unique_by_eq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.observable_grouping.observables_restricted_to_subsystem.html">qiskit_addon_cutting.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup.html">qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.observable_grouping.ObservableCollection.html">qiskit_addon_cutting.utils.observable_grouping.ObservableCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.simulation.simulate_statevector_outcomes.html">qiskit_addon_cutting.utils.simulation.simulate_statevector_outcomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.simulation.ExactSampler.html">qiskit_addon_cutting.utils.simulation.ExactSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.transforms.separate_circuit.html">qiskit_addon_cutting.utils.transforms.separate_circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.transforms.SeparatedCircuits.html">qiskit_addon_cutting.utils.transforms.SeparatedCircuits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset.html">qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_addon_cutting.utils.transpiler_passes.ConsolidateResets.html">qiskit_addon_cutting.utils.transpiler_passes.ConsolidateResets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting">GitHub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qiskit_addon_cutting.utils.transforms</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is a Qiskit project.</span>
+
+<span class="c1"># (C) Copyright IBM 2023.</span>
+
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for manipulating quantum circuits.</span>
+
+<span class="sd">.. currentmodule:: qiskit_addon_cutting.utils.transforms</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: ../stubs</span>
+
+<span class="sd">   separate_circuit</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :toctree: ../stubs</span>
+<span class="sd">   :template: autosummary/class_no_inherited_members.rst</span>
+
+<span class="sd">   SeparatedCircuits</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">MutableMapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">rustworkx</span> <span class="kn">import</span> <span class="n">PyGraph</span><span class="p">,</span> <span class="n">connected_components</span>  <span class="c1"># type: ignore[attr-defined]</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="n">CircuitInstruction</span><span class="p">,</span>
+    <span class="n">QuantumRegister</span><span class="p">,</span>
+    <span class="n">ClassicalRegister</span><span class="p">,</span>
+    <span class="n">Barrier</span><span class="p">,</span>
+    <span class="n">Qubit</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.iteration</span> <span class="kn">import</span> <span class="n">unique_by_eq</span>
+
+
+<div class="viewcode-block" id="SeparatedCircuits">
+<a class="viewcode-back" href="../../../stubs/qiskit_addon_cutting.utils.transforms.SeparatedCircuits.html#qiskit_addon_cutting.utils.transforms.SeparatedCircuits">[docs]</a>
+<span class="k">class</span> <span class="nc">SeparatedCircuits</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Named tuple for result of :func:`separate_circuit`.</span>
+
+<span class="sd">    ``subcircuits`` is a dict of circuits, keyed by each partition label.</span>
+<span class="sd">    ``qubit_map`` is a list with length equal to the number of qubits in the original circuit.</span>
+<span class="sd">    Each element of that list is a 2-tuple which includes the partition label</span>
+<span class="sd">    of that qubit, together with the index of that qubit in the corresponding</span>
+<span class="sd">    subcircuit.  If the original qubit is unused and has been removed from the separated circuits,</span>
+<span class="sd">    then that tuple will be equal to ``(None, None)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">subcircuits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">QuantumCircuit</span><span class="p">]</span>
+    <span class="n">qubit_map</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="separate_circuit">
+<a class="viewcode-back" href="../../../stubs/qiskit_addon_cutting.utils.transforms.separate_circuit.html#qiskit_addon_cutting.utils.transforms.separate_circuit">[docs]</a>
+<span class="k">def</span> <span class="nf">separate_circuit</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="n">partition_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SeparatedCircuits</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Separate the circuit into its disconnected components.</span>
+
+<span class="sd">    If ``partition_labels`` is provided, then the circuit will be separated</span>
+<span class="sd">    according to those labels.  A partition label of ``None`` is treated specially:</span>
+<span class="sd">    it must be applied to an unused (idle) qubit, and that qubit will be removed</span>
+<span class="sd">    when separating the circuit.</span>
+
+<span class="sd">    If ``partition_labels`` is ``None``, then the circuit will be</span>
+<span class="sd">    fully separated into its disconnected components, each of which will be</span>
+<span class="sd">    labeled with consecutive integers starting with 0.  Each idle wire</span>
+<span class="sd">    will be eliminated in the resulting circuits.</span>
+
+<span class="sd">    &gt;&gt;&gt; qc = QuantumCircuit(4)</span>
+<span class="sd">    &gt;&gt;&gt; _ = qc.x(0)</span>
+<span class="sd">    &gt;&gt;&gt; _ = qc.cx(1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc, &quot;ABBA&quot;).subcircuits.keys()</span>
+<span class="sd">    dict_keys([&#39;A&#39;, &#39;B&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc, &quot;ABBA&quot;).qubit_map</span>
+<span class="sd">    [(&#39;A&#39;, 0), (&#39;B&#39;, 0), (&#39;B&#39;, 1), (&#39;A&#39;, 1)]</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc, [&quot;A&quot;, &quot;B&quot;, &quot;B&quot;, None]).qubit_map</span>
+<span class="sd">    [(&#39;A&#39;, 0), (&#39;B&#39;, 0), (&#39;B&#39;, 1), (None, None)]</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc).subcircuits.keys()</span>
+<span class="sd">    dict_keys([0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc).qubit_map</span>
+<span class="sd">    [(0, 0), (1, 0), (1, 1), (None, None)]</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc, &quot;BAAC&quot;).subcircuits.keys()</span>
+<span class="sd">    dict_keys([&#39;B&#39;, &#39;A&#39;, &#39;C&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; separate_circuit(qc, &quot;BAAC&quot;).qubit_map</span>
+<span class="sd">    [(&#39;B&#39;, 0), (&#39;A&#39;, 0), (&#39;A&#39;, 1), (&#39;C&#39;, 0)]</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: The circuit to separate into disconnected subcircuits</span>
+<span class="sd">        partition_labels: A sequence of length ``num_qubits``.  Qubits with the</span>
+<span class="sd">            same label will end up in the same subcircuit.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`SeparatedCircuits` named tuple containing the ``subcircuits``</span>
+<span class="sd">        and ``qubit_map``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: The number of partition labels does not equal the number of</span>
+<span class="sd">            qubits in the input circuit.</span>
+<span class="sd">        ValueError: Operation spans more than one partition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Split barriers into single-qubit barriers before separating</span>
+    <span class="n">new_qc</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">_split_barriers</span><span class="p">(</span><span class="n">new_qc</span><span class="p">)</span>
+
+    <span class="c1"># Generate partition labels based on the connected components of the circuit by default</span>
+    <span class="k">if</span> <span class="n">partition_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">partition_labels</span> <span class="o">=</span> <span class="n">_partition_labels_from_circuit</span><span class="p">(</span><span class="n">new_qc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">partition_labels</span><span class="p">)</span> <span class="o">!=</span> <span class="n">new_qc</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;The number of partition_labels (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">partition_labels</span><span class="p">)</span><span class="si">}</span><span class="s2">) must equal the number of &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;qubits in the input circuit (</span><span class="si">{</span><span class="n">new_qc</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">qubit_map</span><span class="p">,</span> <span class="n">qubits_by_subsystem</span> <span class="o">=</span> <span class="n">_qubit_map_from_partition_labels</span><span class="p">(</span><span class="n">partition_labels</span><span class="p">)</span>
+
+    <span class="c1"># Gather instructions corresponding to the same partition together</span>
+    <span class="n">subcircuit_data_ids</span> <span class="o">=</span> <span class="n">_separate_instructions_by_partition</span><span class="p">(</span><span class="n">new_qc</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">)</span>
+
+    <span class="c1"># Create the subcircuits from the instruction subsets</span>
+    <span class="n">subcircuits</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">subcircuit_data</span> <span class="ow">in</span> <span class="n">subcircuit_data_ids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">tmp_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_qc</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">subcircuit_data</span><span class="p">)</span>
+        <span class="n">tmp_circ</span> <span class="o">=</span> <span class="n">_circuit_from_instructions</span><span class="p">(</span>
+            <span class="n">tmp_data</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">new_qc</span><span class="o">.</span><span class="n">qubits</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">qubits_by_subsystem</span><span class="p">[</span><span class="n">label</span><span class="p">]],</span>
+            <span class="n">new_qc</span><span class="o">.</span><span class="n">cregs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_combine_barriers</span><span class="p">(</span><span class="n">tmp_circ</span><span class="p">)</span>
+        <span class="n">subcircuits</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_circ</span>
+
+    <span class="k">return</span> <span class="n">SeparatedCircuits</span><span class="p">(</span><span class="n">subcircuits</span><span class="p">,</span> <span class="n">qubit_map</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_partition_labels_from_circuit</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="n">ignore</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">CircuitInstruction</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">instr</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">keep_idle_wires</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate partition labels from the connectivity of a quantum circuit.&quot;&quot;&quot;</span>
+    <span class="c1"># Determine connectivity structure of the circuit</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">PyGraph</span> <span class="o">=</span> <span class="n">PyGraph</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ignore</span><span class="p">(</span><span class="n">instruction</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">qubits</span> <span class="o">=</span> <span class="n">instruction</span><span class="o">.</span><span class="n">qubits</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">q1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubits</span><span class="p">):</span>
+            <span class="n">q1_id</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">for</span> <span class="n">q2</span> <span class="ow">in</span> <span class="n">qubits</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]:</span>
+                <span class="n">q2_id</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q2</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+                <span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">q1_id</span><span class="p">,</span> <span class="n">q2_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Find the connected subsets of qubits.  For consistency, the subsets</span>
+    <span class="c1"># should be sorted in ascending order according to the lowest qubit index</span>
+    <span class="c1"># in each.</span>
+    <span class="n">qubit_subsets</span> <span class="o">=</span> <span class="n">connected_components</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+    <span class="n">qubit_subsets</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">min</span><span class="p">)</span>
+
+    <span class="c1"># By default, filter qubit_subsets to remove idle wires</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_idle_wires</span><span class="p">:</span>
+        <span class="c1"># Determine which qubit wires are idle/unused</span>
+        <span class="n">idle_wires</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">instruction</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q1</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">qubits</span><span class="p">:</span>
+                <span class="n">q1_id</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">q1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+                <span class="n">idle_wires</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">q1_id</span><span class="p">)</span>
+        <span class="c1"># Replace qubit_subsets with filtered list, removing idle qubits</span>
+        <span class="n">qubit_subsets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">subset</span>
+            <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">qubit_subsets</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">subset</span><span class="p">))</span> <span class="ow">in</span> <span class="n">idle_wires</span><span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="c1"># Create partition labels from the connected components</span>
+    <span class="n">partition_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qubit_subsets</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">:</span>
+            <span class="n">partition_labels</span><span class="p">[</span><span class="n">qubit</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="k">return</span> <span class="n">partition_labels</span>
+
+
+<span class="k">def</span> <span class="nf">_circuit_from_instructions</span><span class="p">(</span>
+    <span class="n">instructions</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">CircuitInstruction</span><span class="p">],</span>
+    <span class="n">qubits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">],</span>
+    <span class="n">cregs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ClassicalRegister</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a circuit from instructions.</span>
+
+<span class="sd">    This pipeline is designed to pass all the classical register(s) from the</span>
+<span class="sd">    uncut circuit to each subcircuit, so we add them here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">()</span>
+    <span class="n">circuit</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">QuantumRegister</span><span class="p">(</span><span class="n">bits</span><span class="o">=</span><span class="n">qubits</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">register</span> <span class="ow">in</span> <span class="n">cregs</span><span class="p">:</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">register</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">instructions</span><span class="p">:</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">circuit</span>
+
+
+<span class="k">def</span> <span class="nf">_qubit_map_from_partition_labels</span><span class="p">(</span>
+    <span class="n">partition_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a qubit map given a qubit partitioning.&quot;&quot;&quot;</span>
+    <span class="n">qubit_map</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">qubits_by_subsystem</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">qubit_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">partition_labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">qubit_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qubit_map</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_label_qubits</span> <span class="o">=</span> <span class="n">qubits_by_subsystem</span><span class="p">[</span><span class="n">qubit_label</span><span class="p">]</span>
+            <span class="n">qubit_map</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">qubit_label</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_label_qubits</span><span class="p">)))</span>
+            <span class="n">current_label_qubits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">qubit_map</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">qubits_by_subsystem</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_separate_instructions_by_partition</span><span class="p">(</span>
+    <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+    <span class="n">qubit_map</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a list of instructions for each partition of the circuit.&quot;&quot;&quot;</span>
+    <span class="n">unique_labels</span> <span class="o">=</span> <span class="n">unique_by_eq</span><span class="p">(</span><span class="n">label</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">qubit_map</span> <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">subcircuit_data_ids</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">unique_labels</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+        <span class="c1"># Collect the partition labels spanned by the instruction</span>
+        <span class="n">partitions_spanned</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">qubit</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">find_bit</span><span class="p">(</span><span class="n">qubit</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">partition_id</span> <span class="o">=</span> <span class="n">qubit_map</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Operation &#39;</span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> acts on the &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">-th qubit, which was provided a partition label of `None`. &quot;</span>
+                    <span class="s2">&quot;If the partition label of a qubit is `None`, then that qubit &quot;</span>
+                    <span class="s2">&quot;cannot be used in the circuit.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">partitions_spanned</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">partition_id</span><span class="p">)</span>
+
+        <span class="c1"># Ensure that all qubits touched by the instruction belong to the same</span>
+        <span class="c1"># partition label</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">partitions_spanned</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">partitions_spanned</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The input circuit cannot be separated along specified partitions. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Operation &#39;</span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; at index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> spans more than &quot;</span>
+                <span class="s2">&quot;one partition.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Record which partition id the current instruction is destined for</span>
+        <span class="n">partition_id</span> <span class="o">=</span> <span class="n">partitions_spanned</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">subcircuit_data_ids</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">subcircuit_data_ids</span>
+
+
+<span class="k">def</span> <span class="nf">_split_barriers</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mutate an input circuit to split barriers into single qubit barriers.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuit</span><span class="p">):</span>
+        <span class="n">num_qubits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_qubits</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;barrier&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">barrier_uuid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_uuid=</span><span class="si">{</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Replace the N-qubit barrier with a single-qubit barrier</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">CircuitInstruction</span><span class="p">(</span>
+            <span class="n">Barrier</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">barrier_uuid</span><span class="p">),</span> <span class="n">qubits</span><span class="o">=</span><span class="p">[</span><span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="c1"># Insert the remaining single-qubit barriers directly behind the first</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">):</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span>
+                <span class="n">CircuitInstruction</span><span class="p">(</span>
+                    <span class="n">Barrier</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">barrier_uuid</span><span class="p">),</span> <span class="n">qubits</span><span class="o">=</span><span class="p">[</span><span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_combine_barriers</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mutate input circuit to combine barriers with common UUID labels into a single barrier.&quot;&quot;&quot;</span>
+    <span class="c1"># Gather the indices to each group of barriers with common UUID labels</span>
+    <span class="n">uuid_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuit</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;barrier&quot;</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_uuid=&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">barrier_uuid</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">label</span>
+            <span class="n">uuid_map</span><span class="p">[</span><span class="n">barrier_uuid</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="c1"># Replace the first single-qubit barrier in each group with the full-sized barrier</span>
+    <span class="n">cleanup_inst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">barrier_indices</span> <span class="ow">in</span> <span class="n">uuid_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">qubits</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">barrier_id</span><span class="p">]</span><span class="o">.</span><span class="n">qubits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">barrier_id</span> <span class="ow">in</span> <span class="n">barrier_indices</span><span class="p">]</span>
+        <span class="n">new_barrier</span> <span class="o">=</span> <span class="n">CircuitInstruction</span><span class="p">(</span><span class="n">Barrier</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">barrier_indices</span><span class="p">)),</span> <span class="n">qubits</span><span class="o">=</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">barrier_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">new_barrier</span>
+        <span class="c1"># Gather indices of single-qubit barriers we need to clean up</span>
+        <span class="n">cleanup_inst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">barrier_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="c1"># Clean up old, single-qubit barriers with uuid labels</span>
+    <span class="n">cleanup_inst</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cleanup_inst</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">shift</span><span class="p">,</span> <span class="n">inst</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cleanup_inst</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">circuit</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">inst</span> <span class="o">-</span> <span class="n">shift</span><span class="p">]</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/Qiskit/qiskit-addon-cutting" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

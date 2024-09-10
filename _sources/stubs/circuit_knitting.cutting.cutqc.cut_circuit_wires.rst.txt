@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.cutqc.cut\_circuit\_wires
-===================================================
-
-.. currentmodule:: circuit_knitting.cutting.cutqc
-
-.. autofunction:: cut_circuit_wires

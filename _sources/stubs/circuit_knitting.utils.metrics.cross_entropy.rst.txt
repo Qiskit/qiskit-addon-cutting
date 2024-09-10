@@ -1,6 +1,0 @@
-﻿circuit\_knitting.utils.metrics.cross\_entropy
-==============================================
-
-.. currentmodule:: circuit_knitting.utils.metrics
-
-.. autofunction:: cross_entropy

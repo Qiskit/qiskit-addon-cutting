@@ -1,0 +1,31 @@
+﻿qiskit\_addon\_cutting.OptimizationParameters
+=============================================
+
+.. currentmodule:: qiskit_addon_cutting
+
+.. autoclass:: OptimizationParameters
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OptimizationParameters.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~OptimizationParameters.gate_lo
+      ~OptimizationParameters.max_backjumps
+      ~OptimizationParameters.max_gamma
+      ~OptimizationParameters.seed
+      ~OptimizationParameters.wire_lo
+   
+   

@@ -1,0 +1,27 @@
+﻿qiskit\_addon\_cutting.qpd.TwoQubitQPDGate
+==========================================
+
+.. currentmodule:: qiskit_addon_cutting.qpd
+
+.. autoclass:: TwoQubitQPDGate
+   :show-inheritance:
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TwoQubitQPDGate.__init__
+      ~TwoQubitQPDGate.from_instruction
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+   
+   

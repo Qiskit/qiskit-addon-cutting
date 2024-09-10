@@ -1,0 +1,6 @@
+﻿qiskit\_addon\_cutting.qpd.qpdbasis\_from\_instruction
+======================================================
+
+.. currentmodule:: qiskit_addon_cutting.qpd
+
+.. autofunction:: qpdbasis_from_instruction

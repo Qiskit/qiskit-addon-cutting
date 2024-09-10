@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.qpd.decompose\_qpd\_instructions
-==========================================================
-
-.. currentmodule:: circuit_knitting.cutting.qpd
-
-.. autofunction:: decompose_qpd_instructions

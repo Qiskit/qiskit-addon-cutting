@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.qpd.generate\_qpd\_weights
-====================================================
-
-.. currentmodule:: circuit_knitting.cutting.qpd
-
-.. autofunction:: generate_qpd_weights

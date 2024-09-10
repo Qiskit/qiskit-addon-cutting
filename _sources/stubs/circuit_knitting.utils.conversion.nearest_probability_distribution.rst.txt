@@ -1,6 +1,0 @@
-﻿circuit\_knitting.utils.conversion.nearest\_probability\_distribution
-=====================================================================
-
-.. currentmodule:: circuit_knitting.utils.conversion
-
-.. autofunction:: nearest_probability_distribution

@@ -1,0 +1,6 @@
+﻿qiskit\_addon\_cutting.cut\_gates
+=================================
+
+.. currentmodule:: qiskit_addon_cutting
+
+.. autofunction:: cut_gates

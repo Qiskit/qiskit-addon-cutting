@@ -1,6 +1,0 @@
-﻿circuit\_knitting.cutting.qpd.qpdbasis\_from\_instruction
-=========================================================
-
-.. currentmodule:: circuit_knitting.cutting.qpd
-
-.. autofunction:: qpdbasis_from_instruction

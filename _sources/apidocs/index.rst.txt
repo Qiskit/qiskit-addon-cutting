@@ -1,13 +1,26 @@
-.. circuit_knitting:
+.. qiskit_addon_cutting:
 
-.. module:: circuit_knitting
+.. module:: qiskit_addon_cutting
 
-=======================================
-Circuit Knitting Toolbox API References
-=======================================
+==============
+API References
+==============
 
-.. toctree::
-   :maxdepth: 1
+###############
+Circuit Cutting
+###############
 
-   circuit_cutting
-   utils
+.. automodule:: qiskit_addon_cutting
+   :no-index:
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+
+#########
+Utilities
+#########
+
+.. automodule:: qiskit_addon_cutting.utils
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:

@@ -1,0 +1,6 @@
+﻿qiskit\_addon\_cutting.generate\_cutting\_experiments
+=====================================================
+
+.. currentmodule:: qiskit_addon_cutting
+
+.. autofunction:: generate_cutting_experiments

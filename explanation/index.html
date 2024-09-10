@@ -1,0 +1,573 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="How-To Guides" href="../how-tos/index.html" /><link rel="prev" title="Automatically find cuts" href="../tutorials/04_automatic_cut_finding.html" />
+
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>Explanatory material - Qiskit addon: circuit cutting 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2H2C1.73478 2 1.48043 2.10536 1.29289 2.29289C1.10536 2.48043 1 2.73478 1 3V13C1 13.2652 1.10536 13.5196 1.29289 13.7071C1.48043 13.8946 1.73478 14 2 14H14C14.2652 14 14.5196 13.8946 14.7071 13.7071C14.8946 13.5196 15 13.2652 15 13V3C15 2.73478 14.8946 2.48043 14.7071 2.29289C14.5196 2.10536 14.2652 2 14 2V2ZM2 3H10V13H2V3ZM14 13H11V3H14V13Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 3H2V4H14V3Z" fill="currentColor"/>
+      <path d="M14 12H2V13H14V12Z" fill="currentColor"/>
+      <path d="M14 6H2V7H14V6Z" fill="currentColor"/>
+      <path d="M14 9H2V10H14V9Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 8L6.00005 13L5.30005 12.3L9.60005 8L5.30005 3.7L6.00005 3L11 8Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 13H1V14H15V13Z" fill="currentColor"/>
+      <path d="M12.7 4.5C13.1 4.1 13.1 3.5 12.7 3.1L10.9 1.3C10.5 0.9 9.9 0.9 9.5 1.3L2 8.8V12H5.2L12.7 4.5ZM10.2 2L12 3.8L10.5 5.3L8.7 3.5L10.2 2ZM3 11V9.2L8 4.2L9.8 6L4.8 11H3Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 13.0002C11.5523 13.0002 12 12.5525 12 12.0002C12 11.4479 11.5523 11.0002 11 11.0002C10.4477 11.0002 10 11.4479 10 12.0002C10 12.5525 10.4477 13.0002 11 13.0002Z" fill="currentColor"/>
+      <path d="M14.8884 11.7394C14.5795 10.9524 14.0464 10.2734 13.3552 9.78646C12.664 9.29954 11.8451 9.02615 11 9.00017C10.1549 9.02615 9.33604 9.29954 8.64484 9.78646C7.95365 10.2734 7.42052 10.9524 7.11155 11.7394L7 12.0002L7.11155 12.2609C7.42052 13.0479 7.95365 13.727 8.64484 14.2139C9.33604 14.7008 10.1549 14.9742 11 15.0002C11.8451 14.9742 12.664 14.7008 13.3552 14.2139C14.0464 13.727 14.5795 13.0479 14.8884 12.2609L15 12.0002L14.8884 11.7394ZM11 14.0002C10.6044 14.0002 10.2178 13.8829 9.88886 13.6631C9.55996 13.4433 9.30362 13.131 9.15224 12.7655C9.00087 12.4001 8.96126 11.998 9.03843 11.61C9.1156 11.222 9.30608 10.8657 9.58579 10.586C9.86549 10.3063 10.2219 10.1158 10.6098 10.0386C10.9978 9.96143 11.3999 10.001 11.7654 10.1524C12.1308 10.3038 12.4432 10.5601 12.6629 10.889C12.8827 11.2179 13 11.6046 13 12.0002C12.9994 12.5304 12.7885 13.0388 12.4136 13.4137C12.0386 13.7887 11.5303 13.9996 11 14.0002Z" fill="currentColor"/>
+      <path d="M6 14.0002H4V2.00017H8V5.00017C8.00077 5.26515 8.10637 5.51906 8.29374 5.70643C8.48111 5.8938 8.73502 5.99941 9 6.00017H12V8.00017H13V5.00017C13.0018 4.93446 12.9893 4.86913 12.9634 4.80871C12.9375 4.74828 12.8988 4.6942 12.85 4.65017L9.35 1.15017C9.30599 1.10134 9.2519 1.06263 9.19147 1.03674C9.13104 1.01084 9.06572 0.998364 9 1.00017H4C3.73502 1.00094 3.48111 1.10654 3.29374 1.29391C3.10637 1.48128 3.00077 1.73519 3 2.00017V14.0002C3.00077 14.2652 3.10637 14.5191 3.29374 14.7064C3.48111 14.8938 3.73502 14.9994 4 15.0002H6V14.0002ZM9 2.20017L11.8 5.00017H9V2.20017Z" fill="currentColor"/>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit addon: circuit cutting 0.9.0</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/images/qiskit-light-logo.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/images/qiskit-dark-logo.svg" alt="Dark Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.9.0</span>
+  
+</a>
+<form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html">Automatically find cuts</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Explanatory Material</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../how-tos/index.html">How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/index.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.cut_wires.html">qiskit_addon_cutting.cut_wires</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.expand_observables.html">qiskit_addon_cutting.expand_observables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.partition_circuit_qubits.html">qiskit_addon_cutting.partition_circuit_qubits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.partition_problem.html">qiskit_addon_cutting.partition_problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.cut_gates.html">qiskit_addon_cutting.cut_gates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.generate_cutting_experiments.html">qiskit_addon_cutting.generate_cutting_experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.reconstruct_expectation_values.html">qiskit_addon_cutting.reconstruct_expectation_values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.PartitionedCuttingProblem.html">qiskit_addon_cutting.PartitionedCuttingProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html">qiskit_addon_cutting.instructions.CutWire</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html">qiskit_addon_cutting.instructions.Move</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.find_cuts.html">qiskit_addon_cutting.find_cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.OptimizationParameters.html">qiskit_addon_cutting.OptimizationParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.DeviceConstraints.html">qiskit_addon_cutting.DeviceConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.QPDBasis.html">qiskit_addon_cutting.qpd.QPDBasis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.BaseQPDGate.html">qiskit_addon_cutting.qpd.BaseQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.SingleQubitQPDGate.html">qiskit_addon_cutting.qpd.SingleQubitQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.TwoQubitQPDGate.html">qiskit_addon_cutting.qpd.TwoQubitQPDGate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.WeightType.html">qiskit_addon_cutting.qpd.WeightType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.generate_qpd_weights.html">qiskit_addon_cutting.qpd.generate_qpd_weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.decompose_qpd_instructions.html">qiskit_addon_cutting.qpd.decompose_qpd_instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.qpdbasis_from_instruction.html">qiskit_addon_cutting.qpd.qpdbasis_from_instruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.bitwise.bit_count.html">qiskit_addon_cutting.utils.bitwise.bit_count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.iteration.unique_by_id.html">qiskit_addon_cutting.utils.iteration.unique_by_id</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.iteration.unique_by_eq.html">qiskit_addon_cutting.utils.iteration.unique_by_eq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.observable_grouping.observables_restricted_to_subsystem.html">qiskit_addon_cutting.utils.observable_grouping.observables_restricted_to_subsystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup.html">qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.observable_grouping.ObservableCollection.html">qiskit_addon_cutting.utils.observable_grouping.ObservableCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.simulation.simulate_statevector_outcomes.html">qiskit_addon_cutting.utils.simulation.simulate_statevector_outcomes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.simulation.ExactSampler.html">qiskit_addon_cutting.utils.simulation.ExactSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transforms.separate_circuit.html">qiskit_addon_cutting.utils.transforms.separate_circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transforms.SeparatedCircuits.html">qiskit_addon_cutting.utils.transforms.SeparatedCircuits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset.html">qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transpiler_passes.ConsolidateResets.html">qiskit_addon_cutting.utils.transpiler_passes.ConsolidateResets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting">GitHub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes.html">Release Notes</a></li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/explanation/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="explanatory-material">
+<span id="circuit-cutting-explanation"></span><h1>Explanatory material<a class="headerlink" href="#explanatory-material" title="Link to this heading">¶</a></h1>
+<section id="overview-of-circuit-cutting">
+<h2>Overview of circuit cutting<a class="headerlink" href="#overview-of-circuit-cutting" title="Link to this heading">¶</a></h2>
+<p>Circuit cutting is a technique to increase the size of circuits we can run on quantum hardware at the cost of an additional sampling overhead. A larger quantum circuit can be decomposed by cutting its gates and/or wires, resulting in smaller circuits which can be executed within the constraints of available quantum hardware. The results of these smaller circuits are combined to reconstruct the outcome of the original problem. Circuit cutting can also be used to engineer gates between distant qubits which would otherwise require a large swap overhead.</p>
+</section>
+<section id="key-terms">
+<h2>Key terms<a class="headerlink" href="#key-terms" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>subcircuits: The set of circuits resulting from cutting gates in a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> and then separating the disconnected qubit subsets into smaller circuits. These circuits contain <a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.SingleQubitQPDGate.html#qiskit_addon_cutting.qpd.SingleQubitQPDGate" title="qiskit_addon_cutting.qpd.SingleQubitQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleQubitQPDGate</span></code></a>s and will be used to instantiate each unique subexperiment.</p></li>
+<li><p>subexperiments: A term used to describe the unique circuit samples associated with a subcircuit. These circuits have had their <a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.BaseQPDGate.html#qiskit_addon_cutting.qpd.BaseQPDGate" title="qiskit_addon_cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a>s decomposed into local Qiskit gates and measurements. Subexperiments are the circuits sent to the backend for execution.</p></li>
+<li><p>decompose: We try to honor the Qiskit notion of “decompose” in the documentation and API, which loosely means transforming a gate into a less-abstracted representation. <em>Occasionally</em>, we may use the term “decompose” to refer to the act of inserting <a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.BaseQPDGate.html#qiskit_addon_cutting.qpd.BaseQPDGate" title="qiskit_addon_cutting.qpd.BaseQPDGate"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code></a> instances into quantum circuits as “decomposing” a gate or wire; however, we try to use terms like “partition” and “cut” when referring to this to avoid ambiguity with Qiskit language.</p></li>
+</ul>
+</section>
+<section id="circuit-cutting-as-a-quasiprobability-decomposition-qpd">
+<h2>Circuit cutting as a quasiprobability decomposition (QPD)<a class="headerlink" href="#circuit-cutting-as-a-quasiprobability-decomposition-qpd" title="Link to this heading">¶</a></h2>
+<p>Quasiprobability decomposition is a technique which can be used to simulate quantum circuit executions that go beyond the actual capabilities of current quantum hardware while using that same hardware.  It forms the basis of many error mitigation techniques, which allow simulating a noise-free quantum computer using a noisy one.  Circuit cutting techniques, which allow simulating a quantum circuit using fewer qubits than would otherwise be necessary, can also be phrased in terms of a quasiprobability decomposition.  No matter the goal, the cost of the quasiprobability decomposition is an exponential overhead in the number of circuit executions which must be performed.  In certain cases, this tradeoff is worth it, because it can allow the estimation of quantities that would otherwise be impossible on today’s hardware.</p>
+<p>There are two types of cuts: gate cuts and wire cuts.  Gate cuts, also known as “space-like” cuts, exist when the cut goes through a gate operating on two (or more) qubits.  Wire cuts, also known as “time-like” cuts, are direct cuts through a qubit wire, essentially a single-qubit identity gate that has been cut into two pieces.  In this package, a wire cut is represented by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit; see <a class="reference internal" href="#wire-cutting-as-move"><span class="std std-ref">Wire cutting phrased as a two-qubit Move operation</span></a>, below.</p>
+<p>There are <a class="reference external" href="https://research.ibm.com/blog/circuit-knitting-with-classical-communication">three settings</a> to consider for circuit cutting.  The first is where only local operations (LO) [i.e., local <em>quantum</em> operations] are available.  The other settings introduce classical communication between the circuit executions, which is known in the quantum information literature as LOCC, for <a class="reference external" href="https://en.wikipedia.org/wiki/LOCC">local operations and classical communication</a>.  The LOCC can be either near-time, one-directional communication between the circuit executions (the second setting), or real-time, bi-directional communication (the third setting).</p>
+<p>As mentioned above, the cost of any simulation based on quasiprobability distribution is an exponential sampling overhead.
+The sampling overhead is the factor by which the overall number of shots must increase for the quasiprobability decomposition to result in the same amount of error, <span class="math notranslate nohighlight">\(\epsilon\)</span>, as one would get by executing the original circuit.
+The overhead of a cut gate depends on which gate is cut; see the final appendix of [<a class="reference external" href="https://arxiv.org/abs/2205.00016">1</a>] for details.
+For instance, a single cut CNOT gate incurs a sampling overhead of 9 [<a class="reference external" href="https://arxiv.org/abs/1909.07534">2</a>,<a class="reference external" href="https://arxiv.org/abs/2312.11638">6</a>].
+A circuit with <span class="math notranslate nohighlight">\(n\)</span> wire cuts incurs a sampling overhead of O(<span class="math notranslate nohighlight">\(16^n\)</span>) when classical communication is not available (LO setting); this is reduced to O(<span class="math notranslate nohighlight">\(4^n\)</span>) when classical communication is available (LOCC setting) [<a class="reference external" href="https://arxiv.org/abs/2302.03366">4</a>].
+However, wire cutting with classical communication (LOCC) is not yet supported by this package (see issue <a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting/issues/264">#264</a>).</p>
+<p>The QPD can be given explicitly as follows:</p>
+<div class="math-wrapper docutils container" id="equation-eq-qpd">
+<div class="math notranslate nohighlight" id="equation-eq-qpd">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-qpd" title="Link to this equation">¶</a></span>\[\mathcal{U} = \sum_i a_i \mathcal{F}_i ,\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{U}\)</span> is the channel implementing the desired operation, and each <span class="math notranslate nohighlight">\(a_i\)</span> is a real coefficient corresponding to a quantum channel, <span class="math notranslate nohighlight">\(\mathcal{F}_i\)</span>, that is realizable on hardware.</p>
+<p>Note that because this is a sum of channels, <em>not</em> a sum of unitaries, expectation values can be evaluated efficiently [<a class="reference external" href="https://arxiv.org/abs/1909.07534">2</a>].</p>
+<p>Results equivalent to original unitary channel can be obtained by a post-processing method, given the coefficients <span class="math notranslate nohighlight">\(a_i\)</span> and the outcome of each experiment corresponding to the different local (<span class="math notranslate nohighlight">\(\mathcal{F}_i\)</span>) channels. This post-processing boosts the magnitude of each measurement outcome by <span class="math notranslate nohighlight">\(\sum_i \left| a_i \right|\)</span>, resulting in a sampling overhead of that quantity squared [<a class="reference external" href="https://arxiv.org/abs/2312.11638">6</a>]:</p>
+<div class="math-wrapper docutils container" id="equation-eq-sampling-overhead">
+<div class="math notranslate nohighlight" id="equation-eq-sampling-overhead">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-sampling-overhead" title="Link to this equation">¶</a></span>\[\mathrm{Sampling\ overhead} = \left( \sum_i \lvert a_i \rvert \right)^2 .\]</div>
+</div>
+<p>For more detailed information on the quasiprobability decomposition technique, refer to the paper, Error mitigation for short-depth quantum circuits [<a class="reference external" href="https://arxiv.org/abs/1612.02058">5</a>].</p>
+<p>The essential idea of gate cutting is to replace a two-qubit gate with a linear combination of quantum channels [Eq. <a class="reference internal" href="#equation-eq-qpd">(1)</a>] that, when recombined, will allow reconstruction of the result for physically measurable quantities like expectation values.  Note that “global phase” is not something that can be physically measured, so we can disregard it when specifying quasiprobability decompositions.</p>
+</section>
+<section id="an-example-cutting-a-rzzgate">
+<h2>An example: cutting a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a><a class="headerlink" href="#an-example-cutting-a-rzzgate" title="Link to this heading">¶</a></h2>
+<p>As a basic and explicit example, let us consider the decomposition of a cut <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a>.</p>
+<p>As shown in [<a class="reference external" href="https://arxiv.org/abs/1909.07534">2</a>], a quantum circuit which implements an <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a> can be simulated by performing six subexperiments where the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a> in the original circuit has been replaced with only local (single-qubit) operations [the <span class="math notranslate nohighlight">\(\mathcal{F}_i\)</span>‘s in Eq. <a class="reference internal" href="#equation-eq-qpd">(1)</a>].  The result is then reconstructed by combining the subexperiment results with certain coefficients [the <span class="math notranslate nohighlight">\(a_i\)</span>‘s in Eq. <a class="reference internal" href="#equation-eq-qpd">(1)</a>], which can be either positive or negative.  Given the <span class="math notranslate nohighlight">\(\theta\)</span> parameter of the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a>, the six subexperiments are as follows:</p>
+<ol class="arabic simple">
+<li><p>With coefficient <span class="math notranslate nohighlight">\(a_1 = \cos^2 (\theta/2)\)</span>, do nothing (<span class="math notranslate nohighlight">\(I \otimes I\)</span>, where <span class="math notranslate nohighlight">\(I\)</span> is the identity operation on a single qubit).</p></li>
+<li><p>With coefficient <span class="math notranslate nohighlight">\(a_2 = \sin^2 (\theta/2)\)</span>, perform a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.ZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZGate</span></code></a> on each qubit (<span class="math notranslate nohighlight">\(Z \otimes Z\)</span>).</p></li>
+<li><p>With coefficient <span class="math notranslate nohighlight">\(a_3 = -\sin(\theta)/2\)</span>, perform a projective measurement in the Z basis on the first qubit and an <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.SGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SGate</span></code></a> gate on the second qubit (denote this as <span class="math notranslate nohighlight">\(M_z \otimes S\)</span>).  If the result of the measurement is 1, flip the sign of that outcome’s contribution during reconstruction.</p></li>
+<li><p>With coefficient <span class="math notranslate nohighlight">\(a_4 = \sin(\theta)/2\)</span>, perform a projective measurement in the Z basis on the first qubit and an <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.SdgGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SdgGate</span></code></a> gate on the second qubit (denote this as <span class="math notranslate nohighlight">\(M_z \otimes S^\dagger\)</span>).  If the result of the measurement is 1, flip the sign of that outcome’s contribution during reconstruction.</p></li>
+<li><p>Same as term 3 (<span class="math notranslate nohighlight">\(a_5 = a_3\)</span>), but swap the qubits (<span class="math notranslate nohighlight">\(S \otimes M_z\)</span>).</p></li>
+<li><p>Same as term 4 (<span class="math notranslate nohighlight">\(a_6 = a_4\)</span>), but swap the qubits (<span class="math notranslate nohighlight">\(S^\dagger \otimes M_z\)</span>).</p></li>
+</ol>
+<p>Equation <a class="reference internal" href="#equation-eq-qpd">(1)</a> for <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a> can thus be written as a sum of the six terms listed above.  The following plot shows the magnitude of each coeffient (negative coefficients are in orange) as a function of <span class="math notranslate nohighlight">\(\theta\)</span>.  The square root of the optimal sampling overhead, denoted by <span class="math notranslate nohighlight">\(\gamma\)</span>, is given by the sum of the absolute coefficients.</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/1bcf108bebba090242ce21f6ce2238c8/index-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/index-1.svg" class="plot-directive" src="../_images/index-1.svg" />
+</figure>
+<p>Let’s consider some special points in this plot:</p>
+<ul class="simple">
+<li><p>When <span class="math notranslate nohighlight">\(\theta = 0\)</span>, the gate has no effect, and the sampling overhead is 1.  (Because the overhead is multiplicative, this is equivalent to there being no overhead.)</p></li>
+<li><p>When <span class="math notranslate nohighlight">\(\theta = \pi\)</span>, the gate is equivalent to <span class="math notranslate nohighlight">\(Z \otimes Z\)</span> up to a global phase, and the sampling overhead is again 1.</p></li>
+<li><p>The maximum sampling overhead of <span class="math notranslate nohighlight">\(3^2 = 9\)</span> is reached at a ZZ Rotation of <span class="math notranslate nohighlight">\(\theta=\pi/2\)</span>.  We call this point the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CXGate</span></code></a> family because this rotation is equivalent to a CXGate up to (single-qubit) local unitary operations.  This point is also equivalent, up to local unitary operations, to <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CZGate</span></code></a>, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CYGate</span></code></a>, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CHGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CHGate</span></code></a>, and <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.ECRGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ECRGate</span></code></a>.</p></li>
+<li><p>The ZZ rotation at <span class="math notranslate nohighlight">\(\theta=\pi/4\)</span> has sampling overhead of <span class="math notranslate nohighlight">\(3+2\sqrt{2} \approx 5.828\)</span>.  We call this the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSGate</span></code></a> family because this rotation is equivalent to a CSGate up to (single-qubit) local operations.  This family also includes <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSdgGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSdgGate</span></code></a> and <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSXGate</span></code></a>.</p></li>
+<li><p>Likewise, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RXXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RXXGate</span></code></a>, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RYYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RYYGate</span></code></a>, and <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZXGate</span></code></a> are all locally equivalent to <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a>.  The controlled rotations <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRXGate</span></code></a>, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRYGate</span></code></a>, <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRZGate</span></code></a>, and <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CPhaseGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPhaseGate</span></code></a> at an angle of <span class="math notranslate nohighlight">\(2\theta\)</span> are locally equivalent to <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a> at an angle of <span class="math notranslate nohighlight">\(\theta\)</span>.</p></li>
+</ul>
+</section>
+<section id="more-general-cut-two-qubit-gates-via-the-kak-decomposition">
+<h2>More general cut two-qubit gates via the KAK decomposition<a class="headerlink" href="#more-general-cut-two-qubit-gates-via-the-kak-decomposition" title="Link to this heading">¶</a></h2>
+<p>We can formalize this notion of local unitary equivalence and expand it to all two-qubit gates using the KAK decomposition, given by</p>
+<div class="math-wrapper docutils container" id="equation-eq-kak">
+<div class="math notranslate nohighlight" id="equation-eq-kak">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-kak" title="Link to this equation">¶</a></span>\[U = (V_1 \otimes V_2) \exp \left[ i \left( \theta_x \, X \otimes X + \theta_y \, Y \otimes Y + \theta_z \, Z \otimes Z \right) \right] (V_3 \otimes V_4) ,\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(V_1\)</span>, <span class="math notranslate nohighlight">\(V_2\)</span>, <span class="math notranslate nohighlight">\(V_3\)</span>, and <span class="math notranslate nohighlight">\(V_4\)</span> are local, single-qubit operations, and the two-qubit portion of the interaction is parametrized entirely by <span class="math notranslate nohighlight">\(\vec{\theta} = (\theta_x, \theta_y, \theta_z)\)</span>.  By convention, we have chosen <span class="math notranslate nohighlight">\(\vec{\theta}\)</span> to be in the “Weyl chamber” restricted by <span class="math notranslate nohighlight">\(\pi/4 \geq \theta_x \geq \theta_y \geq | \theta_z | \geq 0\)</span> [<a class="reference external" href="https://arxiv.org/abs/2312.11638">6</a>].
+For more information on the KAK decomposition, see Ref. [<a class="reference external" href="https://arxiv.org/abs/quant-ph/0209120">7</a>].</p>
+<p>The code that generates subexperiments from the KAK decomposition currently follows Ref. [<a class="reference external" href="https://arxiv.org/abs/2006.11174">3</a>], which is now known to be non-optimal.  A provably optimal method has been presented in Ref. [<a class="reference external" href="https://arxiv.org/abs/2312.11638">6</a>], but this newer method has not yet been implemented in this package (see issue <a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting/issues/531">#531</a>).</p>
+</section>
+<section id="wire-cutting-phrased-as-a-two-qubit-move-operation">
+<span id="wire-cutting-as-move"></span><h2>Wire cutting phrased as a two-qubit <a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> operation<a class="headerlink" href="#wire-cutting-phrased-as-a-two-qubit-move-operation" title="Link to this heading">¶</a></h2>
+<p>A wire cut is represented fundamentally by this package as a two-qubit <a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> instruction, which is defined as a reset of the second qubit followed by a swap of both qubits.  Equivalently, the operation is defined as transferring the state of the first qubit wire to the second qubit wire, while simultaneously discarding the state of the second qubit wire (the first qubit ends up in state <span class="math notranslate nohighlight">\(\lvert 0 \rangle\)</span>).</p>
+<p>We have chosen to represent wire cuts in this way primarily because it is consistent with the way one must treat wire cuts when acting on physical qubits: for instance, a wire cut might take the state of physical qubit <span class="math notranslate nohighlight">\(n\)</span> and continue it as physical qubit <span class="math notranslate nohighlight">\(m\)</span> after the cut.  Our choice also has the benefit of allowing us to think of “instruction cutting” as a unified framework for considering both wire cuts and gate cuts in the same formalism, being that a wire cut is just a cut <a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> instruction.</p>
+<p>More information on this formalism is given in Sec. 3 of Ref. [<a class="reference external" href="https://arxiv.org/abs/2302.03366">4</a>]</p>
+<p>If you prefer to place cut wires abstractly on a single qubit wire, please see the <a class="reference internal" href="../how-tos/how_to_specify_cut_wires.html"><span class="doc">how-to guide on placing wire cuts using a single-qubit instruction</span></a>, which explains how to use the <a class="reference internal" href="../stubs/qiskit_addon_cutting.cut_wires.html#qiskit_addon_cutting.cut_wires" title="qiskit_addon_cutting.cut_wires"><code class="xref py py-func docutils literal notranslate"><span class="pre">cut_wires()</span></code></a> function to convert a circuit with <a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html#qiskit_addon_cutting.instructions.CutWire" title="qiskit_addon_cutting.instructions.CutWire"><code class="xref py py-class docutils literal notranslate"><span class="pre">CutWire</span></code></a> instructions to a circuit with <a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a>s on additional qubits.</p>
+</section>
+<section id="sample-weights-in-the-qiskit-addon-for-circuit-cutting">
+<h2>Sample weights in the Qiskit addon for circuit cutting<a class="headerlink" href="#sample-weights-in-the-qiskit-addon-for-circuit-cutting" title="Link to this heading">¶</a></h2>
+<p>In this package, the number of samples taken from the distribution is generally controlled by a <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> argument, and each sample has an associated weight which is used during expectation value reconstruction. Each weight with absolute value above a threshold of 1 / <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> will be evaluated exactly.  The remaining low-probability elements – those in the tail of the distribution – will then be sampled, resulting in at most <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> unique weights. Setting <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> to infinity indicates that all weights should be generated rigorously, rather than by sampling from the distribution.</p>
+<p>Much of the circuit cutting literature describes a process where we sample from the distribution, take a single shot, then sample from the distribution again and repeat; however, this is not feasible in practice, so we instead perform all sampling upfront.  For now, because of limitations in version 1 of the Qiskit primitives, we take a fixed number of shots for each considered subexperiment and send the subexperiments to the backend(s) in batches. During reconstruction, each subexperiment contributes to the final result with proportion equal to its weight.  One must ensure the number of shots taken is sufficient for the heaviest weighted subexperiment.  In the future, we plan to support passing an individual <code class="docutils literal notranslate"><span class="pre">shots</span></code> count with each subexperiment to Qiskit Runtime, so that each subexperiment will be run with a number of shots proportional to that subexperiment’s weight in the final result (see issue <a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting/issues/532">#532</a>).  This per-experiment shots count is a new feature enabled by version 2 of the Qiskit primitives.</p>
+</section>
+<section id="sampling-overhead-reference-table">
+<h2>Sampling overhead reference table<a class="headerlink" href="#sampling-overhead-reference-table" title="Link to this heading">¶</a></h2>
+<p>The below table provides the sampling overhead factor for a variety of two-qubit instructions, provided that only a single instruction is cut.</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Instruction(s)</p></th>
+<th class="head"><p>KAK decomposition angles</p></th>
+<th class="head"><p>Sampling overhead factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSdgGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSdgGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CSXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSXGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((\pi/8, 0, 0)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(3+2\sqrt{2} \approx 5.828\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CXGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CYGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CZGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CHGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CHGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.ECRGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ECRGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((\pi/4, 0, 0)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(3^2=9\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.iSwapGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">iSwapGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.DCXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCXGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((\pi/4, \pi/4, 0)\)</span></p></td>
+<td rowspan="2"><p><span class="math notranslate nohighlight">\(7^2=49\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.SwapGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((\pi/4,\pi/4,\pi/4)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RXXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RXXGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RYYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RYYGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.RZXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RZXGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((|\theta/2|, 0, 0)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\left[1 + 2 \left|\sin(\theta)\right| \right]^2\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRXGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRXGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRYGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CRZGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CRZGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.CPhaseGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPhaseGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((|\theta/4|, 0, 0)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\left[1 + 2 \left|\sin(\theta/2)\right| \right]^2\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.XXPlusYYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">XXPlusYYGate</span></code></a>,
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.XXMinusYYGate" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">XXMinusYYGate</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\((|\theta/4|,|\theta/4|,0)\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\left[1+4\left|\sin(\theta/2)\right|+2\sin^2(\theta/2)\right]^2\)</span>
+(independent of <span class="math notranslate nohighlight">\(\beta\)</span> parameter)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> (cut wire) without classical
+communication (i.e., in the LO setting)</p></td>
+<td><p>not applicable</p></td>
+<td><p><span class="math notranslate nohighlight">\(4^2=16\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="current-limitations">
+<h2>Current limitations<a class="headerlink" href="#current-limitations" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The workflow only allows taking the <em>expectation value</em> of observables with respect to a circuit.  Limited support for reconstructing an output probability distribution may be added to a future version of this package (see issue <a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting/issues/259">#259</a>).</p></li>
+<li><p>Due to current code limitations, some of the generated subexperiments are redundant.  This can result in more subexperiments than expected, particularly when using wire cutting.  This is tracked by issue <a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting/issues/262">#262</a>.</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<p>This module is based on the theory described in the
+following papers:</p>
+<p>[1] Christophe Piveteau, David Sutter, <em>Circuit knitting with classical communication</em>,
+<a class="reference external" href="https://arxiv.org/abs/2205.00016">https://arxiv.org/abs/2205.00016</a></p>
+<p>[2] Kosuke Mitarai, Keisuke Fujii, <em>Constructing a virtual two-qubit gate by sampling
+single-qubit operations</em>,
+<a class="reference external" href="https://arxiv.org/abs/1909.07534">https://arxiv.org/abs/1909.07534</a></p>
+<p>[3] Kosuke Mitarai, Keisuke Fujii, <em>Overhead for simulating a non-local channel with local channels by quasiprobability sampling</em>,
+<a class="reference external" href="https://arxiv.org/abs/2006.11174">https://arxiv.org/abs/2006.11174</a></p>
+<p>[4] Lukas Brenner, Christophe Piveteau, David Sutter, <em>Optimal wire cutting with
+classical communication</em>,
+<a class="reference external" href="https://arxiv.org/abs/2302.03366">https://arxiv.org/abs/2302.03366</a></p>
+<p>[5] K. Temme, S. Bravyi, and J. M. Gambetta, <em>Error mitigation for short-depth quantum circuits</em>,
+<a class="reference external" href="https://arxiv.org/abs/1612.02058">https://arxiv.org/abs/1612.02058</a></p>
+<p>[6] Lukas Schmitt, Christophe Piveteau, David Sutter, <em>Cutting circuits with multiple two-qubit unitaries</em>,
+<a class="reference external" href="https://arxiv.org/abs/2312.11638">https://arxiv.org/abs/2312.11638</a></p>
+<p>[7] Jun Zhang, Jiri Vala, K. Birgitta Whaley, Shankar Sastry, <em>A geometric theory of non-local two-qubit operations</em>,
+<a class="reference external" href="https://arxiv.org/abs/quant-ph/0209120">https://arxiv.org/abs/quant-ph/0209120</a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../how-tos/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">How-To Guides</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../tutorials/04_automatic_cut_finding.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Automatically find cuts</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/Qiskit/qiskit-addon-cutting" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Explanatory material</a><ul>
+<li><a class="reference internal" href="#overview-of-circuit-cutting">Overview of circuit cutting</a></li>
+<li><a class="reference internal" href="#key-terms">Key terms</a></li>
+<li><a class="reference internal" href="#circuit-cutting-as-a-quasiprobability-decomposition-qpd">Circuit cutting as a quasiprobability decomposition (QPD)</a></li>
+<li><a class="reference internal" href="#an-example-cutting-a-rzzgate">An example: cutting a <code class="xref py py-class docutils literal notranslate"><span class="pre">RZZGate</span></code></a></li>
+<li><a class="reference internal" href="#more-general-cut-two-qubit-gates-via-the-kak-decomposition">More general cut two-qubit gates via the KAK decomposition</a></li>
+<li><a class="reference internal" href="#wire-cutting-phrased-as-a-two-qubit-move-operation">Wire cutting phrased as a two-qubit <code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code> operation</a></li>
+<li><a class="reference internal" href="#sample-weights-in-the-qiskit-addon-for-circuit-cutting">Sample weights in the Qiskit addon for circuit cutting</a></li>
+<li><a class="reference internal" href="#sampling-overhead-reference-table">Sampling overhead reference table</a></li>
+<li><a class="reference internal" href="#current-limitations">Current limitations</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
