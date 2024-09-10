@@ -1,0 +1,10 @@
+---
+deprecations:
+  - |
+    The ``circuit-knitting-toolbox`` package has been deprecated, and
+    no further releases are expected to be made.  Users are encouraged
+    to migrate to the ``qiskit-addon-cutting`` package and to update
+    their import locations as follows:
+
+    - ``circuit_knitting.cutting`` -> ``qiskit_addon_cutting``
+    - ``circuit_knitting.utils`` -> ``qiskit_addon_cutting.utils``
