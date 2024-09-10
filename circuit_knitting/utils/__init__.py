@@ -48,3 +48,14 @@ Transpiler passes (:mod:`circuit_knitting.utils.transpiler_passes`)
 
 .. automodule:: circuit_knitting.utils.transpiler_passes
 """
+
+from warnings import warn
+
+warn(
+    "The `circuit_knitting.utils` import location has been deprecated and "
+    "has been moved to `qiskit_addon_cutting.utils` in the "
+    "qiskit-addon-cutting package.  Users are encouraged to migrate to the "
+    "new package name and import locations to receive further updates.",
+    category=DeprecationWarning,
+    stacklevel=1,
+)

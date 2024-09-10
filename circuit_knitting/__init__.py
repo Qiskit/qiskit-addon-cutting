@@ -10,3 +10,14 @@
 # that they have been altered from the originals.
 
 """Main Circuit Knitting Toolbox public functionality."""
+
+from warnings import warn
+
+warn(
+    "The circuit-knitting-toolbox package has been deprecated upon its final "
+    "release, v0.8.0.  It has been renamed to qiskit-addon-cutting.  "
+    "Users are encouraged to migrate to the new package name and import "
+    "locations in order to receive further updates.",
+    category=DeprecationWarning,
+    stacklevel=1,
+)
