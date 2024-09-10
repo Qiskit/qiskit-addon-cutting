@@ -1,0 +1,6 @@
+---
+prelude: |
+
+  This is the final release of the ``circuit-knitting-toolbox``
+  package.  Users are encouraged to migrate to
+  ``qiskit-addon-cutting`` to receive further updates.
