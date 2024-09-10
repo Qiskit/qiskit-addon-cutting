@@ -1,0 +1,4 @@
+/* Disable highlighting of BibTeX background */
+.highlight .s {
+    background-color: transparent;
+}
