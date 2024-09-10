@@ -1,5 +1,5 @@
 ---
-deprecations:
+upgrade:
   - |
     The ``circuit-knitting-toolbox`` package has been deprecated, and
     no further releases are expected to be made.  Users are encouraged
