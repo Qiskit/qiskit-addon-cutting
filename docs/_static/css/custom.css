@@ -1,0 +1,4 @@
+/* Disable backgrounds in code highlighting, which look especially bad in dark mode. */
+.highlight * {
+    background-color: transparent !important;
+}
