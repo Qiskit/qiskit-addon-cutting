@@ -18,5 +18,5 @@ other:
     :class:`~qiskit.quantum_info.Pauli` observables.
   - |
     The `circuit cutting explanation
-    <./circuit_cutting/explanation/index.rst>`__ document has been
+    <./explanation/index.rst>`__ document has been
     expanded significantly.

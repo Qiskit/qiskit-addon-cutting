@@ -1,8 +1,8 @@
-# This file exists so users can easily get started with the Circuit
-# Knitting Toolbox in a container using Docker Compose.
+# This file exists so users can easily get started with this package
+# in a container using Docker Compose.
 #
 # Instructions are available at:
-# https://qiskit-extensions.github.io/circuit-knitting-toolbox/install.html#option-3-use-within-docker
+# https://qiskit.github.io/qiskit-addon-cutting/install.html#option-3-use-within-docker
 
 services:
   notebook:
@@ -14,7 +14,7 @@ services:
     ports:
       - 8888:8888
     volumes:
-      - circuit-knitting-toolbox:/home/jovyan/persistent-volume
+      - qiskit-addon-cutting:/home/jovyan/persistent-volume
 
 volumes:
-  circuit-knitting-toolbox:
+  qiskit-addon-cutting:

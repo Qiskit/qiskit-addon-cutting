@@ -183,7 +183,7 @@ def test_sampler_with_identity_subobservable(sampler, is_exact_sampler):
     - ``Sampler`` does not blow up (Issue #422); and
     - ``ExactSampler`` returns correct results
 
-    This is related to https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/422.
+    This is related to https://github.com/Qiskit/qiskit-addon-cutting/issues/422.
     """
     # Create a circuit to cut
     qc = QuantumCircuit(3)

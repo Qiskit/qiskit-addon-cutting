@@ -1,5 +1,5 @@
-Circuit Cutting Tutorials
--------------------------
+Tutorials
+---------
 
 - `Tutorial 1 <01_gate_cutting_to_reduce_circuit_width.ipynb>`__:
   Separate sets of qubits by cutting nonlocal gates.
