@@ -1,8 +1,8 @@
 .. _circuit cutting explanation:
 
-###################################################
-Explanatory material for the circuit cutting module
-###################################################
+####################
+Explanatory material
+####################
 
 Overview of circuit cutting
 ---------------------------
@@ -20,7 +20,7 @@ Circuit cutting as a quasiprobability decomposition (QPD)
 ---------------------------------------------------------
 Quasiprobability decomposition is a technique which can be used to simulate quantum circuit executions that go beyond the actual capabilities of current quantum hardware while using that same hardware.  It forms the basis of many error mitigation techniques, which allow simulating a noise-free quantum computer using a noisy one.  Circuit cutting techniques, which allow simulating a quantum circuit using fewer qubits than would otherwise be necessary, can also be phrased in terms of a quasiprobability decomposition.  No matter the goal, the cost of the quasiprobability decomposition is an exponential overhead in the number of circuit executions which must be performed.  In certain cases, this tradeoff is worth it, because it can allow the estimation of quantities that would otherwise be impossible on today's hardware.
 
-There are two types of cuts: gate cuts and wire cuts.  Gate cuts, also known as "space-like" cuts, exist when the cut goes through a gate operating on two (or more) qubits.  Wire cuts, also known as "time-like" cuts, are direct cuts through a qubit wire, essentially a single-qubit identity gate that has been cut into two pieces.  In CKT, a wire cut is represented by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit; see :ref:`wire cutting as move`, below.
+There are two types of cuts: gate cuts and wire cuts.  Gate cuts, also known as "space-like" cuts, exist when the cut goes through a gate operating on two (or more) qubits.  Wire cuts, also known as "time-like" cuts, are direct cuts through a qubit wire, essentially a single-qubit identity gate that has been cut into two pieces.  In this package, a wire cut is represented by introducing a new qubit into the circuit and moving remaining operations after the cut identity gate to the new qubit; see :ref:`wire cutting as move`, below.
 
 There are `three settings <https://research.ibm.com/blog/circuit-knitting-with-classical-communication>`__ to consider for circuit cutting.  The first is where only local operations (LO) [i.e., local *quantum* operations] are available.  The other settings introduce classical communication between the circuit executions, which is known in the quantum information literature as LOCC, for `local operations and classical communication <https://en.wikipedia.org/wiki/LOCC>`__.  The LOCC can be either near-time, one-directional communication between the circuit executions (the second setting), or real-time, bi-directional communication (the third setting).
 
@@ -29,7 +29,7 @@ The sampling overhead is the factor by which the overall number of shots must in
 The overhead of a cut gate depends on which gate is cut; see the final appendix of [`1 <https://arxiv.org/abs/2205.00016>`__] for details.
 For instance, a single cut CNOT gate incurs a sampling overhead of 9 [`2 <https://arxiv.org/abs/1909.07534>`__,\ `6 <https://arxiv.org/abs/2312.11638>`__].
 A circuit with :math:`n` wire cuts incurs a sampling overhead of O(:math:`16^n`) when classical communication is not available (LO setting); this is reduced to O(:math:`4^n`) when classical communication is available (LOCC setting) [`4 <https://arxiv.org/abs/2302.03366>`__].
-However, wire cutting with classical communication (LOCC) is not yet supported in CKT (see issue `#264 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/264>`__).
+However, wire cutting with classical communication (LOCC) is not yet supported by this package (see issue `#264 <https://github.com/Qiskit/qiskit-addon-cutting/issues/264>`__).
 
 The QPD can be given explicitly as follows:
 
@@ -121,14 +121,14 @@ We can formalize this notion of local unitary equivalence and expand it to all t
 where :math:`V_1`, :math:`V_2`, :math:`V_3`, and :math:`V_4` are local, single-qubit operations, and the two-qubit portion of the interaction is parametrized entirely by :math:`\vec{\theta} = (\theta_x, \theta_y, \theta_z)`.  By convention, we have chosen :math:`\vec{\theta}` to be in the "Weyl chamber" restricted by :math:`\pi/4 \geq \theta_x \geq \theta_y \geq | \theta_z | \geq 0` [`6 <https://arxiv.org/abs/2312.11638>`__].
 For more information on the KAK decomposition, see Ref. [`7 <https://arxiv.org/abs/quant-ph/0209120>`__].
 
-The code that generates subexperiments from the KAK decomposition currently follows Ref. [`3 <https://arxiv.org/abs/2006.11174>`__], which is now known to be non-optimal.  A provably optimal method has been presented in Ref. [`6 <https://arxiv.org/abs/2312.11638>`__], but this newer method has not yet been implemented in CKT (see issue `#531 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/531>`__).
+The code that generates subexperiments from the KAK decomposition currently follows Ref. [`3 <https://arxiv.org/abs/2006.11174>`__], which is now known to be non-optimal.  A provably optimal method has been presented in Ref. [`6 <https://arxiv.org/abs/2312.11638>`__], but this newer method has not yet been implemented in this package (see issue `#531 <https://github.com/Qiskit/qiskit-addon-cutting/issues/531>`__).
 
 .. _wire cutting as move:
 
 Wire cutting phrased as a two-qubit :class:`.Move` operation
 ------------------------------------------------------------
 
-A wire cut is represented fundamentally in CKT as a two-qubit :class:`.Move` instruction, which is defined as a reset of the second qubit followed by a swap of both qubits.  Equivalently, the operation is defined as transferring the state of the first qubit wire to the second qubit wire, while simultaneously discarding the state of the second qubit wire (the first qubit ends up in state :math:`\lvert 0 \rangle`).
+A wire cut is represented fundamentally by this package as a two-qubit :class:`.Move` instruction, which is defined as a reset of the second qubit followed by a swap of both qubits.  Equivalently, the operation is defined as transferring the state of the first qubit wire to the second qubit wire, while simultaneously discarding the state of the second qubit wire (the first qubit ends up in state :math:`\lvert 0 \rangle`).
 
 We have chosen to represent wire cuts in this way primarily because it is consistent with the way one must treat wire cuts when acting on physical qubits: for instance, a wire cut might take the state of physical qubit :math:`n` and continue it as physical qubit :math:`m` after the cut.  Our choice also has the benefit of allowing us to think of "instruction cutting" as a unified framework for considering both wire cuts and gate cuts in the same formalism, being that a wire cut is just a cut :class:`.Move` instruction.
 
@@ -136,11 +136,11 @@ More information on this formalism is given in Sec. 3 of Ref. [`4 <https://arxiv
 
 If you prefer to place cut wires abstractly on a single qubit wire, please see the `how-to guide on placing wire cuts using a single-qubit instruction <../how-tos/how_to_specify_cut_wires.ipynb>`__, which explains how to use the :func:`.cut_wires` function to convert a circuit with :class:`.CutWire` instructions to a circuit with :class:`.Move`\ s on additional qubits.
 
-Sample weights in CKT
----------------------
-In CKT, the number of samples taken from the distribution is generally controlled by a ``num_samples`` argument, and each sample has an associated weight which is used during expectation value reconstruction. Each weight with absolute value above a threshold of 1 / ``num_samples`` will be evaluated exactly.  The remaining low-probability elements -- those in the tail of the distribution -- will then be sampled, resulting in at most ``num_samples`` unique weights. Setting ``num_samples`` to infinity indicates that all weights should be generated rigorously, rather than by sampling from the distribution.
+Sample weights in the Qiskit addon for circuit cutting
+------------------------------------------------------
+In this package, the number of samples taken from the distribution is generally controlled by a ``num_samples`` argument, and each sample has an associated weight which is used during expectation value reconstruction. Each weight with absolute value above a threshold of 1 / ``num_samples`` will be evaluated exactly.  The remaining low-probability elements -- those in the tail of the distribution -- will then be sampled, resulting in at most ``num_samples`` unique weights. Setting ``num_samples`` to infinity indicates that all weights should be generated rigorously, rather than by sampling from the distribution.
 
-Much of the circuit cutting literature describes a process where we sample from the distribution, take a single shot, then sample from the distribution again and repeat; however, this is not feasible in practice, so we instead perform all sampling upfront.  For now, because of limitations in version 1 of the Qiskit primitives, we take a fixed number of shots for each considered subexperiment and send the subexperiments to the backend(s) in batches. During reconstruction, each subexperiment contributes to the final result with proportion equal to its weight.  One must ensure the number of shots taken is sufficient for the heaviest weighted subexperiment.  In the future, we plan to support passing an individual ``shots`` count with each subexperiment to Qiskit Runtime, so that each subexperiment will be run with a number of shots proportional to that subexperiment's weight in the final result (see issue `#532 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/532>`__).  This per-experiment shots count is a new feature enabled by version 2 of the Qiskit primitives.
+Much of the circuit cutting literature describes a process where we sample from the distribution, take a single shot, then sample from the distribution again and repeat; however, this is not feasible in practice, so we instead perform all sampling upfront.  For now, because of limitations in version 1 of the Qiskit primitives, we take a fixed number of shots for each considered subexperiment and send the subexperiments to the backend(s) in batches. During reconstruction, each subexperiment contributes to the final result with proportion equal to its weight.  One must ensure the number of shots taken is sufficient for the heaviest weighted subexperiment.  In the future, we plan to support passing an individual ``shots`` count with each subexperiment to Qiskit Runtime, so that each subexperiment will be run with a number of shots proportional to that subexperiment's weight in the final result (see issue `#532 <https://github.com/Qiskit/qiskit-addon-cutting/issues/532>`__).  This per-experiment shots count is a new feature enabled by version 2 of the Qiskit primitives.
 
 Sampling overhead reference table
 ---------------------------------
@@ -184,8 +184,8 @@ The below table provides the sampling overhead factor for a variety of two-qubit
 
 Current limitations
 -------------------
-* The workflow only allows taking the *expectation value* of observables with respect to a circuit.  Limited support for reconstructing an output probability distribution may be added to a future version of CKT (see issue `#259 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/259>`__).
-* Due to current code limitations, some of the generated subexperiments are redundant.  This can result in more subexperiments than expected, particularly when using wire cutting.  This is tracked by issue `#262 <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/issues/262>`__.
+* The workflow only allows taking the *expectation value* of observables with respect to a circuit.  Limited support for reconstructing an output probability distribution may be added to a future version of this package (see issue `#259 <https://github.com/Qiskit/qiskit-addon-cutting/issues/259>`__).
+* Due to current code limitations, some of the generated subexperiments are redundant.  This can result in more subexperiments than expected, particularly when using wire cutting.  This is tracked by issue `#262 <https://github.com/Qiskit/qiskit-addon-cutting/issues/262>`__.
 
 References
 ----------

@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Pytest configuration for Circuit Knitting Toolbox"""
+"""Pytest configuration for the Qiskit addon for circuit cutting"""
 
 import pytest
 

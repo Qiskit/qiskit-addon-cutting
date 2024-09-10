@@ -324,7 +324,7 @@ class SimpleGateList(CircuitInterface):
     ) -> str:
         """Return a string that maps qubits/wires in the output circuit to subcircuits.
 
-        This mapping is done per the Circuit Knitting Toolbox convention. This
+        This mapping is done per this package's convention. This
         method only works with mappings to numeric qubit/wire names.
         """
         wire_map = self.make_wire_mapping(name_mapping)
