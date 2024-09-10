@@ -52,7 +52,7 @@ jobs:
           name: ckt_html_docs
           path: ./artifact
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.7' }}
+        if: ${{ github.ref == 'refs/heads/stable/0.9' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qiskit-addon-cutting"
-version = "0.9.0.dev"
+version = "0.9.0"
 description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
 readme = "README.md"
 license = {file = "LICENSE.txt"}
