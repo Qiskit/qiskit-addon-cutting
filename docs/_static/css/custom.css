@@ -1,4 +1,4 @@
-/* Disable highlighting of BibTeX background */
-.highlight .s {
-    background-color: transparent;
+/* Disable backgrounds in code highlighting, which look especially bad in dark mode. */
+.highlight * {
+    background-color: transparent !important;
 }
