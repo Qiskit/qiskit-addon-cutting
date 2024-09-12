@@ -38,6 +38,10 @@ class PartitionedCuttingProblem(NamedTuple):
     subobservables: dict[Hashable, PauliList] | None = None
 
 
+def foo():
+    return 42
+
+
 def partition_circuit_qubits(
     circuit: QuantumCircuit, partition_labels: Sequence[Hashable], inplace: bool = False
 ) -> QuantumCircuit:
