@@ -176,7 +176,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -206,15 +206,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-1:-Map">Step 1: Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-2:-Optimize">Step 2: Optimize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-3:-Execute">Step 3: Execute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-4:-Post-process">Step 4: Post-process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Automatically find cuts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-1:-Map">Step 1: Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-2:-Optimize">Step 2: Optimize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanatory Material</a></li>
@@ -294,7 +288,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -302,11 +296,10 @@
         <article role="main" id="furo-main-content">
           <section id="Automatically-find-cuts">
 <h1>Automatically find cuts<a class="headerlink" href="#Automatically-find-cuts" title="Link to this heading">¶</a></h1>
-</section>
 <section id="Step-1:-Map">
-<h1>Step 1: Map<a class="headerlink" href="#Step-1:-Map" title="Link to this heading">¶</a></h1>
+<h2>Step 1: Map<a class="headerlink" href="#Step-1:-Map" title="Link to this heading">¶</a></h2>
 <section id="Create-a-circuit-and-observables">
-<h2>Create a circuit and observables<a class="headerlink" href="#Create-a-circuit-and-observables" title="Link to this heading">¶</a></h2>
+<h3>Create a circuit and observables<a class="headerlink" href="#Create-a-circuit-and-observables" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -334,9 +327,9 @@
 </section>
 </section>
 <section id="Step-2:-Optimize">
-<h1>Step 2: Optimize<a class="headerlink" href="#Step-2:-Optimize" title="Link to this heading">¶</a></h1>
+<h2>Step 2: Optimize<a class="headerlink" href="#Step-2:-Optimize" title="Link to this heading">¶</a></h2>
 <section id="Find-cut-locations,-given-a-maximum-of-4-qubits-per-subcircuit.-This-circuit-can-be-separated-in-two-by-making-a-single-wire-cut-and-cutting-one-CRZGate">
-<h2>Find cut locations, given a maximum of 4 qubits per subcircuit. This circuit can be separated in two by making a single wire cut and cutting one <code class="docutils literal notranslate"><span class="pre">CRZGate</span></code><a class="headerlink" href="#Find-cut-locations,-given-a-maximum-of-4-qubits-per-subcircuit.-This-circuit-can-be-separated-in-two-by-making-a-single-wire-cut-and-cutting-one-CRZGate" title="Link to this heading">¶</a></h2>
+<h3>Find cut locations, given a maximum of 4 qubits per subcircuit. This circuit can be separated in two by making a single wire cut and cutting one <code class="docutils literal notranslate"><span class="pre">CRZGate</span></code><a class="headerlink" href="#Find-cut-locations,-given-a-maximum-of-4-qubits-per-subcircuit.-This-circuit-can-be-separated-in-two-by-making-a-single-wire-cut-and-cutting-one-CRZGate" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -392,7 +385,7 @@ Gate Cut at circuit instruction index 21
 </div>
 </section>
 <section id="Add-ancillas-for-wire-cuts-and-expand-the-observables-to-account-for-ancilla-qubits">
-<h2>Add ancillas for wire cuts and expand the observables to account for ancilla qubits<a class="headerlink" href="#Add-ancillas-for-wire-cuts-and-expand-the-observables-to-account-for-ancilla-qubits" title="Link to this heading">¶</a></h2>
+<h3>Add ancillas for wire cuts and expand the observables to account for ancilla qubits<a class="headerlink" href="#Add-ancillas-for-wire-cuts-and-expand-the-observables-to-account-for-ancilla-qubits" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -415,7 +408,7 @@ Gate Cut at circuit instruction index 21
 </div>
 </section>
 <section id="Partition-the-circuit-and-observables-into-subcircuits-and-subobservables.-Calculate-the-sampling-overhead-incurred-from-cutting-these-gates-and-wires.">
-<h2>Partition the circuit and observables into subcircuits and subobservables. Calculate the sampling overhead incurred from cutting these gates and wires.<a class="headerlink" href="#Partition-the-circuit-and-observables-into-subcircuits-and-subobservables.-Calculate-the-sampling-overhead-incurred-from-cutting-these-gates-and-wires." title="Link to this heading">¶</a></h2>
+<h3>Partition the circuit and observables into subcircuits and subobservables. Calculate the sampling overhead incurred from cutting these gates and wires.<a class="headerlink" href="#Partition-the-circuit-and-observables-into-subcircuits-and-subobservables.-Calculate-the-sampling-overhead-incurred-from-cutting-these-gates-and-wires." title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -493,7 +486,7 @@ Sampling overhead: 59776343.19975523
 </div>
 </section>
 <section id="Generate-the-experiments-to-run-on-the-backend.">
-<h2>Generate the experiments to run on the backend.<a class="headerlink" href="#Generate-the-experiments-to-run-on-the-backend." title="Link to this heading">¶</a></h2>
+<h3>Generate the experiments to run on the backend.<a class="headerlink" href="#Generate-the-experiments-to-run-on-the-backend." title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -518,6 +511,7 @@ Sampling overhead: 59776343.19975523
 </pre></div></div>
 </div>
 <p>Steps 3 and 4 of a <a class="reference external" href="https://docs.quantum.ibm.com/guides/intro-to-patterns">Qiskit pattern</a> can then be performed as in the preceding tutorials.</p>
+</section>
 </section>
 </section>
 
@@ -571,8 +565,37 @@ Sampling overhead: 59776343.19975523
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Automatically find cuts</a><ul>
+<li><a class="reference internal" href="#Step-1:-Map">Step 1: Map</a><ul>
+<li><a class="reference internal" href="#Create-a-circuit-and-observables">Create a circuit and observables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-2:-Optimize">Step 2: Optimize</a><ul>
+<li><a class="reference internal" href="#Find-cut-locations,-given-a-maximum-of-4-qubits-per-subcircuit.-This-circuit-can-be-separated-in-two-by-making-a-single-wire-cut-and-cutting-one-CRZGate">Find cut locations, given a maximum of 4 qubits per subcircuit. This circuit can be separated in two by making a single wire cut and cutting one <code class="docutils literal notranslate"><span class="pre">CRZGate</span></code></a></li>
+<li><a class="reference internal" href="#Add-ancillas-for-wire-cuts-and-expand-the-observables-to-account-for-ancilla-qubits">Add ancillas for wire cuts and expand the observables to account for ancilla qubits</a></li>
+<li><a class="reference internal" href="#Partition-the-circuit-and-observables-into-subcircuits-and-subobservables.-Calculate-the-sampling-overhead-incurred-from-cutting-these-gates-and-wires.">Partition the circuit and observables into subcircuits and subobservables. Calculate the sampling overhead incurred from cutting these gates and wires.</a></li>
+<li><a class="reference internal" href="#Generate-the-experiments-to-run-on-the-backend.">Generate the experiments to run on the backend.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

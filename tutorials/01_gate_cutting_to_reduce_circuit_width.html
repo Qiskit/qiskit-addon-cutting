@@ -176,7 +176,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -206,15 +206,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gate Cutting to Reduce Circuit Width</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-1:-Map">Step 1: Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-2:-Optimize">Step 2: Optimize</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-3:-Execute">Step 3: Execute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Step-4:-Post-process">Step 4: Post-process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html">Automatically find cuts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html#Step-1:-Map">Step 1: Map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html#Step-2:-Optimize">Step 2: Optimize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanatory Material</a></li>
@@ -294,7 +288,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -305,7 +299,7 @@
 <p>In this notebook, we will work through the steps of a <a class="reference external" href="https://docs.quantum.ibm.com/guides/intro-to-patterns">Qiskit pattern</a> while using <strong>circuit cutting</strong> to reduce the number of qubits in a circuit. We will cut gates to enable us to reconstruct the expectation value of a four-qubit circuit using only two-qubit experiments.</p>
 <p>These are the steps that we will take:</p>
 <ul class="simple">
-<li><p><strong>Step 1: Map problem to quantum circuits and operators:</strong></p>
+<li><p><strong>Step 1: Map problem to quantum circuits and operators</strong>:</p>
 <ul>
 <li><p>Map the hamiltonian onto a quantum circuit.</p></li>
 </ul>
@@ -316,7 +310,7 @@
 <li><p>Transpile the subexperiments for hardware.</p></li>
 </ul>
 </li>
-<li><p><strong>Step 3: Execute on target hardware:</strong></p>
+<li><p><strong>Step 3: Execute on target hardware</strong>:</p>
 <ul>
 <li><p>Run the subexperiments obtained in Step 2 using a <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> primitive.</p></li>
 </ul>
@@ -327,11 +321,10 @@
 </ul>
 </li>
 </ul>
-</section>
 <section id="Step-1:-Map">
-<h1>Step 1: Map<a class="headerlink" href="#Step-1:-Map" title="Link to this heading">¶</a></h1>
+<h2>Step 1: Map<a class="headerlink" href="#Step-1:-Map" title="Link to this heading">¶</a></h2>
 <section id="Create-a-circuit-to-cut">
-<h2>Create a circuit to cut<a class="headerlink" href="#Create-a-circuit-to-cut" title="Link to this heading">¶</a></h2>
+<h3>Create a circuit to cut<a class="headerlink" href="#Create-a-circuit-to-cut" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -355,7 +348,7 @@
 </div>
 </section>
 <section id="Specify-an-observable">
-<h2>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h2>
+<h3>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -369,9 +362,9 @@
 </section>
 </section>
 <section id="Step-2:-Optimize">
-<h1>Step 2: Optimize<a class="headerlink" href="#Step-2:-Optimize" title="Link to this heading">¶</a></h1>
+<h2>Step 2: Optimize<a class="headerlink" href="#Step-2:-Optimize" title="Link to this heading">¶</a></h2>
 <section id="Separate-the-circuit-and-observable-according-to-a-specified-qubit-partitioning">
-<h2>Separate the circuit and observable according to a specified qubit partitioning<a class="headerlink" href="#Separate-the-circuit-and-observable-according-to-a-specified-qubit-partitioning" title="Link to this heading">¶</a></h2>
+<h3>Separate the circuit and observable according to a specified qubit partitioning<a class="headerlink" href="#Separate-the-circuit-and-observable-according-to-a-specified-qubit-partitioning" title="Link to this heading">¶</a></h3>
 <p>Each label in <code class="docutils literal notranslate"><span class="pre">partition_labels</span></code> corresponds to the <code class="docutils literal notranslate"><span class="pre">circuit</span></code> qubit in the same index. Qubits sharing a common partition label will be grouped together, and non-local gates spanning more than one partition will be cut.</p>
 <p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">observables</span></code> kwarg to <code class="docutils literal notranslate"><span class="pre">partition_problem</span></code> is of type <code class="docutils literal notranslate"><span class="pre">PauliList</span></code>. Observable term coefficients and phases are ignored during decomposition of the problem and execution of the subexperiments. They may be re-applied during reconstruction of the expectation value.</p>
 <div class="nbinput nblast docutils container">
@@ -391,7 +384,7 @@
 </div>
 </section>
 <section id="Visualize-the-decomposed-problem">
-<h2>Visualize the decomposed problem<a class="headerlink" href="#Visualize-the-decomposed-problem" title="Link to this heading">¶</a></h2>
+<h3>Visualize the decomposed problem<a class="headerlink" href="#Visualize-the-decomposed-problem" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -444,7 +437,7 @@
 </div>
 </section>
 <section id="Calculate-the-sampling-overhead-for-the-chosen-cuts">
-<h2>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">¶</a></h2>
+<h3>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">¶</a></h3>
 <p>Here we cut two CNOT gates, resulting in a sampling overhead of <span class="math notranslate nohighlight">\(9^2\)</span>.</p>
 <p>For more on the sampling overhead incurred by circuit cutting, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <div class="nbinput docutils container">
@@ -467,7 +460,7 @@ Sampling overhead: 81.0
 </div>
 </section>
 <section id="Generate-the-subexperiments-to-run-on-the-backend">
-<h2>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">¶</a></h2>
+<h3>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">generate_cutting_experiments</span></code> accepts <code class="docutils literal notranslate"><span class="pre">circuits</span></code>/<code class="docutils literal notranslate"><span class="pre">observables</span></code> args as dictionaries mapping qubit partition labels to the respective <code class="docutils literal notranslate"><span class="pre">subcircuit</span></code>/<code class="docutils literal notranslate"><span class="pre">subobservables</span></code>.</p>
 <p>To simulate the expectation value of the full-sized circuit, many subexperiments are generated from the decomposed gates’ joint quasiprobability distribution and then executed on one or more backends. The number of samples taken from the distribution is controlled by <code class="docutils literal notranslate"><span class="pre">num_samples</span></code>, and one combined coefficient is given for each unique sample. For more information on how the coefficients are calculated, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <div class="nbinput nblast docutils container">
@@ -484,7 +477,7 @@ Sampling overhead: 81.0
 </div>
 </section>
 <section id="Choose-a-backend">
-<h2>Choose a backend<a class="headerlink" href="#Choose-a-backend" title="Link to this heading">¶</a></h2>
+<h3>Choose a backend<a class="headerlink" href="#Choose-a-backend" title="Link to this heading">¶</a></h3>
 <p>Here we are using a fake backend, which will result in Qiskit Runtime running in local mode (i.e., on a local simulator).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -498,7 +491,7 @@ Sampling overhead: 81.0
 </div>
 </section>
 <section id="Prepare-the-subexperiments-for-the-backend">
-<h2>Prepare the subexperiments for the backend<a class="headerlink" href="#Prepare-the-subexperiments-for-the-backend" title="Link to this heading">¶</a></h2>
+<h3>Prepare the subexperiments for the backend<a class="headerlink" href="#Prepare-the-subexperiments-for-the-backend" title="Link to this heading">¶</a></h3>
 <p>We must transpile the circuits with our backend as the target before submitting them to Qiskit Runtime.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -518,9 +511,9 @@ Sampling overhead: 81.0
 </section>
 </section>
 <section id="Step-3:-Execute">
-<h1>Step 3: Execute<a class="headerlink" href="#Step-3:-Execute" title="Link to this heading">¶</a></h1>
+<h2>Step 3: Execute<a class="headerlink" href="#Step-3:-Execute" title="Link to this heading">¶</a></h2>
 <section id="Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">
-<h2>Run the subexperiments using the Qiskit Runtime Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive" title="Link to this heading">¶</a></h2>
+<h3>Run the subexperiments using the Qiskit Runtime Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive" title="Link to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -550,9 +543,9 @@ Sampling overhead: 81.0
 </section>
 </section>
 <section id="Step-4:-Post-process">
-<h1>Step 4: Post-process<a class="headerlink" href="#Step-4:-Post-process" title="Link to this heading">¶</a></h1>
+<h2>Step 4: Post-process<a class="headerlink" href="#Step-4:-Post-process" title="Link to this heading">¶</a></h2>
 <section id="Reconstruct-the-expectation-value">
-<h2>Reconstruct the expectation value<a class="headerlink" href="#Reconstruct-the-expectation-value" title="Link to this heading">¶</a></h2>
+<h3>Reconstruct the expectation value<a class="headerlink" href="#Reconstruct-the-expectation-value" title="Link to this heading">¶</a></h3>
 <p>Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -574,7 +567,7 @@ Sampling overhead: 81.0
 </div>
 </section>
 <section id="Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable">
-<h2>Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h2>
+<h3>Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -597,12 +590,13 @@ Sampling overhead: 81.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.53441352
+Reconstructed expectation value: 0.57550114
 Exact expectation value: 0.56254612
-Error in estimation: -0.02813261
-Relative error in estimation: -0.05000942
+Error in estimation: 0.01295502
+Relative error in estimation: 0.02302926
 </pre></div></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -656,8 +650,49 @@ Relative error in estimation: -0.05000942
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Gate Cutting to Reduce Circuit Width</a><ul>
+<li><a class="reference internal" href="#Step-1:-Map">Step 1: Map</a><ul>
+<li><a class="reference internal" href="#Create-a-circuit-to-cut">Create a circuit to cut</a></li>
+<li><a class="reference internal" href="#Specify-an-observable">Specify an observable</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-2:-Optimize">Step 2: Optimize</a><ul>
+<li><a class="reference internal" href="#Separate-the-circuit-and-observable-according-to-a-specified-qubit-partitioning">Separate the circuit and observable according to a specified qubit partitioning</a></li>
+<li><a class="reference internal" href="#Visualize-the-decomposed-problem">Visualize the decomposed problem</a></li>
+<li><a class="reference internal" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts">Calculate the sampling overhead for the chosen cuts</a></li>
+<li><a class="reference internal" href="#Generate-the-subexperiments-to-run-on-the-backend">Generate the subexperiments to run on the backend</a></li>
+<li><a class="reference internal" href="#Choose-a-backend">Choose a backend</a></li>
+<li><a class="reference internal" href="#Prepare-the-subexperiments-for-the-backend">Prepare the subexperiments for the backend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-3:-Execute">Step 3: Execute</a><ul>
+<li><a class="reference internal" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">Run the subexperiments using the Qiskit Runtime Sampler primitive</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-4:-Post-process">Step 4: Post-process</a><ul>
+<li><a class="reference internal" href="#Reconstruct-the-expectation-value">Reconstruct the expectation value</a></li>
+<li><a class="reference internal" href="#Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable">Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
