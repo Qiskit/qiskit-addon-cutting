@@ -206,9 +206,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html#Step-1:-Map">Step 1: Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html#Step-2:-Optimize">Step 2: Optimize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html#Step-3:-Execute">Step 3: Execute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html#Step-4:-Post-process">Step 4: Post-process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/02_gate_cutting_to_reduce_circuit_depth.html">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html">Automatically find cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html#Step-1:-Map">Step 1: Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/04_automatic_cut_finding.html#Step-2:-Optimize">Step 2: Optimize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanatory Material</a></li>
@@ -529,12 +535,12 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reconstructed_expvals</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reconstructed_expval_terms</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span>
     <span class="n">coefficients</span><span class="p">,</span>
     <span class="n">subobservables</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">final_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
+<span class="n">reconstructed_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expval_terms</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -546,11 +552,11 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 <span class="n">exact_expval</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">qc_0</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="s2">&quot;cut_wire&quot;</span><span class="p">),</span> <span class="n">observable</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">reconstructed_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -560,10 +566,10 @@ PauliList([&#39;ZIIIIIIII&#39;, &#39;IIIZIIIII&#39;, &#39;IIIIIIIIZ&#39;])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 1.58763349
+Reconstructed expectation value: 1.60006839
 Exact expectation value: 1.59099026
-Error in estimation: -0.00335677
-Relative error in estimation: -0.00210986
+Error in estimation: 0.00907813
+Relative error in estimation: 0.00570596
 </pre></div></div>
 </div>
 </section>

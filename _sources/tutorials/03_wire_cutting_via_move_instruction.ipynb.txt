@@ -9,11 +9,17 @@
     "\n",
     "In this tutorial, we will reconstruct expectation values of a seven-qubit circuit by splitting it into two four-qubit circuits using wire cutting.\n",
     "\n",
-    "Like any circuit knitting technique, wire cutting can be described as three consecutive steps:\n",
+    "These are the steps that we will take in this [Qiskit pattern](https://docs.quantum.ibm.com/guides/intro-to-patterns):\n",
     "\n",
-    "- **cut** some wires in the circuit and possibly separate the circuit into subcircuits\n",
-    "- **execute** many sampled subexperiments using the Qiskit Sampler primitive\n",
-    "- **reconstruct** the expectation value of the full-sized circuit"
+    "- **Step 1: Map problem to quantum circuits and operators:**\n",
+    "    - Map the hamiltonian onto a quantum circuit.\n",
+    "- **Step 2: Optimize for target hardware** [_Uses the cutting addon_]:\n",
+    "    - <font color='#0F62FE'>Cut the circuit and observable.</font>\n",
+    "    - Transpile the subexperiments for hardware.\n",
+    "- **Step 3: Execute on target hardware:**\n",
+    "    - Run the subexperiments obtained in Step 2 using a `Sampler` primitive.\n",
+    "- **Step 4: Post-process results** [_Uses the cutting addon_]:\n",
+    "    - <font color='#0F62FE'>Combine the results of Step 3 to reconstruct the expectation value of the observable in question.</font>"
    ]
   },
   {
@@ -21,6 +27,8 @@
    "id": "ae63d837-a7f5-40a5-8186-f98076bb4cd9",
    "metadata": {},
    "source": [
+    "## Step 1: Map\n",
+    "\n",
     "### Create a circuit to cut\n",
     "\n",
     "First, we begin with a circuit inspired by Fig. 1(a) of [arXiv:2302.03366v1](https://arxiv.org/abs/2302.03366v1)."
@@ -108,6 +116,8 @@
    "id": "9f56b094-0c6f-456f-9641-1424395fc6bd",
    "metadata": {},
    "source": [
+    "## Step 2: Optimize\n",
+    "\n",
     "### Create a new circuit where `Move` instructions have been placed at the desired cut locations\n",
     "\n",
     "Given the above circuit, we would like to place two wire cuts on the middle qubit line, so that the circuit can separate into two circuits of four qubits each.  One way to do this is to manually place two-qubit `Move` instructions that move the state from one qubit wire to another.  A `Move` instruction is conceptually equivalent to a reset operation on the second qubit, followed by a SWAP gate.  The effect of this instruction is to transfer the state of the first (source) qubit to the second (detination) qubit, while discarding the incoming state of the second qubit.  For this to work as intended, it is important that the second (destination) qubit share no entanglement with the remainder of the system; otherwise, the reset operation will cause the state of the remainder of the system to be partially collapsed.\n",
@@ -387,6 +397,8 @@
    "id": "9578c64a-8087-4696-bb2b-ca53d45442ba",
    "metadata": {},
    "source": [
+    "## Step 3: Execute\n",
+    "\n",
     "### Run the subexperiments using the Qiskit Runtime Sampler primitive"
    ]
   },
@@ -434,7 +446,9 @@
    "id": "3f6e4eed-eff7-4e16-ad8d-8070011a555b",
    "metadata": {},
    "source": [
-    "### Reconstruct the expectation values\n",
+    "## Step 4: Post-process\n",
+    "\n",
+    "### Reconstruct the expectation value\n",
     "\n",
     "Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable."
    ]
@@ -448,12 +462,12 @@
    "source": [
     "from qiskit_addon_cutting import reconstruct_expectation_values\n",
     "\n",
-    "reconstructed_expvals = reconstruct_expectation_values(\n",
+    "reconstructed_expval_terms = reconstruct_expectation_values(\n",
     "    results,\n",
     "    coefficients,\n",
     "    subobservables,\n",
     ")\n",
-    "final_expval = np.dot(reconstructed_expvals, observable.coeffs)"
+    "reconstructed_expval = np.dot(reconstructed_expval_terms, observable.coeffs)"
    ]
   },
   {
@@ -461,7 +475,7 @@
    "id": "cdc793f2-3e2b-417b-b863-7b9d57b86a8f",
    "metadata": {},
    "source": [
-    "### Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable"
+    "### Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable"
    ]
   },
   {
@@ -486,11 +500,11 @@
     "\n",
     "estimator = EstimatorV2()\n",
     "exact_expval = estimator.run([(qc_0, observable)]).result()[0].data.evs\n",
-    "print(f\"Reconstructed expectation value: {np.real(np.round(final_expval, 8))}\")\n",
+    "print(f\"Reconstructed expectation value: {np.real(np.round(reconstructed_expval, 8))}\")\n",
     "print(f\"Exact expectation value: {np.round(exact_expval, 8)}\")\n",
-    "print(f\"Error in estimation: {np.real(np.round(final_expval-exact_expval, 8))}\")\n",
+    "print(f\"Error in estimation: {np.real(np.round(reconstructed_expval-exact_expval, 8))}\")\n",
     "print(\n",
-    "    f\"Relative error in estimation: {np.real(np.round((final_expval-exact_expval) / exact_expval, 8))}\"\n",
+    "    f\"Relative error in estimation: {np.real(np.round((reconstructed_expval-exact_expval) / exact_expval, 8))}\"\n",
     ")"
    ]
   }

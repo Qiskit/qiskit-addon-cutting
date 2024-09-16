@@ -7,13 +7,19 @@
    "source": [
     "# Gate Cutting to Reduce Circuit Depth\n",
     "\n",
-    "In this tutorial, we will simulate some expectation values on a circuit of a certain depth by cutting gates resulting in swap gates and executing subexperiments on shallower circuits.\n",
+    "In this tutorial, we will reduce a circuit's depth by cutting distant gates, avoiding the swap gates that would otherwise be introduced by routing.\n",
     "\n",
-    "Like any circuit knitting technique, gate cutting can be described as three consecutive steps:\n",
+    "These are the steps that we will take in this [Qiskit pattern](https://docs.quantum.ibm.com/guides/intro-to-patterns):\n",
     "\n",
-    "- **decompose** some non-local gates in the circuit and possibly separate the circuit into subcircuits\n",
-    "- **execute** many sampled subexperiments using the Qiskit Sampler primitive\n",
-    "- **reconstruct** the expectation value of the full-sized circuit"
+    "- **Step 1: Map problem to quantum circuits and operators:**\n",
+    "    - Map the hamiltonian onto a quantum circuit.\n",
+    "- **Step 2: Optimize for target hardware** [_Uses the cutting addon_]:\n",
+    "    - <font color='#0F62FE'>Cut the circuit and observable.</font>\n",
+    "    - Transpile the subexperiments for hardware.\n",
+    "- **Step 3: Execute on target hardware:**\n",
+    "    - Run the subexperiments obtained in Step 2 using a `Sampler` primitive.\n",
+    "- **Step 4: Post-process results** [_Uses the cutting addon_]:\n",
+    "    - <font color='#0F62FE'>Combine the results of Step 3 to reconstruct the expectation value of the observable in question.</font>"
    ]
   },
   {
@@ -21,6 +27,8 @@
    "id": "07f7f75d",
    "metadata": {},
    "source": [
+    "## Step 1: Map\n",
+    "\n",
     "### Create a circuit to run on the backend"
    ]
   },
@@ -75,6 +83,8 @@
    "id": "699105a3-903e-49d8-826b-cc8b9b85c9df",
    "metadata": {},
    "source": [
+    "## Step 2: Optimize\n",
+    "\n",
     "### Specify a backend\n",
     "\n",
     "You can provide either a fake backend or a hardware backend from Qiskit Runtime."
@@ -307,20 +317,38 @@
    "id": "fd9a126c",
    "metadata": {},
    "source": [
-    "### Prepare subexperiments for the backend and run them using the Qiskit Runtime Sampler primitive"
+    "### Prepare subexperiments for the backend"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "16968c09-13f0-499b-91d0-91b58f1ce6eb",
+   "id": "736a7d14-71b0-47a0-847d-4972ab886918",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Transpile the subeperiments to the backend's instruction set architecture (ISA)\n",
+    "isa_subexperiments = pass_manager.run(subexperiments)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "241fc5e5-d367-4a31-aa1f-424acdbbd8dd",
+   "metadata": {},
+   "source": [
+    "## Step 3: Execute\n",
+    "\n",
+    "### Run the subexperiments using the Qiskit Runtime Sampler primitive"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e4dcc97b-8336-4eb9-9cc0-0d9b87a287e3",
    "metadata": {},
    "outputs": [],
    "source": [
     "from qiskit_ibm_runtime import SamplerV2\n",
-    "\n",
-    "# Transpile the subeperiments to the backend's instruction set architecture (ISA)\n",
-    "isa_subexperiments = pass_manager.run(subexperiments)\n",
     "\n",
     "# Set up the Qiskit Runtime Sampler primitive.  For a fake backend, this will use a local simulator.\n",
     "sampler = SamplerV2(backend)\n",
@@ -345,7 +373,9 @@
    "id": "f04d9134-651b-446e-93f4-aa0281786200",
    "metadata": {},
    "source": [
-    "### Reconstruct the expectation values\n",
+    "## Step 4: Post-process\n",
+    "\n",
+    "### Reconstruct the expectation value\n",
     "\n",
     "Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable."
    ]
@@ -359,13 +389,13 @@
    "source": [
     "from qiskit_addon_cutting import reconstruct_expectation_values\n",
     "\n",
-    "reconstructed_expvals = reconstruct_expectation_values(\n",
+    "reconstructed_expval_terms = reconstruct_expectation_values(\n",
     "    results,\n",
     "    coefficients,\n",
     "    observable.paulis,\n",
     ")\n",
     "# Reconstruct final expectation value\n",
-    "final_expval = np.dot(reconstructed_expvals, observable.coeffs)"
+    "reconstructed_expval = np.dot(reconstructed_expval_terms, observable.coeffs)"
    ]
   },
   {
@@ -373,7 +403,7 @@
    "id": "3fc2327f",
    "metadata": {},
    "source": [
-    "### Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable"
+    "### Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable"
    ]
   },
   {
@@ -398,11 +428,11 @@
     "\n",
     "estimator = EstimatorV2()\n",
     "exact_expval = estimator.run([(circuit, observable)]).result()[0].data.evs\n",
-    "print(f\"Reconstructed expectation value: {np.real(np.round(final_expval, 8))}\")\n",
+    "print(f\"Reconstructed expectation value: {np.real(np.round(reconstructed_expval, 8))}\")\n",
     "print(f\"Exact expectation value: {np.round(exact_expval, 8)}\")\n",
-    "print(f\"Error in estimation: {np.real(np.round(final_expval-exact_expval, 8))}\")\n",
+    "print(f\"Error in estimation: {np.real(np.round(reconstructed_expval-exact_expval, 8))}\")\n",
     "print(\n",
-    "    f\"Relative error in estimation: {np.real(np.round((final_expval-exact_expval) / exact_expval, 8))}\"\n",
+    "    f\"Relative error in estimation: {np.real(np.round((reconstructed_expval-exact_expval) / exact_expval, 8))}\"\n",
     ")"
    ]
   }

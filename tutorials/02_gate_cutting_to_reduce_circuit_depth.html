@@ -206,9 +206,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation Instructions</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html">Gate Cutting to Reduce Circuit Width</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-1:-Map">Step 1: Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-2:-Optimize">Step 2: Optimize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-3:-Execute">Step 3: Execute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_gate_cutting_to_reduce_circuit_width.html#Step-4:-Post-process">Step 4: Post-process</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Gate Cutting to Reduce Circuit Depth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_wire_cutting_via_move_instruction.html">Wire Cutting Phrased as a Two-Qubit <code class="docutils literal notranslate"><span class="pre">Move</span></code> Instruction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html">Automatically find cuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html#Step-1:-Map">Step 1: Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_automatic_cut_finding.html#Step-2:-Optimize">Step 2: Optimize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../explanation/index.html">Explanatory Material</a></li>
@@ -296,15 +302,35 @@
         <article role="main" id="furo-main-content">
           <section id="Gate-Cutting-to-Reduce-Circuit-Depth">
 <h1>Gate Cutting to Reduce Circuit Depth<a class="headerlink" href="#Gate-Cutting-to-Reduce-Circuit-Depth" title="Link to this heading">¶</a></h1>
-<p>In this tutorial, we will simulate some expectation values on a circuit of a certain depth by cutting gates resulting in swap gates and executing subexperiments on shallower circuits.</p>
-<p>Like any circuit knitting technique, gate cutting can be described as three consecutive steps:</p>
+<p>In this tutorial, we will reduce a circuit’s depth by cutting distant gates, avoiding the swap gates that would otherwise be introduced by routing.</p>
+<p>These are the steps that we will take in this <a class="reference external" href="https://docs.quantum.ibm.com/guides/intro-to-patterns">Qiskit pattern</a>:</p>
 <ul class="simple">
-<li><p><strong>decompose</strong> some non-local gates in the circuit and possibly separate the circuit into subcircuits</p></li>
-<li><p><strong>execute</strong> many sampled subexperiments using the Qiskit Sampler primitive</p></li>
-<li><p><strong>reconstruct</strong> the expectation value of the full-sized circuit</p></li>
+<li><p><strong>Step 1: Map problem to quantum circuits and operators:</strong></p>
+<ul>
+<li><p>Map the hamiltonian onto a quantum circuit.</p></li>
 </ul>
+</li>
+<li><p><strong>Step 2: Optimize for target hardware</strong> [<em>Uses the cutting addon</em>]:</p>
+<ul>
+<li><p>Cut the circuit and observable.</p></li>
+<li><p>Transpile the subexperiments for hardware.</p></li>
+</ul>
+</li>
+<li><p><strong>Step 3: Execute on target hardware:</strong></p>
+<ul>
+<li><p>Run the subexperiments obtained in Step 2 using a <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> primitive.</p></li>
+</ul>
+</li>
+<li><p><strong>Step 4: Post-process results</strong> [<em>Uses the cutting addon</em>]:</p>
+<ul>
+<li><p>Combine the results of Step 3 to reconstruct the expectation value of the observable in question.</p></li>
+</ul>
+</li>
+</ul>
+<section id="Step-1:-Map">
+<h2>Step 1: Map<a class="headerlink" href="#Step-1:-Map" title="Link to this heading">¶</a></h2>
 <section id="Create-a-circuit-to-run-on-the-backend">
-<h2>Create a circuit to run on the backend<a class="headerlink" href="#Create-a-circuit-to-run-on-the-backend" title="Link to this heading">¶</a></h2>
+<h3>Create a circuit to run on the backend<a class="headerlink" href="#Create-a-circuit-to-run-on-the-backend" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -327,7 +353,7 @@
 </div>
 </section>
 <section id="Specify-an-observable">
-<h2>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h2>
+<h3>Specify an observable<a class="headerlink" href="#Specify-an-observable" title="Link to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -339,8 +365,11 @@
 </div>
 </div>
 </section>
+</section>
+<section id="Step-2:-Optimize">
+<h2>Step 2: Optimize<a class="headerlink" href="#Step-2:-Optimize" title="Link to this heading">¶</a></h2>
 <section id="Specify-a-backend">
-<h2>Specify a backend<a class="headerlink" href="#Specify-a-backend" title="Link to this heading">¶</a></h2>
+<h3>Specify a backend<a class="headerlink" href="#Specify-a-backend" title="Link to this heading">¶</a></h3>
 <p>You can provide either a fake backend or a hardware backend from Qiskit Runtime.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -354,7 +383,7 @@
 </div>
 </section>
 <section id="Transpile-the-circuit,-visualize-the-swaps,-and-note-the-depth">
-<h2>Transpile the circuit, visualize the swaps, and note the depth<a class="headerlink" href="#Transpile-the-circuit,-visualize-the-swaps,-and-note-the-depth" title="Link to this heading">¶</a></h2>
+<h3>Transpile the circuit, visualize the swaps, and note the depth<a class="headerlink" href="#Transpile-the-circuit,-visualize-the-swaps,-and-note-the-depth" title="Link to this heading">¶</a></h3>
 <p>We choose a layout that requires two swaps to execute the gates between qubits 3 and 0 and another two swaps to return the qubits to their initial positions.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -384,7 +413,7 @@ Transpiled circuit depth: 30
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3180/2612043398.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3208/2612043398.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   print(f&#34;Transpiled circuit depth: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;)
 </pre></div></div>
 </div>
@@ -406,7 +435,7 @@ Transpiled circuit depth: 30
 </div>
 </section>
 <section id="Replace-distant-gates-with-TwoQubitQPDGates-by-specifying-their-indices">
-<h2>Replace distant gates with <code class="docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s by specifying their indices<a class="headerlink" href="#Replace-distant-gates-with-TwoQubitQPDGates-by-specifying-their-indices" title="Link to this heading">¶</a></h2>
+<h3>Replace distant gates with <code class="docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s by specifying their indices<a class="headerlink" href="#Replace-distant-gates-with-TwoQubitQPDGates-by-specifying-their-indices" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">cut_gates</span></code> will replace the gates in the specified indices with <code class="docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s and also return a list of <code class="docutils literal notranslate"><span class="pre">QPDBasis</span></code> instances – one for each gate decomposition.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -438,7 +467,7 @@ Transpiled circuit depth: 30
 </div>
 </section>
 <section id="Generate-the-subexperiments-to-run-on-the-backend">
-<h2>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">¶</a></h2>
+<h3>Generate the subexperiments to run on the backend<a class="headerlink" href="#Generate-the-subexperiments-to-run-on-the-backend" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">generate_cutting_experiments</span></code> accepts a circuit containing <code class="docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code> instances and observables as a <code class="docutils literal notranslate"><span class="pre">PauliList</span></code>.</p>
 <p>To simulate the expectation value of the full-sized circuit, many subexperiments are generated from the decomposed gates’ joint quasiprobability distribution and then executed on one or more backends. The number of samples taken from the distribution is controlled by <code class="docutils literal notranslate"><span class="pre">num_samples</span></code>, and one combined coefficient is given for each unique sample. For more information on how the coefficients are calculated, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">observables</span></code> kwarg to <code class="docutils literal notranslate"><span class="pre">generate_cutting_experiments</span></code> is of type <code class="docutils literal notranslate"><span class="pre">PauliList</span></code>. Observable term coefficients and phases are ignored during decomposition of the problem and execution of the subexperiments. They may be re-applied during reconstruction of the expectation value.</p>
@@ -458,7 +487,7 @@ Transpiled circuit depth: 30
 </div>
 </section>
 <section id="Calculate-the-sampling-overhead-for-the-chosen-cuts">
-<h2>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">¶</a></h2>
+<h3>Calculate the sampling overhead for the chosen cuts<a class="headerlink" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts" title="Link to this heading">¶</a></h3>
 <p>Here we cut three CNOT gates, resulting in a sampling overhead of <span class="math notranslate nohighlight">\(9^3\)</span>.</p>
 <p>For more on the sampling overhead incurred by circuit cutting, refer to the <a class="reference internal" href="../explanation/index.html"><span class="doc">explanatory material</span></a>.</p>
 <div class="nbinput docutils container">
@@ -479,7 +508,7 @@ Sampling overhead: 729.0
 </div>
 </section>
 <section id="Demonstrate-that-the-QPD-subexperiments-will-be-shallower-after-cutting-distant-gates">
-<h2>Demonstrate that the QPD subexperiments will be shallower after cutting distant gates<a class="headerlink" href="#Demonstrate-that-the-QPD-subexperiments-will-be-shallower-after-cutting-distant-gates" title="Link to this heading">¶</a></h2>
+<h3>Demonstrate that the QPD subexperiments will be shallower after cutting distant gates<a class="headerlink" href="#Demonstrate-that-the-QPD-subexperiments-will-be-shallower-after-cutting-distant-gates" title="Link to this heading">¶</a></h3>
 <p>Here is an example of an arbitrarily chosen subexperiment generated from the QPD circuit. Its depth has been reduced by more than half. Many of these probabilistic subexperiments must be generated and evaluated in order to reconstruct an expectation value of the deeper circuit.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -512,9 +541,9 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3180/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3208/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;Original circuit depth after transpile: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
-/tmp/ipykernel_3180/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3208/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;QPD subexperiment depth after transpile: {transpiled_qpd_circuit.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
 </pre></div></div>
 </div>
@@ -527,16 +556,28 @@ QPD subexperiment depth after transpile: 7
 </div>
 </div>
 </section>
-<section id="Prepare-subexperiments-for-the-backend-and-run-them-using-the-Qiskit-Runtime-Sampler-primitive">
-<h2>Prepare subexperiments for the backend and run them using the Qiskit Runtime Sampler primitive<a class="headerlink" href="#Prepare-subexperiments-for-the-backend-and-run-them-using-the-Qiskit-Runtime-Sampler-primitive" title="Link to this heading">¶</a></h2>
+<section id="Prepare-subexperiments-for-the-backend">
+<h3>Prepare subexperiments for the backend<a class="headerlink" href="#Prepare-subexperiments-for-the-backend" title="Link to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span>
-
-<span class="c1"># Transpile the subeperiments to the backend&#39;s instruction set architecture (ISA)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transpile the subeperiments to the backend&#39;s instruction set architecture (ISA)</span>
 <span class="n">isa_subexperiments</span> <span class="o">=</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Step-3:-Execute">
+<h2>Step 3: Execute<a class="headerlink" href="#Step-3:-Execute" title="Link to this heading">¶</a></h2>
+<section id="Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">
+<h3>Run the subexperiments using the Qiskit Runtime Sampler primitive<a class="headerlink" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive" title="Link to this heading">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span>
 
 <span class="c1"># Set up the Qiskit Runtime Sampler primitive.  For a fake backend, this will use a local simulator.</span>
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">SamplerV2</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
@@ -547,7 +588,7 @@ QPD subexperiment depth after transpile: 7
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Retrieve the results</span>
@@ -556,41 +597,44 @@ QPD subexperiment depth after transpile: 7
 </div>
 </div>
 </section>
-<section id="Reconstruct-the-expectation-values">
-<h2>Reconstruct the expectation values<a class="headerlink" href="#Reconstruct-the-expectation-values" title="Link to this heading">¶</a></h2>
+</section>
+<section id="Step-4:-Post-process">
+<h2>Step 4: Post-process<a class="headerlink" href="#Step-4:-Post-process" title="Link to this heading">¶</a></h2>
+<section id="Reconstruct-the-expectation-value">
+<h3>Reconstruct the expectation value<a class="headerlink" href="#Reconstruct-the-expectation-value" title="Link to this heading">¶</a></h3>
 <p>Reconstruct expectation values for each observable term and combine them to reconstruct the expectation value for the original observable.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_addon_cutting</span> <span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
 
-<span class="n">reconstructed_expvals</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
+<span class="n">reconstructed_expval_terms</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span>
     <span class="n">coefficients</span><span class="p">,</span>
     <span class="n">observable</span><span class="o">.</span><span class="n">paulis</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="c1"># Reconstruct final expectation value</span>
-<span class="n">final_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expvals</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
+<span class="n">reconstructed_expval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">reconstructed_expval_terms</span><span class="p">,</span> <span class="n">observable</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable">
-<h2>Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h2>
+<section id="Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable">
+<h3>Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable<a class="headerlink" href="#Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable" title="Link to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">EstimatorV2</span>
 
 <span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">()</span>
 <span class="n">exact_expval</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">observable</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reconstructed expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exact expectation value: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reconstructed_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">final_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;Relative error in estimation: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">reconstructed_expval</span><span class="o">-</span><span class="n">exact_expval</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">exact_expval</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -600,12 +644,13 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.39257812
+Reconstructed expectation value: 0.71948242
 Exact expectation value: 0.50497603
-Error in estimation: -0.11239791
-Relative error in estimation: -0.22258068
+Error in estimation: 0.21450639
+Relative error in estimation: 0.42478529
 </pre></div></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -672,17 +717,30 @@ Relative error in estimation: -0.22258068
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Gate Cutting to Reduce Circuit Depth</a><ul>
+<li><a class="reference internal" href="#Step-1:-Map">Step 1: Map</a><ul>
 <li><a class="reference internal" href="#Create-a-circuit-to-run-on-the-backend">Create a circuit to run on the backend</a></li>
 <li><a class="reference internal" href="#Specify-an-observable">Specify an observable</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-2:-Optimize">Step 2: Optimize</a><ul>
 <li><a class="reference internal" href="#Specify-a-backend">Specify a backend</a></li>
 <li><a class="reference internal" href="#Transpile-the-circuit,-visualize-the-swaps,-and-note-the-depth">Transpile the circuit, visualize the swaps, and note the depth</a></li>
 <li><a class="reference internal" href="#Replace-distant-gates-with-TwoQubitQPDGates-by-specifying-their-indices">Replace distant gates with <code class="docutils literal notranslate"><span class="pre">TwoQubitQPDGate</span></code>s by specifying their indices</a></li>
 <li><a class="reference internal" href="#Generate-the-subexperiments-to-run-on-the-backend">Generate the subexperiments to run on the backend</a></li>
 <li><a class="reference internal" href="#Calculate-the-sampling-overhead-for-the-chosen-cuts">Calculate the sampling overhead for the chosen cuts</a></li>
 <li><a class="reference internal" href="#Demonstrate-that-the-QPD-subexperiments-will-be-shallower-after-cutting-distant-gates">Demonstrate that the QPD subexperiments will be shallower after cutting distant gates</a></li>
-<li><a class="reference internal" href="#Prepare-subexperiments-for-the-backend-and-run-them-using-the-Qiskit-Runtime-Sampler-primitive">Prepare subexperiments for the backend and run them using the Qiskit Runtime Sampler primitive</a></li>
-<li><a class="reference internal" href="#Reconstruct-the-expectation-values">Reconstruct the expectation values</a></li>
-<li><a class="reference internal" href="#Compare-the-reconstructed-expectation-values-with-the-exact-expectation-value-from-the-original-circuit-and-observable">Compare the reconstructed expectation values with the exact expectation value from the original circuit and observable</a></li>
+<li><a class="reference internal" href="#Prepare-subexperiments-for-the-backend">Prepare subexperiments for the backend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-3:-Execute">Step 3: Execute</a><ul>
+<li><a class="reference internal" href="#Run-the-subexperiments-using-the-Qiskit-Runtime-Sampler-primitive">Run the subexperiments using the Qiskit Runtime Sampler primitive</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Step-4:-Post-process">Step 4: Post-process</a><ul>
+<li><a class="reference internal" href="#Reconstruct-the-expectation-value">Reconstruct the expectation value</a></li>
+<li><a class="reference internal" href="#Compare-the-reconstructed-expectation-value-with-the-exact-expectation-value-from-the-original-circuit-and-observable">Compare the reconstructed expectation value with the exact expectation value from the original circuit and observable</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
