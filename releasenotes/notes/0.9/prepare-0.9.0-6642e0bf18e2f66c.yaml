@@ -1,0 +1,6 @@
+---
+prelude:
+
+  The most notable change in this release is that the package has been
+  renamed to ``qiskit-cutting-addon``.  It also marks the removal of
+  this package's original implementation of wire cutting, CutQC.

@@ -1,5 +1,0 @@
----
-upgrade:
-  - |
-    CKT now requires updated versions of some dependencies: ``qiskit``
-    1.1 or later, and ``qiskit-ibm-runtime`` 0.24.0 or later.

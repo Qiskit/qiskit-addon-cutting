@@ -44,15 +44,15 @@ jobs:
         shell: bash
         run: |
           mkdir artifact
-          cp -a docs/_build/html artifact/ckt_html_docs
+          cp -a docs/_build/html artifact/qiskit-addon-cutting-htmldocs
       - name: Upload docs artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ckt_html_docs
+          name: qiskit-addon-cutting-htmldocs
           path: ./artifact
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.7' }}
+        if: ${{ github.ref == 'refs/heads/stable/0.9' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

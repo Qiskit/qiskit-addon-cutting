@@ -1,4 +1,4 @@
-FROM jupyter/minimal-notebook:python-3.11
+FROM quay.io/jupyter/minimal-notebook
 
 LABEL maintainer="Jim Garrison <garrison@ibm.com>"
 
@@ -7,7 +7,7 @@ LABEL maintainer="Jim Garrison <garrison@ibm.com>"
 RUN rm -rf work && \
     mkdir .src
 
-COPY . .src/circuit-knitting-toolbox
+COPY . .src/qiskit-addon-cutting
 
 # Fix the permissions of ~/.src and ~/persistent-volume
 USER root
@@ -17,7 +17,7 @@ USER ${NB_UID}
 
 # Consolidate the docs into the home directory
 RUN mkdir docs && \
-    cp -a .src/circuit-knitting-toolbox/docs docs/circuit-knitting-toolbox
+    cp -a .src/qiskit-addon-cutting/docs docs/qiskit-addon-cutting
 
 # Pip install everything
-RUN pip install -e '.src/circuit-knitting-toolbox[notebook-dependencies]'
+RUN pip install -e '.src/qiskit-addon-cutting[notebook-dependencies]'

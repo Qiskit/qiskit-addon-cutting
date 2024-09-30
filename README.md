@@ -1,20 +1,19 @@
 <!-- SHIELDS -->
 <div align="left">
 
-  [![Stability](https://img.shields.io/badge/Stability-alpha-f4d03f.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/releases)
-  [![Release](https://img.shields.io/pypi/v/circuit-knitting-toolbox.svg?label=Release)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/releases)
+  [![Release](https://img.shields.io/pypi/v/qiskit-addon-cutting.svg?label=Release)](https://github.com/Qiskit/qiskit-addon-cutting/releases)
   ![Platform](https://img.shields.io/badge/%F0%9F%92%BB%20Platform-Linux%20%7C%20macOS%20%7C%20Windows-informational)
-  [![Python](https://img.shields.io/pypi/pyversions/circuit-knitting-toolbox?label=Python&logo=python)](https://www.python.org/)
+  [![Python](https://img.shields.io/pypi/pyversions/qiskit-addon-cutting?label=Python&logo=python)](https://www.python.org/)
   [![Qiskit](https://img.shields.io/badge/Qiskit%20-%20%3E%3D1.1%20-%20%236133BD?logo=Qiskit)](https://github.com/Qiskit/qiskit)
 <br />
-  [![Docs (stable)](https://img.shields.io/badge/%F0%9F%93%84%20Docs-stable-blue.svg)](https://qiskit-extensions.github.io/circuit-knitting-toolbox/)
+  [![Docs (stable)](https://img.shields.io/badge/%F0%9F%93%84%20Docs-stable-blue.svg)](https://qiskit.github.io/qiskit-addon-cutting/)
   [![DOI](https://zenodo.org/badge/543181258.svg)](https://zenodo.org/badge/latestdoi/543181258)
-  [![License](https://img.shields.io/github/license/Qiskit-Extensions/circuit-knitting-toolbox?label=License)](LICENSE.txt)
-  [![Downloads](https://img.shields.io/pypi/dm/circuit-knitting-toolbox.svg?label=Downloads)](https://pypi.org/project/circuit-knitting-toolbox/)
-  [![Tests](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/actions/workflows/test_latest_versions.yml)
-  [![Coverage](https://coveralls.io/repos/github/Qiskit-Extensions/circuit-knitting-toolbox/badge.svg?branch=main)](https://coveralls.io/github/Qiskit-Extensions/circuit-knitting-toolbox?branch=main)
+  [![License](https://img.shields.io/github/license/Qiskit/qiskit-addon-cutting?label=License)](LICENSE.txt)
+  [![Downloads](https://img.shields.io/pypi/dm/qiskit-addon-cutting.svg?label=Downloads)](https://pypi.org/project/qiskit-addon-cutting/)
+  [![Tests](https://github.com/Qiskit/qiskit-addon-cutting/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/Qiskit/qiskit-addon-cutting/actions/workflows/test_latest_versions.yml)
+  [![Coverage](https://coveralls.io/repos/github/Qiskit/qiskit-addon-cutting/badge.svg?branch=main)](https://coveralls.io/github/Qiskit/qiskit-addon-cutting?branch=main)
 
-# Circuit Knitting Toolbox
+# Qiskit addon: circuit cutting
 
 ### Table of Contents
 
@@ -29,36 +28,35 @@
 
 ### About
 
-Circuit Knitting is the process of decomposing a larger quantum circuit into many smaller circuits, executing those circuits on a quantum processor(s), and then knitting their results into a reconstruction of the original circuit's outcome.
+[Qiskit addons](https://docs.quantum.ibm.com/guides/addons) are a collection of modular tools for building utility-scale workloads powered by Qiskit.
 
-The toolbox currently contains the following tools:
-- Circuit Cutting [[1-5]](#references)
- 
-For a more detailed discussion on circuit cutting, check out our [technical guide](https://qiskit-extensions.github.io/circuit-knitting-toolbox/circuit_cutting/explanation/index.html#overview-of-circuit-cutting).
+This package implements circuit cutting.  In this technique, a handful of gates and/or wires are cut, resulting in smaller circuits that are better suited for execution on hardware.  The result of the original circuit can then be reconstructed; however, the trade-off is that the overall number of shots must be increased by a factor exponential in the number of cuts.
+
+For a more detailed discussion on circuit cutting, check out our [technical guide](https://qiskit.github.io/qiskit-addon-cutting/explanation/index.html#overview-of-circuit-cutting).
 
 ----------------------------------------------------------------------------------------------------
   
 ### Documentation
 
-All CKT documentation is available at https://qiskit-extensions.github.io/circuit-knitting-toolbox/.
+All documentation is available at https://qiskit.github.io/qiskit-addon-cutting/.
 
 ----------------------------------------------------------------------------------------------------
   
 ### Installation
 
-We encourage installing CKT via ``pip``, when possible.
+We encourage installing this package via ``pip``, when possible.
 
 ```bash
-pip install 'circuit-knitting-toolbox'
+pip install 'qiskit-addon-cutting'
 ```
 
-For information on installing from source, running CKT in a container, and platform support, refer to the [installation instructions](https://qiskit-extensions.github.io/circuit-knitting-toolbox/install.html) in the CKT documentation.
+For information on installing from source, running in a container, and platform support, refer to the [installation instructions](https://qiskit.github.io/qiskit-addon-cutting/install.html) in the documentation.
 
 ----------------------------------------------------------------------------------------------------
 
 ### Deprecation Policy
 
-This project is meant to evolve rapidly and, as such, does not follow [Qiskit's deprecation policy](https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md).  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the [release notes](https://qiskit-extensions.github.io/circuit-knitting-toolbox/release-notes.html).
+We follow [semantic versioning](https://semver.org/) and are guided by the principles in [Qiskit's deprecation policy](https://github.com/Qiskit/qiskit/blob/main/DEPRECATION.md).  We may occasionally make breaking changes in order to improve the user experience.  When possible, we will keep old interfaces and mark them as deprecated, as long as they can co-exist with the new ones.  Each substantial improvement, breaking change, or deprecation will be documented in the [release notes](https://qiskit.github.io/qiskit-addon-cutting/release-notes.html).
 
 ----------------------------------------------------------------------------------------------------
 

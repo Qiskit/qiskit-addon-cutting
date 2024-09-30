@@ -3,19 +3,19 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "circuit-knitting-toolbox"
-version = "0.7.1"
-description = "A software prototype for a circuit knitting toolbox which connects user applications with runtime primitives"
+name = "qiskit-addon-cutting"
+version = "0.9.0"
+description = "Reduce width and depth of quantum circuits by cutting gates and wires."
 readme = "README.md"
 license = {file = "LICENSE.txt"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: Apache Software License",
     "Natural Language :: English",
     "Operating System :: MacOS",
     "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -38,32 +38,32 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "circuit-knitting-toolbox[test,nbtest,lint]",
+    "qiskit-addon-cutting[test,nbtest,lint]",
 ]
 basetest = [
     "pytest>=6.2.5",
     "pytest-randomly>=1.2.0",
 ]
 test = [
-    "circuit-knitting-toolbox[basetest]",
+    "qiskit-addon-cutting[basetest]",
     "ddt>=1.4.4",
 ]
 nbtest = [
-    "circuit-knitting-toolbox[basetest]",
+    "qiskit-addon-cutting[basetest]",
     "nbmake>=1.4.3"
 ]
 style = [
     "autoflake==2.3.1",
     "black[jupyter]~=24.1",
-    "ruff==0.5.2",
+    "ruff==0.6.4",
     "nbqa>=1.6.0",
 ]
 lint = [
-    "circuit-knitting-toolbox[style]",
+    "qiskit-addon-cutting[style]",
     "pydocstyle==6.3.0",
-    "mypy==1.10.1",
+    "mypy==1.11.2",
     "reno>=3.4.0",
-    "pylint==3.2.5",
+    "pylint==3.2.7",
     # pydocstyle prefers to parse our pyproject.toml, hence the following line
     "toml",
 ]
@@ -75,7 +75,7 @@ docs = [
     "nbsphinx>=0.8.8",
     "sphinx-copybutton>=0.5.0",
     "reno>=3.4.0",
-    "qiskit-sphinx-theme>=1.14.0, <2"
+    "qiskit-sphinx-theme>=2.0.0, <3"
 ]
 notebook-dependencies = [
     "matplotlib",
@@ -84,12 +84,12 @@ notebook-dependencies = [
 ]
 
 [project.urls]
-"Documentation" = "https://qiskit-extensions.github.io/circuit-knitting-toolbox/"
-"Repository" = "https://github.com/Qiskit-Extensions/circuit-knitting-toolbox"
+"Documentation" = "https://qiskit.github.io/qiskit-addon-cutting/"
+"Repository" = "https://github.com/Qiskit/qiskit-addon-cutting"
 
 [tool.hatch.build.targets.wheel]
 only-include = [
-    "circuit_knitting",
+    "qiskit_addon_cutting",
 ]
 
 [tool.autoflake]
@@ -136,9 +136,9 @@ ignore_missing_imports = true
 #[tool.coverage.run]
 #omit = [
 #    # deprecated import location(s)
-#    "circuit_knitting/path/to/deprecated/module",
+#    "qiskit_addon_cutting/path/to/deprecated/module",
 #]
 
 [tool.pytest.ini_options]
-testpaths = ["./circuit_knitting/", "./test/"]
+testpaths = ["./qiskit_addon_cutting/", "./test/"]
 addopts = "--doctest-modules -rs --durations=10"
