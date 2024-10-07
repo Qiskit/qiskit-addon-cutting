@@ -164,9 +164,7 @@ def linkcode_resolve(domain, info):
         return None
 
     def is_valid_code_object(obj):
-        return (
-            inspect.isclass(obj) or inspect.ismethod(obj) or inspect.isfunction(obj)
-        )
+        return inspect.isclass(obj) or inspect.ismethod(obj) or inspect.isfunction(obj)
 
     obj = module
     for part in info["fullname"].split("."):
