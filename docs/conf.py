@@ -163,17 +163,24 @@ def linkcode_resolve(domain, info):
     if module is None or "qiskit_addon_cutting" not in module_name:
         return None
 
+    def is_valid_code_object(obj):
+        return inspect.isclass(obj) or inspect.ismethod(obj) or inspect.isfunction(obj)
+
     obj = module
     for part in info["fullname"].split("."):
         try:
             obj = getattr(obj, part)
         except AttributeError:
             return None
-        is_valid_code_object = (
-            inspect.isclass(obj) or inspect.ismethod(obj) or inspect.isfunction(obj)
-        )
-        if not is_valid_code_object:
+        if not is_valid_code_object(obj):
             return None
+
+    # Unwrap decorators. This requires they used `functools.wrap()`.
+    while hasattr(obj, "__wrapped__"):
+        obj = getattr(obj, "__wrapped__")
+        if not is_valid_code_object(obj):
+            return None
+
     try:
         full_file_name = inspect.getsourcefile(obj)
     except TypeError:
