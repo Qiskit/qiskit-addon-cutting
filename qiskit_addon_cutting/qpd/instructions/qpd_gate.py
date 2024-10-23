@@ -35,10 +35,10 @@ class BaseQPDGate(Instruction):
 
         Args:
             name: Name of the QPD gate.
-            basis: A probabilistic basis to which the gate should be decomposed
+            basis: A :mod:`.QPDBasis` to which the gate should be decomposed
             num_qubits: The number of qubits on which the QPD gate acts
             basis_id: An index to the basis to which the gate should be decomposed.
-                This index is to basis.maps.
+                This index is to ``basis.maps``.
             label: An optional label for the gate
         """
         super().__init__(name, num_qubits, num_clbits=0, params=[], label=label)
@@ -108,6 +108,12 @@ class TwoQubitQPDGate(BaseQPDGate):
     ):
         """Initialize the two qubit QPD gate.
 
+        Args:
+            basis: A :mod:`.QPDBasis` to which the gate should be decomposed
+            basis_id: An index to the basis to which the gate should be decomposed.
+                This index is to ``basis.maps``.
+            label: An optional label for the gate
+
         Raises:
             ValueError: The :class:`QPDBasis` acts on a number of qubits not equal to 2.
         """
@@ -157,12 +163,13 @@ class SingleQubitQPDGate(BaseQPDGate):
         """Initialize the single qubit QPD gate, and assign member variables.
 
         Args:
-            basis: TODO
+            basis: A :mod:`.QPDBasis` to which the gate should be decomposed
             qubit_id: This gate's relative index to the decomposition which it belongs.
                 Single qubit QPDGates should have qubit_id 0 if they describe a local
                 decomposition, such as a wire cut.
-            basis_id: TODO
-            label: TODO
+            basis_id: An index to the basis to which the gate should be decomposed.
+                This index is to ``basis.maps``.
+            label: An optional label for the gate
 
         Raises:
             ValueError: qubit_id is out of range
