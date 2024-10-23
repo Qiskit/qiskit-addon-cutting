@@ -96,6 +96,7 @@ remove-all-unused-imports = true
 target-version = "py38"
 
 [tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "D"]
 ignore = [
     "E501",  # line too long
 ]
@@ -104,9 +105,13 @@ ignore = [
 "test/**.py" = [
     "F405",  # star import
     "F403",  # unable to detect undefined names due to star import
+    "D",     # pydocstyle
 ]
 "docs/**" = [
     "E402",  # module level import not at top of file
+]
+"docs/**.py" = [
+    "D",     # pydocstyle
 ]
 
 [tool.ruff.lint.pydocstyle]
