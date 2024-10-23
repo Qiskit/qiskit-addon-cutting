@@ -5,5 +5,4 @@ deprecations:
     Going forward, users should first call
     :func:`.generate_cutting_experiments` to generate the
     subexperiment circuits and then submit these circuits directly to
-    the desired Sampler(s).  The :ref:`tutorials <circuit cutting
-    tutorials>` have been updated with this new workflow.
+    the desired Sampler(s).  The `tutorials <https://qiskit.github.io/qiskit-addon-cutting/tutorials/index.html>`__ have been updated with this new workflow.
