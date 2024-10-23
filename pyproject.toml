@@ -96,7 +96,7 @@ remove-all-unused-imports = true
 target-version = "py38"
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "D"]
+extend-select = ["D"]
 ignore = [
     "E501",  # line too long
 ]
