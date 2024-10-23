@@ -42,7 +42,7 @@ def decompose_qpd_instructions(
         map_ids: Indices to a specific linear mapping to be applied to the decompositions
             in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
             according to the decompositions' joint probability distribution.
-        inplace: TODO
+        inplace: If ``True``, the ``circuit`` will be modified in place.
 
     Returns:
         Circuit which has had all its :class:`BaseQPDGate` instances decomposed into local operations.
