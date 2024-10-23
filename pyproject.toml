@@ -109,9 +109,7 @@ ignore = [
 ]
 "docs/**" = [
     "E402",  # module level import not at top of file
-]
-"docs/**.py" = [
-    "D",     # pydocstyle
+    "D100",  # missing docstring in public module
 ]
 
 [tool.ruff.lint.pydocstyle]
