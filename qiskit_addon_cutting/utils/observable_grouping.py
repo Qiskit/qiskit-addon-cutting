@@ -9,8 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Module for conducting Pauli observable grouping.
+"""Module for conducting Pauli observable grouping.
 
 .. currentmodule:: qiskit_addon_cutting.utils.observable_grouping
 

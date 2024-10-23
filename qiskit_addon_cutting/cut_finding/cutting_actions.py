@@ -175,8 +175,7 @@ class ActionCutTwoQubitGate(DisjointSearchAction):
     def get_cost_params(
         gate_spec: GateSpec,
     ) -> tuple[float | None, int, float | None]:
-        """
-        Get the cost parameters for gate cuts.
+        """Get the cost parameters for gate cuts.
 
         This method returns a tuple of the form:
             (<gamma_lower_bound>, <num_bell_pairs>, <gamma_upper_bound>)

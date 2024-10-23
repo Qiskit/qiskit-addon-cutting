@@ -38,8 +38,7 @@ def reconstruct_expectation_values(
     coefficients: Sequence[tuple[float, WeightType]],
     observables: PauliList | dict[Hashable, PauliList],
 ) -> list[float]:
-    r"""
-    Reconstruct an expectation value from the results of the sub-experiments.
+    r"""Reconstruct an expectation value from the results of the sub-experiments.
 
     Args:
         results: The results from running the cutting subexperiments. If the cut circuit
@@ -174,8 +173,7 @@ def reconstruct_expectation_values(
 def _process_outcome(
     cog: CommutingObservableGroup, outcome: int | str, /
 ) -> np.typing.NDArray[np.float64]:
-    """
-    Process a single outcome of a QPD experiment with observables.
+    """Process a single outcome of a QPD experiment with observables.
 
     Args:
         cog: The observable set being measured by the current experiment
@@ -198,8 +196,7 @@ def _process_outcome(
 def _process_outcome_v2(
     cog: CommutingObservableGroup, obs_outcomes: int, qpd_outcomes: int, /
 ) -> np.typing.NDArray[np.float64]:
-    """
-    Process a single outcome of a QPD experiment with observables.
+    """Process a single outcome of a QPD experiment with observables.
 
     Args:
         cog: The observable set being measured by the current experiment

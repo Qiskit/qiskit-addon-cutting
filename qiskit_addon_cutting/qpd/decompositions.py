@@ -78,8 +78,7 @@ def _register_qpdbasis_from_instruction(*args):
 
 
 def qpdbasis_from_instruction(gate: Instruction, /) -> QPDBasis:
-    """
-    Generate a :class:`.QPDBasis` object, given a supported operation.
+    """Generate a :class:`.QPDBasis` object, given a supported operation.
 
     All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
     supported.  This should include the vast majority of gates with no unbound
@@ -127,8 +126,7 @@ def qpdbasis_from_instruction(gate: Instruction, /) -> QPDBasis:
 
 
 def _explicitly_supported_instructions() -> set[str]:
-    """
-    Return a set of instruction names with explicit support for automatic decomposition.
+    """Return a set of instruction names with explicit support for automatic decomposition.
 
     These instructions are *explicitly* supported by :func:`qpdbasis_from_instruction`.
     Other instructions may be supported too, via a KAK decomposition.
@@ -140,8 +138,7 @@ def _explicitly_supported_instructions() -> set[str]:
 
 
 def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
-    """
-    Copy each list in a sequence of lists while preserving uniqueness.
+    """Copy each list in a sequence of lists while preserving uniqueness.
 
     This is useful to ensure that the two sets of ``maps`` in a
     :class:`QPDBasis` will be independent of each other.  This enables one to
@@ -158,8 +155,7 @@ def _copy_unique_sublists(lsts: tuple[list, ...], /) -> tuple[list, ...]:
 def _u_from_thetavec(
     theta: np.typing.NDArray[np.float64] | Sequence[float], /
 ) -> np.typing.NDArray[np.complex128]:
-    r"""
-    Exponentiate the non-local portion of a KAK decomposition.
+    r"""Exponentiate the non-local portion of a KAK decomposition.
 
     This implements Eq. (6) of https://arxiv.org/abs/2006.11174v2:
 

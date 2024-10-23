@@ -9,8 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Functions for manipulating quantum circuits.
+"""Functions for manipulating quantum circuits.
 
 .. currentmodule:: qiskit_addon_cutting.utils.transforms
 
@@ -196,8 +195,7 @@ def _circuit_from_instructions(
     qubits: Sequence[Qubit],
     cregs: Iterable[ClassicalRegister],
 ) -> QuantumCircuit:
-    """
-    Create a circuit from instructions.
+    """Create a circuit from instructions.
 
     This pipeline is designed to pass all the classical register(s) from the
     uncut circuit to each subcircuit, so we add them here.

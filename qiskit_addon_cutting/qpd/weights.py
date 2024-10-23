@@ -54,8 +54,7 @@ def __update_running_product_after_increment(
     state: Sequence[int],
     coeff_probabilities: Sequence[npt.NDArray[np.float64]],
 ):
-    """
-    Update the ``running_product`` list after the ``state`` has been incremented.
+    """Update the ``running_product`` list after the ``state`` has been incremented.
 
     This snippet is used twice in
     :func:`_generate_exact_weights_and_conditional_probabilities_assume_sorted`;
@@ -71,8 +70,7 @@ def __update_running_product_after_increment(
 def _generate_exact_weights_and_conditional_probabilities_assume_sorted(
     coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
 ):
-    r"""
-    Determine all exact weights above ``threshold`` and the conditional probabilities necessary to sample efficiently from all other weights.
+    r"""Determine all exact weights above ``threshold`` and the conditional probabilities necessary to sample efficiently from all other weights.
 
     Each yielded element will be a 2-tuple, the first element of which will be
     a ``state``, represented by a tuple of ``int``\ s.
@@ -190,8 +188,7 @@ def _invert_permutation(p):
 def _generate_exact_weights_and_conditional_probabilities(
     coeff_probabilities: Sequence[npt.NDArray[np.float64]], threshold: float
 ):
-    """
-    Generate exact weights and conditional probabilities.
+    """Generate exact weights and conditional probabilities.
 
     This is identical in behavior to
     :func:`_generate_exact_weights_and_conditional_probabilities_assume_sorted`,
@@ -221,8 +218,7 @@ def _generate_exact_weights_and_conditional_probabilities(
 def generate_qpd_weights(
     qpd_bases: Sequence[QPDBasis], num_samples: float = 1000
 ) -> dict[tuple[int, ...], tuple[float, WeightType]]:
-    """
-    Generate weights from the joint quasiprobability distribution.
+    """Generate weights from the joint quasiprobability distribution.
 
     Each weight whose absolute value is above a threshold of ``1 /
     num_samples`` will be evaluated exactly. The remaining weights -- those in
@@ -384,8 +380,7 @@ def _populate_samples(
     conditional_probabilities: dict[tuple[int, ...], npt.NDArray[np.float64]],
     running_state: tuple[int, ...] = (),
 ) -> None:
-    """
-    Generate random samples from the conditional probabilitity distributions.
+    """Generate random samples from the conditional probabilitity distributions.
 
     Items get populated into the ``random_samples`` dict, rather than returned.
 
