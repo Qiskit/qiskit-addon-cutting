@@ -6,7 +6,7 @@ prelude:
   workflow (CutQC) is now deprecated.  Additionally, this is the first
   CKT release to support version 2 of the Qiskit Runtime primitives.
   User are encouraged to `migrate to v2 primitives
-  <https://docs.quantum.ibm.com/api/migration-guides/v2-primitives>`__
+  <https://docs.quantum.ibm.com/migration-guides/v2-primitives>`__
   as soon as possible.
 
 other:
@@ -18,5 +18,5 @@ other:
     :class:`~qiskit.quantum_info.Pauli` observables.
   - |
     The `circuit cutting explanation
-    <./explanation/index.rst>`__ document has been
+    <https://qiskit.github.io/qiskit-addon-cutting/explanation/index.html>`__ document has been
     expanded significantly.
