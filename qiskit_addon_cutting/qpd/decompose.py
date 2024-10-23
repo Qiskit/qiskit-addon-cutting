@@ -32,8 +32,7 @@ def decompose_qpd_instructions(
     *,
     inplace: bool = False,
 ) -> QuantumCircuit:
-    r"""
-    Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
+    r"""Replace all QPD instructions in the circuit with local Qiskit operations and measurements.
 
     Args:
         circuit: The circuit containing QPD instructions
@@ -43,6 +42,7 @@ def decompose_qpd_instructions(
         map_ids: Indices to a specific linear mapping to be applied to the decompositions
             in the circuit. If no map IDs are provided, the circuit will be decomposed randomly
             according to the decompositions' joint probability distribution.
+        inplace: TODO
 
     Returns:
         Circuit which has had all its :class:`BaseQPDGate` instances decomposed into local operations.
@@ -127,8 +127,7 @@ def _validate_qpd_instructions(
 def _decompose_qpd_measurements(
     circuit: QuantumCircuit, inplace: bool = True
 ) -> QuantumCircuit:
-    """
-    Create mid-circuit measurements.
+    """Create mid-circuit measurements.
 
     Convert all QPDMeasure instances to Measure instructions. Add any newly created
     classical bits to a new "qpd_measurements" register.

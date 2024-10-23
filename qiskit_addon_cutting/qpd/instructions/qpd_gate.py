@@ -31,8 +31,7 @@ class BaseQPDGate(Instruction):
         basis_id: int | None = None,
         label: str | None = None,
     ):
-        """
-        Initialize the instruction, and assign member variables.
+        """Initialize the instruction, and assign member variables.
 
         Args:
             name: Name of the QPD gate.
@@ -51,8 +50,7 @@ class BaseQPDGate(Instruction):
 
     @property
     def basis(self) -> QPDBasis:
-        """
-        Quasiprobability decomposition basis.
+        """Quasiprobability decomposition basis.
 
         Returns:
             The basis to which the gate should be decomposed
@@ -64,8 +62,7 @@ class BaseQPDGate(Instruction):
 
     @property
     def basis_id(self) -> int | None:
-        """
-        Index to basis used to decompose this gate.
+        """Index to basis used to decompose this gate.
 
         If set to None, a random basis will be chosen during decomposition.
 
@@ -76,8 +73,7 @@ class BaseQPDGate(Instruction):
 
     @basis_id.setter
     def basis_id(self, basis_id: int | None) -> None:
-        """
-        Set the index to the basis to which this gate should decompose.
+        """Set the index to the basis to which this gate should decompose.
 
         The index corresponds to self.basis.maps.
 
@@ -110,8 +106,7 @@ class TwoQubitQPDGate(BaseQPDGate):
         basis_id: int | None = None,
         label: str | None = None,
     ):
-        """
-        Initialize the two qubit QPD gate.
+        """Initialize the two qubit QPD gate.
 
         Raises:
             ValueError: The :class:`QPDBasis` acts on a number of qubits not equal to 2.
@@ -145,8 +140,7 @@ class TwoQubitQPDGate(BaseQPDGate):
 
 
 class SingleQubitQPDGate(BaseQPDGate):
-    """
-    Single qubit gate to be decomposed using quasiprobability decomposition.
+    """Single qubit gate to be decomposed using quasiprobability decomposition.
 
     This gate could be part of a larger decomposition on many qubits, or it
     could be a standalone single gate decomposition.
@@ -160,13 +154,15 @@ class SingleQubitQPDGate(BaseQPDGate):
         basis_id: int | None = None,
         label: str | None = None,
     ):
-        """
-        Initialize the single qubit QPD gate, and assign member variables.
+        """Initialize the single qubit QPD gate, and assign member variables.
 
         Args:
+            basis: TODO
             qubit_id: This gate's relative index to the decomposition which it belongs.
                 Single qubit QPDGates should have qubit_id 0 if they describe a local
                 decomposition, such as a wire cut.
+            basis_id: TODO
+            label: TODO
 
         Raises:
             ValueError: qubit_id is out of range
