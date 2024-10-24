@@ -59,12 +59,9 @@ style = [
 ]
 lint = [
     "qiskit-addon-cutting[style]",
-    "pydocstyle==6.3.0",
     "mypy==1.11.2",
     "reno>=3.4.0",
     "pylint==3.3.1",
-    # pydocstyle prefers to parse our pyproject.toml, hence the following line
-    "toml",
 ]
 docs = [
     "Sphinx>=3.0.0",
@@ -99,6 +96,7 @@ remove-all-unused-imports = true
 target-version = "py38"
 
 [tool.ruff.lint]
+extend-select = ["D"]
 ignore = [
     "E501",  # line too long
 ]
@@ -107,10 +105,15 @@ ignore = [
 "test/**.py" = [
     "F405",  # star import
     "F403",  # unable to detect undefined names due to star import
+    "D",     # pydocstyle
 ]
 "docs/**" = [
     "E402",  # module level import not at top of file
+    "D100",  # missing docstring in public module
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pylint.main]
 py-version = "3.8"

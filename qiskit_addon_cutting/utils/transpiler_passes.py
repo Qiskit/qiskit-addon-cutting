@@ -9,8 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Transpiler passes useful for circuit knitting.
+"""Transpiler passes useful for circuit knitting.
 
 .. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
 
