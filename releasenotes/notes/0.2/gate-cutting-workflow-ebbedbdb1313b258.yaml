@@ -14,7 +14,7 @@ prelude: |
     *execution* of many subexperiments, and *reconstruction* of a simulated output of the original problem.
     These steps may be implemented with the :mod:`~circuit_knitting_toolbox.circuit_cutting` package using only a few primary
     functions, namely, the :func:`.partition_problem`, :func:`.decompose_gates`, :func:`.execute_experiments`, and :func:`.reconstruct_expectation_values` functions.
-    Check out the :ref:`tutorials <circuit cutting tutorials>` for a look at a couple of example circuit cutting workflows.
+    Check out the `tutorials <https://qiskit.github.io/qiskit-addon-cutting/tutorials/index.html>`__ for a look at a couple of example circuit cutting workflows.
 
 features:
   - |
