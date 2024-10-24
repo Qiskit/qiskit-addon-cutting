@@ -367,7 +367,7 @@ Quantum’s hardware backends due to an <a class="reference external" href="http
 <span id="id5"></span><h2>0.7.0<a class="headerlink" href="#release-notes-0-7-0" title="Link to this heading">¶</a></h2>
 <section id="release-notes-0-7-0-prelude">
 <span id="id6"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-7-0-prelude" title="Link to this heading">¶</a></h3>
-<p>The 0.7 release introduces an automated cut finding code for the new circuit cutting workflow.  With this milestone, the older cutting workflow (CutQC) is now deprecated.  Additionally, this is the first CKT release to support version 2 of the Qiskit Runtime primitives. User are encouraged to <a class="reference external" href="https://docs.quantum.ibm.com/api/migration-guides/v2-primitives">migrate to v2 primitives</a> as soon as possible.</p>
+<p>The 0.7 release introduces an automated cut finding code for the new circuit cutting workflow.  With this milestone, the older cutting workflow (CutQC) is now deprecated.  Additionally, this is the first CKT release to support version 2 of the Qiskit Runtime primitives. User are encouraged to <a class="reference external" href="https://docs.quantum.ibm.com/migration-guides/v2-primitives">migrate to v2 primitives</a> as soon as possible.</p>
 </section>
 <section id="release-notes-0-7-0-new-features">
 <span id="id7"></span><h3>New Features<a class="headerlink" href="#release-notes-0-7-0-new-features" title="Link to this heading">¶</a></h3>
@@ -392,7 +392,7 @@ cut-finder will return a valid albeit suboptimal cut scheme.</p></li>
 <li><p>Circuit cutting reconstruction can now interpret the
 <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.PrimitiveResult" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrimitiveResult</span></code></a> object, which is
 returned by version 2 of the sampler primitive
-(<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.BaseSamplerV2" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSamplerV2</span></code></a>).  See the <a class="reference external" href="https://docs.quantum.ibm.com/api/migration-guides/qiskit-1.0-features#qiskitprimitives">migration guide</a>
+(<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.BaseSamplerV2" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSamplerV2</span></code></a>).  See the <a class="reference external" href="https://docs.quantum.ibm.com/migration-guides/qiskit-1.0-features#qiskitprimitives">migration guide</a>
 for details on upgrading to version 2 of the Qiskit primitives.</p></li>
 </ul>
 </section>
@@ -429,7 +429,7 @@ rather than multiple independent
 <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.Pauli" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a> observables.</p></li>
 </ul>
 <ul class="simple">
-<li><p>The <a class="reference internal" href="explanation/index.html"><span class="doc">circuit cutting explanation</span></a> document has been
+<li><p>The <a class="reference external" href="https://qiskit.github.io/qiskit-addon-cutting/explanation/index.html">circuit cutting explanation</a> document has been
 expanded significantly.</p></li>
 </ul>
 </section>
@@ -575,7 +575,7 @@ sees dependency errors when upgrading CKT.</p></li>
 Going forward, users should first call
 <a class="reference internal" href="stubs/qiskit_addon_cutting.generate_cutting_experiments.html#qiskit_addon_cutting.generate_cutting_experiments" title="qiskit_addon_cutting.generate_cutting_experiments"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_cutting_experiments()</span></code></a> to generate the
 subexperiment circuits and then submit these circuits directly to
-the desired Sampler(s).  The <a class="reference internal" href="tutorials/index.html#circuit-cutting-tutorials"><span class="std std-ref">tutorials</span></a> have been updated with this new workflow.</p></li>
+the desired Sampler(s).  The <a class="reference external" href="https://qiskit.github.io/qiskit-addon-cutting/tutorials/index.html">tutorials</a> have been updated with this new workflow.</p></li>
 </ul>
 </section>
 </section>
@@ -737,7 +737,7 @@ conditions, such as when reducing the orbitals over which to solve.</p></li>
 <span id="id30"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-2-0-prelude" title="Link to this heading">¶</a></h3>
 <p>0.2.0 is centered around the addition of functions which allow for the easy
 implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
-<a class="reference internal" href="explanation/index.html#circuit-cutting-explanation"><span class="std std-ref">explanation guide</span></a>.</p>
+<a class="reference external" href="https://qiskit.github.io/qiskit-addon-cutting/explanation/index.html">explanation guide</a>.</p>
 <p>The foundation of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_cutting</span></code> package is the <code class="xref py py-mod docutils literal notranslate"><span class="pre">circuit_knitting_toolbox.circuit_cutting.qpd</span></code>
 sub-package. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">qpd</span></code> package allows for easy transformation of <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
 See <code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQPDGate</span></code> classes for more information.</p>
