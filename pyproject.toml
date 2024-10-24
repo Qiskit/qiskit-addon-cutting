@@ -61,13 +61,7 @@ lint = [
     "qiskit-addon-cutting[style]",
     "mypy==1.11.2",
     "reno>=3.4.0",
-<<<<<<< HEAD
     "pylint==3.2.7",
-    # pydocstyle prefers to parse our pyproject.toml, hence the following line
-    "toml",
-=======
-    "pylint==3.3.1",
->>>>>>> 0415fc6 (Replace pydocstyle with Ruff (#692))
 ]
 docs = [
     "Sphinx>=3.0.0",
