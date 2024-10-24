@@ -41,8 +41,7 @@ def generate_cutting_experiments(
     list[QuantumCircuit] | dict[Hashable, list[QuantumCircuit]],
     list[tuple[float, WeightType]],
 ]:
-    r"""
-    Generate cutting subexperiments and their associated coefficients.
+    r"""Generate cutting subexperiments and their associated coefficients.
 
     If the input, ``circuits``, is a :class:`QuantumCircuit` instance, the
     output subexperiments will be contained within a 1D array, and ``observables`` is
@@ -64,6 +63,7 @@ def generate_cutting_experiments(
         num_samples: The number of samples to draw from the quasi-probability distribution. If set
             to infinity, the weights will be generated rigorously rather than by sampling from
             the distribution.
+
     Returns:
         A tuple containing the cutting experiments and their associated coefficients.
         If the input circuits is a :class:`QuantumCircuit` instance, the output subexperiments

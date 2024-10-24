@@ -12,9 +12,7 @@
 
 # pylint: disable=invalid-name
 
-"""
-Sphinx documentation builder
-"""
+"""Sphinx documentation builder."""
 
 # General options:
 import inspect
@@ -155,6 +153,7 @@ GITHUB_BRANCH = determine_github_branch()
 
 
 def linkcode_resolve(domain, info):
+    """Resolve link."""
     if domain != "py":
         return None
 

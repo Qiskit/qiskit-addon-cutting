@@ -41,8 +41,7 @@ class PartitionedCuttingProblem(NamedTuple):
 def partition_circuit_qubits(
     circuit: QuantumCircuit, partition_labels: Sequence[Hashable], inplace: bool = False
 ) -> QuantumCircuit:
-    r"""
-    Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.
+    r"""Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.
 
     :class:`.TwoQubitQPDGate`\ s belonging to a single partition will not be affected.
 
@@ -104,8 +103,7 @@ def partition_circuit_qubits(
 def cut_gates(
     circuit: QuantumCircuit, gate_ids: Sequence[int], inplace: bool = False
 ) -> tuple[QuantumCircuit, list[QPDBasis]]:
-    r"""
-    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
+    r"""Transform specified gates into :class:`.TwoQubitQPDGate`\ s.
 
     Args:
         circuit: The circuit containing gates to be decomposed
@@ -143,8 +141,7 @@ def partition_problem(
     partition_labels: Sequence[Hashable] | None = None,
     observables: PauliList | None = None,
 ) -> PartitionedCuttingProblem:
-    r"""
-    Separate an input circuit and observable(s).
+    r"""Separate an input circuit and observable(s).
 
     If ``partition_labels`` is provided, then qubits with matching partition
     labels will be grouped together, and non-local gates spanning more than one
@@ -240,8 +237,7 @@ def partition_problem(
 def decompose_observables(
     observables: PauliList, partition_labels: Sequence[Hashable]
 ) -> dict[Hashable, PauliList]:
-    """
-    Decompose a list of observables with respect to some qubit partition labels.
+    """Decompose a list of observables with respect to some qubit partition labels.
 
     Args:
         observables: A list of observables to decompose
