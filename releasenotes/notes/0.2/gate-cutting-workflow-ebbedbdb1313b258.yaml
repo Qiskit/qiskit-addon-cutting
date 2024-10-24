@@ -2,7 +2,7 @@
 prelude: |
     0.2.0 is centered around the addition of functions which allow for the easy
     implementation of a circuit cutting technique called gate cutting. For more details on circuit cutting, check out our
-    :ref:`explanation guide <circuit cutting explanation>`.
+    `explanation guide <https://qiskit.github.io/qiskit-addon-cutting/explanation/index.html>`__.
 
     The foundation of the :mod:`~circuit_knitting_toolbox.circuit_cutting` package is the :mod:`circuit_knitting_toolbox.circuit_cutting.qpd`
     sub-package. The :mod:`~circuit_knitting_toolbox.circuit_cutting.qpd` package allows for easy transformation of :class:`~qiskit.circuit.QuantumCircuit` gates and wires into elements which may be decomposed to a probabilistic set of basis gates.
