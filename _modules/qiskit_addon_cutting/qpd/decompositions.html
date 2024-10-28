@@ -370,8 +370,7 @@
 <div class="viewcode-block" id="qpdbasis_from_instruction">
 <a class="viewcode-back" href="../../../stubs/qiskit_addon_cutting.qpd.qpdbasis_from_instruction.html#qiskit_addon_cutting.qpd.qpdbasis_from_instruction">[docs]</a>
 <span class="k">def</span> <span class="nf">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QPDBasis</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate a :class:`.QPDBasis` object, given a supported operation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a :class:`.QPDBasis` object, given a supported operation.</span>
 
 <span class="sd">    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are</span>
 <span class="sd">    supported.  This should include the vast majority of gates with no unbound</span>
@@ -420,8 +419,7 @@
 
 
 <span class="k">def</span> <span class="nf">_explicitly_supported_instructions</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return a set of instruction names with explicit support for automatic decomposition.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a set of instruction names with explicit support for automatic decomposition.</span>
 
 <span class="sd">    These instructions are *explicitly* supported by :func:`qpdbasis_from_instruction`.</span>
 <span class="sd">    Other instructions may be supported too, via a KAK decomposition.</span>
@@ -433,8 +431,7 @@
 
 
 <span class="k">def</span> <span class="nf">_copy_unique_sublists</span><span class="p">(</span><span class="n">lsts</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Copy each list in a sequence of lists while preserving uniqueness.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy each list in a sequence of lists while preserving uniqueness.</span>
 
 <span class="sd">    This is useful to ensure that the two sets of ``maps`` in a</span>
 <span class="sd">    :class:`QPDBasis` will be independent of each other.  This enables one to</span>
@@ -451,8 +448,7 @@
 <span class="k">def</span> <span class="nf">_u_from_thetavec</span><span class="p">(</span>
     <span class="n">theta</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="o">/</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exponentiate the non-local portion of a KAK decomposition.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Exponentiate the non-local portion of a KAK decomposition.</span>
 
 <span class="sd">    This implements Eq. (6) of https://arxiv.org/abs/2006.11174v2:</span>
 

@@ -302,8 +302,16 @@
 <p>Two qubit gate to be decomposed using quasiprobability decomposition.</p>
 <p>Initialize the two qubit QPD gate.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – The <a class="reference internal" href="qiskit_addon_cutting.qpd.QPDBasis.html#qiskit_addon_cutting.qpd.QPDBasis" title="qiskit_addon_cutting.qpd.QPDBasis"><code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code></a> acts on a number of qubits not equal to 2.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>basis</strong> (<span class="sphinx_autodoc_typehints-type">QPDBasis</span>) – A <code class="xref py py-mod docutils literal notranslate"><span class="pre">QPDBasis</span></code> to which the gate should be decomposed</p></li>
+<li><p><strong>basis_id</strong> (<span class="sphinx_autodoc_typehints-type">int | None</span>) – An index to the basis to which the gate should be decomposed.
+This index is to <code class="docutils literal notranslate"><span class="pre">basis.maps</span></code>.</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type">str | None</span>) – An optional label for the gate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – The <a class="reference internal" href="qiskit_addon_cutting.qpd.QPDBasis.html#qiskit_addon_cutting.qpd.QPDBasis" title="qiskit_addon_cutting.qpd.QPDBasis"><code class="xref py py-class docutils literal notranslate"><span class="pre">QPDBasis</span></code></a> acts on a number of qubits not equal to 2.</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>

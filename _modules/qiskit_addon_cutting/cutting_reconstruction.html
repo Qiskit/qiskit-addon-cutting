@@ -330,8 +330,7 @@
     <span class="n">coefficients</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]],</span>
     <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reconstruct an expectation value from the results of the sub-experiments.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reconstruct an expectation value from the results of the sub-experiments.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        results: The results from running the cutting subexperiments. If the cut circuit</span>
@@ -467,8 +466,7 @@
 <span class="k">def</span> <span class="nf">_process_outcome</span><span class="p">(</span>
     <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Process a single outcome of a QPD experiment with observables.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process a single outcome of a QPD experiment with observables.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cog: The observable set being measured by the current experiment</span>
@@ -491,8 +489,7 @@
 <span class="k">def</span> <span class="nf">_process_outcome_v2</span><span class="p">(</span>
     <span class="n">cog</span><span class="p">:</span> <span class="n">CommutingObservableGroup</span><span class="p">,</span> <span class="n">obs_outcomes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">qpd_outcomes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Process a single outcome of a QPD experiment with observables.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process a single outcome of a QPD experiment with observables.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cog: The observable set being measured by the current experiment</span>

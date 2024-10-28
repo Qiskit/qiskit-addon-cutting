@@ -333,8 +333,7 @@
     <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">]],</span>
     <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]],</span>
 <span class="p">]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate cutting subexperiments and their associated coefficients.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate cutting subexperiments and their associated coefficients.</span>
 
 <span class="sd">    If the input, ``circuits``, is a :class:`QuantumCircuit` instance, the</span>
 <span class="sd">    output subexperiments will be contained within a 1D array, and ``observables`` is</span>
@@ -356,6 +355,7 @@
 <span class="sd">        num_samples: The number of samples to draw from the quasi-probability distribution. If set</span>
 <span class="sd">            to infinity, the weights will be generated rigorously rather than by sampling from</span>
 <span class="sd">            the distribution.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        A tuple containing the cutting experiments and their associated coefficients.</span>
 <span class="sd">        If the input circuits is a :class:`QuantumCircuit` instance, the output subexperiments</span>

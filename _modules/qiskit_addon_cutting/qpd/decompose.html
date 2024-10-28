@@ -324,8 +324,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Replace all QPD instructions in the circuit with local Qiskit operations and measurements.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace all QPD instructions in the circuit with local Qiskit operations and measurements.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuit: The circuit containing QPD instructions</span>
@@ -335,6 +334,7 @@
 <span class="sd">        map_ids: Indices to a specific linear mapping to be applied to the decompositions</span>
 <span class="sd">            in the circuit. If no map IDs are provided, the circuit will be decomposed randomly</span>
 <span class="sd">            according to the decompositions&#39; joint probability distribution.</span>
+<span class="sd">        inplace: If ``True``, the ``circuit`` will be modified in place.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Circuit which has had all its :class:`BaseQPDGate` instances decomposed into local operations.</span>
@@ -420,8 +420,7 @@
 <span class="k">def</span> <span class="nf">_decompose_qpd_measurements</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create mid-circuit measurements.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create mid-circuit measurements.</span>
 
 <span class="sd">    Convert all QPDMeasure instances to Measure instructions. Add any newly created</span>
 <span class="sd">    classical bits to a new &quot;qpd_measurements&quot; register.</span>

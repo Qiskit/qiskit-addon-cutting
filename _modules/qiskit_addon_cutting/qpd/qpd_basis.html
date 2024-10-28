@@ -323,8 +323,7 @@
         <span class="n">maps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Instruction</span><span class="p">],</span> <span class="o">...</span><span class="p">]],</span>
         <span class="n">coeffs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assign member variables.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign member variables.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            maps: A sequence of tuples describing the noisy operations probabilistically</span>
@@ -389,8 +388,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">kappa</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the square root of the sampling overhead.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the square root of the sampling overhead.</span>
 
 <span class="sd">        This quantity is the sum of the magnitude of the coefficients.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -398,8 +396,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">overhead</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the sampling overhead.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sampling overhead.</span>
 
 <span class="sd">        The sampling overhead is the square of the sum of the magnitude of the coefficients.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -407,8 +404,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_instruction</span><span class="p">(</span><span class="n">gate</span><span class="p">:</span> <span class="n">Instruction</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QPDBasis</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generate a :class:`.QPDBasis` object, given a supported operation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a :class:`.QPDBasis` object, given a supported operation.</span>
 
 <span class="sd">        This static method is provided for convenience; it simply</span>
 <span class="sd">        calls :func:`~qpd.decompositions.qpdbasis_from_instruction` under the hood.</span>

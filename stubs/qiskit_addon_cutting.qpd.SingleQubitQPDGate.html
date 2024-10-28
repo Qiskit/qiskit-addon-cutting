@@ -305,9 +305,15 @@ could be a standalone single gate decomposition.</p>
 <p>Initialize the single qubit QPD gate, and assign member variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>qubit_id</strong> (<span class="sphinx_autodoc_typehints-type">int</span>) – This gate’s relative index to the decomposition which it belongs.
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>basis</strong> (<span class="sphinx_autodoc_typehints-type">QPDBasis</span>) – A <code class="xref py py-mod docutils literal notranslate"><span class="pre">QPDBasis</span></code> to which the gate should be decomposed</p></li>
+<li><p><strong>qubit_id</strong> (<span class="sphinx_autodoc_typehints-type">int</span>) – This gate’s relative index to the decomposition which it belongs.
 Single qubit QPDGates should have qubit_id 0 if they describe a local
-decomposition, such as a wire cut.</p>
+decomposition, such as a wire cut.</p></li>
+<li><p><strong>basis_id</strong> (<span class="sphinx_autodoc_typehints-type">int | None</span>) – An index to the basis to which the gate should be decomposed.
+This index is to <code class="docutils literal notranslate"><span class="pre">basis.maps</span></code>.</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type">str | None</span>) – An optional label for the gate</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – qubit_id is out of range</p>

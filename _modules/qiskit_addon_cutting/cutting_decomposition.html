@@ -336,8 +336,7 @@
 <span class="k">def</span> <span class="nf">partition_circuit_qubits</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">partition_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Replace all nonlocal gates belonging to more than one partition with instances of :class:`.TwoQubitQPDGate`.</span>
 
 <span class="sd">    :class:`.TwoQubitQPDGate`\ s belonging to a single partition will not be affected.</span>
 
@@ -402,8 +401,7 @@
 <span class="k">def</span> <span class="nf">cut_gates</span><span class="p">(</span>
     <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">gate_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">QPDBasis</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transform specified gates into :class:`.TwoQubitQPDGate`\ s.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform specified gates into :class:`.TwoQubitQPDGate`\ s.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuit: The circuit containing gates to be decomposed</span>
@@ -444,8 +442,7 @@
     <span class="n">partition_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PartitionedCuttingProblem</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Separate an input circuit and observable(s).</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Separate an input circuit and observable(s).</span>
 
 <span class="sd">    If ``partition_labels`` is provided, then qubits with matching partition</span>
 <span class="sd">    labels will be grouped together, and non-local gates spanning more than one</span>
@@ -542,8 +539,7 @@
 <span class="k">def</span> <span class="nf">decompose_observables</span><span class="p">(</span>
     <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span><span class="p">,</span> <span class="n">partition_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">PauliList</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decompose a list of observables with respect to some qubit partition labels.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decompose a list of observables with respect to some qubit partition labels.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        observables: A list of observables to decompose</span>
