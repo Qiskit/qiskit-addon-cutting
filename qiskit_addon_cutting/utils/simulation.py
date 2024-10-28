@@ -9,16 +9,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Simulation of precise measurement outcome probabilities.
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
+"""Simulation of precise measurement outcome probabilities."""
 
-.. currentmodule:: qiskit_addon_cutting.utils.simulation
-
-.. autosummary::
-   :toctree: ../stubs
-
-   simulate_statevector_outcomes
-   ExactSampler
-"""
 from __future__ import annotations
 
 from collections import defaultdict

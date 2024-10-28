@@ -1,26 +1,16 @@
-.. qiskit_addon_cutting:
+======================================
+``qiskit-addon-cutting`` API reference
+======================================
 
-.. module:: qiskit_addon_cutting
+.. toctree::
+   :maxdepth: 1
 
-==============
-API References
-==============
-
-###############
-Circuit Cutting
-###############
-
-.. automodule:: qiskit_addon_cutting
-   :no-index:
-   :no-members:
-   :no-inherited-members:
-   :no-special-members:
-
-#########
-Utilities
-#########
-
-.. automodule:: qiskit_addon_cutting.utils
-   :no-members:
-   :no-inherited-members:
-   :no-special-members:
+   qiskit_addon_cutting
+   qiskit_addon_cutting.instructions
+   qiskit_addon_cutting.qpd
+   qiskit_addon_cutting.utils.bitwise
+   qiskit_addon_cutting.utils.iteration
+   qiskit_addon_cutting.utils.observable_grouping
+   qiskit_addon_cutting.utils.simulation
+   qiskit_addon_cutting.utils.transforms
+   qiskit_addon_cutting.utils.transpiler_passes

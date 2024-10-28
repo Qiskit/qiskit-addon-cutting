@@ -9,21 +9,9 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Functions for manipulating quantum circuits.
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
+"""Functions for manipulating quantum circuits."""
 
-.. currentmodule:: qiskit_addon_cutting.utils.transforms
-
-.. autosummary::
-   :toctree: ../stubs
-
-   separate_circuit
-
-.. autosummary::
-   :toctree: ../stubs
-   :template: autosummary/class_no_inherited_members.rst
-
-   SeparatedCircuits
-"""
 from __future__ import annotations
 
 from uuid import uuid4

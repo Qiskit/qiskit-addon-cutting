@@ -103,9 +103,6 @@ exclude_patterns = [
 plot_html_show_formats = False
 plot_formats = ["svg"]
 
-# Redirects for pages that have moved
-redirects = {}
-
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
@@ -117,6 +114,54 @@ intersphinx_mapping = {
     ),
     "qiskit-aer": ("https://qiskit.github.io/qiskit-aer/", None),
     "rustworkx": ("https://www.rustworkx.org/", None),
+}
+
+# ----------------------------------------------------------------------------------
+# Redirects
+# ----------------------------------------------------------------------------------
+
+_inlined_apis = [
+    ("qiskit_addon_cutting", "cut_wires"),
+    ("qiskit_addon_cutting", "expand_observables"),
+    ("qiskit_addon_cutting", "partition_circuit_qubits"),
+    ("qiskit_addon_cutting", "partition_problem"),
+    ("qiskit_addon_cutting", "cut_gates"),
+    ("qiskit_addon_cutting", "generate_cutting_experiments"),
+    ("qiskit_addon_cutting", "reconstruct_expectation_values"),
+    ("qiskit_addon_cutting", "PartitionedCuttingProblem"),
+    ("qiskit_addon_cutting", "find_cuts"),
+    ("qiskit_addon_cutting", "OptimizationParameters"),
+    ("qiskit_addon_cutting", "DeviceConstraints"),
+    ("qiskit_addon_cutting.instructions", "CutWire"),
+    ("qiskit_addon_cutting.instructions", "Move"),
+    ("qiskit_addon_cutting.qpd", "QPDBasis"),
+    ("qiskit_addon_cutting.qpd", "BaseQPDGate"),
+    ("qiskit_addon_cutting.qpd", "SingleQubitQPDGate"),
+    ("qiskit_addon_cutting.qpd", "TwoQubitQPDGate"),
+    ("qiskit_addon_cutting.qpd", "WeightType"),
+    ("qiskit_addon_cutting.qpd", "generate_qpd_weights"),
+    ("qiskit_addon_cutting.qpd", "decompose_qpd_instructions"),
+    ("qiskit_addon_cutting.qpd", "qpdbasis_from_instruction"),
+    ("qiskit_addon_cutting.utils.bitwise", "bit_count"),
+    ("qiskit_addon_cutting.utils.iteration", "unique_by_id"),
+    ("qiskit_addon_cutting.utils.iteration", "unique_by_eq"),
+    (
+        "qiskit_addon_cutting.utils.observable_grouping",
+        "observables_restricted_to_subsystem",
+    ),
+    ("qiskit_addon_cutting.utils.observable_grouping", "CommutingObservableGroup"),
+    ("qiskit_addon_cutting.utils.observable_grouping", "ObservableCollection"),
+    ("qiskit_addon_cutting.utils.simulation", "simulate_statevector_outcomes"),
+    ("qiskit_addon_cutting.utils.simulation", "ExactSampler"),
+    ("qiskit_addon_cutting.utils.transforms", "separate_circuit"),
+    ("qiskit_addon_cutting.utils.transforms", "SeparatedCircuits"),
+    ("qiskit_addon_cutting.utils.transpiler_passes", "RemoveFinalReset"),
+    ("qiskit_addon_cutting.utils.transpiler_passes", "ConsolidateResets"),
+]
+
+redirects = {
+    f"stubs/{module}.{name}": f"../apidocs/{module}.html#{module}.{name}"
+    for module, name in _inlined_apis
 }
 
 # ----------------------------------------------------------------------------------
