@@ -9,8 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-Simulation of precise measurement outcome probabilities.
+"""Simulation of precise measurement outcome probabilities.
 
 .. currentmodule:: qiskit_addon_cutting.utils.simulation
 

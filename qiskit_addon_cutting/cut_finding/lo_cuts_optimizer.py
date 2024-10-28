@@ -90,21 +90,16 @@ class LOCutsOptimizer:
         """Optimize the cutting of a circuit by calling :meth:`CutOptimization.optimization_pass`.
 
         Args:
-        ``circuit_interface``: defines the circuit to be
-        cut. This object is then updated with the optimized cuts that
-        were identified.
-
-        ``optimization_settings``: defines the settings
-        to be used for the optimization.
-
-        ``device_constraints``:  the capabilties of
-        the target quantum hardware.
+            circuit_interface: defines the circuit to be cut. This object is then updated
+                with the optimized cuts that were identified.
+            optimization_settings: defines the settings to be used for the optimization.
+            device_constraints: the capabilties of the target quantum hardware.
 
         Returns:
-        The lowest-cost instance of :class:`DisjointSubcircuitsState`
-        identified in the search, or None if no solution could be found.
-        In case of the former, the circuit_interface object is also
-        updated as a side effect to incorporate the cuts found.
+            The lowest-cost instance of :class:`DisjointSubcircuitsState`
+            identified in the search, or None if no solution could be found.
+            In case of the former, the circuit_interface object is also
+            updated as a side effect to incorporate the cuts found.
         """
         if circuit_interface is not None:
             self.circuit_interface = circuit_interface

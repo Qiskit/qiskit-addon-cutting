@@ -31,8 +31,7 @@ class QPDBasis:
         maps: Sequence[tuple[Sequence[Instruction], ...]],
         coeffs: Sequence[float],
     ):
-        """
-        Assign member variables.
+        """Assign member variables.
 
         Args:
             maps: A sequence of tuples describing the noisy operations probabilistically
@@ -97,8 +96,7 @@ class QPDBasis:
 
     @property
     def kappa(self) -> float:
-        """
-        Get the square root of the sampling overhead.
+        """Get the square root of the sampling overhead.
 
         This quantity is the sum of the magnitude of the coefficients.
         """
@@ -106,8 +104,7 @@ class QPDBasis:
 
     @property
     def overhead(self) -> float:
-        """
-        Get the sampling overhead.
+        """Get the sampling overhead.
 
         The sampling overhead is the square of the sum of the magnitude of the coefficients.
         """
@@ -115,8 +112,7 @@ class QPDBasis:
 
     @staticmethod
     def from_instruction(gate: Instruction, /) -> QPDBasis:
-        """
-        Generate a :class:`.QPDBasis` object, given a supported operation.
+        """Generate a :class:`.QPDBasis` object, given a supported operation.
 
         This static method is provided for convenience; it simply
         calls :func:`~qpd.decompositions.qpdbasis_from_instruction` under the hood.
