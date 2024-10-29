@@ -9,15 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Bitwise utilities.
-
-.. currentmodule:: qiskit_addon_cutting.utils.bitwise
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   bit_count
-"""
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
+"""Module for bitwise utilities."""
 
 if hasattr(0, "bit_count"):
 

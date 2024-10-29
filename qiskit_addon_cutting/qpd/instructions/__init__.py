@@ -9,6 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# Warning: this module is not documented and it does not have an RST file
+# because its members are already documented in the parent module.
 r"""Quantum circuit :class:`~qiskit.Instruction`\ s for representing quasiprobability decompositions."""
 
 from .qpd_gate import BaseQPDGate, SingleQubitQPDGate, TwoQubitQPDGate

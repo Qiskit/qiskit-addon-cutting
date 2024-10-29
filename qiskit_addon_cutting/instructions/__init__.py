@@ -9,6 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
 r"""Quantum circuit :class:`~qiskit.Instruction`\ s useful for circuit cutting."""
 
 from .cut_wire import CutWire
