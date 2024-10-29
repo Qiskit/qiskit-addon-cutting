@@ -142,7 +142,7 @@ class ExactSampler(BaseSamplerV1):
     :mod:`qiskit_aer.primitives` do not currently support all of the above
     functionality.  Related upstream issues:
 
-    - https://github.com/Qiskit/qiskit-terra/issues/9657
+    - https://github.com/Qiskit/qiskit/issues/9657
     - https://github.com/Qiskit/qiskit-aer/issues/1810
     - https://github.com/Qiskit/qiskit-aer/issues/1811
     """
