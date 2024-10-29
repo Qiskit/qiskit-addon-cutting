@@ -9,16 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Transpiler passes useful for circuit knitting.
-
-.. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   RemoveFinalReset
-   ConsolidateResets
-"""
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
+"""Transpiler passes useful for circuit knitting."""
 
 from qiskit.circuit import Reset, Qubit
 from qiskit.dagcircuit import DAGOpNode

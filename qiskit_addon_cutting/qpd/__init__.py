@@ -9,6 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
 """Main quasiprobability decomposition functionality."""
 
 from .qpd_basis import QPDBasis
