@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.utils.simulation.simulate\_statevector\_outcomes
-=======================================================================
-
-.. currentmodule:: qiskit_addon_cutting.utils.simulation
-
-.. autofunction:: simulate_statevector_outcomes

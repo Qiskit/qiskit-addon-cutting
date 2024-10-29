@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.utils.bitwise.bit\_count
-===============================================
-
-.. currentmodule:: qiskit_addon_cutting.utils.bitwise
-
-.. autofunction:: bit_count

@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.expand\_observables
-==========================================
-
-.. currentmodule:: qiskit_addon_cutting
-
-.. autofunction:: expand_observables

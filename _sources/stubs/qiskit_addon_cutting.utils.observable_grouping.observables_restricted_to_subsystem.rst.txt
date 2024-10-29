@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.utils.observable\_grouping.observables\_restricted\_to\_subsystem
-========================================================================================
-
-.. currentmodule:: qiskit_addon_cutting.utils.observable_grouping
-
-.. autofunction:: observables_restricted_to_subsystem

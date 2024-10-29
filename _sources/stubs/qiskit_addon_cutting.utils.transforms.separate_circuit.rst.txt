@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.utils.transforms.separate\_circuit
-=========================================================
-
-.. currentmodule:: qiskit_addon_cutting.utils.transforms
-
-.. autofunction:: separate_circuit

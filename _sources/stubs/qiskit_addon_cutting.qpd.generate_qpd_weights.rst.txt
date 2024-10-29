@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.qpd.generate\_qpd\_weights
-=================================================
-
-.. currentmodule:: qiskit_addon_cutting.qpd
-
-.. autofunction:: generate_qpd_weights

@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.reconstruct\_expectation\_values
-=======================================================
-
-.. currentmodule:: qiskit_addon_cutting
-
-.. autofunction:: reconstruct_expectation_values

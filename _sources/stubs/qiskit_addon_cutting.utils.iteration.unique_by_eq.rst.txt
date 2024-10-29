@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.utils.iteration.unique\_by\_eq
-=====================================================
-
-.. currentmodule:: qiskit_addon_cutting.utils.iteration
-
-.. autofunction:: unique_by_eq

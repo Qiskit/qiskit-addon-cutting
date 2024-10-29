@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.partition\_circuit\_qubits
-=================================================
-
-.. currentmodule:: qiskit_addon_cutting
-
-.. autofunction:: partition_circuit_qubits

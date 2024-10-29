@@ -1,6 +1,0 @@
-﻿qiskit\_addon\_cutting.find\_cuts
-=================================
-
-.. currentmodule:: qiskit_addon_cutting
-
-.. autofunction:: find_cuts
