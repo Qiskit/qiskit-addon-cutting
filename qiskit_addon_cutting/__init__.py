@@ -9,73 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Circuit Cutting (:mod:`qiskit_addon_cutting`).
-
-.. currentmodule:: qiskit_addon_cutting
-
-Circuit Cutting
-===============
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-
-    cut_wires
-    expand_observables
-    partition_circuit_qubits
-    partition_problem
-    cut_gates
-    generate_cutting_experiments
-    reconstruct_expectation_values
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-    :template: autosummary/class_no_inherited_members.rst
-
-    PartitionedCuttingProblem
-    instructions.CutWire
-    instructions.Move
-
-Automatic Cut Finding
-~~~~~~~~~~~~~~~~~~~~~
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-
-    find_cuts
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-    :template: autosummary/class_no_inherited_members.rst
-
-    OptimizationParameters
-    DeviceConstraints
-
-Quasi-Probability Decomposition (QPD)
-=====================================
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-    :template: autosummary/class_no_inherited_members.rst
-
-    qpd.QPDBasis
-    qpd.BaseQPDGate
-    qpd.SingleQubitQPDGate
-    qpd.TwoQubitQPDGate
-    qpd.WeightType
-
-.. autosummary::
-    :toctree: ../stubs/
-    :nosignatures:
-
-    qpd.generate_qpd_weights
-    qpd.decompose_qpd_instructions
-    qpd.qpdbasis_from_instruction
-"""
+"""Circuit cutting."""
 
 from __future__ import annotations
 from importlib.metadata import version, PackageNotFoundError

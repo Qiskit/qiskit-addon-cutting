@@ -9,16 +9,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Iteration utilities.
-
-.. currentmodule:: qiskit_addon_cutting.utils.iteration
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   unique_by_id
-   unique_by_eq
-"""
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
+"""Iteration utilities."""
 
 import sys
 from collections.abc import Iterable, ValuesView
