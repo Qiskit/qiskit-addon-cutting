@@ -59,7 +59,7 @@ style = [
 ]
 lint = [
     "qiskit-addon-cutting[style]",
-    "mypy==1.11.2",
+    "mypy==1.13.0",
     "reno>=3.4.0",
     "pylint==3.3.1",
 ]
