@@ -83,10 +83,16 @@ html_theme_options = {
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 
-# autodoc/autosummary options
+# Options for autodoc. These reflect the values from Qiskit SDK and Runtime.
 autosummary_generate = True
 autosummary_generate_overwrite = False
 autoclass_content = "both"
+autodoc_typehints = "description"
+autodoc_default_options = {
+    "inherited-members": None,
+}
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
 
 # nbsphinx options (for tutorials)
 nbsphinx_timeout = 180
@@ -132,12 +138,6 @@ _inlined_apis = [
     ("qiskit_addon_cutting", "find_cuts"),
     ("qiskit_addon_cutting", "OptimizationParameters"),
     ("qiskit_addon_cutting", "DeviceConstraints"),
-    ("qiskit_addon_cutting.instructions", "CutWire"),
-    ("qiskit_addon_cutting.instructions", "Move"),
-    ("qiskit_addon_cutting.qpd", "QPDBasis"),
-    ("qiskit_addon_cutting.qpd", "BaseQPDGate"),
-    ("qiskit_addon_cutting.qpd", "SingleQubitQPDGate"),
-    ("qiskit_addon_cutting.qpd", "TwoQubitQPDGate"),
     ("qiskit_addon_cutting.qpd", "WeightType"),
     ("qiskit_addon_cutting.qpd", "generate_qpd_weights"),
     ("qiskit_addon_cutting.qpd", "decompose_qpd_instructions"),
@@ -155,8 +155,6 @@ _inlined_apis = [
     ("qiskit_addon_cutting.utils.simulation", "ExactSampler"),
     ("qiskit_addon_cutting.utils.transforms", "separate_circuit"),
     ("qiskit_addon_cutting.utils.transforms", "SeparatedCircuits"),
-    ("qiskit_addon_cutting.utils.transpiler_passes", "RemoveFinalReset"),
-    ("qiskit_addon_cutting.utils.transpiler_passes", "ConsolidateResets"),
 ]
 
 redirects = {
