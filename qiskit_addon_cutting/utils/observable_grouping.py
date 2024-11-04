@@ -250,13 +250,13 @@ class ObservableCollection:
 
     @property
     def lookup(self) -> dict[Pauli, list[tuple[int, int]]]:
-        r"""Get dict which maps each :class:`~qiskit.quantum_info.Pauli` observable to a list of indices, ``(i, j)``, to commuting observables in ``groups``.
+        """Get dict which maps each :class:`~qiskit.quantum_info.Pauli` observable to a list of indices, ``(i, j)``, to commuting observables in ``groups``.
 
         For each element of the list, it means that the :class:`~qiskit.quantum_info.Pauli` is given by
-        the ``j``th commuting observable in the ``i``th group.
+        the ``j``-th commuting observable in the ``i``-th group.
 
         This list will be of length 1 at minimum, but may potentially be longer
-        if multiple :class:`.CommutingObservableGroup`\ s are compatible with the given
+        if multiple :class:`.CommutingObservableGroup` objects are compatible with the given
         :class:`~qiskit.quantum_info.Pauli`.
 
         """
