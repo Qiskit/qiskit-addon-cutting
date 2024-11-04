@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Quasi-Probability Decomposition (QPD) (qiskit_addon_cutting.qpd)" href="qiskit_addon_cutting.qpd.html" /><link rel="prev" title="Circuit cutting (qiskit_addon_cutting)" href="qiskit_addon_cutting.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="CutWire" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html" /><link rel="prev" title="Circuit cutting (qiskit_addon_cutting)" href="qiskit_addon_cutting.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Instructions (qiskit_addon_cutting.instructions) - Qiskit addon: circuit cutting 0.9.0</title>
@@ -175,7 +175,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -219,14 +219,28 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API References</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.html">Circuit cutting (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting</span></code>)</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Instructions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.instructions</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.qpd.html">Quasi-Probability Decomposition (QPD) (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.qpd</span></code>)</a></li>
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Instructions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.instructions</span></code>)</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Instructions (qiskit_addon_cutting.instructions)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html">CutWire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html">Move</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="qiskit_addon_cutting.qpd.html">Quasi-Probability Decomposition (QPD) (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.qpd</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Quasi-Probability Decomposition (QPD) (qiskit_addon_cutting.qpd)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.QPDBasis.html">QPDBasis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.BaseQPDGate.html">BaseQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.SingleQubitQPDGate.html">SingleQubitQPDGate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.qpd.TwoQubitQPDGate.html">TwoQubitQPDGate</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.bitwise.html">Bitwise utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.bitwise</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.iteration.html">Iteration utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.iteration</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.observable_grouping.html">Observable grouping (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_grouping</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.simulation.html">Simulation utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.simulation</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.transforms.html">Transforms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transforms</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qiskit_addon_cutting.utils.transpiler_passes.html">Transpiler passes (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transpiler_passes</span></code>)</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="qiskit_addon_cutting.utils.transpiler_passes.html">Transpiler passes (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transpiler_passes</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Transpiler passes (qiskit_addon_cutting.utils.transpiler_passes)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset.html">RemoveFinalReset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_addon_cutting.utils.transpiler_passes.ConsolidateResets.html">ConsolidateResets</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/Qiskit/qiskit-addon-cutting">GitHub</a></li>
@@ -263,7 +277,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -272,64 +286,18 @@
           <section id="module-qiskit_addon_cutting.instructions">
 <span id="instructions-qiskit-addon-cutting-instructions"></span><h1>Instructions (<a class="reference internal" href="#module-qiskit_addon_cutting.instructions" title="qiskit_addon_cutting.instructions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.instructions</span></code></a>)<a class="headerlink" href="#module-qiskit_addon_cutting.instructions" title="Link to this heading">¶</a></h1>
 <p>Quantum circuit <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code>s useful for circuit cutting.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CutWire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/instructions/cut_wire.html#CutWire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire" title="Link to this definition">¶</a></dt>
-<dd><p>An instruction for denoting a wire cut location.</p>
-<p>Create CutWire instruction.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/instructions/move.html#Move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move" title="Link to this definition">¶</a></dt>
-<dd><p>A two-qubit instruction representing a reset of the second qubit followed by a swap.</p>
-<p><strong>Circuit Symbol:</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     ┌───────┐
-q_0: ┤0      ├       q_0: ──────X─
-     │  Move │   =              │
-q_1: ┤1      ├       q_1: ─|0&gt;──X─
-     └───────┘
-</pre></div>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html#qiskit_addon_cutting.instructions.CutWire" title="qiskit_addon_cutting.instructions.CutWire"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CutWire</span></code></a></p></td>
+<td><p>An instruction for denoting a wire cut location.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../stubs/qiskit_addon_cutting.instructions.Move.html#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Move</span></code></a></p></td>
+<td><p>A two-qubit instruction representing a reset of the second qubit followed by a swap.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>The desired effect of this instruction, typically, is to move the state of
-the first qubit to the second qubit.  For this to work as expected, the
-second incoming qubit must share no entanglement with the remainder of the
-system.  If this qubit <em>is</em> entangled, then performing the reset operation
-will in turn implement a quantum channel on the other qubit(s) with which
-it is entangled, resulting in the partial collapse of those qubits.</p>
-<p>The simplest way to ensure that the second (i.e., destination) qubit shares
-no entanglement with the remainder of the system is to use a fresh qubit
-which has not been used since initialization.</p>
-<p>Another valid way is to use, as a desination qubit, a qubit whose immediate
-prior use was as the source (i.e., first) qubit of a preceding
-<a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> operation.</p>
-<p>The following circuit contains two <a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> operations, corresponding
-to each of the aforementioned cases:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit_addon_cutting.instructions</span> <span class="kn">import</span> <span class="n">Move</span>
-
-<span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">ryy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Move</span><span class="p">(),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">ryy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Move</span><span class="p">(),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">ryy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(<a class="reference download internal" download="" href="../_downloads/17f9a494623e7d12190bfa3f0bb2982d/qiskit_addon_cutting-instructions-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>)</p>
-<figure class="align-default">
-<img alt="../_images/qiskit_addon_cutting-instructions-1.svg" class="plot-directive" src="../_images/qiskit_addon_cutting-instructions-1.svg" />
-</figure>
-<p>A full demonstration of the <a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> instruction is available in <a class="reference external" href="https://qiskit.github.io/qiskit-addon-cutting/tutorials/03_wire_cutting_via_move_instruction.html">the
-introductory tutorial on wire cutting</a>.</p>
-<p>Create a <a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> instruction.</p>
-</dd></dl>
-
 </section>
 
         </article>
@@ -337,12 +305,12 @@ introductory tutorial on wire cutting</a>.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="qiskit_addon_cutting.qpd.html">
+          <a class="next-page" href="../stubs/qiskit_addon_cutting.instructions.CutWire.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Quasi-Probability Decomposition (QPD) (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.qpd</span></code>)</div>
+                <div class="title">CutWire</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -382,28 +350,8 @@ introductory tutorial on wire cutting</a>.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Instructions (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.instructions</span></code>)</a><ul>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire"><code class="docutils literal notranslate"><span class="pre">CutWire</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move"><code class="docutils literal notranslate"><span class="pre">Move</span></code></a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

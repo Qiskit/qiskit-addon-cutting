@@ -1,0 +1,29 @@
+﻿QPDBasis
+========
+
+.. currentmodule:: qiskit_addon_cutting.qpd
+
+.. autoclass:: QPDBasis
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: coeffs
+   .. autoattribute:: kappa
+   .. autoattribute:: maps
+   .. autoattribute:: num_qubits
+   .. autoattribute:: overhead
+   .. autoattribute:: probabilities
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: from_instruction
+  

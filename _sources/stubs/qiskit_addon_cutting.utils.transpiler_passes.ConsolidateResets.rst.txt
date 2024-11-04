@@ -1,0 +1,28 @@
+﻿ConsolidateResets
+=================
+
+.. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
+
+.. autoclass:: ConsolidateResets
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: is_analysis_pass
+   .. autoattribute:: is_transformation_pass
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: execute
+   .. automethod:: name
+   .. automethod:: run
+   .. automethod:: update_status
+  

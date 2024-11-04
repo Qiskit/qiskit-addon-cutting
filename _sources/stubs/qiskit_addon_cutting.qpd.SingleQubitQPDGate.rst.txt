@@ -1,0 +1,50 @@
+﻿SingleQubitQPDGate
+==================
+
+.. currentmodule:: qiskit_addon_cutting.qpd
+
+.. autoclass:: SingleQubitQPDGate
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: base_class
+   .. autoattribute:: basis
+   .. autoattribute:: basis_id
+   .. autoattribute:: condition
+   .. autoattribute:: condition_bits
+   .. autoattribute:: decompositions
+   .. autoattribute:: definition
+   .. autoattribute:: duration
+   .. autoattribute:: label
+   .. autoattribute:: mutable
+   .. autoattribute:: name
+   .. autoattribute:: num_clbits
+   .. autoattribute:: num_qubits
+   .. autoattribute:: params
+   .. autoattribute:: qubit_id
+   .. autoattribute:: unit
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: add_decomposition
+   .. automethod:: assemble
+   .. automethod:: broadcast_arguments
+   .. automethod:: c_if
+   .. automethod:: copy
+   .. automethod:: inverse
+   .. automethod:: is_parameterized
+   .. automethod:: repeat
+   .. automethod:: reverse_ops
+   .. automethod:: soft_compare
+   .. automethod:: to_mutable
+   .. automethod:: validate_parameter
+  

@@ -9,5 +9,9 @@ Transpiler passes (:mod:`qiskit_addon_cutting.utils.transpiler_passes`)
 
 .. currentmodule:: qiskit_addon_cutting.utils.transpiler_passes
 
-.. autoclass:: RemoveFinalReset
-.. autoclass:: ConsolidateResets
+.. autosummary::
+   :nosignatures:
+   :toctree: ../stubs/
+
+   RemoveFinalReset
+   ConsolidateResets

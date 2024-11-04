@@ -9,5 +9,9 @@ Instructions (:mod:`qiskit_addon_cutting.instructions`)
 
 .. currentmodule:: qiskit_addon_cutting.instructions
 
-.. autoclass:: CutWire
-.. autoclass:: Move
+.. autosummary::
+   :nosignatures:
+   :toctree: ../stubs/
+
+   CutWire
+   Move
