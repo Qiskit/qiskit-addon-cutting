@@ -136,7 +136,7 @@ class TestQPDBasis(unittest.TestCase):
         with self.subTest("Implicitly supported gate"):
             # For implicitly supported gates, we can detect that `to_matrix`
             # failed, but there are other possible explanations, too.  See
-            # https://github.com/Qiskit/qiskit-terra/issues/10396
+            # https://github.com/Qiskit/qiskit/issues/10396
             with pytest.raises(ValueError) as e_info:
                 QPDBasis.from_instruction(XXPlusYYGate(Parameter("θ")))
             assert (
