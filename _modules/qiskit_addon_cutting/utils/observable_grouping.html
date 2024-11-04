@@ -361,7 +361,7 @@
     <span class="c1"># it _could_ be, *especially* if given a PauliList.</span>
     <span class="c1">#</span>
     <span class="c1"># Indeed, this can be made better by using pauli.x and pauli.z arrays</span>
-    <span class="c1"># https://github.com/Qiskit/qiskit-terra/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L403-L404</span>
+    <span class="c1"># https://github.com/Qiskit/qiskit/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L403-L404</span>
     <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">obs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">commuting_observables</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">Pauli</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Input sequence includes something other than a Pauli.&quot;</span><span class="p">)</span>
@@ -406,7 +406,7 @@
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-init method for the data class.&quot;&quot;&quot;</span>
-        <span class="c1"># TODO(perf): These loops could be faster; see e.g. https://github.com/Qiskit/qiskit-terra/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L398-L413</span>
+        <span class="c1"># TODO(perf): These loops could be faster; see e.g. https://github.com/Qiskit/qiskit/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L398-L413</span>
         <span class="n">pauli_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pauli</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">general_observable</span><span class="p">)</span> <span class="k">if</span> <span class="n">pauli</span> <span class="o">!=</span> <span class="n">_I</span>
         <span class="p">]</span>

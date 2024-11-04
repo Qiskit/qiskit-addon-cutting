@@ -351,7 +351,7 @@
 <span class="sd">    All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are</span>
 <span class="sd">    supported.  This should include the vast majority of gates with no unbound</span>
 <span class="sd">    parameters, but there are some special cases (see, e.g., `qiskit issue #10396</span>
-<span class="sd">    &lt;https://github.com/Qiskit/qiskit-terra/issues/10396&gt;`__).</span>
+<span class="sd">    &lt;https://github.com/Qiskit/qiskit/issues/10396&gt;`__).</span>
 
 <span class="sd">    The :class:`.Move` operation, which can be used to specify a wire cut,</span>
 <span class="sd">    is also supported.</span>
@@ -592,7 +592,7 @@
 <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">DCXGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">iSwapGate</span><span class="p">())</span>
     <span class="c1"># Modify basis according to DCXGate definition in Qiskit circuit library</span>
-    <span class="c1"># https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944</span>
+    <span class="c1"># https://github.com/Qiskit/qiskit/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944</span>
     <span class="k">for</span> <span class="n">operations</span> <span class="ow">in</span> <span class="n">unique_by_id</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">retval</span><span class="o">.</span><span class="n">maps</span><span class="p">):</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">SdgGate</span><span class="p">())</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">HGate</span><span class="p">())</span>
@@ -755,7 +755,7 @@
 <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">unused_gate</span><span class="p">:</span> <span class="n">ECRGate</span><span class="p">):</span>
     <span class="n">retval</span> <span class="o">=</span> <span class="n">qpdbasis_from_instruction</span><span class="p">(</span><span class="n">CXGate</span><span class="p">())</span>
     <span class="c1"># Modify basis according to ECRGate definition in Qiskit circuit library</span>
-    <span class="c1"># https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663</span>
+    <span class="c1"># https://github.com/Qiskit/qiskit/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663</span>
     <span class="k">for</span> <span class="n">operations</span> <span class="ow">in</span> <span class="n">unique_by_id</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">retval</span><span class="o">.</span><span class="n">maps</span><span class="p">):</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">SGate</span><span class="p">())</span>
         <span class="n">operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">XGate</span><span class="p">())</span>
