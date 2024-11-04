@@ -92,7 +92,7 @@ def most_general_observable(
     # it _could_ be, *especially* if given a PauliList.
     #
     # Indeed, this can be made better by using pauli.x and pauli.z arrays
-    # https://github.com/Qiskit/qiskit-terra/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L403-L404
+    # https://github.com/Qiskit/qiskit/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L403-L404
     for j, obs in enumerate(commuting_observables):
         if not isinstance(obs, Pauli):
             raise ValueError("Input sequence includes something other than a Pauli.")
@@ -135,7 +135,7 @@ class CommutingObservableGroup:
 
     def __post_init__(self) -> None:
         """Post-init method for the data class."""
-        # TODO(perf): These loops could be faster; see e.g. https://github.com/Qiskit/qiskit-terra/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L398-L413
+        # TODO(perf): These loops could be faster; see e.g. https://github.com/Qiskit/qiskit/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L398-L413
         pauli_indices: list[int] = [
             i for i, pauli in enumerate(self.general_observable) if pauli != _I
         ]

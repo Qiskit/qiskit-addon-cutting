@@ -83,7 +83,7 @@ def qpdbasis_from_instruction(gate: Instruction, /) -> QPDBasis:
     All two-qubit gates which implement the :meth:`~qiskit.circuit.Gate.to_matrix` method are
     supported.  This should include the vast majority of gates with no unbound
     parameters, but there are some special cases (see, e.g., `qiskit issue #10396
-    <https://github.com/Qiskit/qiskit-terra/issues/10396>`__).
+    <https://github.com/Qiskit/qiskit/issues/10396>`__).
 
     The :class:`.Move` operation, which can be used to specify a wire cut,
     is also supported.
@@ -323,7 +323,7 @@ def _(unused_gate: iSwapGate):
 def _(unused_gate: DCXGate):
     retval = qpdbasis_from_instruction(iSwapGate())
     # Modify basis according to DCXGate definition in Qiskit circuit library
-    # https://github.com/Qiskit/qiskit-terra/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
+    # https://github.com/Qiskit/qiskit/blob/e9f8b7c50968501e019d0cb426676ac606eb5a10/qiskit/circuit/library/standard_gates/equivalence_library.py#L938-L944
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, SdgGate())
         operations.insert(0, HGate())
@@ -486,7 +486,7 @@ def _(gate: CXGate | CYGate | CZGate | CHGate):
 def _(unused_gate: ECRGate):
     retval = qpdbasis_from_instruction(CXGate())
     # Modify basis according to ECRGate definition in Qiskit circuit library
-    # https://github.com/Qiskit/qiskit-terra/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
+    # https://github.com/Qiskit/qiskit/blob/d9763523d45a747fd882a7e79cc44c02b5058916/qiskit/circuit/library/standard_gates/equivalence_library.py#L656-L663
     for operations in unique_by_id(m[0] for m in retval.maps):
         operations.insert(0, SGate())
         operations.append(XGate())
