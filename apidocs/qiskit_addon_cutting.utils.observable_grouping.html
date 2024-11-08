@@ -316,7 +316,8 @@ a <code class="docutils literal notranslate"><span class="pre">list[Pauli]</span
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CommutingObservableGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">general_observable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commuting_observables</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/utils/observable_grouping.html#CommutingObservableGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup" title="Link to this definition">¶</a></dt>
-<dd><p>Set of mutually qubit-wise commuting observables.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Set of mutually qubit-wise commuting observables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -356,7 +357,8 @@ the corresponding entry in <code class="docutils literal notranslate"><span clas
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.utils.observable_grouping.ObservableCollection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObservableCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observables</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/utils/observable_grouping.html#ObservableCollection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.utils.observable_grouping.ObservableCollection" title="Link to this definition">¶</a></dt>
-<dd><p>Collection of observables organized for efficient taking of measurements.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Collection of observables organized for efficient taking of measurements.</p>
 <p>The observables are automatically organized into sets of mutually
 qubit-wise commuting observables, each represented by a
 <a class="reference internal" href="#qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup" title="qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommutingObservableGroup</span></code></a>.</p>

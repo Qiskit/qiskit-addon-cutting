@@ -551,7 +551,8 @@ value corresponding to the input observable in the same position</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.PartitionedCuttingProblem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PartitionedCuttingProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subcircuits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subobservables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/cutting_decomposition.html#PartitionedCuttingProblem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.PartitionedCuttingProblem" title="Link to this definition">¶</a></dt>
-<dd><p>The result of decomposing and separating a circuit and observable(s).</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
+<p>The result of decomposing and separating a circuit and observable(s).</p>
 <p>Create new instance of PartitionedCuttingProblem(subcircuits, bases, subobservables)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -644,7 +645,8 @@ not allowed to run long enough to prove that this was the case.</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.OptimizationParameters">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptimizationParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backjumps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wire_lo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/automated_cut_finding.html#OptimizationParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.OptimizationParameters" title="Link to this definition">¶</a></dt>
-<dd><p>Specify parameters that control the optimization.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Specify parameters that control the optimization.</p>
 <p>If either of the constraints specified by <code class="docutils literal notranslate"><span class="pre">max_backjumps</span></code> or <code class="docutils literal notranslate"><span class="pre">max_gamma</span></code> are exceeded, the search terminates but
 nevertheless returns the result of a greedy best first search, which gives an <em>upper-bound</em> on gamma.</p>
 <dl class="field-list simple">
@@ -693,7 +695,8 @@ nevertheless returns the result of a greedy best first search, which gives an <e
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.DeviceConstraints">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DeviceConstraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubits_per_subcircuit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/automated_cut_finding.html#DeviceConstraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.DeviceConstraints" title="Link to this definition">¶</a></dt>
-<dd><p>Specify the constraints (qubits per subcircuit) that must be respected.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Specify the constraints (qubits per subcircuit) that must be respected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubits_per_subcircuit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>)</p>
