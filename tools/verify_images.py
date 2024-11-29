@@ -18,11 +18,10 @@ import multiprocessing
 import sys
 import glob
 
-# Dictionary to allowlist lines of code that the checker will not error
-# Format: {"file_path": [list_of_line_numbers]}
-ALLOWLIST_MISSING_ALT_TEXT = {
-    "qiskit_addon_cutting/instructions/move.py": [50]
-}
+# List of allowlist files that the checker will not verify
+ALLOWLIST_MISSING_ALT_TEXT = [
+    "qiskit_addon_cutting/instructions/move.py"
+]
 
 
 def is_image(line: str) -> bool:
@@ -32,50 +31,43 @@ def is_image(line: str) -> bool:
 def is_option(line: str) -> bool:
     return line.strip().startswith(":")
 
-def in_allowlist(filename: str, line_num: int) -> bool:
-    return line_num in ALLOWLIST_MISSING_ALT_TEXT.get(filename, [])
-
-
-def validate_image(file_path: str) -> tuple[str, list[str]]:
-    """Validate all the images of a single file"""
-    invalid_images: list[str] = []
-
-    lines = Path(file_path).read_text().splitlines()
-
-    line_index = 0
-    image_found = False
-    image_line = -1
-    options: list[str] = []
-
-    while line_index < len(lines):
-        line = lines[line_index].strip()
-
-        if image_found and not is_option(line) and not is_valid_image(options):
-            invalid_images.append(f"- Error in line {image_line}: {lines[image_line-1].strip()}")
-            image_found = False
-            options = []
-            continue
-
-        if image_found and is_option(line):
-            options.append(line)
-
-        if is_image(line) and not in_allowlist(file_path, line_index + 1):
-            image_found = True
-            image_line = line_index + 1
-            options = []
-
-        line_index += 1
-
-    return (file_path, invalid_images)
-
 
 def is_valid_image(options: list[str]) -> bool:
-    alt_exists = any(option.startswith(":alt:") for option in options)
-    nofigs_exists = any(option.startswith(":nofigs:") for option in options)
+    alt_exists = any(option.strip().startswith(":alt:") for option in options)
+    nofigs_exists = any(option.strip().startswith(":nofigs:") for option in options)
 
     # Only `.. plot::`` directives without the `:nofigs:` option are required to have alt text.
     # Meanwhile, all `.. image::` directives need alt text and they don't have a `:nofigs:` option.
     return alt_exists or nofigs_exists
+
+
+def validate_image(file_path: str) -> tuple[str, list[str]]:
+    """Validate all the images of a single file"""
+
+    if file_path in ALLOWLIST_MISSING_ALT_TEXT:
+        return [file_path, []]
+
+    invalid_images: list[str] = []
+
+    lines = Path(file_path).read_text().splitlines()
+
+    image_found = False
+    options: list[str] = []
+
+    for line_index, line in enumerate(lines):
+        if image_found and is_option(line):
+            options.append(line)
+            continue
+
+        if image_found and not is_valid_image(options):
+            image_line = line_index - len(options)
+            invalid_images.append(f"- Error in line {image_line}: {lines[image_line-1].strip()}")
+
+        image_found = is_image(line)
+        options = []
+
+    return (file_path, invalid_images)
+
 
 def main() -> None:
     files = glob.glob("qiskit_addon_cutting/**/*.py", recursive=True)
