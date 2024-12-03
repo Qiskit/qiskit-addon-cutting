@@ -1,0 +1,8 @@
+---
+other:
+  - |
+    This addon is now marked as being incompatible with Qiskit 1.3.0, as the
+    second cutting tutorial fails to execute due to a bug in Qiskit 1.3.0.
+    See discussion in
+    `issue #714 <https://github.com/Qiskit/qiskit-addon-cutting/issues/714>`__
+    for more information.
