@@ -45,4 +45,4 @@ jobs:
         run: |
           toxpyversion=$(echo ${{ matrix.python-version }} | sed -E 's/^([0-9]+)\.([0-9]+).*$/\1\2/')
           tox -epy${toxpyversion} -- --run-slow
-          tox -epy${toxpyversion}-notebook -- --ignore=docs/tutorials/02_gate_cutting_to_reduce_circuit_depth.ipynb
+          tox -epy${toxpyversion}-notebook
