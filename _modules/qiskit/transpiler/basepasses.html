@@ -481,7 +481,7 @@
         <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">workflow_status</span><span class="o">.</span><span class="n">previous_run</span> <span class="o">==</span> <span class="n">RunState</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_dag</span><span class="p">,</span> <span class="n">DAGCircuit</span><span class="p">):</span>
                 <span class="c1"># Copy calibration data from the original program</span>
-                <span class="n">new_dag</span><span class="o">.</span><span class="n">calibrations</span> <span class="o">=</span> <span class="n">passmanager_ir</span><span class="o">.</span><span class="n">calibrations</span>
+                <span class="n">new_dag</span><span class="o">.</span><span class="n">_calibrations_prop</span> <span class="o">=</span> <span class="n">passmanager_ir</span><span class="o">.</span><span class="n">_calibrations_prop</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">TranspilerError</span><span class="p">(</span>
                     <span class="s2">&quot;Transformation passes should return a transformed dag.&quot;</span>
