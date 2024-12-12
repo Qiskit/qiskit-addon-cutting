@@ -62,12 +62,8 @@ lint = [
     "qiskit-addon-cutting[style]",
     "mypy==1.11.2",
     "reno>=3.4.0",
-<<<<<<< HEAD
     "pylint==3.2.7",
-=======
-    "pylint==3.3.1",
     "numpy<2.2",
->>>>>>> d44ca0a (Pin numpy<2.2 in lint workflow (#722))
 ]
 docs = [
     "Sphinx>=3.0.0",
