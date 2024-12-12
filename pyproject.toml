@@ -63,6 +63,7 @@ lint = [
     "mypy==1.13.0",
     "reno>=3.4.0",
     "pylint==3.3.1",
+    "numpy<2.2",
 ]
 docs = [
     "Sphinx>=3.0.0",
