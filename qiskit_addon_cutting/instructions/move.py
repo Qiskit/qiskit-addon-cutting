@@ -48,6 +48,7 @@ class Move(Instruction):
     to each of the aforementioned cases:
 
     .. plot::
+       :alt: Output from the previous code.
        :include-source:
 
        import numpy as np
