@@ -7,7 +7,7 @@
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>qiskit_addon_cutting.qpd.weights - Qiskit addon: circuit cutting 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
@@ -291,20 +291,20 @@
 
 <span class="sd">&quot;&quot;&quot;Code for generating quasiprobability weights.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 
-<span class="kn">from</span> <span class="nn">.qpd_basis</span> <span class="kn">import</span> <span class="n">QPDBasis</span>
-<span class="kn">from</span> <span class="nn">..utils.iteration</span> <span class="kn">import</span> <span class="n">strict_zip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.qpd_basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">QPDBasis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils.iteration</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict_zip</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -317,7 +317,7 @@
 
 <div class="viewcode-block" id="WeightType">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.qpd.html#qiskit_addon_cutting.qpd.WeightType">[docs]</a>
-<span class="k">class</span> <span class="nc">WeightType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WeightType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Type of weight associated with a QPD sample.&quot;&quot;&quot;</span>
 
     <span class="c1">#: A weight given in proportion to its exact weight</span>
@@ -328,11 +328,11 @@
 
 
 
-<span class="k">def</span> <span class="nf">_min_filter_nonzero</span><span class="p">(</span><span class="n">vals</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">_NONZERO_ATOL</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_min_filter_nonzero</span><span class="p">(</span><span class="n">vals</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">_NONZERO_ATOL</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">))])</span>
 
 
-<span class="k">def</span> <span class="nf">__update_running_product_after_increment</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">__update_running_product_after_increment</span><span class="p">(</span>
     <span class="n">running_product</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
     <span class="n">coeff_probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span>
@@ -350,7 +350,7 @@
     <span class="n">running_product</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">prev</span> <span class="o">*</span> <span class="n">coeff_probabilities</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">state</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
 
-<span class="k">def</span> <span class="nf">_generate_exact_weights_and_conditional_probabilities_assume_sorted</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_exact_weights_and_conditional_probabilities_assume_sorted</span><span class="p">(</span>
     <span class="n">coeff_probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Determine all exact weights above ``threshold`` and the conditional probabilities necessary to sample efficiently from all other weights.</span>
@@ -461,14 +461,14 @@
                     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_invert_permutation</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_invert_permutation</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="c1"># https://stackoverflow.com/questions/11649577/how-to-invert-a-permutation-array-in-numpy</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="n">s</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span>
 
 
-<span class="k">def</span> <span class="nf">_generate_exact_weights_and_conditional_probabilities</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_exact_weights_and_conditional_probabilities</span><span class="p">(</span>
     <span class="n">coeff_probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate exact weights and conditional probabilities.</span>
@@ -500,7 +500,7 @@
 
 <div class="viewcode-block" id="generate_qpd_weights">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.qpd.html#qiskit_addon_cutting.qpd.generate_qpd_weights">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_qpd_weights</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_qpd_weights</span><span class="p">(</span>
     <span class="n">qpd_bases</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QPDBasis</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">WeightType</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate weights from the joint quasiprobability distribution.</span>
@@ -536,7 +536,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_generate_qpd_weights</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_qpd_weights</span><span class="p">(</span>
     <span class="n">independent_probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span>
     <span class="n">num_samples</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -659,7 +659,7 @@
     <span class="k">return</span> <span class="n">retval</span>
 
 
-<span class="k">def</span> <span class="nf">_populate_samples</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_populate_samples</span><span class="p">(</span>
     <span class="n">random_samples</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">num_desired</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">independent_probabilities</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span>

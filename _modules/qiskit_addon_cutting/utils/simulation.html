@@ -7,7 +7,7 @@
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>qiskit_addon_cutting.utils.simulation - Qiskit addon: circuit cutting 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
@@ -292,20 +292,20 @@
 <span class="c1"># Reminder: update the RST file in docs/apidocs when adding new interfaces.</span>
 <span class="sd">&quot;&quot;&quot;Simulation of precise measurement outcome probabilities.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span><span class="p">,</span> <span class="n">Operator</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives.base</span> <span class="kn">import</span> <span class="n">BaseSamplerV1</span><span class="p">,</span> <span class="n">SamplerResult</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives.primitive_job</span> <span class="kn">import</span> <span class="n">PrimitiveJob</span>
-<span class="kn">from</span> <span class="nn">qiskit.result</span> <span class="kn">import</span> <span class="n">QuasiDistribution</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">ControlFlowOp</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span><span class="p">,</span> <span class="n">Operator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerV1</span><span class="p">,</span> <span class="n">SamplerResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives.primitive_job</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrimitiveJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.result</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuasiDistribution</span>
 
-<span class="kn">from</span> <span class="nn">.iteration</span> <span class="kn">import</span> <span class="n">strict_zip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.iteration</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict_zip</span>
 
 
 <span class="n">_TOLERANCE</span> <span class="o">=</span> <span class="mf">1e-16</span>
@@ -313,7 +313,7 @@
 
 <div class="viewcode-block" id="simulate_statevector_outcomes">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.simulation.html#qiskit_addon_cutting.utils.simulation.simulate_statevector_outcomes">[docs]</a>
-<span class="k">def</span> <span class="nf">simulate_statevector_outcomes</span><span class="p">(</span><span class="n">qc</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simulate_statevector_outcomes</span><span class="p">(</span><span class="n">qc</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return each classical outcome along with its precise probability.</span>
 
 <span class="sd">    Circuit can contain mid-circuit, projective measurements.</span>
@@ -323,7 +323,7 @@
     <span class="n">current</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">current</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">Statevector</span><span class="o">.</span><span class="n">from_int</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**</span><span class="n">qc</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)))</span>
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">qc</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">condition_bits</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">operation</span><span class="p">,</span> <span class="n">ControlFlowOp</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Operations conditioned on classical bits are currently not supported.&quot;</span>
             <span class="p">)</span>
@@ -386,7 +386,7 @@
                 <span class="k">del</span> <span class="n">current</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># The current instruction is a unitary operation (i.e., a gate).</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">clbits</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">clbits</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Circuit cannot contain a non-measurement operation on classical bit(s).&quot;</span>
                 <span class="p">)</span>
@@ -405,7 +405,7 @@
 
 <div class="viewcode-block" id="ExactSampler">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.simulation.html#qiskit_addon_cutting.utils.simulation.ExactSampler">[docs]</a>
-<span class="k">class</span> <span class="nc">ExactSampler</span><span class="p">(</span><span class="n">BaseSamplerV1</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExactSampler</span><span class="p">(</span><span class="n">BaseSamplerV1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampler which returns exact probabilities for each possible outcome.</span>
 
 <span class="sd">    This sampler supports:</span>
@@ -425,7 +425,7 @@
 <span class="sd">    - https://github.com/Qiskit/qiskit-aer/issues/1811</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_call</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
         <span class="n">parameter_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
@@ -440,7 +440,7 @@
         <span class="n">quasis</span> <span class="o">=</span> <span class="p">[</span><span class="n">QuasiDistribution</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">probabilities</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">SamplerResult</span><span class="p">(</span><span class="n">quasis</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
         <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>

@@ -7,7 +7,7 @@
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>qiskit.transpiler.basepasses - Qiskit addon: circuit cutting 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
@@ -291,24 +291,24 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;Base transpiler passes.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.converters</span> <span class="kn">import</span> <span class="n">circuit_to_dag</span><span class="p">,</span> <span class="n">dag_to_circuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.dagcircuit</span> <span class="kn">import</span> <span class="n">DAGCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.passmanager.base_tasks</span> <span class="kn">import</span> <span class="n">GenericPass</span><span class="p">,</span> <span class="n">PassManagerIR</span>
-<span class="kn">from</span> <span class="nn">qiskit.passmanager.compilation_status</span> <span class="kn">import</span> <span class="n">PropertySet</span><span class="p">,</span> <span class="n">RunState</span><span class="p">,</span> <span class="n">PassManagerState</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.converters</span><span class="w"> </span><span class="kn">import</span> <span class="n">circuit_to_dag</span><span class="p">,</span> <span class="n">dag_to_circuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.dagcircuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAGCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.passmanager.base_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericPass</span><span class="p">,</span> <span class="n">PassManagerIR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.passmanager.compilation_status</span><span class="w"> </span><span class="kn">import</span> <span class="n">PropertySet</span><span class="p">,</span> <span class="n">RunState</span><span class="p">,</span> <span class="n">PassManagerState</span>
 
-<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">TranspilerError</span>
-<span class="kn">from</span> <span class="nn">.layout</span> <span class="kn">import</span> <span class="n">TranspileLayout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranspilerError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.layout</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranspileLayout</span>
 
 
-<span class="k">class</span> <span class="nc">MetaPass</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MetaPass</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Metaclass for transpiler passes.</span>
 
 <span class="sd">    Enforces the creation of some fields in the pass while allowing passes to</span>
@@ -327,13 +327,13 @@
     <span class="c1"># considered as a breaking API change.</span>
     <span class="c1"># For example, test.python.transpiler.test_pass_scheduler.TestLogPasses.test_passes_in_linear</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">pass_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">pass_instance</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">MetaPass</span><span class="o">.</span><span class="n">_freeze_init_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">pass_instance</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_freeze_init_parameters</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_freeze_init_parameters</span><span class="p">(</span><span class="n">class_</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="n">self_guard</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
         <span class="n">init_signature</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">class_</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
         <span class="n">bound_signature</span> <span class="o">=</span> <span class="n">init_signature</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">self_guard</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -348,18 +348,18 @@
         <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">BasePass</span><span class="p">(</span><span class="n">GenericPass</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">MetaPass</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BasePass</span><span class="p">(</span><span class="n">GenericPass</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">MetaPass</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for transpiler passes.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">preserves</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">GenericPass</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># Note that this implementation is incorrect.</span>
         <span class="c1"># This must be reimplemented in the future release.</span>
         <span class="c1"># See the discussion below for details.</span>
@@ -367,7 +367,7 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">hash</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dag</span><span class="p">:</span> <span class="n">DAGCircuit</span><span class="p">):</span>  <span class="c1"># pylint:disable=arguments-renamed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dag</span><span class="p">:</span> <span class="n">DAGCircuit</span><span class="p">):</span>  <span class="c1"># pylint:disable=arguments-renamed</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a pass on the DAGCircuit. This is implemented by the pass developer.</span>
 
 <span class="sd">        Args:</span>
@@ -379,7 +379,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_transformation_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_transformation_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pass is a transformation pass.</span>
 
 <span class="sd">        If the pass is a TransformationPass, that means that the pass can manipulate the DAG,</span>
@@ -388,7 +388,7 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">TransformationPass</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_analysis_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_analysis_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the pass is an analysis pass.</span>
 
 <span class="sd">        If the pass is an AnalysisPass, that means that the pass can analyze the DAG and write</span>
@@ -397,7 +397,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AnalysisPass</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
         <span class="n">property_set</span><span class="p">:</span> <span class="n">PropertySet</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -459,14 +459,14 @@
         <span class="k">return</span> <span class="n">result_circuit</span>
 
 
-<span class="k">class</span> <span class="nc">AnalysisPass</span><span class="p">(</span><span class="n">BasePass</span><span class="p">):</span>  <span class="c1"># pylint: disable=abstract-method</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnalysisPass</span><span class="p">(</span><span class="n">BasePass</span><span class="p">):</span>  <span class="c1"># pylint: disable=abstract-method</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An analysis pass: change property set, not DAG.&quot;&quot;&quot;</span>
 
 
-<span class="k">class</span> <span class="nc">TransformationPass</span><span class="p">(</span><span class="n">BasePass</span><span class="p">):</span>  <span class="c1"># pylint: disable=abstract-method</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransformationPass</span><span class="p">(</span><span class="n">BasePass</span><span class="p">):</span>  <span class="c1"># pylint: disable=abstract-method</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A transformation pass: change DAG, not property set.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">passmanager_ir</span><span class="p">:</span> <span class="n">PassManagerIR</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">PassManagerState</span><span class="p">,</span>
@@ -490,7 +490,7 @@
 
         <span class="k">return</span> <span class="n">new_dag</span><span class="p">,</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="nf">update_status</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_status</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="n">PassManagerState</span><span class="p">,</span>
         <span class="n">run_state</span><span class="p">:</span> <span class="n">RunState</span><span class="p">,</span>

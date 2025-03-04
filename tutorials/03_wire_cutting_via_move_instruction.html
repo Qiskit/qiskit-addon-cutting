@@ -8,7 +8,7 @@
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Wire Cutting Phrased as a Two-Qubit Move Instruction - Qiskit addon: circuit cutting 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
@@ -320,8 +320,8 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 
 <span class="n">qc_0</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
@@ -344,7 +344,7 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;qiskit.circuit.instructionset.InstructionSet at 0x7f80e68bf9a0&gt;
+&lt;qiskit.circuit.instructionset.InstructionSet at 0x7fbb79e71f10&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -370,7 +370,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZIIIIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIZIII&quot;</span><span class="p">,</span> <span class="s2">&quot;IIIIIIZ&quot;</span><span class="p">])</span>
 </pre></div>
@@ -390,7 +390,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_addon_cutting.instructions</span> <span class="kn">import</span> <span class="n">Move</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_addon_cutting.instructions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Move</span>
 
 <span class="n">qc_1</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="o">*</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">)]:</span>
@@ -439,7 +439,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_addon_cutting</span> <span class="kn">import</span> <span class="n">partition_problem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_addon_cutting</span><span class="w"> </span><span class="kn">import</span> <span class="n">partition_problem</span>
 
 <span class="n">partitioned_problem</span> <span class="o">=</span> <span class="n">partition_problem</span><span class="p">(</span>
     <span class="n">circuit</span><span class="o">=</span><span class="n">qc_1</span><span class="p">,</span> <span class="n">partition_labels</span><span class="o">=</span><span class="s2">&quot;AAAABBBB&quot;</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">observable_expanded</span><span class="o">.</span><span class="n">paulis</span>
@@ -533,7 +533,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_addon_cutting</span> <span class="kn">import</span> <span class="n">generate_cutting_experiments</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_addon_cutting</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_cutting_experiments</span>
 
 <span class="n">subexperiments</span><span class="p">,</span> <span class="n">coefficients</span> <span class="o">=</span> <span class="n">generate_cutting_experiments</span><span class="p">(</span>
     <span class="n">circuits</span><span class="o">=</span><span class="n">subcircuits</span><span class="p">,</span> <span class="n">observables</span><span class="o">=</span><span class="n">subobservables</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
@@ -549,7 +549,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime.fake_provider</span> <span class="kn">import</span> <span class="n">FakeManilaV2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime.fake_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">FakeManilaV2</span>
 
 <span class="n">backend</span> <span class="o">=</span> <span class="n">FakeManilaV2</span><span class="p">()</span>
 </pre></div>
@@ -563,7 +563,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.transpiler.preset_passmanagers</span> <span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
 
 <span class="c1"># Transpile the subexperiments to ISA circuits</span>
 <span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">optimization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
@@ -584,7 +584,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_ibm_runtime</span> <span class="kn">import</span> <span class="n">SamplerV2</span><span class="p">,</span> <span class="n">Batch</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerV2</span><span class="p">,</span> <span class="n">Batch</span>
 
 <span class="c1"># Submit each partition&#39;s subexperiments to the Qiskit Runtime Sampler</span>
 <span class="c1"># primitive, in a single batch so that the jobs will run back-to-back.</span>
@@ -617,7 +617,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_addon_cutting</span> <span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_addon_cutting</span><span class="w"> </span><span class="kn">import</span> <span class="n">reconstruct_expectation_values</span>
 
 <span class="n">reconstructed_expval_terms</span> <span class="o">=</span> <span class="n">reconstruct_expectation_values</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span>
@@ -635,7 +635,7 @@ Sampling overhead: 256.0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">EstimatorV2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimatorV2</span>
 
 <span class="n">estimator</span> <span class="o">=</span> <span class="n">EstimatorV2</span><span class="p">()</span>
 <span class="n">exact_expval</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">qc_0</span><span class="p">,</span> <span class="n">observable</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
@@ -653,10 +653,10 @@ Sampling overhead: 256.0
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 1.55399621
+Reconstructed expectation value: 1.45790881
 Exact expectation value: 1.59099026
-Error in estimation: -0.03699405
-Relative error in estimation: -0.02325222
+Error in estimation: -0.13308145
+Relative error in estimation: -0.08364693
 </pre></div></div>
 </div>
 </section>

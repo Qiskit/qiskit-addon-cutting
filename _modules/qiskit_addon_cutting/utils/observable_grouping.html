@@ -7,7 +7,7 @@
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>qiskit_addon_cutting.utils.observable_grouping - Qiskit addon: circuit cutting 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
@@ -292,16 +292,16 @@
 <span class="c1"># Reminder: update the RST file in docs/apidocs when adding new interfaces.</span>
 <span class="sd">&quot;&quot;&quot;Module for conducting Pauli observable grouping.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">PauliList</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">PauliList</span>
 
-<span class="kn">from</span> <span class="nn">.iteration</span> <span class="kn">import</span> <span class="n">strict_zip</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.iteration</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict_zip</span>
 
 
 <span class="n">_I</span> <span class="o">=</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
@@ -309,7 +309,7 @@
 
 <div class="viewcode-block" id="observables_restricted_to_subsystem">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.observables_restricted_to_subsystem">[docs]</a>
-<span class="k">def</span> <span class="nf">observables_restricted_to_subsystem</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">observables_restricted_to_subsystem</span><span class="p">(</span>
     <span class="n">qubits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">global_observables</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">|</span> <span class="n">PauliList</span><span class="p">,</span> <span class="o">/</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]</span> <span class="o">|</span> <span class="n">PauliList</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Restrict each observable to its support on a given subsystem.</span>
@@ -339,7 +339,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">most_general_observable</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">most_general_observable</span><span class="p">(</span>
     <span class="n">commuting_observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pauli</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the most general observable from a sequence of commuting observables.</span>
@@ -401,7 +401,7 @@
 <div class="viewcode-block" id="CommutingObservableGroup">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CommutingObservableGroup</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommutingObservableGroup</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set of mutually qubit-wise commuting observables.&quot;&quot;&quot;</span>
 
     <span class="c1">#: A single Pauli string that contains all qubit-wise measurements needed</span>
@@ -418,7 +418,7 @@
     <span class="c1">#: the corresponding entry in ``pauli_indices`` is relevant to that observable.</span>
     <span class="n">pauli_bitmasks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-init method for the data class.&quot;&quot;&quot;</span>
         <span class="c1"># TODO(perf): These loops could be faster; see e.g. https://github.com/Qiskit/qiskit/blob/061aee2685676271fd0860d0a2d699e36941ae5e/qiskit/primitives/backend_estimator.py#L398-L413</span>
         <span class="n">pauli_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
@@ -447,7 +447,7 @@
 
 <div class="viewcode-block" id="ObservableCollection">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.ObservableCollection">[docs]</a>
-<span class="k">class</span> <span class="nc">ObservableCollection</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ObservableCollection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Collection of observables organized for efficient taking of measurements.</span>
 
 <span class="sd">    The observables are automatically organized into sets of mutually</span>
@@ -455,7 +455,7 @@
 <span class="sd">    :class:`.CommutingObservableGroup`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observables</span><span class="p">:</span> <span class="n">PauliList</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Pauli</span><span class="p">],</span> <span class="o">/</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign member variables.</span>
 
 <span class="sd">        Args:</span>
@@ -519,7 +519,7 @@
 <div class="viewcode-block" id="ObservableCollection.construct_general_observables">
 <a class="viewcode-back" href="../../../apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.ObservableCollection.construct_general_observables">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">construct_general_observables</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_general_observables</span><span class="p">(</span>
         <span class="n">commuting_subobservables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]],</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pauli</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the most general observable from each set of mutually commuting observables.</span>
@@ -535,12 +535,12 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CommutingObservableGroup</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CommutingObservableGroup</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;List of :class:`.CommutingObservableGroup`\ s which, together, contain all desired observables.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Pauli</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Pauli</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dict which maps each :class:`~qiskit.quantum_info.Pauli` observable to a list of indices, ``(i, j)``, to commuting observables in ``groups``.</span>
 
 <span class="sd">        For each element of the list, it means that the :class:`~qiskit.quantum_info.Pauli` is given by</span>
