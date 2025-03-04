@@ -19,7 +19,7 @@ from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
-from qiskit.circuit import QuantumCircuit
+from qiskit.circuit import ControlFlowOp, QuantumCircuit
 from qiskit.quantum_info import Statevector, Operator
 from qiskit.primitives.base import BaseSamplerV1, SamplerResult
 from qiskit.primitives.primitive_job import PrimitiveJob
@@ -41,7 +41,7 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
     current = defaultdict(list)
     current[0].append((1.0, Statevector.from_int(0, 2**qc.num_qubits)))
     for inst in qc.data:
-        if inst.operation.condition_bits:
+        if isinstance(inst.operation, ControlFlowOp):
             raise ValueError(
                 "Operations conditioned on classical bits are currently not supported."
             )
@@ -104,7 +104,7 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
                 del current[k]
         else:
             # The current instruction is a unitary operation (i.e., a gate).
-            if len(inst.clbits) != 0:
+            if len(inst.clbits) != 0:  # pragma: no cover
                 raise ValueError(
                     "Circuit cannot contain a non-measurement operation on classical bit(s)."
                 )
