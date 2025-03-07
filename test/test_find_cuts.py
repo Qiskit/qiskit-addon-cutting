@@ -17,7 +17,7 @@ import pytest
 import os
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 
 from qiskit_addon_cutting.automated_cut_finding import (
     find_cuts,
@@ -49,7 +49,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert metadata["minimum_reached"] is True
 
         with self.subTest("Cut both wires instance"):
-            qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+            qc = efficient_su2(4, entanglement="linear", reps=2).decompose()
             qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
             optimization = OptimizationParameters(
                 seed=12345, gate_lo=False, wire_lo=True

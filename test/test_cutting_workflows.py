@@ -16,7 +16,7 @@ from copy import deepcopy
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.library import EfficientSU2, CXGate
+from qiskit.circuit.library import efficient_su2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
@@ -38,7 +38,7 @@ from qiskit_addon_cutting import (
 def test_transpile_before_realizing_basis_id():
     """Test a workflow where a :class:`.SingleQubitQPDGate` is passed through the transpiler."""
     num_qubits = 4
-    circuit = EfficientSU2(num_qubits, entanglement="linear", reps=2).decompose()
+    circuit = efficient_su2(num_qubits, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII"])
     subcircuits, bases, subobservables = partition_problem(
@@ -72,7 +72,7 @@ def test_transpile_before_realizing_basis_id():
 )
 def test_exotic_labels(label1, label2):
     """Test workflow with labels of non-uniform type."""
-    circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+    circuit = efficient_su2(4, entanglement="linear", reps=2).decompose()
     circuit.assign_parameters([0.8] * len(circuit.parameters), inplace=True)
     observables = PauliList(["ZZII", "IZZI", "IIZZ", "XIXI", "ZIZZ", "IXIX"])
     subcircuits, bases, subobservables = partition_problem(

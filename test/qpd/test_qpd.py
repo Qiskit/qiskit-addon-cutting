@@ -22,7 +22,7 @@ import numpy.typing as npt
 from ddt import ddt, data, unpack
 from qiskit.circuit import QuantumCircuit, ClassicalRegister, CircuitInstruction
 from qiskit.circuit.library import (
-    EfficientSU2,
+    efficient_su2,
     CXGate,
     CYGate,
     CZGate,
@@ -72,7 +72,7 @@ from qiskit_addon_cutting.qpd.decompositions import (
 class TestQPDFunctions(unittest.TestCase):
     def setUp(self):
         # Use HWEA for simplicity and easy visualization
-        qpd_circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+        qpd_circuit = efficient_su2(4, entanglement="linear", reps=2).decompose()
 
         # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)
