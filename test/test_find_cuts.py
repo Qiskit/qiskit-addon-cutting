@@ -49,7 +49,7 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert metadata["minimum_reached"] is True
 
         with self.subTest("Cut both wires instance"):
-            qc = efficient_su2(4, entanglement="linear", reps=2).decompose()
+            qc = efficient_su2(4, entanglement="linear", reps=2)
             qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
             optimization = OptimizationParameters(
                 seed=12345, gate_lo=False, wire_lo=True

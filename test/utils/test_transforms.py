@@ -33,7 +33,7 @@ from qiskit_addon_cutting.utils.iteration import strict_zip
 
 
 def prepare_hwea():
-    circuit = efficient_su2(4, entanglement="linear", reps=1).decompose()
+    circuit = efficient_su2(4, entanglement="linear", reps=1)
 
     # Exchange CNOTs with gates we support
     for i, gate in enumerate(circuit.data):

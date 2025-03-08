@@ -72,7 +72,7 @@ from qiskit_addon_cutting.qpd.decompositions import (
 class TestQPDFunctions(unittest.TestCase):
     def setUp(self):
         # Use HWEA for simplicity and easy visualization
-        qpd_circuit = efficient_su2(4, entanglement="linear", reps=2).decompose()
+        qpd_circuit = efficient_su2(4, entanglement="linear", reps=2)
 
         # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)
