@@ -20,7 +20,7 @@ from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
 )
-from qiskit.circuit.library import EfficientSU2, Measure
+from qiskit.circuit.library import efficient_su2, Measure
 from qiskit.circuit.library.standard_gates import RZZGate
 
 from qiskit_addon_cutting import partition_circuit_qubits
@@ -33,7 +33,7 @@ from qiskit_addon_cutting.utils.iteration import strict_zip
 
 
 def prepare_hwea():
-    circuit = EfficientSU2(4, entanglement="linear", reps=1).decompose()
+    circuit = efficient_su2(4, entanglement="linear", reps=1)
 
     # Exchange CNOTs with gates we support
     for i, gate in enumerate(circuit.data):
