@@ -17,7 +17,7 @@ import numpy as np
 import unittest
 from pytest import raises
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 from qiskit_addon_cutting.cut_finding.cco_utils import qc_to_cco_circuit
 from qiskit_addon_cutting.cut_finding.circuit_interface import (
     SimpleGateList,
@@ -41,7 +41,7 @@ from qiskit_addon_cutting.cut_finding.cut_optimization import CutOptimization
 
 class TestCuttingFourQubitCircuit(unittest.TestCase):
     def setUp(self):
-        qc = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+        qc = efficient_su2(4, entanglement="linear", reps=2)
         qc.assign_parameters([0.4] * len(qc.parameters), inplace=True)
         self.circuit_internal = qc_to_cco_circuit(qc)
 
@@ -134,13 +134,13 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
                 CutIdentifier(
                     cut_action="CutTwoQubitGate",
                     cut_location=CutLocation(
-                        instruction_id=17, gate_name="cx", qubits=[2, 3]
+                        instruction_id=10, gate_name="cx", qubits=[2, 3]
                     ),
                 ),
                 CutIdentifier(
                     cut_action="CutTwoQubitGate",
                     cut_location=CutLocation(
-                        instruction_id=25, gate_name="cx", qubits=[2, 3]
+                        instruction_id=21, gate_name="cx", qubits=[2, 3]
                     ),
                 ),
             ]
@@ -233,16 +233,16 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
                         instruction_id=9, gate_name="cx", qubits=[1, 2], input=1
                     ),
                 ),
-                CutIdentifier(
-                    cut_action="CutBothWires",
-                    cut_location=CutLocation(
-                        instruction_id=12, gate_name="cx", qubits=[0, 1]
-                    ),
-                ),
                 SingleWireCutIdentifier(
                     cut_action="CutLeftWire",
                     wire_cut_location=WireCutLocation(
-                        instruction_id=17, gate_name="cx", qubits=[2, 3], input=1
+                        instruction_id=10, gate_name="cx", qubits=[2, 3], input=1
+                    ),
+                ),
+                CutIdentifier(
+                    cut_action="CutBothWires",
+                    cut_location=CutLocation(
+                        instruction_id=19, gate_name="cx", qubits=[0, 1]
                     ),
                 ),
                 CutIdentifier(
@@ -254,7 +254,7 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
                 CutIdentifier(
                     cut_action="CutBothWires",
                     cut_location=CutLocation(
-                        instruction_id=25, gate_name="cx", qubits=[2, 3]
+                        instruction_id=21, gate_name="cx", qubits=[2, 3]
                     ),
                 ),
             ]
@@ -290,7 +290,7 @@ class TestCuttingFourQubitCircuit(unittest.TestCase):
                 SingleWireCutIdentifier(
                     cut_action="CutLeftWire",
                     wire_cut_location=WireCutLocation(
-                        instruction_id=17, gate_name="cx", qubits=[2, 3], input=1
+                        instruction_id=10, gate_name="cx", qubits=[2, 3], input=1
                     ),
                 ),
                 SingleWireCutIdentifier(
