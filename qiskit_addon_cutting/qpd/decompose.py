@@ -160,7 +160,7 @@ def _decompose_qpd_measurements(
 
     # If the user wants to access the qpd register, it will be the final
     # classical register of the returned circuit.
-    assert circuit.cregs[-1] is reg
+    assert circuit.cregs[-1] == reg
 
     return circuit
 
