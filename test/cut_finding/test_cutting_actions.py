@@ -57,7 +57,7 @@ def test_action_apply_gate(
     test_circuit: Callable[
         [],
         tuple[SimpleGateList, DisjointSubcircuitsState, GateSpec],
-    ]
+    ],
 ):
     """Test the application of a gate without any cutting actions."""
 
@@ -77,7 +77,7 @@ def test_cut_two_qubit_gate(
     test_circuit: Callable[
         [],
         tuple[SimpleGateList, DisjointSubcircuitsState, GateSpec],
-    ]
+    ],
 ):
     """Test the action of cutting a two qubit gate."""
 
@@ -115,7 +115,7 @@ def test_cut_left_wire(
     test_circuit: Callable[
         [],
         tuple[SimpleGateList, DisjointSubcircuitsState, GateSpec],
-    ]
+    ],
 ):
     """Test the action of cutting the first (left) input wire to a two qubit gate."""
     _, state, two_qubit_gate = test_circuit
@@ -139,7 +139,7 @@ def test_cut_right_wire(
     test_circuit: Callable[
         [],
         tuple[SimpleGateList, DisjointSubcircuitsState, GateSpec],
-    ]
+    ],
 ):
     """Test the action of cutting the second (right) input wire to a two qubit gate."""
     _, state, two_qubit_gate = test_circuit
