@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    Qiskit SDK 1.3.1 or higher is now required.
+    Qiskit SDK 2.0 is now supported.

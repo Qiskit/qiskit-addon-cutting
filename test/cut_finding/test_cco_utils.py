@@ -16,7 +16,7 @@ from typing import Callable
 
 import pytest
 from pytest import fixture
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.circuit import Qubit, Instruction, CircuitInstruction
 from qiskit_addon_cutting.cut_finding.cco_utils import (
@@ -40,7 +40,7 @@ def create_test_circuit_1():
 
 
 def create_test_circuit_2():
-    tc_2 = EfficientSU2(2, entanglement="linear", reps=2).decompose()
+    tc_2 = efficient_su2(2, entanglement="linear", reps=2)
     tc_2.assign_parameters([0.4] * len(tc_2.parameters), inplace=True)
     return tc_2
 
@@ -80,18 +80,18 @@ def internal_test_circuit():
             create_test_circuit_2,
             [
                 CircuitElement("ry", [0.4], [0], None),
-                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("ry", [0.4], [1], None),
+                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("rz", [0.4], [1], None),
                 CircuitElement("cx", [], [0, 1], 3),
                 CircuitElement("ry", [0.4], [0], None),
-                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("ry", [0.4], [1], None),
+                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("rz", [0.4], [1], None),
                 CircuitElement("cx", [], [0, 1], 3),
                 CircuitElement("ry", [0.4], [0], None),
-                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("ry", [0.4], [1], None),
+                CircuitElement("rz", [0.4], [0], None),
                 CircuitElement("rz", [0.4], [1], None),
             ],
         ),
