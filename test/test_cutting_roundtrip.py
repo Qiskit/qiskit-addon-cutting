@@ -41,7 +41,7 @@ from qiskit.circuit.library.standard_gates import (
     DCXGate,
 )
 from qiskit.quantum_info import PauliList, random_unitary
-from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.transpiler import generate_preset_pass_manager
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import Sampler, EstimatorV2
