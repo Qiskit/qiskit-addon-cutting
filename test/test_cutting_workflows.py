@@ -18,7 +18,7 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import EfficientSU2, CXGate
 from qiskit.quantum_info import PauliList
-from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.transpiler import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit_ibm_runtime import SamplerV2
 from qiskit_aer import AerSimulator
