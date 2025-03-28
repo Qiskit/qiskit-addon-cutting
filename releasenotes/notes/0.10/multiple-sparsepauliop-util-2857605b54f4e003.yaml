@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    This release adds utility functions and a how-to guide for performing circuit cutting
+    with :class:`.SparsePauliOp` observables, rather than a :class:`.PauliList` of observables.
