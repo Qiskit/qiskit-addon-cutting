@@ -9,6 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
+# Reminder: update the RST file in docs/apidocs when adding new interfaces.
 r"""Utilities for working with the unique terms of a collection of :class:`~qiskit.quantum_info.SparsePauliOp`\ s."""
 
 from __future__ import annotations
