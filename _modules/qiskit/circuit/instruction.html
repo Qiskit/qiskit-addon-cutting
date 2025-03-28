@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>qiskit.circuit.instruction - Qiskit addon: circuit cutting 0.9.0</title>
+        <title>qiskit.circuit.instruction - Qiskit addon: circuit cutting 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit addon: circuit cutting 0.9.0</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit addon: circuit cutting 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
     <img class="sidebar-logo only-dark" src="../../../_static/images/qiskit-dark-logo.svg" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.9.0</span>
+  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.10.0</span>
   
 </a>
 <form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
@@ -214,6 +214,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../how-tos/index.html">How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_provide_multiple_observables.html">How to perform a cutting workflow with multiple observables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
 </ul>
 </li>
@@ -234,6 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.bitwise.html">Bitwise utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.bitwise</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.iteration.html">Iteration utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.iteration</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.observable_grouping.html">Observable grouping (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_grouping</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.observable_terms.html">Observable terms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_terms</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.simulation.html">Simulation utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.simulation</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.transforms.html">Transforms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transforms</span></code>)</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_addon_cutting.utils.transpiler_passes.html">Transpiler passes (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transpiler_passes</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Transpiler passes (qiskit_addon_cutting.utils.transpiler_passes)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -344,14 +346,20 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">,</span> <span class="n">num_clbits</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dt&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new instruction.</span>
 
+<span class="sd">        .. deprecated:: 1.3</span>
+<span class="sd">           The parameters ``duration`` and ``unit`` are deprecated since</span>
+<span class="sd">           Qiskit 1.3, and they will be removed in 2.0 or later.</span>
+<span class="sd">           An instruction&#39;s duration is defined in a backend&#39;s Target object.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): instruction name</span>
 <span class="sd">            num_qubits (int): instruction&#39;s qubit width</span>
 <span class="sd">            num_clbits (int): instruction&#39;s clbit width</span>
 <span class="sd">            params (list[int|float|complex|str|ndarray|list|ParameterExpression]):</span>
 <span class="sd">                list of parameters</span>
-<span class="sd">            duration (int or float): instruction&#39;s duration. it must be integer if ``unit`` is &#39;dt&#39;</span>
-<span class="sd">            unit (str): time unit of duration</span>
+<span class="sd">            duration (int|float): (DEPRECATED) instruction&#39;s duration. it must be</span>
+<span class="sd">                an integer if ``unit`` is ``&#39;dt&#39;``</span>
+<span class="sd">            unit (str): (DEPRECATED) time unit of duration</span>
 <span class="sd">            label (str or None): An optional label for identifying the instruction.</span>
 
 <span class="sd">        Raises:</span>
@@ -1014,7 +1022,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=39bb1c6d"></script>
+</div><script src="../../../_static/documentation_options.js?v=82662543"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>

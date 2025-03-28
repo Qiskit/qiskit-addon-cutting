@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 --><title>Index - Qiskit addon: circuit cutting 0.9.0</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 --><title>Index - Qiskit addon: circuit cutting 0.10.0</title>
 <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Qiskit addon: circuit cutting 0.9.0</div></a>
+      <a href="index.html"><div class="brand">Qiskit addon: circuit cutting 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo only-dark" src="_static/images/qiskit-dark-logo.svg" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.9.0</span>
+  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.10.0</span>
   
 </a>
 <form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -213,6 +213,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="how-tos/index.html">How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-tos/how_to_provide_multiple_observables.html">How to perform a cutting workflow with multiple observables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
 </ul>
 </li>
@@ -233,6 +234,7 @@
 <li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.bitwise.html">Bitwise utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.bitwise</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.iteration.html">Iteration utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.iteration</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.observable_grouping.html">Observable grouping (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_grouping</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.observable_terms.html">Observable terms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_terms</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.simulation.html">Simulation utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.simulation</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.transforms.html">Transforms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transforms</span></code>)</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="apidocs/qiskit_addon_cutting.utils.transpiler_passes.html">Transpiler passes (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transpiler_passes</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Transpiler passes (qiskit_addon_cutting.utils.transpiler_passes)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -549,12 +551,14 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="apidocs/qiskit_addon_cutting.html#qiskit_addon_cutting.OptimizationParameters.gate_lo">gate_lo (OptimizationParameters attribute)</a>
 </li>
-        <li><a href="apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup.general_observable">general_observable (CommutingObservableGroup attribute)</a>
+        <li><a href="apidocs/qiskit_addon_cutting.utils.observable_terms.html#qiskit_addon_cutting.utils.observable_terms.gather_unique_observable_terms">gather_unique_observable_terms() (in module qiskit_addon_cutting.utils.observable_terms)</a>
 </li>
-        <li><a href="apidocs/qiskit_addon_cutting.html#qiskit_addon_cutting.generate_cutting_experiments">generate_cutting_experiments() (in module qiskit_addon_cutting)</a>
+        <li><a href="apidocs/qiskit_addon_cutting.utils.observable_grouping.html#qiskit_addon_cutting.utils.observable_grouping.CommutingObservableGroup.general_observable">general_observable (CommutingObservableGroup attribute)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="apidocs/qiskit_addon_cutting.html#qiskit_addon_cutting.generate_cutting_experiments">generate_cutting_experiments() (in module qiskit_addon_cutting)</a>
+</li>
         <li><a href="apidocs/qiskit_addon_cutting.qpd.html#qiskit_addon_cutting.qpd.generate_qpd_weights">generate_qpd_weights() (in module qiskit_addon_cutting.qpd)</a>
 </li>
         <li><a href="apidocs/qiskit_addon_cutting.html#qiskit_addon_cutting.DeviceConstraints.get_qpu_width">get_qpu_width() (DeviceConstraints method)</a>
@@ -676,6 +680,8 @@
           <li><a href="apidocs/qiskit_addon_cutting.utils.iteration.html#module-qiskit_addon_cutting.utils.iteration">qiskit_addon_cutting.utils.iteration</a>
 </li>
           <li><a href="apidocs/qiskit_addon_cutting.utils.observable_grouping.html#module-qiskit_addon_cutting.utils.observable_grouping">qiskit_addon_cutting.utils.observable_grouping</a>
+</li>
+          <li><a href="apidocs/qiskit_addon_cutting.utils.observable_terms.html#module-qiskit_addon_cutting.utils.observable_terms">qiskit_addon_cutting.utils.observable_terms</a>
 </li>
           <li><a href="apidocs/qiskit_addon_cutting.utils.simulation.html#module-qiskit_addon_cutting.utils.simulation">qiskit_addon_cutting.utils.simulation</a>
 </li>
@@ -863,6 +869,13 @@
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li>
+    qiskit_addon_cutting.utils.observable_terms
+
+        <ul>
+          <li><a href="apidocs/qiskit_addon_cutting.utils.observable_terms.html#module-qiskit_addon_cutting.utils.observable_terms">module</a>
+</li>
+        </ul></li>
+        <li>
     qiskit_addon_cutting.utils.simulation
 
         <ul>
@@ -900,6 +913,8 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="apidocs/qiskit_addon_cutting.html#qiskit_addon_cutting.reconstruct_expectation_values">reconstruct_expectation_values() (in module qiskit_addon_cutting)</a>
+</li>
+        <li><a href="apidocs/qiskit_addon_cutting.utils.observable_terms.html#qiskit_addon_cutting.utils.observable_terms.reconstruct_observable_expvals_from_terms">reconstruct_observable_expvals_from_terms() (in module qiskit_addon_cutting.utils.observable_terms)</a>
 </li>
         <li><a href="stubs/qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset.html#qiskit_addon_cutting.utils.transpiler_passes.RemoveFinalReset">RemoveFinalReset (class in qiskit_addon_cutting.utils.transpiler_passes)</a>
 </li>
@@ -1116,7 +1131,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=39bb1c6d"></script>
+</div><script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

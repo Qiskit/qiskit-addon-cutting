@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Wire Cutting Phrased as a Two-Qubit Move Instruction" href="03_wire_cutting_via_move_instruction.html" /><link rel="prev" title="Gate Cutting to Reduce Circuit Width" href="01_gate_cutting_to_reduce_circuit_width.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Gate Cutting to Reduce Circuit Depth - Qiskit addon: circuit cutting 0.9.0</title>
+        <title>Gate Cutting to Reduce Circuit Depth - Qiskit addon: circuit cutting 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=8ff9dcb6" />
@@ -164,7 +164,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit addon: circuit cutting 0.9.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit addon: circuit cutting 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,7 +192,7 @@
     <img class="sidebar-logo only-dark" src="../_static/images/qiskit-dark-logo.svg" alt="Dark Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.9.0</span>
+  <span class="sidebar-brand-text">Qiskit addon: circuit cutting 0.10.0</span>
   
 </a>
 <form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -215,6 +215,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../how-tos/index.html">How-To Guides</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of How-To Guides</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_generate_exact_quasi_dists_from_sampler.html">How to generate exact quasiprobability distributions from Sampler</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_generate_exact_sampling_coefficients.html">How to generate exact sampling coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_provide_multiple_observables.html">How to perform a cutting workflow with multiple observables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-tos/how_to_specify_cut_wires.html">How to place wire cuts using a single-qubit <code class="docutils literal notranslate"><span class="pre">CutWire</span></code> instruction</a></li>
 </ul>
 </li>
@@ -235,6 +236,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.bitwise.html">Bitwise utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.bitwise</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.iteration.html">Iteration utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.iteration</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.observable_grouping.html">Observable grouping (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_grouping</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.observable_terms.html">Observable terms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.observable_terms</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.simulation.html">Simulation utilities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.simulation</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.transforms.html">Transforms (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transforms</span></code>)</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_addon_cutting.utils.transpiler_passes.html">Transpiler passes (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_addon_cutting.utils.transpiler_passes</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Transpiler passes (qiskit_addon_cutting.utils.transpiler_passes)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -319,9 +321,9 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">EfficientSU2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">efficient_su2</span>
 
-<span class="n">circuit</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;circular&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+<span class="n">circuit</span> <span class="o">=</span> <span class="n">efficient_su2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;circular&quot;</span><span class="p">)</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">([</span><span class="mf">0.4</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">parameters</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 </pre></div>
@@ -373,7 +375,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
 
 <span class="n">pass_manager</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span>
     <span class="n">optimization_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">initial_layout</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
@@ -397,7 +399,7 @@ Transpiled circuit depth: 30
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3896/2612043398.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3574/3423257129.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   print(f&#34;Transpiled circuit depth: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;)
 </pre></div></div>
 </div>
@@ -525,9 +527,9 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3896/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3574/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;Original circuit depth after transpile: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
-/tmp/ipykernel_3896/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3574/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;QPD subexperiment depth after transpile: {transpiled_qpd_circuit.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
 </pre></div></div>
 </div>
@@ -628,10 +630,10 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.6105957
+Reconstructed expectation value: 0.51977539
 Exact expectation value: 0.50497603
-Error in estimation: 0.10561967
-Relative error in estimation: 0.20915779
+Error in estimation: 0.01479936
+Relative error in estimation: 0.02930705
 </pre></div></div>
 </div>
 </section>
@@ -736,7 +738,7 @@ Relative error in estimation: 0.20915779
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+</div><script src="../_static/documentation_options.js?v=82662543"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
