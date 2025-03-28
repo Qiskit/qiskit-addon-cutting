@@ -17,7 +17,7 @@ import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 
-from circuit_knitting.utils.observable_grouping import *
+from qiskit_addon_cutting.utils.observable_grouping import *
 
 
 @ddt
@@ -76,6 +76,11 @@ class TestEstimatorUtilities(unittest.TestCase):
             (),
             PauliList(["XX", "YY", "ZZ"]),
             PauliList.from_symplectic(np.zeros((3, 0)), np.zeros((3, 0))),
+        ),
+        (
+            (2, 1),
+            [Pauli("XYZ"), Pauli("iZYX"), Pauli("-ZXZ")],
+            [Pauli("YX"), Pauli("YZ"), Pauli("XZ")],
         ),
     )
     @unpack

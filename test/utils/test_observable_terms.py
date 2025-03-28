@@ -14,7 +14,7 @@ import pytest
 
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
 
-from circuit_knitting.utils.observable_terms import (
+from qiskit_addon_cutting.utils.observable_terms import (
     gather_unique_observable_terms,
     reconstruct_observable_expvals_from_terms,
 )

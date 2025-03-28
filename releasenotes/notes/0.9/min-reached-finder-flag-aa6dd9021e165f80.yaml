@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    A new ``minimum_reached`` field has been added to the metadata outputted by :func:`circuit_knitting.cutting.find_cuts` to check if the cut-finder found
+    a cut scheme that minimized the sampling overhead. Note that the search algorithm employed by the cut-finder is *guaranteed* to find
+    the optimal solution, that is, the solution with the minimum sampling overhead, provided it is allowed to run long enough.
+    The user is free to time-restrict the search by passing in suitable values for ``max_backjumps`` and/or ``max_gamma`` to
+    :class:`.OptimizationParameters`. If the search is terminated prematurely in this way, the metadata may indicate that the minimum
+    was not reached, even though the returned solution `was` actually the optimal solution. This would mean that the search that was performed was not
+    exhaustive enough to prove that the returned solution was optimal.

@@ -1,7 +1,7 @@
 Installation Instructions
 =========================
 
-Let's see how to install the Circuit Knitting Toolbox (CKT). The first
+Let's see how to install the Qiskit addon for circuit cutting. The first
 thing to do is choose how you're going to run and install the
 packages. There are three primary ways to do this:
 
@@ -17,7 +17,7 @@ Pre-Installation
 
 Users who wish to install locally (using either :ref:`Option 1` or :ref:`Option 2`) are encouraged to
 follow a brief set of common instructions to prepare a Python environment for
-installation of CKT:
+installation:
 
 First, create a minimal environment with only Python installed in it. We recommend using `Python virtual environments <https://docs.python.org/3.10/tutorial/venv.html>`__.
 
@@ -41,15 +41,15 @@ Note: If you are using Windows, use the following commands in PowerShell:
 
 .. _Option 1:
 
-Option 1: Pip Installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Option 1: Install from PyPI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Upgrade pip and install the CKT package.
+The most straightforward way to install the ``qiskit-addon-cutting`` package is via PyPI.
 
 .. code:: sh
 
     pip install --upgrade pip
-    pip install circuit-knitting-toolbox
+    pip install qiskit-addon-cutting
 
 
 .. _Option 2:
@@ -57,22 +57,22 @@ Upgrade pip and install the CKT package.
 Option 2: Install from Source
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Users who wish to develop in the repository or run the tutorials locally may want to install from source.
+Users who wish to develop in the repository or run the notebooks locally may want to install from source.
 
-In either case, the first step is to clone the CKT repository.
+In either case, the first step is to clone the ``qiskit-addon-cutting`` repository.
 
 .. code:: sh
 
-    git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
+    git clone git@github.com:Qiskit/qiskit-addon-cutting.git
     
 Next, upgrade pip and enter the repository. 
 
 .. code:: sh
     
     pip install --upgrade pip
-    cd circuit-knitting-toolbox
+    cd qiskit-addon-cutting
 
-The next step is to install CKT to the virtual environment. If you plan on running the tutorials, install the
+The next step is to install to the virtual environment. If you plan on running the notebooks, install the
 notebook dependencies in order to run all the visualizations in the notebooks.
 If you plan on developing in the repository, you may want to install the ``dev`` dependencies.
 
@@ -82,7 +82,7 @@ Adjust the options below to suit your needs.
     
     pip install tox notebook -e '.[notebook-dependencies,dev]'
 
-If you installed the notebook dependencies, you can get started with CKT by running the notebooks in the docs.
+If you installed the notebook dependencies, you can get started with the addon by running the notebooks in the docs.
 
 .. code::
     
@@ -95,15 +95,15 @@ If you installed the notebook dependencies, you can get started with CKT by runn
 Option 3: Use within Docker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have provided a `Dockerfile <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/Dockerfile>`__, which can be used to
+We have provided a `Dockerfile <https://github.com/Qiskit/qiskit-addon-cutting/blob/main/Dockerfile>`__, which can be used to
 build a Docker image, as well as a
-`compose.yaml <https://github.com/Qiskit-Extensions/circuit-knitting-toolbox/blob/main/compose.yaml>`__ file, which allows one
+`compose.yaml <https://github.com/Qiskit/qiskit-addon-cutting/blob/main/compose.yaml>`__ file, which allows one
 to use the Docker image with just a few simple commands.
 
 .. code:: sh
 
-    git clone git@github.com:Qiskit-Extensions/circuit-knitting-toolbox.git
-    cd circuit-knitting-toolbox
+    git clone git@github.com:Qiskit/qiskit-addon-cutting.git
+    cd qiskit-addon-cutting
     docker compose build
     docker compose up
 
@@ -148,4 +148,4 @@ Platform Support
 
 We expect this package to work on `any platform supported by Qiskit <https://docs.quantum.ibm.com/start/install#operating-system-support>`__. If
 you are experiencing issues running the software on your device, you
-may consider :ref:`using the toolbox within Docker <Option 3>`.
+may consider :ref:`using this package within Docker <Option 3>`.

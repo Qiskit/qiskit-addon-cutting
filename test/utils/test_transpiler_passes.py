@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Tests for CKT transpilation passes."""
+"""Tests for transpilation passes."""
 
 import unittest
 
@@ -19,7 +19,10 @@ from qiskit.transpiler.passes import DAGFixedPoint
 from qiskit.passmanager.flow_controllers import DoWhileController
 from qiskit.converters import circuit_to_dag
 
-from circuit_knitting.utils.transpiler_passes import RemoveFinalReset, ConsolidateResets
+from qiskit_addon_cutting.utils.transpiler_passes import (
+    RemoveFinalReset,
+    ConsolidateResets,
+)
 
 
 class TestRemoveFinalReset(unittest.TestCase):

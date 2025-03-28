@@ -15,7 +15,7 @@ import pytest
 import numpy as np
 from qiskit import QuantumCircuit
 
-from circuit_knitting.utils.simulation import (
+from qiskit_addon_cutting.utils.simulation import (
     simulate_statevector_outcomes,
     ExactSampler,
 )
@@ -80,19 +80,21 @@ class TestSimulationFunctions(unittest.TestCase):
                 qc.h(0)
                 qc.cx(0, 1)
                 qc.measure(0, 0)
-                qc.break_loop().c_if(0, True)
+                with qc.if_test((qc.clbits[0], True)):
+                    qc.x(0)
             with pytest.raises(ValueError) as e_info:
                 simulate_statevector_outcomes(qc)
             assert (
                 e_info.value.args[0]
-                == "Circuit cannot contain a non-measurement operation on classical bit(s)."
+                == "Operations conditioned on classical bits are currently not supported."
             )
 
         with self.subTest("Circuit with condition bits"):
             qc = QuantumCircuit(2, 1)
             qc.h(0)
             qc.measure(0, 0)
-            qc.x(1).c_if(0, True)
+            with qc.if_test((qc.clbits[0], True)):
+                qc.x(1)
             with pytest.raises(ValueError) as e_info:
                 simulate_statevector_outcomes(qc)
             assert (

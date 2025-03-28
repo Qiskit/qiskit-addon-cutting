@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    When specifying instances of :class:`.OptimizationParameters` that are inputted to :meth:`circuit_knitting.cutting.find_cuts()`, the user can now control whether the 
+    cut-finder looks only for gate cuts, only for wire cuts, or both, by setting the bools ``gate_lo`` and ``wire_lo`` appropriately. The default value
+    of both of these is set to ``True`` and so the default search considers the possibility of both gate and wire cuts.

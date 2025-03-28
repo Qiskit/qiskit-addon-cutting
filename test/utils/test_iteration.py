@@ -9,7 +9,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-from circuit_knitting.utils.iteration import (
+from qiskit_addon_cutting.utils.iteration import (
     unique_by_id,
     unique_by_eq,
     strict_zip,

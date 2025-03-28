@@ -20,24 +20,24 @@ from qiskit.circuit import (
     QuantumCircuit,
     CircuitInstruction,
 )
-from qiskit.circuit.library import EfficientSU2, Measure
+from qiskit.circuit.library import efficient_su2, Measure
 from qiskit.circuit.library.standard_gates import RZZGate
 
-from circuit_knitting.cutting import partition_circuit_qubits
-from circuit_knitting.cutting.qpd import (
+from qiskit_addon_cutting import partition_circuit_qubits
+from qiskit_addon_cutting.qpd import (
     decompose_qpd_instructions,
     TwoQubitQPDGate,
 )
-from circuit_knitting.utils.transforms import separate_circuit
-from circuit_knitting.utils.iteration import strict_zip
+from qiskit_addon_cutting.utils.transforms import separate_circuit
+from qiskit_addon_cutting.utils.iteration import strict_zip
 
 
 def prepare_hwea():
-    circuit = EfficientSU2(4, entanglement="linear", reps=1).decompose()
+    circuit = efficient_su2(4, entanglement="linear", reps=1)
 
     # Exchange CNOTs with gates we support
     for i, gate in enumerate(circuit.data):
-        if len(gate[1]) == 2:
+        if len(gate.qubits) == 2:
             q1 = circuit.find_bit(gate.qubits[0])[0]
             q2 = circuit.find_bit(gate.qubits[1])[0]
             circuit.data[i] = CircuitInstruction(RZZGate(np.pi / 4), qubits=[q1, q2])
@@ -380,7 +380,7 @@ class TestTransforms(unittest.TestCase):
                 )
             assert (
                 e_info.value.args[0]
-                == "The input circuit cannot be separated along specified partitions. Operation (cx) in index (0) spans more than one partition."
+                == "The input circuit cannot be separated along specified partitions. Operation 'cx' at index 0 spans more than one partition."
             )
 
         with self.subTest("frozenset for each partition label"):
@@ -415,7 +415,7 @@ class TestTransforms(unittest.TestCase):
                 (frozenset([2]), 0),
             ]
 
-        with self.subTest("Unused qubit"):
+        with self.subTest("Unused qubit, with partition labels"):
             circuit = QuantumCircuit(2)
             circuit.x(0)
             separated_circuits = separate_circuit(circuit, partition_labels="BA")
@@ -423,6 +423,36 @@ class TestTransforms(unittest.TestCase):
             assert len(separated_circuits.subcircuits["B"].data) == 1
             assert len(separated_circuits.subcircuits["A"].data) == 0
             assert separated_circuits.qubit_map == [("B", 0), ("A", 0)]
+
+        with self.subTest("Unused qubit, no partition labels"):
+            circuit = QuantumCircuit(2)
+            circuit.x(1)
+            separated_circuits = separate_circuit(circuit)
+            assert separated_circuits.subcircuits.keys() == {0}
+            assert len(separated_circuits.subcircuits[0].data) == 1
+            assert separated_circuits.qubit_map == [(None, None), (0, 0)]
+
+        with self.subTest("Explicit partition label of None on an idle qubit"):
+            circuit = QuantumCircuit(2)
+            circuit.x(0)
+            separated_circuits = separate_circuit(circuit, partition_labels=["A", None])
+            assert separated_circuits.subcircuits.keys() == {"A"}
+            assert len(separated_circuits.subcircuits["A"].data) == 1
+            assert separated_circuits.qubit_map == [("A", 0), (None, None)]
+
+        with self.subTest(
+            "Explicit partition label of None on a non-idle qubit should error"
+        ):
+            circuit = QuantumCircuit(2)
+            circuit.h(0)
+            circuit.s(0)
+            circuit.x(1)
+            with pytest.raises(ValueError) as e_info:
+                separate_circuit(circuit, partition_labels=["A", None])
+            assert (
+                e_info.value.args[0]
+                == "Operation 'x' at index 2 acts on the 1-th qubit, which was provided a partition label of `None`. If the partition label of a qubit is `None`, then that qubit cannot be used in the circuit."
+            )
 
 
 def _create_barrier_subcirc() -> QuantumCircuit:
