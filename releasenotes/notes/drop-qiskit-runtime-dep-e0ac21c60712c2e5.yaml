@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    This package no longer depends on ``qiskit-ibm-runtime``, so it has been
+    dropped as a dependency.
