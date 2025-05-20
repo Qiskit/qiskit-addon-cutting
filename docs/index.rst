@@ -6,7 +6,7 @@ Qiskit addon: circuit cutting
    :alt: GitHub repository star counter badge
    :target: https://github.com/Qiskit/qiskit-addon-cutting
 
-`Qiskit addons <https://docs.quantum.ibm.com/guides/addons>`_ are a collection of modular tools for building utility-scale workloads powered by Qiskit.
+`Qiskit addons <https://quantum.cloud.ibm.com/docs/guides/addons>`_ are a collection of modular tools for building utility-scale workloads powered by Qiskit.
 
 This package implements circuit cutting.  In this technique, a handful of gates and/or wires are cut, resulting in smaller circuits that are better suited for execution on hardware.  The result of the original circuit can then be reconstructed; however, the trade-off is that the overall number of shots must be increased by a factor exponential in the number of cuts.
 
