@@ -61,7 +61,7 @@ lint = [
     "qiskit-addon-cutting[style]",
     "mypy==1.15.0",
     "reno>=3.4.0",
-    "pylint==3.3.6",
+    "pylint==3.3.7",
     "numpy<2.2",
 ]
 docs = [
