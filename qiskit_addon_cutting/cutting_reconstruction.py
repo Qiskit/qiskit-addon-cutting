@@ -55,7 +55,8 @@ def reconstruct_expectation_values(
             to generate their experiments should take care to order their subexperiments as follows before submitting them
             to the sampler primitive:
 
-            :math:`[sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]`
+            .. math::
+                [sample_{0}observable_{0}, \ldots, sample_{0}observable_{N-1}, sample_{1}observable_{0}, \ldots, sample_{M-1}observable_{N-1}]
 
         coefficients: A sequence containing the coefficient associated with each unique subexperiment. Each element is a tuple
             containing the coefficient (a ``float``) together with its :class:`.WeightType`, which denotes
