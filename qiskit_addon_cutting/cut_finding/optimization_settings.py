@@ -34,7 +34,7 @@ class OptimizationSettings:
     operations that can be performed by the search algorithm.
 
     ``seed`` is a seed used to provide a repeatable initialization
-    of the pesudorandom number generators used by the optimization.
+    of the pseudorandom number generators used by the optimization.
     If None is used as the random seed, then a seed is obtained using an
     operating-system call to achieve an unrepeatable randomized initialization.
 
@@ -83,7 +83,7 @@ class OptimizationSettings:
 
     @property
     def get_seed(self) -> int | None:
-        """Return the seed used to generate the pseudorandom numbers used in the optimizaton."""
+        """Return the seed used to generate the pseudorandom numbers used in the optimization."""
         return self.seed
 
     def get_engine_selection(self, stage_of_optimization: str) -> str:
