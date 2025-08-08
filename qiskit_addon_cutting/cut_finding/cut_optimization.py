@@ -145,7 +145,7 @@ def greedy_cut_optimization(
     search_space_funcs: SearchFunctions = cut_optimization_search_funcs,
     search_actions: ActionNames = disjoint_subcircuit_actions,
 ) -> DisjointSubcircuitsState | None:
-    """Peform a first pass at cut optimization using greedy best first search.
+    """Perform a first pass at cut optimization using greedy best first search.
 
     This step is effectively used to warm start our algorithm. It ignores the user
     specified constraint ``max_gamma``. Its primary purpose is to estimate an upper
