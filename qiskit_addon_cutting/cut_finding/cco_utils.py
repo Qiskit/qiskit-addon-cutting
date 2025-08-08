@@ -127,7 +127,7 @@ def greedy_best_first_search(
 ) -> None | DisjointSubcircuitsState:
     """Perform greedy best-first search using the input starting state and the input search-space functions.
 
-    The resulting goal state is returned, or None if a deadend is reached. Any additional input argumnets
+    The resulting goal state is returned, or None if a deadend is reached. Any additional input arguments
     are passed as additional arguments to the search-space functions.
     """
     search_space_funcs.goal_state_func = cast(

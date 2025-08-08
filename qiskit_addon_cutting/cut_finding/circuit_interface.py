@@ -41,7 +41,7 @@ class GateSpec(NamedTuple):
     is to be applied without cutting. A list of cut types of the form
     [<cut_type_1> ... <cut_type_n>] indicates precisely which types of
     cuts can be considered. In this case, the cut type None must be
-    explicitly included to indicate the possibilty of not cutting, if
+    explicitly included to indicate the possibility of not cutting, if
     not cutting is to be considered. In the current version of the code,
     the allowed cut types are 'None', 'GateCut' and 'WireCut'.
     """

@@ -115,7 +115,7 @@ class DisjointSubcircuitsState:
     ``gamma_UB``: a float that is the cumulative upper-bound gamma for all
     circuit cuts assuming all cuts are LO.
 
-    ``no_merge``: a list that contains a list of subcircuit merging constaints.
+    ``no_merge``: a list that contains a list of subcircuit merging constraints.
     Each constraint can either be a pair of wire IDs or a list of pairs
     of wire IDs. In the case of a pair of wire IDs, the constraint is
     that the subcircuits that contain those wire IDs cannot be merged
