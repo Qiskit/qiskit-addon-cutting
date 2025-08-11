@@ -329,12 +329,21 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3799/715460298.py:1: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
+  from qiskit.circuit.library import efficient_su2
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_2_0.png" src="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_2_0.png" />
+<img alt="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_2_1.png" src="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_2_1.png" />
 </div>
 </div>
 </section>
@@ -357,7 +366,7 @@
 <section id="Specify-a-backend">
 <h3>Specify a backend<a class="headerlink" href="#Specify-a-backend" title="Link to this heading">¶</a></h3>
 <p>You can provide either a fake backend or a hardware backend from Qiskit Runtime.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
@@ -366,6 +375,15 @@
 <span class="n">backend</span> <span class="o">=</span> <span class="n">FakeManilaV2</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3799/694230361.py:1: DeprecationWarning: Using qiskit-ibm-runtime with Python 3.9 is deprecated as of the 0.41.0 release. Support for running qiskit-ibm-runtime with Python 3.9 will be removed in a future release.
+  from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+</pre></div></div>
 </div>
 </section>
 <section id="Transpile-the-circuit,-visualize-the-swaps,-and-note-the-depth">
@@ -399,7 +417,7 @@ Transpiled circuit depth: 30
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3574/3423257129.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3799/3423257129.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   print(f&#34;Transpiled circuit depth: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;)
 </pre></div></div>
 </div>
@@ -527,9 +545,9 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3574/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3799/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;Original circuit depth after transpile: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
-/tmp/ipykernel_3574/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 2.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
+/tmp/ipykernel_3799/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
   f&#34;QPD subexperiment depth after transpile: {transpiled_qpd_circuit.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
 </pre></div></div>
 </div>
@@ -630,10 +648,10 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.51977539
+Reconstructed expectation value: 0.30322266
 Exact expectation value: 0.50497603
-Error in estimation: 0.01479936
-Relative error in estimation: 0.02930705
+Error in estimation: -0.20175338
+Relative error in estimation: -0.3995306
 </pre></div></div>
 </div>
 </section>

@@ -290,7 +290,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CutWire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/instructions/cut_wire.html#CutWire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Gate" title="(in Qiskit v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gate</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Gate" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gate</span></code></a></p>
 <p>An instruction for denoting a wire cut location.</p>
 <p>Create CutWire instruction.</p>
 <p class="rubric">Attributes</p>
@@ -330,24 +330,6 @@ discriminator in most situations.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.condition">
-<span class="sig-name descname"><span class="pre">condition</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.condition" title="Link to this definition">¶</a></dt>
-<dd><p>The classical condition on the instruction.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.condition</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.condition_bits">
-<span class="sig-name descname"><span class="pre">condition_bits</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.condition_bits" title="Link to this definition">¶</a></dt>
-<dd><p>Get Clbits in condition.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.condition_bits</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.decompositions">
 <span class="sig-name descname"><span class="pre">decompositions</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.decompositions" title="Link to this definition">¶</a></dt>
 <dd><p>Get the decompositions of the instruction from the SessionEquivalenceLibrary.</p>
@@ -357,15 +339,6 @@ discriminator in most situations.</p>
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.definition">
 <span class="sig-name descname"><span class="pre">definition</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.definition" title="Link to this definition">¶</a></dt>
 <dd><p>Return definition in terms of other basic gates.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.duration">
-<span class="sig-name descname"><span class="pre">duration</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.duration" title="Link to this definition">¶</a></dt>
-<dd><p>Get the duration.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.duration</span></code> is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.</p>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -406,29 +379,11 @@ and is not mutable.</p>
 <dd><p>The parameters of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code>.  Ideally these will be gate angles.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.unit" title="Link to this definition">¶</a></dt>
-<dd><p>Get the time unit of duration.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.unit</span></code> is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.</p>
-</div>
-</dd></dl>
-
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.add_decomposition">
 <span class="sig-name descname"><span class="pre">add_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decomposition</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.add_decomposition" title="Link to this definition">¶</a></dt>
 <dd><p>Add a decomposition of the instruction to the SessionEquivalenceLibrary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.assemble">
-<span class="sig-name descname"><span class="pre">assemble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.assemble" title="Link to this definition">¶</a></dt>
-<dd><p>Assemble a QasmQobjInstruction</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.2: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.assemble()</span></code> is deprecated as of qiskit 1.2. It will be removed in the 2.0 release. The <cite>Qobj</cite> class and related functionality are part of the deprecated <cite>BackendV1</cite> workflow,  and no longer necessary for <cite>BackendV2</cite>. If a user workflow requires <cite>Qobj</cite> it likely relies on deprecated functionality and should be updated to use <cite>BackendV2</cite>.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -485,21 +440,6 @@ method yields the arguments in the right grouping. In the given example:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.c_if">
-<span class="sig-name descname"><span class="pre">c_if</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classical</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.c_if" title="Link to this definition">¶</a></dt>
-<dd><p>Set a classical equality condition on this instruction between the register or cbit
-<code class="docutils literal notranslate"><span class="pre">classical</span></code> and value <code class="docutils literal notranslate"><span class="pre">val</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is a setter method, not an additive one.  Calling this multiple times will silently
-override any previously set condition; it does not stack.</p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.c_if()</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.control">
 <span class="sig-name descname"><span class="pre">control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ctrl_qubits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctrl_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.control" title="Link to this definition">¶</a></dt>
 <dd><p>Return the controlled version of itself.</p>
@@ -543,7 +483,7 @@ values of unbound parameters).</p></li>
 was provided</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -580,7 +520,7 @@ as <code class="xref py py-class docutils literal notranslate"><span class="pre"
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.is_parameterized">
 <span class="sig-name descname"><span class="pre">is_parameterized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.is_parameterized" title="Link to this definition">¶</a></dt>
-<dd><p>Return whether the <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code> contains <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/circuit#circuit-compile-time-parameters" title="(in Qiskit v1.4)"><span class="xref std std-ref">compile-time parameters</span></a>.</p>
+<dd><p>Return whether the <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code> contains <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/circuit#circuit-compile-time-parameters" title="(in Qiskit v2.1)"><span class="xref std std-ref">compile-time parameters</span></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -615,11 +555,6 @@ standard gate.</p></li>
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.CutWire.repeat">
 <span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.CutWire.repeat" title="Link to this definition">¶</a></dt>
 <dd><p>Creates an instruction with <code class="docutils literal notranslate"><span class="pre">self</span></code> repeated :math`n` times.</p>
-<p>If this operation has a conditional, the output instruction will have the same conditional
-and the inner repeated operations will be unconditional; instructions within a compound
-definition cannot be conditioned on registers within Qiskit’s data model.  This means that
-it is not valid to apply a repeated instruction to a clbit that it both writes to and reads
-from in its condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of times to repeat the instruction</p>
@@ -628,7 +563,7 @@ from in its condition.</p>
 <dd class="field-even"><p>Containing the definition.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>CircuitError</strong> – If n &lt; 1.</p>
@@ -651,7 +586,7 @@ It does not invert any gate.</p>
 </p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -779,22 +714,16 @@ will be a deepcopy of that instance.</p>
 <li><a class="reference internal" href="#">CutWire</a><ul>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire"><code class="docutils literal notranslate"><span class="pre">CutWire</span></code></a><ul>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.base_class"><code class="docutils literal notranslate"><span class="pre">CutWire.base_class</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.condition"><code class="docutils literal notranslate"><span class="pre">CutWire.condition</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.condition_bits"><code class="docutils literal notranslate"><span class="pre">CutWire.condition_bits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.decompositions"><code class="docutils literal notranslate"><span class="pre">CutWire.decompositions</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.definition"><code class="docutils literal notranslate"><span class="pre">CutWire.definition</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.duration"><code class="docutils literal notranslate"><span class="pre">CutWire.duration</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.label"><code class="docutils literal notranslate"><span class="pre">CutWire.label</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.mutable"><code class="docutils literal notranslate"><span class="pre">CutWire.mutable</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.name"><code class="docutils literal notranslate"><span class="pre">CutWire.name</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.num_clbits"><code class="docutils literal notranslate"><span class="pre">CutWire.num_clbits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.num_qubits"><code class="docutils literal notranslate"><span class="pre">CutWire.num_qubits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.params"><code class="docutils literal notranslate"><span class="pre">CutWire.params</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.unit"><code class="docutils literal notranslate"><span class="pre">CutWire.unit</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.add_decomposition"><code class="docutils literal notranslate"><span class="pre">CutWire.add_decomposition()</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.assemble"><code class="docutils literal notranslate"><span class="pre">CutWire.assemble()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.broadcast_arguments"><code class="docutils literal notranslate"><span class="pre">CutWire.broadcast_arguments()</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.c_if"><code class="docutils literal notranslate"><span class="pre">CutWire.c_if()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.control"><code class="docutils literal notranslate"><span class="pre">CutWire.control()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.copy"><code class="docutils literal notranslate"><span class="pre">CutWire.copy()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.CutWire.inverse"><code class="docutils literal notranslate"><span class="pre">CutWire.inverse()</span></code></a></li>

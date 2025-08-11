@@ -303,19 +303,60 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobV1</span> <span class="k">as</span> <span class="n">Job</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.utils.deprecation</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate_func</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..containers.primitive_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrimitiveResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..containers.sampler_pub</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerPubLike</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..containers.sampler_pub_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerPubResult</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">validation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base_primitive</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePrimitive</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.validation_v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">_validate_sampler_args</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base_primitive_v1</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePrimitiveV1</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base_primitive_job</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePrimitiveJob</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Job</span><span class="p">)</span>
 
 
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseSamplerV1</span><span class="p">(</span><span class="n">BasePrimitive</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseSamplerV2</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for ``SamplerV2`` implementations.</span>
+
+<span class="sd">    A Sampler returns samples of quantum circuit outputs. Implementations of this</span>
+<span class="sd">    :class:`.BaseSamplerV2` interface must define their own :meth:`.run` method,</span>
+<span class="sd">    which is designed to take the following inputs:</span>
+
+<span class="sd">     * pubs: list of pubs (Primitive Unified Blocs). A sampler pub is a list or tuple</span>
+<span class="sd">        of two to three elements that define the unit of work for the sampler. These are:</span>
+
+<span class="sd">            * A single :class:`~qiskit.circuit.QuantumCircuit`, possibly parameterized.</span>
+
+<span class="sd">            * A collection parameter value sets to bind the circuit against if it is parametric.</span>
+
+<span class="sd">            * Optionally, the number of shots to sample.</span>
+
+<span class="sd">     * shots: the number of shots to sample. This specification is optional and will be overriden by</span>
+<span class="sd">        the pub-wise shots if provided.</span>
+
+<span class="sd">    All sampler implementations must implement default value for the ``shots`` in the</span>
+<span class="sd">    :meth:`.run` method. This default value will be used any time ``shots=None`` is specified, which</span>
+<span class="sd">    can take place in the :meth:`.run` kwargs or at the pub level.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pubs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SamplerPubLike</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePrimitiveJob</span><span class="p">[</span><span class="n">PrimitiveResult</span><span class="p">[</span><span class="n">SamplerPubResult</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run and collect samples from each pub.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pubs: An iterable of pub-like objects. For example, a list of circuits</span>
+<span class="sd">                  or tuples ``(circuit, parameter_values)``.</span>
+<span class="sd">            shots: The total number of shots to sample for each sampler pub that does</span>
+<span class="sd">                   not specify its own shots. If ``None``, the primitive&#39;s default</span>
+<span class="sd">                   shots value will be used, which can vary by implementation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The job object of Sampler&#39;s result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseSamplerV1</span><span class="p">(</span><span class="n">BasePrimitiveV1</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sampler V1 base class</span>
 
 <span class="sd">    Base class of Sampler that calculates quasi-probabilities of bitstrings from quantum circuits.</span>
@@ -340,7 +381,9 @@
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        from qiskit.primitives import Sampler</span>
+<span class="sd">        # This is a fictional import path.</span>
+<span class="sd">        # There are currently no Sampler implementations in Qiskit.</span>
+<span class="sd">        from sampler_v1_location import SamplerV1</span>
 <span class="sd">        from qiskit import QuantumCircuit</span>
 <span class="sd">        from qiskit.circuit.library import RealAmplitudes</span>
 
@@ -385,6 +428,8 @@
         <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize ``SamplerV1``.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            options: Default options.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -411,7 +456,7 @@
 <span class="sd">            ValueError: Invalid arguments are given.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Validation</span>
-        <span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span> <span class="o">=</span> <span class="n">validation</span><span class="o">.</span><span class="n">_validate_sampler_args</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">)</span>
+        <span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span> <span class="o">=</span> <span class="n">_validate_sampler_args</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">)</span>
 
         <span class="c1"># Options</span>
         <span class="n">run_opts</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
@@ -430,60 +475,7 @@
         <span class="n">parameter_values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
         <span class="o">**</span><span class="n">run_options</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The subclass of BaseSampler must implement `_run` method.&quot;</span><span class="p">)</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseSampler</span><span class="p">(</span><span class="n">BaseSamplerV1</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED. Type alias for Sampler V1 base class</span>
-
-<span class="sd">    See :class:`.BaseSamplerV1` for details.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@deprecate_func</span><span class="p">(</span>
-        <span class="n">since</span><span class="o">=</span><span class="s2">&quot;1.2&quot;</span><span class="p">,</span>
-        <span class="n">additional_msg</span><span class="o">=</span><span class="s2">&quot;The `BaseSampler` class is a type alias for the `BaseSamplerV1` &quot;</span>
-        <span class="s2">&quot;interface that has been deprecated in favor of explicitly versioned interface classes. &quot;</span>
-        <span class="s2">&quot;It is recommended to migrate all implementations to use `BaseSamplerV2`. &quot;</span>
-        <span class="s2">&quot;However, for implementations incompatible with `BaseSamplerV2`, `BaseSampler` can &quot;</span>
-        <span class="s2">&quot;be replaced with the explicitly versioned `BaseSamplerV1` class.&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Args:</span>
-<span class="sd">            options: Default options.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">BaseSamplerV2</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sampler V2 base class.</span>
-
-<span class="sd">    A Sampler returns samples of quantum circuit outputs.</span>
-
-<span class="sd">    All sampler implementations must implement default value for the ``shots`` in the</span>
-<span class="sd">    :meth:`.run` method if ``None`` is given both as a ``kwarg`` and in all of the pubs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pubs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">SamplerPubLike</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePrimitiveJob</span><span class="p">[</span><span class="n">PrimitiveResult</span><span class="p">[</span><span class="n">SamplerPubResult</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run and collect samples from each pub.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            pubs: An iterable of pub-like objects. For example, a list of circuits</span>
-<span class="sd">                  or tuples ``(circuit, parameter_values)``.</span>
-<span class="sd">            shots: The total number of shots to sample for each sampler pub that does</span>
-<span class="sd">                   not specify its own shots. If ``None``, the primitive&#39;s default</span>
-<span class="sd">                   shots value will be used, which can vary by implementation.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The job object of Sampler&#39;s result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The subclass of BaseSamplerV1 must implement `_run` method.&quot;</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

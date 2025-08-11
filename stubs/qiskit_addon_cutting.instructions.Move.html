@@ -290,7 +290,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/instructions/move.html#Move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code></a></p>
 <p>A two-qubit instruction representing a reset of the second qubit followed by a swap.</p>
 <p><strong>Circuit Symbol:</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     ┌───────┐
@@ -309,7 +309,7 @@ it is entangled, resulting in the partial collapse of those qubits.</p>
 <p>The simplest way to ensure that the second (i.e., destination) qubit shares
 no entanglement with the remainder of the system is to use a fresh qubit
 which has not been used since initialization.</p>
-<p>Another valid way is to use, as a desination qubit, a qubit whose immediate
+<p>Another valid way is to use, as a destination qubit, a qubit whose immediate
 prior use was as the source (i.e., first) qubit of a preceding
 <a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> operation.</p>
 <p>The following circuit contains two <a class="reference internal" href="#qiskit_addon_cutting.instructions.Move" title="qiskit_addon_cutting.instructions.Move"><code class="xref py py-class docutils literal notranslate"><span class="pre">Move</span></code></a> operations, corresponding
@@ -374,24 +374,6 @@ discriminator in most situations.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.condition">
-<span class="sig-name descname"><span class="pre">condition</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.condition" title="Link to this definition">¶</a></dt>
-<dd><p>The classical condition on the instruction.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.condition</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.condition_bits">
-<span class="sig-name descname"><span class="pre">condition_bits</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.condition_bits" title="Link to this definition">¶</a></dt>
-<dd><p>Get Clbits in condition.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.condition_bits</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.decompositions">
 <span class="sig-name descname"><span class="pre">decompositions</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.decompositions" title="Link to this definition">¶</a></dt>
 <dd><p>Get the decompositions of the instruction from the SessionEquivalenceLibrary.</p>
@@ -401,15 +383,6 @@ discriminator in most situations.</p>
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.definition">
 <span class="sig-name descname"><span class="pre">definition</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.definition" title="Link to this definition">¶</a></dt>
 <dd><p>Return definition in terms of other basic gates.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.duration">
-<span class="sig-name descname"><span class="pre">duration</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.duration" title="Link to this definition">¶</a></dt>
-<dd><p>Get the duration.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.duration</span></code> is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.</p>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -450,29 +423,11 @@ and is not mutable.</p>
 <dd><p>The parameters of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code>.  Ideally these will be gate angles.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.unit">
-<span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.unit" title="Link to this definition">¶</a></dt>
-<dd><p>Get the time unit of duration.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The property <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.unit</span></code> is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.</p>
-</div>
-</dd></dl>
-
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.add_decomposition">
 <span class="sig-name descname"><span class="pre">add_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decomposition</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.add_decomposition" title="Link to this definition">¶</a></dt>
 <dd><p>Add a decomposition of the instruction to the SessionEquivalenceLibrary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.assemble">
-<span class="sig-name descname"><span class="pre">assemble</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.assemble" title="Link to this definition">¶</a></dt>
-<dd><p>Assemble a QasmQobjInstruction</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.2: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.assemble()</span></code> is deprecated as of qiskit 1.2. It will be removed in the 2.0 release. The <cite>Qobj</cite> class and related functionality are part of the deprecated <cite>BackendV1</cite> workflow,  and no longer necessary for <cite>BackendV2</cite>. If a user workflow requires <cite>Qobj</cite> it likely relies on deprecated functionality and should be updated to use <cite>BackendV2</cite>.</p>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -497,21 +452,6 @@ and is not mutable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.c_if">
-<span class="sig-name descname"><span class="pre">c_if</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classical</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.c_if" title="Link to this definition">¶</a></dt>
-<dd><p>Set a classical equality condition on this instruction between the register or cbit
-<code class="docutils literal notranslate"><span class="pre">classical</span></code> and value <code class="docutils literal notranslate"><span class="pre">val</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is a setter method, not an additive one.  Calling this multiple times will silently
-override any previously set condition; it does not stack.</p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 1.3.0: </span>The method <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.instruction.Instruction.c_if()</span></code> is deprecated as of qiskit 1.3.0. It will be removed in 2.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.copy" title="Link to this definition">¶</a></dt>
 <dd><p>Copy of the instruction.</p>
@@ -524,7 +464,7 @@ override any previously set condition; it does not stack.</p>
 was provided</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,18 +501,13 @@ as <code class="xref py py-class docutils literal notranslate"><span class="pre"
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.is_parameterized">
 <span class="sig-name descname"><span class="pre">is_parameterized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.is_parameterized" title="Link to this definition">¶</a></dt>
-<dd><p>Return whether the <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code> contains <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/circuit#circuit-compile-time-parameters" title="(in Qiskit v1.4)"><span class="xref std std-ref">compile-time parameters</span></a>.</p>
+<dd><p>Return whether the <code class="xref py py-class docutils literal notranslate"><span class="pre">Instruction</span></code> contains <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/circuit#circuit-compile-time-parameters" title="(in Qiskit v2.1)"><span class="xref std std-ref">compile-time parameters</span></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.instructions.Move.repeat">
 <span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_addon_cutting.instructions.Move.repeat" title="Link to this definition">¶</a></dt>
 <dd><p>Creates an instruction with <code class="docutils literal notranslate"><span class="pre">self</span></code> repeated :math`n` times.</p>
-<p>If this operation has a conditional, the output instruction will have the same conditional
-and the inner repeated operations will be unconditional; instructions within a compound
-definition cannot be conditioned on registers within Qiskit’s data model.  This means that
-it is not valid to apply a repeated instruction to a clbit that it both writes to and reads
-from in its condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of times to repeat the instruction</p>
@@ -581,7 +516,7 @@ from in its condition.</p>
 <dd class="field-even"><p>Containing the definition.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>CircuitError</strong> – If n &lt; 1.</p>
@@ -604,7 +539,7 @@ It does not invert any gate.</p>
 </p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v1.4)">qiskit.circuit.Instruction</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.Instruction" title="(in Qiskit v2.1)">qiskit.circuit.Instruction</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -714,22 +649,16 @@ will be a deepcopy of that instance.</p>
 <li><a class="reference internal" href="#">Move</a><ul>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move"><code class="docutils literal notranslate"><span class="pre">Move</span></code></a><ul>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.base_class"><code class="docutils literal notranslate"><span class="pre">Move.base_class</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.condition"><code class="docutils literal notranslate"><span class="pre">Move.condition</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.condition_bits"><code class="docutils literal notranslate"><span class="pre">Move.condition_bits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.decompositions"><code class="docutils literal notranslate"><span class="pre">Move.decompositions</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.definition"><code class="docutils literal notranslate"><span class="pre">Move.definition</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.duration"><code class="docutils literal notranslate"><span class="pre">Move.duration</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.label"><code class="docutils literal notranslate"><span class="pre">Move.label</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.mutable"><code class="docutils literal notranslate"><span class="pre">Move.mutable</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.name"><code class="docutils literal notranslate"><span class="pre">Move.name</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.num_clbits"><code class="docutils literal notranslate"><span class="pre">Move.num_clbits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.num_qubits"><code class="docutils literal notranslate"><span class="pre">Move.num_qubits</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.params"><code class="docutils literal notranslate"><span class="pre">Move.params</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.unit"><code class="docutils literal notranslate"><span class="pre">Move.unit</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.add_decomposition"><code class="docutils literal notranslate"><span class="pre">Move.add_decomposition()</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.assemble"><code class="docutils literal notranslate"><span class="pre">Move.assemble()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.broadcast_arguments"><code class="docutils literal notranslate"><span class="pre">Move.broadcast_arguments()</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.c_if"><code class="docutils literal notranslate"><span class="pre">Move.c_if()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.copy"><code class="docutils literal notranslate"><span class="pre">Move.copy()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.inverse"><code class="docutils literal notranslate"><span class="pre">Move.inverse()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_addon_cutting.instructions.Move.is_parameterized"><code class="docutils literal notranslate"><span class="pre">Move.is_parameterized()</span></code></a></li>

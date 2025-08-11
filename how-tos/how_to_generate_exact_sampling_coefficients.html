@@ -290,7 +290,7 @@
 <h1>How to generate exact sampling coefficients<a class="headerlink" href="#How-to-generate-exact-sampling-coefficients" title="Link to this heading">¶</a></h1>
 <p>This how-to guide is intended to show users how they can generate exact sampling coefficients to be used in reconstructing the simulated expectation value of the original circuit.</p>
 <p>First, we set up a simple cutting problem following the <a class="reference internal" href="../tutorials/01_gate_cutting_to_reduce_circuit_width.html"><span class="doc">first tutorial</span></a>.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -304,6 +304,15 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3514/1051240730.py:2: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
+  from qiskit.circuit.library import efficient_su2
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:

@@ -16,18 +16,14 @@
    .. autoattribute:: base_class
    .. autoattribute:: basis
    .. autoattribute:: basis_id
-   .. autoattribute:: condition
-   .. autoattribute:: condition_bits
    .. autoattribute:: decompositions
    .. autoattribute:: definition
-   .. autoattribute:: duration
    .. autoattribute:: label
    .. autoattribute:: mutable
    .. autoattribute:: name
    .. autoattribute:: num_clbits
    .. autoattribute:: num_qubits
    .. autoattribute:: params
-   .. autoattribute:: unit
   
 
   
@@ -35,9 +31,7 @@
    .. rubric:: Methods
     
    .. automethod:: add_decomposition
-   .. automethod:: assemble
    .. automethod:: broadcast_arguments
-   .. automethod:: c_if
    .. automethod:: copy
    .. automethod:: from_instruction
    .. automethod:: inverse

@@ -303,12 +303,23 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3610/2689864020.py:1: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
+  from qiskit.circuit.library import EfficientSU2
+/tmp/ipykernel_3610/2689864020.py:3: DeprecationWarning: The class ``qiskit.circuit.library.n_local.efficient_su2.EfficientSU2`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.efficient_su2 instead.
+  qc = EfficientSU2(4, entanglement=&#34;linear&#34;, reps=2).decompose()
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/how-tos_how_to_provide_multiple_observables_2_0.png" src="../_images/how-tos_how_to_provide_multiple_observables_2_0.png" />
+<img alt="../_images/how-tos_how_to_provide_multiple_observables_2_1.png" src="../_images/how-tos_how_to_provide_multiple_observables_2_1.png" />
 </div>
 </div>
 </section>
@@ -370,7 +381,7 @@
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
@@ -379,6 +390,15 @@
 <span class="n">backend</span> <span class="o">=</span> <span class="n">FakeManilaV2</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_3610/694230361.py:1: DeprecationWarning: Using qiskit-ibm-runtime with Python 3.9 is deprecated as of the 0.41.0 release. Support for running qiskit-ibm-runtime with Python 3.9 will be removed in a future release.
+  from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -484,10 +504,10 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation values: [-0.20063001  0.48694563]
+Reconstructed expectation values: [-0.15492964  0.58352631]
 Exact expectation values: [-0.17994235  0.56254612]
-Error in estimation: [-0.02068766 -0.07560049]
-Relative error in estimation: [ 0.11496824 -0.13438986]
+Error in estimation: [0.02501272 0.02098019]
+Relative error in estimation: [-0.13900405  0.03729506]
 </pre></div></div>
 </div>
 </section>
