@@ -93,7 +93,7 @@ class LOCutsOptimizer:
             circuit_interface: defines the circuit to be cut. This object is then updated
                 with the optimized cuts that were identified.
             optimization_settings: defines the settings to be used for the optimization.
-            device_constraints: the capabilties of the target quantum hardware.
+            device_constraints: the capabilities of the target quantum hardware.
 
         Returns:
             The lowest-cost instance of :class:`DisjointSubcircuitsState`

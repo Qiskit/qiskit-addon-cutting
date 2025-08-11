@@ -40,7 +40,7 @@ class Move(Instruction):
     no entanglement with the remainder of the system is to use a fresh qubit
     which has not been used since initialization.
 
-    Another valid way is to use, as a desination qubit, a qubit whose immediate
+    Another valid way is to use, as a destination qubit, a qubit whose immediate
     prior use was as the source (i.e., first) qubit of a preceding
     :class:`Move` operation.
 
