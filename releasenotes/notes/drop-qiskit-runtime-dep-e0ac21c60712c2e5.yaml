@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    This package no longer depends on ``qiskit-ibm-runtime`` following
+    the removal of CutQC, so it has been removed as a dependency.
