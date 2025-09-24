@@ -334,7 +334,7 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3799/715460298.py:1: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
+/tmp/ipykernel_3795/715460298.py:1: DeprecationWarning: Using Qiskit with Python 3.9 is deprecated as of the 2.1.0 release. Support for running Qiskit with Python 3.9 will be removed in the 2.3.0 release, which coincides with when Python 3.9 goes end of life.
   from qiskit.circuit.library import efficient_su2
 </pre></div></div>
 </div>
@@ -381,7 +381,7 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_3799/694230361.py:1: DeprecationWarning: Using qiskit-ibm-runtime with Python 3.9 is deprecated as of the 0.41.0 release. Support for running qiskit-ibm-runtime with Python 3.9 will be removed in a future release.
+/tmp/ipykernel_3795/694230361.py:1: DeprecationWarning: Using qiskit-ibm-runtime with Python 3.9 is deprecated as of the 0.41.0 release. Support for running qiskit-ibm-runtime with Python 3.9 will be removed in a future release.
   from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 </pre></div></div>
 </div>
@@ -400,25 +400,16 @@
 <span class="p">)</span>
 
 <span class="n">transpiled_qc</span> <span class="o">=</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transpiled circuit depth: </span><span class="si">{</span><span class="n">transpiled_qc</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transpiled circuit depth: </span><span class="si">{</span><span class="n">transpiled_qc</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Transpiled circuit depth: 30
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_3799/3423257129.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
-  print(f&#34;Transpiled circuit depth: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -522,10 +513,10 @@ Sampling overhead: 729.0
 <span class="n">transpiled_qpd_circuit</span> <span class="o">=</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">[</span><span class="mi">100</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;Original circuit depth after transpile: </span><span class="si">{</span><span class="n">transpiled_qc</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;Original circuit depth after transpile: </span><span class="si">{</span><span class="n">transpiled_qc</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;QPD subexperiment depth after transpile: </span><span class="si">{</span><span class="n">transpiled_qpd_circuit</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;QPD subexperiment depth after transpile: </span><span class="si">{</span><span class="n">transpiled_qpd_circuit</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="k">lambda</span><span class="w"> </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
 <span class="n">transpiled_qpd_circuit</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">idle_wires</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fold</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -540,23 +531,12 @@ Original circuit depth after transpile: 30
 QPD subexperiment depth after transpile: 7
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_3799/4252024425.py:5: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
-  f&#34;Original circuit depth after transpile: {transpiled_qc.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
-/tmp/ipykernel_3799/4252024425.py:8: DeprecationWarning: Treating CircuitInstruction as an iterable is deprecated legacy behavior since Qiskit 1.2, and will be removed in Qiskit 3.0. Instead, use the `operation`, `qubits` and `clbits` named attributes.
-  f&#34;QPD subexperiment depth after transpile: {transpiled_qpd_circuit.depth(lambda x: len(x[1]) &gt;= 2)}&#34;
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_17_2.png" src="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_17_2.png" />
+<img alt="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_17_1.png" src="../_images/tutorials_02_gate_cutting_to_reduce_circuit_depth_17_1.png" />
 </div>
 </div>
 </section>
@@ -567,7 +547,9 @@ QPD subexperiment depth after transpile: 7
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Transpile the subeperiments to the backend&#39;s instruction set architecture (ISA)</span>
-<span class="n">isa_subexperiments</span> <span class="o">=</span> <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiments</span><span class="p">)</span>
+<span class="n">isa_subexperiments</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">pass_manager</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">subexperiment</span><span class="p">)</span> <span class="k">for</span> <span class="n">subexperiment</span> <span class="ow">in</span> <span class="n">subexperiments</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -648,10 +630,10 @@ QPD subexperiment depth after transpile: 7
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Reconstructed expectation value: 0.30322266
+Reconstructed expectation value: 0.31640625
 Exact expectation value: 0.50497603
-Error in estimation: -0.20175338
-Relative error in estimation: -0.3995306
+Error in estimation: -0.18856978
+Relative error in estimation: -0.37342323
 </pre></div></div>
 </div>
 </section>
