@@ -32,7 +32,6 @@ dependencies = [
     "rustworkx>=0.15.0",
     "qiskit-aer>=0.14.0.1",
     "qiskit>=1.3.1, <3",
-    "qiskit-ibm-runtime>=0.24.0",
 ]
 
 [project.optional-dependencies]
@@ -46,6 +45,7 @@ basetest = [
 test = [
     "qiskit-addon-cutting[basetest]",
     "ddt>=1.4.4",
+    "qiskit-ibm-runtime>=0.24.0",
 ]
 nbtest = [
     "qiskit-addon-cutting[basetest]",
@@ -75,6 +75,7 @@ docs = [
     "qiskit-sphinx-theme>=2.0.0, <3"
 ]
 notebook-dependencies = [
+    "qiskit-ibm-runtime>=0.24.0",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
