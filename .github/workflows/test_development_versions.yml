@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip tox
-          python -m pip install extremal-python-dependencies==0.0.3
+          python -m pip install extremal-python-dependencies==0.0.5
           extremal-python-dependencies pin-dependencies \
               "qiskit @ git+https://github.com/Qiskit/qiskit.git" \
               "qiskit-ibm-runtime @ git+https://github.com/Qiskit/qiskit-ibm-runtime.git" \
