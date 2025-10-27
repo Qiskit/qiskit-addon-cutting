@@ -62,7 +62,7 @@ jobs:
           fi
       - name: Upload PDF
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: citation-preview.pdf
           path: citation-preview.pdf
