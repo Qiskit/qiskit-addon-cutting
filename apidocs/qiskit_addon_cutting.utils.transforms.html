@@ -336,9 +336,9 @@ and <code class="docutils literal notranslate"><span class="pre">qubit_map</span
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – The number of partition labels does not equal the number of
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – The number of partition labels does not equal the number of
     qubits in the input circuit.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Operation spans more than one partition.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – Operation spans more than one partition.</p></li>
 </ul>
 </dd>
 </dl>
@@ -347,7 +347,7 @@ and <code class="docutils literal notranslate"><span class="pre">qubit_map</span
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_addon_cutting.utils.transforms.SeparatedCircuits">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SeparatedCircuits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subcircuits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_addon_cutting/utils/transforms.html#SeparatedCircuits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_addon_cutting.utils.transforms.SeparatedCircuits" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
 <p>Named tuple for result of <a class="reference internal" href="#qiskit_addon_cutting.utils.transforms.separate_circuit" title="qiskit_addon_cutting.utils.transforms.separate_circuit"><code class="xref py py-func docutils literal notranslate"><span class="pre">separate_circuit()</span></code></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">subcircuits</span></code> is a dict of circuits, keyed by each partition label.
 <code class="docutils literal notranslate"><span class="pre">qubit_map</span></code> is a list with length equal to the number of qubits in the original circuit.
@@ -359,8 +359,8 @@ then that tuple will be equal to <code class="docutils literal notranslate"><spa
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>subcircuits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>QuantumCircuit</em><em>]</em>)</p></li>
-<li><p><strong>qubit_map</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><em>Hashable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><em>None</em><em>, </em><em>None</em><em>]</em><em>]</em>)</p></li>
+<li><p><strong>subcircuits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>[</em><em>Hashable</em><em>, </em><em>QuantumCircuit</em><em>]</em>)</p></li>
+<li><p><strong>qubit_map</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><em>Hashable</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em>[</em><em>None</em><em>, </em><em>None</em><em>]</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
