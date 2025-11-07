@@ -5,9 +5,5 @@ features:
     :class:`~qiskit.primitives.PrimitiveResult` object, which is
     returned by version 2 of the sampler primitive
     (:class:`~qiskit.primitives.BaseSamplerV2`).  See the `migration guide
-<<<<<<< HEAD
-    <https://docs.quantum.ibm.com/migration-guides/qiskit-1.0-features#qiskitprimitives>`__
-=======
     <https://quantum.cloud.ibm.com/docs/guides/qiskit-1.0-features#qiskitprimitives>`__
->>>>>>> 8a602d6 (Update two release notes links (#780))
     for details on upgrading to version 2 of the Qiskit primitives.
