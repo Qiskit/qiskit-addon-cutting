@@ -6,7 +6,7 @@ prelude:
   workflow (CutQC) is now deprecated.  Additionally, this is the first
   CKT release to support version 2 of the Qiskit Runtime primitives.
   User are encouraged to `migrate to v2 primitives
-  <https://docs.quantum.ibm.com/migration-guides/v2-primitives>`__
+  <https://quantum.cloud.ibm.com/docs/guides/v2-primitives>`__
   as soon as possible.
 
 other:
