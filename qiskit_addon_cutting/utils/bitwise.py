@@ -12,7 +12,7 @@
 # Reminder: update the RST file in docs/apidocs when adding new interfaces.
 """Module for bitwise utilities."""
 
-from qiskit.utils.deprecation import deprecate_func
+from qiskit.utils.deprecation import deprecate_func  # pragma: no cover
 
 
 @deprecate_func(

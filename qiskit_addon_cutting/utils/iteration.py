@@ -23,7 +23,7 @@ from qiskit.utils.deprecation import deprecate_func
     package_name="qiskit-addon-cutting",
     additional_msg="Use ``zip([...], strict=True)``. ",
 )
-def strict_zip(*args, **kwargs):
+def strict_zip(*args, **kwargs):  # pragma: no cover
     """Equivalent to ``zip([...], strict=True)``."""
     return zip(*args, strict=True, **kwargs)
 
