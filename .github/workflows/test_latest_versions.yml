@@ -19,7 +19,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.13"]
         include:
           - os: macos-latest
