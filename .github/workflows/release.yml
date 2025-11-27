@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout tag
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref_name }}
       - name: Publish release
-        uses: ghalactic/github-release-from-tag@v5
+        uses: ghalactic/github-release-from-tag@v6
         if: github.ref_type == 'tag'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout tag
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.ref_name }}
       - name: Install `build` tool

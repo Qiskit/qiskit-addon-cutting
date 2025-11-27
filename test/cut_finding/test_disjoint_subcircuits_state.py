@@ -57,7 +57,7 @@ def test_circuit():
 
 
 def test_state_uncut(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
 
     state, _ = test_circuit
@@ -78,7 +78,7 @@ def test_state_uncut(
 
 
 def test_apply_gate(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
     state, two_qubit_gate = test_circuit
 
@@ -104,7 +104,7 @@ def test_apply_gate(
 
 
 def test_cut_gate(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
     state, two_qubit_gate = test_circuit
 
@@ -138,7 +138,7 @@ def test_cut_gate(
 
 
 def test_cut_left_wire(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
 
     state, two_qubit_gate = test_circuit
@@ -184,7 +184,7 @@ def test_cut_left_wire(
 
 
 def test_cut_right_wire(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
     state, two_qubit_gate = test_circuit
 
@@ -219,7 +219,7 @@ def test_cut_right_wire(
 
 
 def test_cut_both_wires(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
     state, two_qubit_gate = test_circuit
 
@@ -275,7 +275,7 @@ def test_cut_both_wires(
 
 
 def test_no_wire_cuts(
-    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]]
+    test_circuit: Callable[[], tuple[DisjointSubcircuitsState, GateSpec]],
 ):
     state, two_qubit_gate = test_circuit
 

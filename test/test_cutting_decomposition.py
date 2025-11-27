@@ -17,7 +17,7 @@ import pytest
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import CircuitInstruction, Barrier, Clbit
-from qiskit.circuit.library import EfficientSU2, RXXGate
+from qiskit.circuit.library import efficient_su2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
 from qiskit.quantum_info import PauliList
 
@@ -37,8 +37,8 @@ from qiskit_addon_cutting.qpd import (
 class TestCuttingDecomposition(unittest.TestCase):
     def setUp(self):
         # Use HWEA for simplicity and easy visualization
-        circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
-        qpd_circuit = EfficientSU2(4, entanglement="linear", reps=2).decompose()
+        circuit = efficient_su2(4, entanglement="linear", reps=2)
+        qpd_circuit = efficient_su2(4, entanglement="linear", reps=2)
 
         # We will instantiate 2 QPDBasis objects using from_instruction
         rxx_gate = RXXGate(np.pi / 3)

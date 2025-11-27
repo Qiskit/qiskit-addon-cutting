@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.9'
       - name: Install dependencies
@@ -47,12 +47,12 @@ jobs:
           cp -a docs/_build/html artifact/qiskit-addon-cutting-htmldocs
       - name: Upload docs artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qiskit-addon-cutting-htmldocs
           path: ./artifact
       - name: Deploy docs
-        if: ${{ github.ref == 'refs/heads/stable/0.9' }}
+        if: ${{ github.ref == 'refs/heads/stable/0.10' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

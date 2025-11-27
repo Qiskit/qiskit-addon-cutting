@@ -1,0 +1,3 @@
+---
+prelude: |
+  This release adds compatibility with Qiskit SDK 2.0.
