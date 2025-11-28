@@ -12,15 +12,15 @@
 from qiskit_addon_cutting.utils.iteration import (
     unique_by_id,
     unique_by_eq,
-    strict_zip,
 )
 
 
 def test_unique_by_id():
     a = [1, 3, 5]
-    for x, y in strict_zip(
+    for x, y in zip(
         unique_by_id([9, a, None, 5, a, 5, False, 7, None, "b"]),
         [9, a, None, 5, False, 7, "b"],
+        strict=True,
     ):
         assert x is y
     assert list(unique_by_id([a, a.copy()])) == [a, a]
