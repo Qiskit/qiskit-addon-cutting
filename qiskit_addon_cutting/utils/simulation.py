@@ -25,8 +25,6 @@ from qiskit.primitives.base import BaseSamplerV1, SamplerResult
 from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.result import QuasiDistribution
 
-from .iteration import strict_zip
-
 
 _TOLERANCE = 1e-16
 
@@ -149,7 +147,7 @@ class ExactSampler(BaseSamplerV1):
         metadata: list[dict[str, Any]] = [{} for _ in range(len(circuits))]
         bound_circuits = [
             circuit if len(value) == 0 else circuit.assign_parameters(value)
-            for circuit, value in strict_zip(circuits, parameter_values)
+            for circuit, value in zip(circuits, parameter_values, strict=True)
         ]
         probabilities = [simulate_statevector_outcomes(qc) for qc in bound_circuits]
         quasis = [QuasiDistribution(p) for p in probabilities]
