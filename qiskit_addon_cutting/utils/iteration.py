@@ -12,21 +12,20 @@
 # Reminder: update the RST file in docs/apidocs when adding new interfaces.
 """Iteration utilities."""
 
-import sys
 from collections.abc import Iterable, ValuesView
 
-# Certain calls to `zip` should be strict, but the `strict` kwarg was not added
-# until Python 3.10.  The following allows us to begin marking today which
-# calls should be strict, even though this will only be enforced on Python 3.10
-# and later.
-if sys.version_info >= (3, 10, 0):  # pragma: no cover
+from qiskit.utils.deprecation import deprecate_func
 
-    def strict_zip(*args, **kwargs):
-        """Equivalent to ``zip([...], strict=True)`` where supported."""
-        return zip(*args, strict=True, **kwargs)
 
-else:  # pragma: no cover
-    strict_zip = zip  # type: ignore
+@deprecate_func(
+    removal_timeline="no sooner than qiskit-addon-cutting v0.12.0",
+    since="0.11.0",
+    package_name="qiskit-addon-cutting",
+    additional_msg="Use ``zip([...], strict=True)``. ",
+)
+def strict_zip(*args, **kwargs):  # pragma: no cover
+    """Equivalent to ``zip([...], strict=True)``."""
+    return zip(*args, strict=True, **kwargs)
 
 
 def unique_by_id(iterable: Iterable, /) -> ValuesView:
