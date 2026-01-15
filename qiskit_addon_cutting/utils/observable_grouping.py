@@ -21,8 +21,6 @@ from dataclasses import dataclass, field
 import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
 
-from .iteration import strict_zip
-
 
 _I = Pauli("I")
 
@@ -212,8 +210,8 @@ class ObservableCollection:
                 general_observable,
                 commuting_observables,
             )
-            for (general_observable, commuting_observables) in strict_zip(
-                general_observables, commuting_groups
+            for (general_observable, commuting_observables) in zip(
+                general_observables, commuting_groups, strict=True
             )
         ]
 

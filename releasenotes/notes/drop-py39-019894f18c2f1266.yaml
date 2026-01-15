@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    Support for Python 3.9 has been dropped.  Python 3.10 or later is
+    now required.

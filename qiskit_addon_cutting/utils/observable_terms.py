@@ -17,7 +17,6 @@ from __future__ import annotations
 from typing import Sequence, Iterable, Mapping
 
 from qiskit.quantum_info import Pauli, PauliList, SparsePauliOp
-from .iteration import strict_zip
 
 
 def gather_unique_observable_terms(
@@ -34,7 +33,7 @@ def gather_unique_observable_terms(
     for observable in observables:
         if isinstance(observable, Pauli):
             observable = SparsePauliOp(observable)
-        for pauli, coeff in strict_zip(observable.paulis, observable.coeffs):
+        for pauli, coeff in zip(observable.paulis, observable.coeffs, strict=True):
             assert pauli.phase == 0  # SparsePauliOp should do this for us
             if coeff == 0:
                 continue
@@ -65,7 +64,7 @@ def _reconstruct_observable_expval_from_terms(
     if isinstance(observable, Pauli):
         observable = SparsePauliOp(observable)
     rv = 0.0j
-    for pauli, coeff in strict_zip(observable.paulis, observable.coeffs):
+    for pauli, coeff in zip(observable.paulis, observable.coeffs, strict=True):
         assert pauli.phase == 0  # SparsePauliOp should do this for us
         if coeff == 0:
             continue

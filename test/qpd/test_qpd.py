@@ -46,7 +46,7 @@ from qiskit.circuit.library import (
     DCXGate,
 )
 
-from qiskit_addon_cutting.utils.iteration import unique_by_eq, strict_zip
+from qiskit_addon_cutting.utils.iteration import unique_by_eq
 from qiskit_addon_cutting.instructions import Move
 from qiskit_addon_cutting.qpd import (
     QPDBasis,
@@ -420,7 +420,7 @@ class TestQPDFunctions(unittest.TestCase):
             exact = np.prod(
                 [
                     probs[i]
-                    for i, probs in strict_zip(map_ids, independent_probabilities)
+                    for i, probs in zip(map_ids, independent_probabilities, strict=True)
                 ]
             )
             assert probs.get(map_ids, 0.0) == pytest.approx(exact, abs=1e-14)

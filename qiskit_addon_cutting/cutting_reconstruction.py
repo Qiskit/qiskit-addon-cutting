@@ -23,7 +23,6 @@ from qiskit.primitives import (
 )
 
 from .utils.observable_grouping import CommutingObservableGroup, ObservableCollection
-from .utils.bitwise import bit_count
 from .cutting_decomposition import decompose_observables
 from .cutting_experiments import _get_pauli_indices
 from .qpd import WeightType
@@ -211,13 +210,13 @@ def _process_outcome_v2(
     """
     # qpd_factor will be -1 or +1, depending on the overall parity of qpd
     # measurements.
-    qpd_factor = 1 - 2 * (bit_count(qpd_outcomes) & 1)
+    qpd_factor = 1 - 2 * (qpd_outcomes.bit_count() & 1)
 
     rv = np.zeros(len(cog.pauli_bitmasks))
     for i, mask in enumerate(cog.pauli_bitmasks):
         # obs will be -1 or +1, depending on the measurement
         # of the current operator.
-        obs = 1 - 2 * (bit_count(obs_outcomes & mask) & 1)
+        obs = 1 - 2 * ((obs_outcomes & mask).bit_count() & 1)
         rv[i] = qpd_factor * obs
 
     return rv

@@ -24,7 +24,6 @@ import numpy as np
 import numpy.typing as npt
 
 from .qpd_basis import QPDBasis
-from ..utils.iteration import strict_zip
 
 
 logger = logging.getLogger(__name__)
@@ -278,7 +277,7 @@ def _generate_qpd_weights(
             probability = np.prod(
                 [
                     probs[i]
-                    for i, probs in strict_zip(map_ids, independent_probabilities)
+                    for i, probs in zip(map_ids, independent_probabilities, strict=True)
                 ]
             )
             if probability < _NONZERO_ATOL:
