@@ -49,7 +49,7 @@ test = [
 ]
 nbtest = [
     "qiskit-addon-cutting[basetest]",
-    "nbmake>=1.4.3"
+    "nbmake>=1.5.5"
 ]
 style = [
     "autoflake==2.3.1",
