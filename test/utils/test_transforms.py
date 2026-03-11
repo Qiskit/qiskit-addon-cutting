@@ -29,7 +29,6 @@ from qiskit_addon_cutting.qpd import (
     TwoQubitQPDGate,
 )
 from qiskit_addon_cutting.utils.transforms import separate_circuit
-from qiskit_addon_cutting.utils.iteration import strict_zip
 
 
 def prepare_hwea():
@@ -406,7 +405,7 @@ class TestTransforms(unittest.TestCase):
             compare[frozenset([2])].h(0)
             assert separated_circuits.subcircuits.keys() == compare.keys()
             for label, subcircuit in separated_circuits.subcircuits.items():
-                for op1, op2 in strict_zip(compare[label].data, subcircuit.data):
+                for op1, op2 in zip(compare[label].data, subcircuit.data, strict=True):
                     self.assertEqual(op1.operation.name, op2.operation.name)
             assert separated_circuits.qubit_map == [
                 (frozenset([0]), 0),

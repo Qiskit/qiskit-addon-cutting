@@ -12,16 +12,16 @@
 # Reminder: update the RST file in docs/apidocs when adding new interfaces.
 """Module for bitwise utilities."""
 
-if hasattr(0, "bit_count"):
+from qiskit.utils.deprecation import deprecate_func  # pragma: no cover
 
-    def bit_count(x: int, /):  # pragma: no cover
-        """Count number of set bits."""
-        # New in Python 3.10
-        return x.bit_count()  # type: ignore[attr-defined]
 
-else:
-
-    def bit_count(x: int, /):  # pragma: no cover
-        """Count number of set bits."""
-        # Slower fallback for Python 3.9 and earlier
-        return bin(x).count("1")
+@deprecate_func(
+    removal_timeline="no sooner than qiskit-addon-cutting v0.12.0",
+    since="0.11.0",
+    package_name="qiskit-addon-cutting",
+    additional_msg="Use ``x.bit_count()`` method instead of ``bit_count(x)``. ",
+)
+def bit_count(x: int, /):  # pragma: no cover
+    """Count number of set bits."""
+    # New in Python 3.10
+    return x.bit_count()  # type: ignore[attr-defined]

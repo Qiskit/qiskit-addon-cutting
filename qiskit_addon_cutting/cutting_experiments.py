@@ -20,7 +20,6 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.quantum_info import PauliList
 
-from .utils.iteration import strict_zip
 from .utils.observable_grouping import ObservableCollection, CommutingObservableGroup
 from .qpd import (
     WeightType,
@@ -140,7 +139,7 @@ def generate_cutting_experiments(
     coefficients: list[tuple[float, WeightType]] = []
     for z, (map_ids, (redundancy, weight_type)) in enumerate(sorted_samples):
         actual_coeff = np.prod(
-            [basis.coeffs[map_id] for basis, map_id in strict_zip(bases, map_ids)]
+            [basis.coeffs[map_id] for basis, map_id in zip(bases, map_ids, strict=True)]
         )
         sampled_coeff = (redundancy / num_samples) * (kappa * np.sign(actual_coeff))
         coefficients.append((sampled_coeff, weight_type))
