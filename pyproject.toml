@@ -53,7 +53,7 @@ nbtest = [
 style = [
     "autoflake==2.3.3",
     "black[jupyter]~=25.1",
-    "ruff==0.15.5",
+    "ruff==0.15.8",
     "nbqa>=1.6.0",
 ]
 lint = [
