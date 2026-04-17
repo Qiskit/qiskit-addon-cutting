@@ -357,6 +357,36 @@ class TestTransforms(unittest.TestCase):
                         subcircuits[i].data[j].operation.name, inst.operation.name
                     )
 
+        with self.subTest("Barriers are recombined within a shared partition"):
+            qc = QuantumCircuit(3)
+
+            qc.x([0, 1, 2])
+            qc.barrier()
+            qc.y([0, 1, 2])
+            qc.barrier()
+            qc.z([0, 1, 2])
+            qc.barrier(0)
+
+            subcircuit = separate_circuit(qc, partition_labels="AAB").subcircuits["A"]
+            operation_signature = [
+                (inst.operation.name, len(inst.qubits)) for inst in subcircuit.data
+            ]
+
+            self.assertEqual(
+                [
+                    ("x", 1),
+                    ("x", 1),
+                    ("barrier", 2),
+                    ("y", 1),
+                    ("y", 1),
+                    ("barrier", 2),
+                    ("z", 1),
+                    ("z", 1),
+                    ("barrier", 1),
+                ],
+                operation_signature,
+            )
+
         with self.subTest("Bad partition labels"):
             circuit = QuantumCircuit(2)
             partition_labels = "ABB"
