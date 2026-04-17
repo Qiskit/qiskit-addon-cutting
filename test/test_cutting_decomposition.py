@@ -16,7 +16,7 @@ import unittest
 import pytest
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import CircuitInstruction, Barrier, Clbit
+from qiskit.circuit import CircuitInstruction, Barrier, Clbit, Instruction
 from qiskit.circuit.library import efficient_su2, RXXGate
 from qiskit.circuit.library.standard_gates import CXGate
 from qiskit.quantum_info import PauliList
@@ -256,6 +256,22 @@ class TestCuttingDecomposition(unittest.TestCase):
             assert subcircuit.keys() == {0, 1}
             assert subcircuit[0].num_qubits == 3
             assert subcircuit[1].num_qubits == 1
+        with self.subTest("Zero-qubit global-phase instructions"):
+            qc = QuantumCircuit(2)
+            qc.data.insert(
+                0,
+                CircuitInstruction(
+                    Instruction("global_phase", 0, 0, [0.5]),
+                    qubits=(),
+                    clbits=(),
+                ),
+            )
+            qc.cx(0, 1)
+
+            subcircuits, *_ = partition_problem(qc)
+
+            assert subcircuits.keys() == {0}
+            assert [inst.operation.name for inst in subcircuits[0].data] == ["cx"]
 
     def test_cut_gates(self):
         with self.subTest("simple circuit"):

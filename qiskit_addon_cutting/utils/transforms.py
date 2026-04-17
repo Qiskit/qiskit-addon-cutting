@@ -225,6 +225,10 @@ def _separate_instructions_by_partition(
     }
 
     for i, inst in enumerate(circuit.data):
+        # Explicit global-phase instructions do not belong to any partition.
+        if inst.operation.name == "global_phase":
+            continue
+
         # Collect the partition labels spanned by the instruction
         partitions_spanned = set()
         for qubit in inst.qubits:

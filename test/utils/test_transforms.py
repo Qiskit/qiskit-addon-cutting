@@ -19,6 +19,7 @@ from qiskit.circuit import (
     ClassicalRegister,
     QuantumCircuit,
     CircuitInstruction,
+    Instruction,
 )
 from qiskit.circuit.library import efficient_su2, Measure
 from qiskit.circuit.library.standard_gates import RZZGate
@@ -356,6 +357,37 @@ class TestTransforms(unittest.TestCase):
                     self.assertEqual(
                         subcircuits[i].data[j].operation.name, inst.operation.name
                     )
+
+        with self.subTest("Zero-qubit global-phase instructions are ignored"):
+            qc = QuantumCircuit(2)
+            qc.data.insert(
+                0,
+                CircuitInstruction(
+                    Instruction("global_phase", 0, 0, [0.5]),
+                    qubits=(),
+                    clbits=(),
+                ),
+            )
+            qc.x(0)
+            qc.y(1)
+
+            separated_circuits = separate_circuit(qc)
+
+            self.assertEqual([(0, 0), (1, 0)], separated_circuits.qubit_map)
+            self.assertEqual(
+                ["x"],
+                [
+                    inst.operation.name
+                    for inst in separated_circuits.subcircuits[0].data
+                ],
+            )
+            self.assertEqual(
+                ["y"],
+                [
+                    inst.operation.name
+                    for inst in separated_circuits.subcircuits[1].data
+                ],
+            )
 
         with self.subTest("Bad partition labels"):
             circuit = QuantumCircuit(2)
