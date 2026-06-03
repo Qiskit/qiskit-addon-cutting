@@ -39,7 +39,7 @@ dev = [
 ]
 basetest = [
     "pytest>=6.2.5",
-    "pytest-randomly>=1.2.0",
+    "pytest-randomly>=4.1.0",
 ]
 test = [
     "qiskit-addon-cutting[basetest]",
