@@ -8,6 +8,6 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     labels: ["dependencies"]
-    versioning-strategy: increase
+    versioning-strategy: auto
     schedule:
       interval: "monthly"
