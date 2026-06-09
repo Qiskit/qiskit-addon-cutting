@@ -225,6 +225,11 @@ def _separate_instructions_by_partition(
     }
 
     for i, inst in enumerate(circuit.data):
+        # A zero-qubit global-phase instruction spans no partition, so it
+        # cannot be assigned to any subcircuit; skip it.
+        if inst.operation.name == "global_phase":
+            continue
+
         # Collect the partition labels spanned by the instruction
         partitions_spanned = set()
         for qubit in inst.qubits:
