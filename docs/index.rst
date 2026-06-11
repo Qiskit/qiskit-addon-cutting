@@ -1,12 +1,6 @@
-#############################
-Qiskit addon: circuit cutting
-#############################
-
-.. image:: https://img.shields.io/github/stars/Qiskit/qiskit-addon-cutting?style=social
-   :alt: GitHub repository star counter badge
-   :target: https://github.com/Qiskit/qiskit-addon-cutting
-
-`Qiskit addons <https://quantum.cloud.ibm.com/docs/guides/addons>`_ are a collection of modular tools for building utility-scale workloads powered by Qiskit.
+###############
+Circuit cutting
+###############
 
 This package implements circuit cutting.  In this technique, a handful of gates and/or wires are cut, resulting in smaller circuits that are better suited for execution on hardware.  The result of the original circuit can then be reconstructed; however, the trade-off is that the overall number of shots must be increased by a factor exponential in the number of cuts.
 
@@ -20,21 +14,18 @@ We follow `semantic versioning <https://semver.org/>`__ and are guided by the pr
 Citing this project
 -------------------
 
-If you use this package in your research, please cite it according to ``CITATON.bib`` file included in this repository:
+If you use this package in your research, please cite it according to the [``CITATON.bib``](CITATION.bib) file included in this repository.
 
-.. literalinclude:: ../CITATION.bib
-   :language: bibtex
+If you are using the entanglement forging tool in Circuit Knitting Toolbox version 0.5 or earlier, please use `an older version of the citation file <https://github.com/Qiskit/qiskit-addon-cutting/blob/stable/0.5/CITATION.bib>`__, which includes the authors of that tool.
 
-If you are using the entanglement forging tool in Circuit Knitting Toolbox version 0.5 or earlier, please use `an older version of the citation file <https://github.com/Qiskit/qiskit-addon-cutting/blob/stable/0.5/CITATION.bib>`__ which includes the authors of that tool.
-
-If you are using the CutQC tool in Circuit Knitting Toolbox version 0.7 or earlier, please use `an older version of the citation file <https://github.com/Qiskit/qiskit-addon-cutting/blob/stable/0.7/CITATION.bib>`__ which includes the authors of that tool.
+If you are using the CutQC tool in Circuit Knitting Toolbox version 0.7 or earlier, please use `an older version of the citation file <https://github.com/Qiskit/qiskit-addon-cutting/blob/stable/0.7/CITATION.bib>`__, which includes the authors of that tool.
 
 Developer guide
 ---------------
 
 The source code to this package is available `on GitHub <https://github.com/Qiskit/qiskit-addon-cutting>`__.
 
-The developer guide is located at `CONTRIBUTING.md <https://github.com/Qiskit/qiskit-addon-cutting/blob/main/CONTRIBUTING.md>`__ in the root of this project's repository.
+The developer guide is located at `CONTRIBUTING.md <https://github.com/Qiskit/qiskit-addon-cutting/blob/main/CONTRIBUTING.md>`__.
 
 Contents
 --------
