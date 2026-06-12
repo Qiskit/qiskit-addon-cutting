@@ -10,7 +10,7 @@ First, choose how you're going to run and install the packages. There are three 
 If you want to run within a containerized environment, you can skip the
 pre-installation and move straight to :ref:`Option 3`.
 
-Pre-installation
+Prerequisites
 ^^^^^^^^^^^^^^^^
 
 If you plan to install locally (using either :ref:`Option 1` or :ref:`Option 2`), you are encouraged to
