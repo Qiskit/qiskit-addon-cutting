@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixed an ``AssertionError`` raised by ``separate_circuit()`` (and, in turn,
+    ``partition_problem()``) when the input circuit contained a zero-qubit
+    ``global_phase`` instruction.  Such an instruction spans no partition, so it
+    is now skipped when assigning operations to subcircuits.
