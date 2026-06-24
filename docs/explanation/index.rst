@@ -6,7 +6,7 @@ Explanatory material
 
 Overview of circuit cutting
 ---------------------------
-Circuit cutting is a technique to increase the size of circuits we can run on quantum hardware at the cost of an additional sampling overhead. A larger quantum circuit can be decomposed by cutting its gates or wires, resulting in smaller circuits that can be executed within the constraints of available quantum hardware. The results of these smaller circuits are combined to reconstruct the outcome of the original problem. Circuit cutting can also be used to engineer gates between distant qubits which would otherwise require a large swap overhead.
+Circuit cutting is a technique to increase the size of circuits we can run on quantum hardware at the cost of an additional sampling overhead. A larger quantum circuit can be decomposed by cutting its gates, wires, or both, resulting in smaller circuits that can be executed within the constraints of available quantum hardware. The results of these smaller circuits are combined to reconstruct the outcome of the original problem. Circuit cutting can also be used to engineer gates between distant qubits which would otherwise require a large swap overhead.
 
 Key terms
 ---------
@@ -130,7 +130,7 @@ Wire cutting phrased as a two-qubit :class:`.Move` operation
 
 A wire cut is represented fundamentally by this package as a two-qubit :class:`.Move` instruction, which is defined as a reset of the second qubit followed by a swap of both qubits.  Equivalently, the operation is defined as transferring the state of the first qubit wire to the second qubit wire, while simultaneously discarding the state of the second qubit wire (the first qubit ends up in state :math:`\lvert 0 \rangle`).
 
-We have chosen to represent wire cuts in this way primarily because it is consistent with the required way to treat wire cuts when acting on physical qubits: for instance, a wire cut might take the state of physical qubit :math:`n` and continue it as physical qubit :math:`m` after the cut.  Our choice also has the benefit of allowing us to think of "instruction cutting" as a unified framework for considering both wire cuts and gate cuts in the same formalism, because a wire cut is just a cut :class:`.Move` instruction.
+We have chosen to represent wire cuts in this way primarily because it is consistent with the mental model for treating wire cuts when acting on physical qubits: for instance, a wire cut might take the state of physical qubit :math:`n` and continue it as physical qubit :math:`m` after the cut.  Our choice also has the benefit of allowing us to think of "instruction cutting" as a unified framework for considering both wire cuts and gate cuts in the same formalism, because a wire cut is just a cut :class:`.Move` instruction.
 
 More information on this formalism is given in Sec. 3 of Ref. \[`4 <https://arxiv.org/abs/2302.03366>`__\].
 

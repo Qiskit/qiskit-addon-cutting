@@ -42,7 +42,7 @@ Note: If you are using Windows, use the following commands in PowerShell:
 Option 1: Install from PyPI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The most straightforward way to install the ``qiskit-addon-cutting`` package is by using PyPI.
+The most straightforward way to install the ``qiskit-addon-cutting`` package is by using pip.
 
 .. code:: sh
 
