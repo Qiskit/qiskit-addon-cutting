@@ -63,7 +63,7 @@ In either case, the first step is to clone the ``qiskit-addon-cutting`` reposito
 
     git clone git@github.com:Qiskit/qiskit-addon-cutting.git
     
-Next, upgrade `pip` and enter the repository. 
+Next, upgrade ``pip`` and enter the repository. 
 
 .. code:: sh
     
