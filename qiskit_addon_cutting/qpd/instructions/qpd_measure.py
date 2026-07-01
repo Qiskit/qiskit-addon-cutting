@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Quasiprobability decomposition measure marker instruction."""
+
 from __future__ import annotations
 
 from qiskit.circuit import Instruction

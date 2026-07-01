@@ -64,7 +64,6 @@ from .instructions import QPDMeasure
 from ..instructions import Move
 from ..utils.iteration import unique_by_id
 
-
 _qpdbasis_from_instruction_funcs: dict[str, Callable[[Instruction], QPDBasis]] = {}
 
 

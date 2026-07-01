@@ -11,7 +11,6 @@
 
 """Classes needed to implement the actions involved in circuit cutting."""
 
-
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

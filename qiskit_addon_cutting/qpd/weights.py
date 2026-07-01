@@ -25,7 +25,6 @@ import numpy.typing as npt
 
 from .qpd_basis import QPDBasis
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -25,7 +25,6 @@ from qiskit.primitives.base import BaseSamplerV1, SamplerResult
 from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.result import QuasiDistribution
 
-
 _TOLERANCE = 1e-16
 
 
@@ -67,7 +66,7 @@ def simulate_statevector_outcomes(qc: QuantumCircuit, /) -> dict[int, float]:
                 k0 = k ^ (k & k_flipper)  # like k, but k_flipper bit will NOT be set
                 k1 = k | k_flipper  # like k, but k_flipper bit (if any) will be set
                 for i, (prob, sv) in enumerate(svs):
-                    (prob0, prob1) = sv.probabilities([qubit_idx])
+                    prob0, prob1 = sv.probabilities([qubit_idx])
                     dims = sv.dims([qubit_idx])  # always going to be (2,) for a qubit
                     pending_delete.append((k, i))
                     # Handle the 0 branch of the wave function
