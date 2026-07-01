@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Two-qubit instruction representing a swap + single-qubit reset."""
+
 from __future__ import annotations
 
 from qiskit.circuit import QuantumCircuit, Instruction

@@ -10,6 +10,7 @@
 # that they have been altered from the originals.
 
 """File containing the wrapper class for optimizing LO gate and wire cuts."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple
@@ -27,7 +28,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..automated_cut_finding import DeviceConstraints
 from .optimization_settings import OptimizationSettings
 from .circuit_interface import SimpleGateList
-
 
 # Functions for generating the cut optimization search space
 cut_optimization_search_funcs = SearchFunctions(

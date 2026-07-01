@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Function to transform a :class:`.CutWire` instruction to a :class:`.Move` instruction."""
+
 from __future__ import annotations
 
 from typing import Callable

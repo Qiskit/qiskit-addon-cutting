@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 import numpy as np
 from qiskit.quantum_info import Pauli, PauliList
 
-
 _I = Pauli("I")
 
 

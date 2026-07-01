@@ -10,6 +10,7 @@
 # that they have been altered from the originals.
 
 """Classes needed to generate and explore a search space."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

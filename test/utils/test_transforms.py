@@ -10,6 +10,7 @@
 # that they have been altered from the originals.
 
 """Tests for quantum circuit transformation functions."""
+
 import unittest
 
 import pytest

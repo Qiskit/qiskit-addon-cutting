@@ -10,6 +10,7 @@
 # that they have been altered from the originals.
 
 """Quantum circuit representation compatible with cut-finding optimizer."""
+
 from __future__ import annotations
 
 import copy

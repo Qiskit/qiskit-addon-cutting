@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Tests for single qubit wire cutting functions."""
+
 from __future__ import annotations
 
 from pytest import fixture, mark, raises
