@@ -51,7 +51,7 @@ nbtest = [
     "nbmake>=1.5.5"
 ]
 style = [
-    "autoflake==2.3.3",
+    "autoflake==2.4.0",
     "black[jupyter]~=26.5",
     "ruff==0.15.20",
     "nbqa>=1.6.0",
