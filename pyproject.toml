@@ -44,7 +44,7 @@ basetest = [
 test = [
     "qiskit-addon-cutting[basetest]",
     "ddt>=1.4.4",
-    "qiskit-ibm-runtime>=0.24.0",
+    "qiskit-ibm-runtime>=0.49.0",
 ]
 nbtest = [
     "qiskit-addon-cutting[basetest]",
@@ -74,7 +74,7 @@ docs = [
     "qiskit-sphinx-theme>=2.0.0, <3"
 ]
 notebook-dependencies = [
-    "qiskit-ibm-runtime>=0.24.0",
+    "qiskit-ibm-runtime>=0.49.0",
     "matplotlib",
     "ipywidgets",
     "pylatexenc",
