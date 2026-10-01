@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    The minimum supported versions of several dependencies have been raised
+    to remain compatible with ``qiskit-ibm-runtime`` 0.49.0, which is now
+    required to run the tests and documentation notebooks:
+
+    - Qiskit SDK 2.3.0 or higher is now required.
+    - NumPy 1.26.2 or higher is now required.
+    - SciPy 1.10.0 or higher is now required.
+    - rustworkx 0.16.0 or higher is now required.
+    - Qiskit Aer 0.17.0 or higher is now required.
