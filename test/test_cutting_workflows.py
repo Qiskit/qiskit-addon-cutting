@@ -20,7 +20,7 @@ from qiskit.circuit.library import efficient_su2, CXGate
 from qiskit.quantum_info import PauliList
 from qiskit.transpiler import generate_preset_pass_manager
 from qiskit.providers.fake_provider import GenericBackendV2
-from qiskit_ibm_runtime import SamplerV2
+from qiskit_ibm_runtime.executor_sampler import SamplerV2
 from qiskit_aer import AerSimulator
 
 from qiskit_addon_cutting.qpd.instructions import SingleQubitQPDGate
